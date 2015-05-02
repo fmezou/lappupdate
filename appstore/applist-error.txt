@@ -1,0 +1,4 @@
+# This file contains the list of standard application installed on a workstation
+# or a server, and this one applies for all protected information system.
+#appArch; appName;              appVersion;   appPackage;
+x96     ; extented dummy app 1;      0.0.0;   "extended dummy\aninstaller.cmd" /arg       
