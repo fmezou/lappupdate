@@ -1,2 +1,2 @@
 @echo off
-echo %*>> %TEMP%\appmsi.txt
+echo %*>> "%APPLIST_MSI_TO_INSTALL%"

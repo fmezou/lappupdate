@@ -19,7 +19,7 @@ rem Setting the environment
 rem Theses settings may be overwritten in the current execution environment.
 
 rem By default, data files including installer package were stored in the appstore directory.
-if not defined APP_STORE_DIR set APP_STORE_DIR=%CD%\appstore
+if not defined APP_STORE_DIR set APP_STORE_DIR=..\appstore
 
 rem By default, logs are mailed to sysadmin@examplecom (see below LOGMAIL) using a
 rem SMTP server smtp.example.com. Theses MUST be tuned to your environment
@@ -230,26 +230,30 @@ if exist "%APP_STORE_DIR%\%APPLIST_PREFIX%%SETNAME%.txt" (
     call :WriteWarningLog Set named %SETNAME% do not exist
 )
 :SkipSet
+set APPLIST_TO_INSTALL=%TEMP%\apptoinstall.txt
+set APPLIST_MSI_TO_INSTALL=%TEMP%\appmsi.txt
 call :WriteInfoLog Checking installed applications
-if exist "%TEMP%\apptoinstall.txt" del "%TEMP%\apptoinstall.txt"
-if exist "%TEMP%\appmsi.txt" del "%TEMP%\appmsi.txt"
+if exist "%APPLIST_TO_INSTALL%" del "%APPLIST_TO_INSTALL%"
+if exist "%APPLIST_MSI_TO_INSTALL%" del "%APPLIST_MSI_TO_INSTALL%"
 %CSCRIPT_PATH% //Nologo //E:vbs appfilter.vbs %OS_ARCH%
 if errorlevel 1 goto CustSoftFail
 
-if not exist "%TEMP%\apptoinstall.txt" goto NoApp
+if not exist "%APPLIST_TO_INSTALL%" goto NoApp
 call :WriteInfoLog Install the missing application or upgrade it
-for /F "delims=; tokens=1,2*" %%i in (%TEMP%\apptoinstall.txt) do (
+for /F "delims=; tokens=1,2*" %%i in (%APPLIST_TO_INSTALL%) do (
     call :WriteSummary Installing %%i ^(%%j^)
     call :Install %%k
 )
-if not exist "%TEMP%\appmsi.txt" goto :SkipMSI
-for /F "delims=; tokens=*" %%i in (%TEMP%\appmsi.txt) do (
-    call :InstallMSI "%%i"
+
+if not exist "%APPLIST_MSI_TO_INSTALL%" goto :SkipMSI
+for /F "delims=; tokens=*" %%i in (%APPLIST_MSI_TO_INSTALL%) do (
+    call :InstallMSI %%i
 )
-del %TEMP%\appmsi.txt
+
+del "%APPLIST_MSI_TO_INSTALL%"
 :SkipMSI
-del %TEMP%\apptoinstall.txt
-del %TEMP%\applist.txt
+del "%APPLIST_TO_INSTALL%"
+del "%APPLIST%"
 set APPINSTALLED=1
 call :WriteInfoLog Applications installation completed
 goto Cleanup

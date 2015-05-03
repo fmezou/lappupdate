@@ -296,11 +296,10 @@ If WScript.Arguments.Count >= 1 Then
     End If
 End If
 
-strTempFolder = objShell.ExpandEnvironmentStrings("%TEMP%")
-strAppFileName = strTempFolder & "\applist.txt"
+strAppFileName = objShell.ExpandEnvironmentStrings("%APPLIST%")
 WriteDebugLog "Input file is : ["&strAppFileName&"]"
 Set objAppFile = objFileSystem.OpenTextFile(strAppFileName, FOR_READING, False)
-strOutFileName = strTempFolder & "\apptoinstall.txt"
+strOutFileName = objShell.ExpandEnvironmentStrings("%APPLIST_TO_INSTALL%")
 WriteDebugLog "Output file is : ["&strOutFileName&"]"
 Set objOutFile = objFileSystem.CreateTextFile(strOutFileName, True)
 
