@@ -2,28 +2,24 @@
 ' This script filter the input file (%TEMP%\applist.txt) by verifying if the software is installed.
 '
 ' Usage : FilterApp.vbs [appArch]
-'   appArch    : is the target architecture type (the Windows’ one) for the 
-'                application. This argument may contain the following values or
-'                may be empty : "x86" or "x64". The default value is "x86".
+'   appArch: is the target architecture type (the Windows’ one) for the 
+'   application. This argument may contain the following values or may be
+'   empty : "x86" or "x64". The default value is "x86".
+'
 ' Exit code
 '   0 : no error
 '   1 : an error occurred while filtering application
 '   2 : invalid argument. An argument of the command line is not valid (see Usage)
 
 ' the log files are specified in the below environment variables.
-'       %SUMMARY_LOGFILE% : contains the installation summary
-'       %WARNING_LOGFILE% : contains the warning messages occurred while InstallApp script execution 
-'       %UPDATE_LOGFILE%  : contains all messages occurred while InstallApp script execution 
+'   * %SUMMARY_LOGFILE%: contains the installation summary
+'   * %WARNING_LOGFILE%: contains the warning messages occurred while
+'     InstallApp script execution 
+'   * %UPDATE_LOGFILE%: contains all messages occurred while InstallApp script
+'     execution 
 '
-' The input file matches the syntax defined in the document named "applist format" (see /doc/)
-' The output file (%TEMP%\apptoinstall.txt) matches the following format:
-'    appName ; appVersion; appPackage
-'    appName    : is the name of the application as it appear in the Program 
-'                 Control Panel.
-'    appVersion : is the version number of the application as it appear in the 
-'                 Program Control Panel.
-'    AppPackage : is the executable file or command, with its argument, to 
-'                 launch for installing or upgrading the application. 
+' The input file matches the syntax defined in the section named 
+' "applist format" (see lappupdate_wiki.html)
 ' 
 Option Explicit
 ' Constant for the run-time
@@ -40,7 +36,7 @@ Private Const APP_TOKEN = ";"
 Dim objShell, objFileSystem, numReturn
 Dim strTempFolder, strOutFileName, objOutFile
 Dim strAppFileName, objAppFile
-Dim strItems, strAppTarget, strArch, strAppName, strAppVersion, strAppPackage
+Dim strItems, strAppTarget, strArch, strAppName, strAppVersion, strAppPackage, strAppArgs
 Dim objSummaryLogFile, objWarningLogFile, objUpdateLogFile, numSilentMode
 Dim blnLogError, blnLogWarning, blnLogInfo, blnLogDebug
 
@@ -310,6 +306,7 @@ Do While objAppFile.AtEndOfStream <> True
         strAppName=GetParsedItem (strItems)
         strAppVersion=GetParsedItem (strItems)
         strAppPackage=GetParsedItem (strItems)
+        strAppArgs=GetParsedItem (strItems)
         ' to prevent having empty columns which are not well interpreted in dos shell...
         If strAppName = "" Then
             WriteWarningLog "No application name at line " & objAppFile.Line & ". Comment this line if it isn't useful"
@@ -325,7 +322,7 @@ Do While objAppFile.AtEndOfStream <> True
                     If strAppPackage = "" Then
                         WriteWarningLog "No installation package for ["&strAppName&"] version ["&strAppVersion&"]"
                     Else
-                        objOutFile.WriteLine(strAppName & APP_TOKEN & strAppVersion & APP_TOKEN & strAppPackage)
+                        objOutFile.WriteLine(strAppName & APP_TOKEN & strAppVersion & APP_TOKEN & strAppPackage & APP_TOKEN & strAppArgs)
                     End If
                 End If  
             
@@ -335,7 +332,7 @@ Do While objAppFile.AtEndOfStream <> True
                         If strAppPackage = "" Then
                             WriteWarningLog "No installation package for ["&strAppName&"] version ["&strAppVersion&"]"
                         Else
-                            objOutFile.WriteLine(strAppName & APP_TOKEN & strAppVersion & APP_TOKEN & strAppPackage)
+                            objOutFile.WriteLine(strAppName & APP_TOKEN & strAppVersion & APP_TOKEN & strAppPackage & APP_TOKEN & strAppArgs)
                         End If
                     End If  
                 End If
@@ -346,7 +343,7 @@ Do While objAppFile.AtEndOfStream <> True
                         If strAppPackage = "" Then
                             WriteWarningLog "No installation package for ["&strAppName&"] version ["&strAppVersion&"]"
                         Else
-                            objOutFile.WriteLine(strAppName & APP_TOKEN & strAppVersion & APP_TOKEN & strAppPackage)
+                            objOutFile.WriteLine(strAppName & APP_TOKEN & strAppVersion & APP_TOKEN & strAppPackage & APP_TOKEN & strAppArgs)
                         End If
                     End If  
                 End If

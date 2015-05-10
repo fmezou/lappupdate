@@ -18,7 +18,7 @@ pushd "%~dp0"
 rem Setting the environment
 rem Theses settings may be overwritten in the current execution environment.
 
-rem By default, data files including installer package were stored in the appstore directory.
+rem By default, data files including installer packages were stored in the appstore directory.
 if not defined APP_STORE_DIR set APP_STORE_DIR=..\appstore
 
 rem By default, logs are mailed to sysadmin@examplecom (see below LOGMAIL) using a
@@ -137,12 +137,12 @@ if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
 if exist "%SUMMARY_LOGFILE%" del "%SUMMARY_LOGFILE%"
 goto :EOF
 
-rem Install
+rem InstallExe
 rem     Execute the installation package and the postinstall script if it exist.
 rem     Usage call :Install package options...
 rem         package : is the full name of the installation package
 rem         options : are the command line options of the installation package (specific to the package) 
-:Install
+:InstallExe
 call :WriteInfoLog Executing %*
 call %*>>"%UPDATE_LOGFILE%"
 if errorlevel 1 (
@@ -161,12 +161,11 @@ goto :EOF
 
 rem InstallMSI
 rem     Execute the MSI package with the optional transform file and the postinstall script if it exist.
-rem     Usage call :Install package options...
+rem     Usage call :Install package ...
 rem         package : is the full name of the installation package
-rem         options : are the command line options of the installation package (specific to the package) 
 :InstallMSI
 if exist "%~dpn1.mst" (
-  call :WriteInfoLog Installing %~dpn1.msi using "%~dpn1.mst"...
+  call :WriteInfoLog Installing "%~dpn1.msi" using "%~dpn1.mst"...
   @%SystemRoot%\System32\msiexec.exe /package "%~dpn1.msi" ALLUSER=2 TRANSFORMS="%~dpn1.mst" /quiet /norestart /log "%TEMP%\%~n1.log"
   if errorlevel 1 (
     call :WriteWarningLog Installation of "%~dpn1.msi" using "%~dpn1.mst" failed
@@ -174,7 +173,7 @@ if exist "%~dpn1.mst" (
     call :WriteInfoLog Installed "%~dpn1.msi" using "%~dpn1.mst"
   )  
 ) else (
-  call :WriteInfoLog Installing %~dpn1.msi...
+  call :WriteInfoLog Installing "%~dpn1.msi"...
   @%SystemRoot%\System32\msiexec.exe /package "%~dpn1.msi" ALLUSER=2 /quiet /norestart /log "%TEMP%\%~n1.log"
   if errorlevel 1 (
     call :WriteWarningLog Installation of "%~dpn1.msi" failed ^(Errorlevel: %errorlevel%^)
@@ -231,34 +230,28 @@ if exist "%APP_STORE_DIR%\%APPLIST_PREFIX%%SETNAME%.txt" (
 )
 :SkipSet
 set APPLIST_TO_INSTALL=%TEMP%\apptoinstall.txt
-set APPLIST_MSI_TO_INSTALL=%TEMP%\appmsi.txt
 call :WriteInfoLog Checking installed applications
 if exist "%APPLIST_TO_INSTALL%" del "%APPLIST_TO_INSTALL%"
-if exist "%APPLIST_MSI_TO_INSTALL%" del "%APPLIST_MSI_TO_INSTALL%"
 %CSCRIPT_PATH% //Nologo //E:vbs appfilter.vbs %OS_ARCH%
 if errorlevel 1 goto CustSoftFail
 
 if not exist "%APPLIST_TO_INSTALL%" goto NoApp
 call :WriteInfoLog Install the missing application or upgrade it
-for /F "delims=; tokens=1,2*" %%i in (%APPLIST_TO_INSTALL%) do (
+for /F "delims=; tokens=1,2,3*" %%i in (%APPLIST_TO_INSTALL%) do (
     call :WriteSummary Installing %%i ^(%%j^)
-    call :Install %%k
+    if /i "%%~xk"==".msi" (
+        call :InstallMSI "%%~k"
+    ) else (
+        call :InstallEXE "%%~k" %%l
+    )
 )
-
-if not exist "%APPLIST_MSI_TO_INSTALL%" goto :SkipMSI
-for /F "delims=; tokens=*" %%i in (%APPLIST_MSI_TO_INSTALL%) do (
-    call :InstallMSI %%i
-)
-
-del "%APPLIST_MSI_TO_INSTALL%"
-:SkipMSI
 del "%APPLIST_TO_INSTALL%"
 del "%APPLIST%"
 set APPINSTALLED=1
 call :WriteInfoLog Applications installation completed
 goto Cleanup
-rem this section contain the exception and error treatment
 
+rem this section contain the exception and error treatment
 :NoApp
 set APPINSTALLED=
 call :WriteInfoLog no application to install

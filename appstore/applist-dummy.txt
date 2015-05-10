@@ -1,11 +1,11 @@
 # This file contains the list of standard application installed on a workstation
 # or a server, and this one applies for all protected information system.
-#appArch; appName;                 appVersion;   appPackage;
-x64     ; dummy app (x64 edition);      0.0.0;   "%APP_STORE_DIR%\addmsi" "%APP_STORE_DIR%\dummy\aninstaller.msi"
-        ; dummy app;                    0.0.0;   "%APP_STORE_DIR%\dummy\aninstaller.cmd" /arg
-        ; extended dummy app 1;         0.0.0;   "%APP_STORE_DIR%\extended dummy\aninstaller.cmd" /arg
-        ; extended dummy app 2;              ;   "%APP_STORE_DIR%\extended dummy\aninstaller.cmd" /arg
-        ;                     ;         0.0.0;   "%APP_STORE_DIR%\extended dummy\aninstaller.cmd" /arg
+#appArch; appName;                 appVersion; appPackage;                                     appArgs
+x64     ; dummy app (x64 edition);      0.0.0; %APP_STORE_DIR%\dummy\aninstaller.msi; 
+        ; dummy app;                    0.0.0; %APP_STORE_DIR%\dummy\aninstaller.cmd;          /arg
+        ; extended dummy app 1;         0.0.0; %APP_STORE_DIR%\extended dummy\aninstaller.cmd; /arg
+        ; extended dummy app 2;              ; "%APP_STORE_DIR%\extended dummy\aninstaller.cmd"; /arg
+        ;                     ;         0.0.0; %APP_STORE_DIR%\extended dummy\aninstaller.cmd; /arg
         ; extended dummy app 3;         0.0.0;
 x86     ; extended dummy app 4;         0.0.0;   
 x64     ; extended dummy app 5;         0.0.0;
