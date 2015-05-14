@@ -9,22 +9,24 @@
 '
 ' The log files are specified in the below environment variables.
 '   %SUMMARY_LOGFILE% : contains the installation summary
-'   %WARNING_LOGFILE% : contains the warning messages occurred while InstallApp script execution 
-'   %UPDATE_LOGFILE% : contains all messages occurred while InstallApp script execution 
+'   %WARNING_LOGFILE% : contains the warning messages occurred while script
+'    execution 
+'   %UPDATE_LOGFILE% : contains all messages occurred while  script execution 
 '
-' The smtp configuration is specified in the below environment variables.
+' The SMTP configuration is specified in the below environment variables.
 '   %SYSADM_TO_ADDR% : contains the mail address where log files are sent.       
 '   %SMTP_SERVER% : contains the fully qualified name of the SMTP server to use.  
 '   %SMTP_SERVER_PORT% : contains the SMTP server's port number to use. 
 '
-' This script use the Collaboration Data Objects Messaging (see https://msdn.microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx)
-' and is inspired from the "VBScript To Send Email Using CDO" from Paul Sadowski (http://www.paulsadowski.com/wsh/cdo.htm)
+' This script use the Collaboration Data Objects Messaging 
+' (see https://msdn.microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx)
+' and is inspired from the "VBScript To Send Email Using CDO" from Paul Sadowski
+' (http://www.paulsadowski.com/wsh/cdo.htm)
 
 Option Explicit
 ' Constant for the run-time
 Private Const ForReading = 1
 
-' The following const will be in a config file, and must be tuned for your environnment
 Private Const STR_SUBJECT = "AppDeploy"
 
 Dim wshShell, objFileSystem, objMessage

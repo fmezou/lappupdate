@@ -1,5 +1,6 @@
 ' FilterApp
-' This script filter the input file (%TEMP%\applist.txt) by verifying if the software is installed.
+' This script filters the input file (%TEMP%\applist.txt) by verifying if the 
+' software is installed.
 '
 ' Usage : FilterApp.vbs [appArch]
 '   appArch: is the target architecture type (the Windows’ one) for the 
@@ -7,16 +8,15 @@
 '   empty : "x86" or "x64". The default value is "x86".
 '
 ' Exit code
-'   0 : no error
-'   1 : an error occurred while filtering application
-'   2 : invalid argument. An argument of the command line is not valid (see Usage)
+'   0: no error
+'   1: an error occurred while filtering application
+'   2: invalid argument. An argument of the command line is not valid (see Usage)
 
 ' the log files are specified in the below environment variables.
 '   * %SUMMARY_LOGFILE%: contains the installation summary
-'   * %WARNING_LOGFILE%: contains the warning messages occurred while
-'     InstallApp script execution 
-'   * %UPDATE_LOGFILE%: contains all messages occurred while InstallApp script
+'   * %WARNING_LOGFILE%: contains the warning messages occurred while script
 '     execution 
+'   * %UPDATE_LOGFILE%: contains all messages occurred while script execution 
 '
 ' The input file matches the syntax defined in the section named 
 ' "applist format" (see lappupdate_wiki.html)
