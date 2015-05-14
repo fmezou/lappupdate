@@ -1,16 +1,15 @@
 @echo off
 rem appdeploy
-rem This script launch the installer package of the standard application
+rem This script launches the installer package of the standard application.
 rem
-rem Usage : appdeploy [set]
-rem     set is the set name, the script use a file named applist-[set].txt which describing
-rem     applications to install.
-rem     all is the default value.
+rem Usage: appdeploy [set]
+rem     set is the set name, the script use a file named applist-[set].txt which
+rem     describing applications to install. 'all' is the default value.
 rem 
 rem Exit code
-rem     0 : no error
-rem     1 : an error occurred while filtering application
-rem     2 : invalid argument. An argument of the command line is not valid (see Usage)
+rem     0: no error
+rem     1: an error occurred while filtering application
+rem     2: invalid argument. An argument of the command line is not valid (see Usage)
 rem 
 setlocal
 pushd "%~dp0"
