@@ -1,5 +1,9 @@
 ' log2mail
-' This script send the current AppDeploy log messages to a sysadmin in a mail.
+' This script sends a mail containing the current appdeploy log messages. See 
+' Usage description syntax for details about used syntax.
+'
+' This script is a Windows Script one. Thus, it must be used launch with cscript 
+' command. (e.g. cscript.exe log2mail.vbs) 
 '
 ' Usage : log2mail
 '
@@ -7,21 +11,22 @@
 '   0 : no error
 '   1 : the summary log doesn't exist
 '
+' The SMTP configuration is specified in the below environment variables.
+'   %SYSADM_TO_ADDR% :  contains the mail address of the mail recipient
+'   (typically a system administrator)       
+'   %SMTP_SERVER% : contains the fully qualified name of the SMTP server to use  
+'   %SMTP_SERVER_PORT% : contains the SMTP server's port number to use
+'
 ' The log files are specified in the below environment variables.
 '   %SUMMARY_LOGFILE% : contains the installation summary
 '   %WARNING_LOGFILE% : contains the warning messages occurred while script
 '    execution 
 '   %UPDATE_LOGFILE% : contains all messages occurred while  script execution 
 '
-' The SMTP configuration is specified in the below environment variables.
-'   %SYSADM_TO_ADDR% : contains the mail address where log files are sent.       
-'   %SMTP_SERVER% : contains the fully qualified name of the SMTP server to use.  
-'   %SMTP_SERVER_PORT% : contains the SMTP server's port number to use. 
-'
-' This script use the Collaboration Data Objects Messaging 
+' This script use 'Microsoft Collaboration Data Objects for Windows 2000' 
 ' (see https://msdn.microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx)
-' and is inspired from the "VBScript To Send Email Using CDO" from Paul Sadowski
-' (http://www.paulsadowski.com/wsh/cdo.htm)
+' and is inspired from the 'VBScript To Send Email Using CDO' from Paul Sadowski
+' (see http://www.paulsadowski.com/wsh/cdo.htm)
 
 Option Explicit
 ' Constant for the run-time

@@ -1,26 +1,34 @@
-' FilterApp
-' This script filters the input file (%TEMP%\applist.txt) by verifying if the 
-' software is installed.
-'
-' Usage : FilterApp.vbs [appArch]
-'   appArch: is the target architecture type (the Windows’ one) for the 
-'   application. This argument may contain the following values or may be
-'   empty : "x86" or "x64". The default value is "x86".
-'
+' appfilter
+' This script filters an applist file by verifying which applications were 
+' installed and if it needed to be updated. See Usage description syntax for 
+' details about used syntax.
+' 
+' This script is a Windows Script one.  Thus, it must be used launch with 
+' cscript command.(e.g. cscript.exe appfilter.vbs x64) 
+' 
+' Usage: appfilter.vbs [{x86|x64}]
+'   x86: specifies that the target architecture is a 32 bits one, therefore only 
+'   32 bits installation packages taken into account. This is the default value.
+'   x64: specifies that the target architecture is a 64 bits one, therefore only
+'   64 bits installation packages taken into account.
+' 
 ' Exit code
 '   0: no error
 '   1: an error occurred while filtering application
-'   2: invalid argument. An argument of the command line is not valid (see Usage)
-
-' the log files are specified in the below environment variables.
-'   * %SUMMARY_LOGFILE%: contains the installation summary
-'   * %WARNING_LOGFILE%: contains the warning messages occurred while script
-'     execution 
-'   * %UPDATE_LOGFILE%: contains all messages occurred while script execution 
-'
-' The input file matches the syntax defined in the section named 
-' "applist format" (see lappupdate_wiki.html)
+'   2: invalid argument. An argument of the command line is not valid 
 ' 
+' The applist files are specified in the below environment variables.
+'   %APPLIST%: contain the full pathname of the applist input file
+'   %APPLIST_TO_INSTALL%: contain the full pathname of the output file. This 
+'   file matches a subset of applist syntax by containing only appName, 
+'   appVersion, appPackage and appArgs columns.
+' 
+' The log files are specified in the below environment variables.
+'   %SUMMARY_LOGFILE%: contains the installation summary
+'   %WARNING_LOGFILE%: contains the warning messages occurred while script 
+'   execution
+'   %UPDATE_LOGFILE%: contains all messages occurred while script execution
+'
 Option Explicit
 ' Constant for the run-time
 Private Const FOR_READING    = 1
