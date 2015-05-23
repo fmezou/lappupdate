@@ -161,6 +161,8 @@ Error message and password prompt
 
 <li>$:/state/toc/About-Releases--81657105</li>
 
+<li>$:/state/toc/Reference-Environment Variables--81657105</li>
+
 <li>$:/state/toc/Reference-File Format--81657105</li>
 
 <li>$:/state/toc/Reference-File Format-1455273453</li>
@@ -217,11 +219,23 @@ Error message and password prompt
 
 <li>About</li>
 
+<li>APP_STORE_DIR</li>
+
 <li>appdeploy</li>
 
 <li>appfilter</li>
 
 <li>applist</li>
+
+<li>APPLIST</li>
+
+<li>applist example</li>
+
+<li>APPLIST_TO_INSTALL</li>
+
+<li>Environment Variables</li>
+
+<li>File format template</li>
 
 <li>File Formats</li>
 
@@ -237,6 +251,10 @@ Error message and password prompt
 
 <li>log2mail</li>
 
+<li>LOGLEVEL</li>
+
+<li>LOGMAIL</li>
+
 <li>Read-me</li>
 
 <li>Reference</li>
@@ -251,13 +269,31 @@ Error message and password prompt
 
 <li>RoadMap</li>
 
+<li>SILENT</li>
+
+<li>SMTP_SERVER</li>
+
+<li>SMTP_SERVER_PORT</li>
+
+<li>SUMMARY_LOGFILE</li>
+
+<li>SYSADM_TO_ADDR</li>
+
 <li>TableOfContents</li>
 
 <li>Typography</li>
 
+<li>UPDATE_LOGFILE</li>
+
 <li>Usage description syntax</li>
 
+<li>Usage template</li>
+
 <li>Usages</li>
+
+<li>VAR template</li>
+
+<li>WARNING_LOGFILE</li>
 
 </ul>
 </p>
@@ -5794,7 +5830,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle">
 <pre>lAppUpdate Wiki</pre>
 </div>
-<div modified="20150523084536264" modifier="fmezou" title="$:/state/showeditpreview">
+<div modified="20150523105131304" modifier="fmezou" title="$:/state/showeditpreview">
 <pre>yes</pre>
 </div>
 <div modified="20150518201242454" modifier="fmezou" title="$:/state/sidebar">
@@ -5818,10 +5854,10 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150522123636032" modifier="fmezou" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Info</pre>
 </div>
-<div modified="20150523092526521" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
-<pre>$:/core/ui/MoreSideBar/All</pre>
+<div modified="20150523140326201" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
+<pre>$:/core/ui/MoreSideBar/Tags</pre>
 </div>
-<div modified="20150523092524993" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<div modified="20150523140847535" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
 <pre>$:/core/ui/SideBar/More</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
@@ -5829,6 +5865,9 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 </div>
 <div modified="20150522113909332" modifier="fmezou" title="$:/state/toc/About-Releases--81657105">
 <pre>close</pre>
+</div>
+<div modified="20150523101009654" modifier="fmezou" title="$:/state/toc/Reference-Environment Variables--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150521164840928" modifier="fmezou" title="$:/state/toc/Reference-File Format--81657105">
 <pre>open</pre>
@@ -5839,8 +5878,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150521143859956" modifier="fmezou" title="$:/state/toc/Reference-File Format-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150522113914532" modifier="fmezou" title="$:/state/toc/Reference-File Formats--81657105">
-<pre>close</pre>
+<div modified="20150523094714702" modifier="fmezou" title="$:/state/toc/Reference-File Formats--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150521170654501" modifier="fmezou" title="$:/state/toc/Reference-File Formats-1455273453">
 <pre>close</pre>
@@ -5851,7 +5890,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150521143900572" modifier="fmezou" title="$:/state/toc/Reference-Usage-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150522115811431" modifier="fmezou" title="$:/state/toc/Reference-Usages--81657105">
+<div modified="20150523093552700" modifier="fmezou" title="$:/state/toc/Reference-Usages--81657105">
 <pre>open</pre>
 </div>
 <div modified="20150521170655891" modifier="fmezou" title="$:/state/toc/Reference-Usages-1455273453">
@@ -5860,8 +5899,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150518215341423" modifier="fmezou" title="$:/state/toc/TableOfContents-About--1022525576">
 <pre>close</pre>
 </div>
-<div modified="20150522113918372" modifier="fmezou" title="$:/state/toc/TableOfContents-About--81657105">
-<pre>close</pre>
+<div modified="20150523094736468" modifier="fmezou" title="$:/state/toc/TableOfContents-About--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150521143857614" modifier="fmezou" title="$:/state/toc/TableOfContents-About-497309061">
 <pre>close</pre>
@@ -5872,13 +5911,13 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150518215337926" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--1022525576">
 <pre>close</pre>
 </div>
-<div modified="20150522114201720" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
-<pre>open</pre>
+<div modified="20150523092855699" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521143858780" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150522115809946" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference--81657105">
+<div modified="20150523093551046" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference--81657105">
 <pre>open</pre>
 </div>
 <div modified="20150521143901588" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference-497309061">
@@ -5896,7 +5935,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="log2mail [[lAppUpdate Versioning]] How-to [[How to use `appdeploy` script in a schedule task]] [[How to tune the environment]] applist appfilter appdeploy About Releases" title="$:/StoryList">
+<div list="applist About Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -5913,7 +5952,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     }
 }</pre>
 </div>
-<div created="20150517172601950" creator="fmezou" modified="20150522133354297" modifier="fmezou" title="$:/temp/NewTagName">
+<div created="20150517172601950" creator="fmezou" modified="20150523140235579" modifier="fmezou" title="$:/temp/NewTagName">
 <pre></pre>
 </div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.8">
@@ -6019,88 +6058,126 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 &lt;&lt;list-links &quot;[tag[About]]&quot;&gt;&gt;
 </pre>
 </div>
-<div created="20150503172254169" creator="fmezou" modified="20150523092705759" modifier="fmezou" tags="Usages" title="appdeploy">
+<div contents="Contain the path for installation package" created="20150523095850685" creator="fmezou" default-value="..\appstore" modified="20150523124507477" modifier="fmezou" tags="[[Environment Variables]]" title="APP_STORE_DIR">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;&lt;&lt;file &quot;{{!!default-value}}&quot;&gt;&gt;&lt;/code&gt;</pre>
+</div>
+<div created="20150503172254169" creator="fmezou" modified="20150523132950570" modifier="fmezou" tags="Usages" title="appdeploy">
 <pre>This script launches the installer package of the standard application.  See [[Usage description syntax]] for details about used syntax. 
 
-''Usage:'' `appdeploy [set]`
+!!Usage 
 
-;set
-:is the set name, the script use a file named &lt;&lt;file applist-[set].txt&gt;&gt; which matching [[applist file format|applist]]. `all` is the default value.
-    
-|!Exit code |&lt;|
+`appdeploy [set]`
+
+!!Arguments
+
+|^`set` |^is the set name, the script use a file named &lt;&lt;file applist-[set].txt&gt;&gt; which matching [[applist file format|applist]]. `all` is the default value. |
+
+!!Exit code
+
 |''0'' |no error |
 |''1'' |an error occurred while filtering application |
 |''2'' |invalid argument. An argument of the command line is not valid (see Usage) |</pre>
 </div>
-<div created="20150522080114584" creator="fmezou" modified="20150523084406739" modifier="fmezou" tags="Usages" title="appfilter">
+<div created="20150522080114584" creator="fmezou" modified="20150523132039236" modifier="fmezou" tags="Usages" title="appfilter">
 <pre>This script filters an [[applist]] file by verifying which applications were installed and if it needed to be updated. See [[Usage description syntax]] for details about used syntax.
 
-This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
+This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be launched with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
 (e.g. `cscript.exe appfilter.vbs x64`) 
 
-''Usage:'' `appfilter.vbs [{x86|x64}]`
+!!Usage 
 
-;x86
-:specifies that the target architecture is a 32 bits one, therefore only 32 bits installation packages taken into account. This is the default value.
+`appfilter.vbs [{x86|x64}]`
 
-;x64
-:specifies that the target architecture is a 64 bits one, therefore only 64 bits installation packages taken into account.
+!!Arguments
 
-|!Exit code |&lt;|
+|^`x86` |^specifies that the target architecture is a 32 bits one, therefore only 32 bits installation packages taken into account. This is the default value. |
+|^`x64` |^:specifies that the target architecture is a 64 bits one, therefore only 64 bits installation packages taken into account. |
+
+!!Exit code
+
 |''0'' |no error |
 |''1'' |an error occurred while filtering application |
 |''2'' |invalid argument. An argument of the command line is not valid (see Usage) |
 
-The [[applist]] files are specified in the below environment variables.
+!!Environment variables
 
-;`%APPLIST%`
-:contain the full pathname of the [[applist]] input file
+The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
 
-;`%APPLIST_TO_INSTALL%`
-:contain the full pathname of the output file. This file matches a subset of [[applist]] syntax by containing only //appName//, //appVersion//, //appPackage// and //appArgs// columns.
-
-The log files are specified in the below environment variables.
-
-;`%SUMMARY_LOGFILE%`
-:contains the installation summary
-
-;`%WARNING_LOGFILE%`
-:contains the warning messages occurred while script execution
-
-;`%UPDATE_LOGFILE%`
-:contains all messages occurred while script execution</pre>
+|^[[APPLIST]] |^{{APPLIST!!contents}}  |
+|^[[APPLIST_TO_INSTALL]] |^{{APPLIST_TO_INSTALL!!contents}}  |
+|^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
+|^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |</pre>
 </div>
-<div created="20150503173655790" creator="fmezou" modified="20150521170313006" modifier="fmezou" tags="[[File Formats]]" title="applist">
+<div created="20150503173655790" creator="fmezou" modified="20150523141316261" modifier="fmezou" tags="[[File Formats]]" title="applist">
 <pre>applist files describes a list of application packages which which will be deployed on a workstation or a server.
 
-This list matches the following format: `appArch; appName; appVersion; appPackage; appArgs`
+This list matches the following format:
 
-*`appArch`: is the target architecture type (the Windows’ one) for the application. This argument may be empty or contain one of the following values: `x86` or `x64`.
+`appArch; appName; appVersion; appPackage; appArgs`
 
-**`x86`: the application works only on 32 bits architecture.
+Blank lines and comments introduced by a '#' sign are ignored.
 
-**`x64`: the application works only on 64 bits architecture.
+`appArch` is the target architecture type (the Windows’ one) for the application. This argument may be empty or contain one of the following values: `x86` or `x64`.
 
-** `&quot;&quot;`: the application or the installation program work on both architectures.
+|^`x86` |^the application works only on 32 bits architecture |
+|^`x64` |^the application works only on 64 bits architecture |
+|^`&quot;&quot;` |^the application or the installation program work on both architectures |
 
-*`appName`: is the name of the application as it appears in the Program Control Panel.
+`appName` is the name of the application as it appears in the Program Control Panel.  
 
-*`appVersion`: is the version number of the application as it appears in the Program Control Panel.
-    
-*`appPackage`: is the full path name of executable file, command or MSI package, without argument, to launch for installing or upgrading the application. The `appPackage` may be prefixed with the `APP_STORE_DIR` environment variable (e.g. `%APP_STORE_DIR%\dummy.exe`), this one containing the default path for installation package (see [[Environment Variables]])  
+`appVersion` is the version number of the application as it appears in the Program Control Panel.  
 
-*`appArgs`: are arguments to use when launching `appPackage`.
+`appPackage` is the full path name of executable file, command or MSI package, without argument, to launch for installing or upgrading the application. The `appPackage` may be prefixed with the [[APP_STORE_DIR]] environment variable (e.g. `%APP_STORE_DIR%\dummy.exe`)  
 
-Note: a line begins with the # character is a comment.
+`appArgs`  are arguments to use when launching `appPackage`  
 
 !example
 
-```
-#appArch; appName; appVersion; appPackage;
+{{applist example}}</pre>
+</div>
+<div contents="Contain the full pathname of the [[applist]] file." created="20150523115501337" creator="fmezou" default-value="none" modified="20150523124412421" modifier="fmezou" tags="[[Environment Variables]]" title="APPLIST">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div created="20150523095130040" creator="fmezou" modified="20150523095603506" modifier="fmezou" tags="[[File Examples]]" title="applist example">
+<pre>```
+#appArch; appName; appVersion; appPackage; appArgs
    ; Adobe Reader XI - Français; 11.0.08; %APP_STORE_DIR%\AdobeReader\AdbeRdr11008_fr_FR.exe
-x64; Java 7 Update 67 (64-bit); 7.0.670; %APP_STORE_DIR%\Java\jre-7u67-windows-x64.exe /s 
+x64; Java 7 Update 67 (64-bit); 7.0.670; %APP_STORE_DIR%\Java\jre-7u67-windows-x64.exe ; /s 
 x86; 7-Zip 9.20; 9.20.00.0; %APP_STORE_DIR%\7-zip\7z920.msi
 ```</pre>
+</div>
+<div contents="Contain the full pathname of the [[appfilter]] output file. This file matches a subset of [[applist]] syntax by containing only //appName//, //appVersion//, //appPackage// and //appArgs// columns." created="20150523115544248" creator="fmezou" default-value="none" modified="20150523124420325" modifier="fmezou" tags="[[Environment Variables]]" title="APPLIST_TO_INSTALL">
+<pre>{{!!contents}}
+
+Default value: {{!!default-value}}</pre>
+</div>
+<div created="20150523094841204" creator="fmezou" modified="20150523101046701" modifier="fmezou" tags="Reference" title="Environment Variables">
+<pre>The following topics details environment variables used by lAppUpdate scripts.
+
+&lt;&lt;list-links &quot;[tag[Environment Variables]`sort[]]&quot;&gt;&gt;
+</pre>
+</div>
+<div created="20150523141002991" creator="fmezou" modified="20150523141307871" modifier="fmezou" tags="Templates" title="File format template">
+<pre>File format template files describes ....
+
+This list matches the following format:
+
+`dummy; ....`
+
+Blank lines and comments introduced by a '#' sign are ignored.
+
+`dummy` is the ... type. This argument may be empty or contain one of the following values: `a` or `b`.
+
+|^`a` |^the application works... |
+|^`&quot;&quot;` |^the application .... |
+
+!example
+
+{{File format template example}}</pre>
 </div>
 <div created="20150518211002385" creator="fmezou" modified="20150521165609286" modifier="fmezou" tags="Reference" title="File Formats">
 <pre>The following topics details file formats used by lAppUpdate scripts.
@@ -6167,35 +6244,60 @@ Each new alpha or beta release will bump the `PATCH` version number. This breaks
 
 During development when a new release is being prepared, the pre-release label is set to `prerelease`.</pre>
 </div>
-<div created="20150522095003653" creator="fmezou" modified="20150522122203845" modifier="fmezou" tags="Usages" title="log2mail">
+<div created="20150522095003653" creator="fmezou" modified="20150523132708895" modifier="fmezou" tags="Usages" title="log2mail">
 <pre>This script sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
 (e.g. `cscript.exe log2mail.vbs`) 
 
-''Usage:'' `log2mail`
+!!Usage 
 
-|!Exit code |&lt;|
+`log2mail`
+
+!!Arguments
+
+none
+
+!!Exit code
+
 |''0'' |no error |
 |''1'' |the summary log doesn’t exist |
- 
-The SMTP configuration is specified in the below environment variables.
 
-*`%SYSADM_TO_ADDR%`:  contains the mail address of the mail recipient (typically a system administrator)
+!!Environment variables
 
-*`%SMTP_SERVER%`:  contains the fully qualified name of the SMTP server to use
+The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
 
-*`%SMTP_SERVER_PORT%`:  contains the SMTP server’s port number to use
+|^[[SYSADM_TO_ADDR]] |^{{SYSADM_TO_ADDR!!contents}} |
+|^[[SMTP_SERVER]] |^{{SMTP_SERVER!!contents}} |
+|^[[SMTP_SERVER_PORT]] |^{{SMTP_SERVER_PORT!!contents}} |
+|^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
+|^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |
+|^[[UPDATE_LOGFILE]] |^{{UPDATE_LOGFILE!!contents}} |
 
-The log files are specified in the below environment variables.
-
-*`%SUMMARY_LOGFILE%`: contains the installation summary
-
-*`%WARNING_LOGFILE%`: contains the warning messages occurred while script execution
-
-*`%UPDATE_LOGFILE%`: contains all messages occurred while script execution
- 
 This script use [[Microsoft Collaboration Data Objects for Windows 2000|https://msdn.microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx]] and is inspired from the '[[VBScript To Send Email Using CDO|http://www.paulsadowski.com/wsh/cdo.htm]]' from [[Paul Sadowski|http://www.paulsadowski.com/]].</pre>
+</div>
+<div contents="Specify the maximum level of log entries written in log files (see [[UPDATE_LOGFILE]] and [[WARNING_LOGFILE]])." created="20150523105018660" creator="fmezou" default-value="INFO" modified="20150523135453427" modifier="fmezou" tags="[[Environment Variables]]" title="LOGLEVEL">
+<pre>{{!!contents}}
+
+
+The value is one of:
+
+|^`ERROR` |^only the Error entries are logged  |
+|^`WARNING` |^only the Error or Warning entries are logged |
+|^`INFO` |^only the Error, Warning or Informational entries are logged |
+|^`DEBUG` |^all entries are logged |
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div contents="Specify if a mail containing the current appdeploy log messages will be sent (see [[log2mail]] script)." created="20150523104212950" creator="fmezou" default-value="1" modified="20150523135429557" modifier="fmezou" tags="[[Environment Variables]]" title="LOGMAIL">
+<pre>{{!!contents}}
+
+The value is one of:
+
+|^`0` |^No mail is sent |
+|^`1` |^A mail with the content of the log files is sent to [[SYSADM_TO_ADDR]] |
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
 <div created="20150521191309589" creator="fmezou" modified="20150522074836313" modifier="fmezou" tags="Read-me" title="Read-me">
 <pre>!{{History of lAppUpdate!!title}}
@@ -6279,6 +6381,36 @@ This release includes many improvements to the documentation.
 
 Also see the issues list on ~GitHub: https://github.com/fmezou/lAppUpdate</pre>
 </div>
+<div contents="Specify the scripts logging mode." created="20150523102849578" creator="fmezou" default-value="1" modified="20150523135405614" modifier="fmezou" tags="[[Environment Variables]]" title="SILENT">
+<pre>{{!!contents}}
+
+The value is one of:
+
+|^`0` |^Messages are written in a log file and on the standard output |
+|^`1` |^Messages are only written in a log file |
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div contents="Contain the fully qualified name of the SMTP server to use" created="20150523100616017" creator="fmezou" default-value="smtp.example.com" modified="20150523124530378" modifier="fmezou" tags="[[Environment Variables]]" title="SMTP_SERVER">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div contents="Contain the SMTP server’s port number to use" created="20150523100631239" creator="fmezou" default-value="25" modified="20150523124540858" modifier="fmezou" tags="[[Environment Variables]]" title="SMTP_SERVER_PORT">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div contents="Contain the full path name of the current summary log file. All summary messages for the current update transaction are write in this file." created="20150523102459850" creator="fmezou" default-value="%TEMP%\appdeploy_summary_today.log" modified="20150523124625265" modifier="fmezou" tags="[[Environment Variables]]" title="SUMMARY_LOGFILE">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div contents="Contain the mail address of the mail recipient (typically a system administrator)" created="20150523100647324" creator="fmezou" default-value="sysadmin@example.com" modified="20150523124520331" modifier="fmezou" tags="[[Environment Variables]]" title="SYSADM_TO_ADDR">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
 <div caption="{{$:/language/SideBar/Contents/Caption}}" created="20150503151104523" creator="fmezou" list="About How-to Reference" list-after="$:/core/ui/SideBar/Open" modified="20150521143816430" modifier="fmezou" tags="$:/tags/SideBar" title="TableOfContents" type="text/vnd.tiddlywiki">
 <pre>&lt;div class=&quot;tc-table-of-contents&quot;&gt;
 
@@ -6296,6 +6428,11 @@ Also see the issues list on ~GitHub: https://github.com/fmezou/lAppUpdate</pre>
 
 All these macros are defined in the [[$:/projects/doc-macros]] tiddler. </pre>
 </div>
+<div contents="Contain the full path name of the current log file. All log entries for the current update transaction are write in this file." created="20150523101354541" creator="fmezou" default-value="%TEMP%\appdeploy_today.log" modified="20150523124559626" modifier="fmezou" tags="[[Environment Variables]]" title="UPDATE_LOGFILE">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
 <div created="20150521174721525" creator="fmezou" modified="20150523081442120" modifier="fmezou" tags="Usages" title="Usage description syntax">
 <pre>Built-in usage help and [[Usages]] topics employ [[Windows command line syntax|http://technet.microsoft.com/en-us/library/cc771080.aspx]] reminded below.
 
@@ -6307,10 +6444,54 @@ All these macros are defined in the [[$:/projects/doc-macros]] tiddler. </pre>
 Furthermore, usage topics match the rules defining in 'Python Developer's Guide' [[PEP 257|https://www.python.org/dev/peps/pep-0257/#id17]], and document the script's function and command line syntax, environment variables, and files.
 </pre>
 </div>
+<div created="20150523135737720" creator="fmezou" modified="20150523140834384" modifier="fmezou" tags="Templates" title="Usage template">
+<pre>This script ... .... See [[Usage description syntax]] for details about used syntax.
+
+This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be launched with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
+(e.g. `cscript.exe appfilter.vbs x64`) 
+
+!!Usage 
+
+`&lt;script name&gt;.vbs [args...]`
+
+!!Arguments
+
+|^`args` |^specifies ..... |
+
+
+!!Exit code
+
+|''0'' |no error |
+|''1'' |an error occurred while filtering application |
+|''2'' |invalid argument. An argument of the command line is not valid (see Usage) |
+|''...'' |... |
+
+
+!!Environment variables
+
+The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
+
+|^[[VAR template]] |^{{VAR template!!contents}}  |</pre>
+</div>
 <div created="20150518211631519" creator="fmezou" modified="20150522094822766" modifier="fmezou" tags="Reference" title="Usages">
 <pre>The following topics details the usage of lAppUpdate scripts.
 
 &lt;&lt;list-links &quot;[tag[Usages]sort[]]&quot;&gt;&gt;</pre>
+</div>
+<div contents="describe the content or the role of the variable" created="20150523140440521" creator="fmezou" default-value="VALUE" modified="20150523140756753" modifier="fmezou" tags="Templates" title="VAR template">
+<pre>{{!!contents}}
+
+
+The value is one of:
+
+|^`VALUE` |^meaning of this value  |
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div contents="Contain the full path name of the current warning log file. All warning messages for the current update transaction are write in this file." created="20150523102210607" creator="fmezou" default-value="%TEMP%\appdeploy_warn_today.log" modified="20150523124610449" modifier="fmezou" tags="[[Environment Variables]]" title="WARNING_LOGFILE">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
 
 </div>
