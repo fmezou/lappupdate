@@ -235,6 +235,8 @@ Error message and password prompt
 
 <li>ARCHIVE_LOGFILE</li>
 
+<li>Draft of 'How to tune your environment'</li>
+
 <li>Environment Variables</li>
 
 <li>File format template</li>
@@ -242,10 +244,6 @@ Error message and password prompt
 <li>File Formats</li>
 
 <li>History of lAppUpdate</li>
-
-<li>How to tune the environment</li>
-
-<li>How to use `appdeploy` script in a schedule task</li>
 
 <li>How-to</li>
 
@@ -5819,13 +5817,16 @@ Releases
 <div title="$:/isEncrypted">
 <pre>no</pre>
 </div>
-<div created="20150522132134899" creator="fmezou" modified="20150523092533298" modifier="fmezou" tags="$:/tags/Macro" title="$:/projects/doc-macros">
+<div created="20150522132134899" creator="fmezou" modified="20150525181051248" modifier="fmezou" tags="$:/tags/Macro" title="$:/projects/doc-macros">
 <pre>\define lorem()
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 \end
 
 \define file(_) &lt;font color=blue&gt;//$_$//&lt;/font&gt;
-</pre>
+
+\define note(_)
+&lt;table&gt;&lt;tbody&gt;&lt;tr class=&quot;evenRow&quot;&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;&lt;em&gt;&lt;strong&gt;Note&lt;/strong&gt;: $_$&lt;/em&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
+\end</pre>
 </div>
 <div created="20150503134835049" modified="20150503134928216" title="$:/SiteSubtitle">
 <pre>the wiki projects</pre>
@@ -5833,8 +5834,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle">
 <pre>lAppUpdate Wiki</pre>
 </div>
-<div modified="20150523143308701" modifier="fmezou" title="$:/state/showeditpreview">
-<pre>yes</pre>
+<div modified="20150525181259085" modifier="fmezou" title="$:/state/showeditpreview">
+<pre>no</pre>
 </div>
 <div modified="20150518201242454" modifier="fmezou" title="$:/state/sidebar">
 <pre>yes</pre>
@@ -5857,17 +5858,17 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150522123636032" modifier="fmezou" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Info</pre>
 </div>
-<div modified="20150523141942112" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
-<pre>$:/core/ui/MoreSideBar/Tags</pre>
+<div modified="20150525175934938" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
+<pre>$:/core/ui/MoreSideBar/All</pre>
 </div>
-<div modified="20150523142554813" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
-<pre>TableOfContents</pre>
+<div modified="20150525175913371" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<pre>$:/core/ui/SideBar/More</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
 <pre>open</pre>
 </div>
-<div modified="20150522113909332" modifier="fmezou" title="$:/state/toc/About-Releases--81657105">
-<pre>close</pre>
+<div modified="20150525170302087" modifier="fmezou" title="$:/state/toc/About-Releases--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150523101009654" modifier="fmezou" title="$:/state/toc/Reference-Environment Variables--81657105">
 <pre>open</pre>
@@ -5938,7 +5939,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="appdeploy SUMMARY_LOGFILE ARCHIVE_LOGFILE About How-to Releases" title="$:/StoryList">
+<div list="Typography $:/projects/doc-macros [[Usage description syntax]] About How-to [[Draft of 'How to tune your environment']] Releases [[lAppUpdate Versioning]]" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -5955,7 +5956,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     }
 }</pre>
 </div>
-<div created="20150517172601950" creator="fmezou" modified="20150523140235579" modifier="fmezou" title="$:/temp/NewTagName">
+<div created="20150517172601950" creator="fmezou" modified="20150525181247709" modifier="fmezou" title="$:/temp/NewTagName">
 <pre></pre>
 </div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.8">
@@ -6179,6 +6180,9 @@ Default value: {{!!default-value}}</pre>
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
+<div draft.of="How to tune your environment" draft.title="How to tune your environment" modified="20150525181247709" modifier="fmezou" tags="How-to" title="Draft of 'How to tune your environment'">
+<pre></pre>
+</div>
 <div created="20150523094841204" creator="fmezou" modified="20150523101046701" modifier="fmezou" tags="Reference" title="Environment Variables">
 <pre>The following topics details environment variables used by lAppUpdate scripts.
 
@@ -6219,18 +6223,24 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications' updates if any (or the full installation package).</pre>
 </div>
-<div created="20150518212953681" creator="fmezou" modified="20150518213015842" modifier="fmezou" tags="How-to" title="How to tune the environment">
-<pre></pre>
-</div>
-<div created="20150518213355382" creator="fmezou" modified="20150518213443055" modifier="fmezou" tags="How-to" title="How to use `appdeploy` script in a schedule task">
-<pre></pre>
-</div>
-<div created="20150503171234542" creator="fmezou" modified="20150518214121145" modifier="fmezou" tags="TableOfContents" title="How-to">
-<pre>This section explains a use case detailing the below uses.
+<div created="20150503171234542" creator="fmezou" modified="20150525181126800" modifier="fmezou" tags="TableOfContents" title="How-to">
+<pre>To deploy application, there are two main use cases. The first one is based on a share network, the second is based on a DVD distribution. These cases have their own constraints and answer to specific need. The main advantage to have a centralised application deploying system is to allow to a system administrator to have a consistency application park.
 
-* [[Deploy from a DVD]]. 
+&lt;&lt;note &quot;If you manage a unique PC connected to Internet, the easiest way is to let each application managing its own upgrades (automatically or manual way).&quot;&gt;&gt;
 
-* [[Deploy from a network share]].
+The use of a network share implies that the pc is connected to a local network, with a file server available. This use case is recommended for SOHO application deploying (less than 10 pc) and allows silent installation of patches or new applications. 
+
+The use of a DVD is attractive for use in a standalone non connected environment (e.g. Industrial PC or access control management console).
+
+But, these two use cases comply with the following steps
+
+#[[Tune your environment |How to tune your environment]]
+
+#[[Build the application list to deploy| How to build the application list]]
+
+#Build the medium ([[DVD| How to make a applications deploying DVD]] or [[Network share| How to deploy application through a network]])
+
+#Deploy application from a [[DVD| How to deploy application from a DVD]] or [[Network share| How to deploy application through a network]]
 
 Additional how-to:
 
@@ -6442,13 +6452,14 @@ Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 
 &lt;/div&gt;</pre>
 </div>
-<div created="20150522114658025" creator="fmezou" modified="20150523092607624" modifier="fmezou" tags="About" title="Typography">
+<div created="20150522114658025" creator="fmezou" modified="20150525180240237" modifier="fmezou" tags="About" title="Typography">
 <pre>The following macros are used throughout lAppUpdate documentation. 
 
 !General
 
 |!Macro |!Used for |!Example |
 |file |file names |&lt;&lt;file applist-all.txt&gt;&gt; |
+|note |focusing on a information |&lt;&lt;note &quot;a note&quot;&gt;&gt; |
 
 All these macros are defined in the [[$:/projects/doc-macros]] tiddler. </pre>
 </div>
@@ -6457,15 +6468,15 @@ All these macros are defined in the [[$:/projects/doc-macros]] tiddler. </pre>
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div created="20150521174721525" creator="fmezou" modified="20150523081442120" modifier="fmezou" tags="Usages" title="Usage description syntax">
-<pre>Built-in usage help and [[Usages]] topics employ [[Windows command line syntax|http://technet.microsoft.com/en-us/library/cc771080.aspx]] reminded below.
+<div created="20150521174721525" creator="fmezou" modified="20150525170908324" modifier="fmezou" tags="Usages" title="Usage description syntax">
+<pre>Built-in usage help and [[Usages]] topics comply with the [[Windows command line syntax|http://technet.microsoft.com/en-us/library/cc771080.aspx]] reminded below.
 
 * angle brackets for //required// parameters: `ping &lt;hostname&gt;`
 * square brackets for //optional// parameters: `mkdir [-p] &lt;dirname&gt;`
 * ellipses for //repeated// items: `cp &lt;source1&gt; [source2...] &lt;dest&gt;`
 * vertical bars for //choice// of items: `netstat {-t|-u}`
 
-Furthermore, usage topics match the rules defining in 'Python Developer's Guide' [[PEP 257|https://www.python.org/dev/peps/pep-0257/#id17]], and document the script's function and command line syntax, environment variables, and files.
+Furthermore, usage topics comply the rules defining in 'Python Developer's Guide' [[PEP 257|https://www.python.org/dev/peps/pep-0257/#id17]], by documenting the script's function and command line syntax, environment variables, and files.
 </pre>
 </div>
 <div created="20150523135737720" creator="fmezou" modified="20150523140834384" modifier="fmezou" tags="Templates" title="Usage template">
