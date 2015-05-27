@@ -235,8 +235,6 @@ Error message and password prompt
 
 <li>ARCHIVE_LOGFILE</li>
 
-<li>Draft of 'How to tune your environment'</li>
-
 <li>Environment Variables</li>
 
 <li>File format template</li>
@@ -244,6 +242,8 @@ Error message and password prompt
 <li>File Formats</li>
 
 <li>History of lAppUpdate</li>
+
+<li>How to tune your environment</li>
 
 <li>How-to</li>
 
@@ -5834,8 +5834,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle">
 <pre>lAppUpdate Wiki</pre>
 </div>
-<div modified="20150525181259085" modifier="fmezou" title="$:/state/showeditpreview">
-<pre>no</pre>
+<div modified="20150527211133355" modifier="fmezou" title="$:/state/showeditpreview">
+<pre>yes</pre>
 </div>
 <div modified="20150518201242454" modifier="fmezou" title="$:/state/sidebar">
 <pre>yes</pre>
@@ -5861,8 +5861,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150525175934938" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
 <pre>$:/core/ui/MoreSideBar/All</pre>
 </div>
-<div modified="20150525175913371" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
-<pre>$:/core/ui/SideBar/More</pre>
+<div modified="20150527202454735" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<pre>TableOfContents</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
 <pre>open</pre>
@@ -5939,7 +5939,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="Typography $:/projects/doc-macros [[Usage description syntax]] About How-to [[Draft of 'How to tune your environment']] Releases [[lAppUpdate Versioning]]" title="$:/StoryList">
+<div list="LOGLEVEL appdeploy applist About How-to [[How to tune your environment]] Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6180,9 +6180,6 @@ Default value: {{!!default-value}}</pre>
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div draft.of="How to tune your environment" draft.title="How to tune your environment" modified="20150525181247709" modifier="fmezou" tags="How-to" title="Draft of 'How to tune your environment'">
-<pre></pre>
-</div>
 <div created="20150523094841204" creator="fmezou" modified="20150523101046701" modifier="fmezou" tags="Reference" title="Environment Variables">
 <pre>The following topics details environment variables used by lAppUpdate scripts.
 
@@ -6223,7 +6220,31 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications' updates if any (or the full installation package).</pre>
 </div>
-<div created="20150503171234542" creator="fmezou" modified="20150525181126800" modifier="fmezou" tags="TableOfContents" title="How-to">
+<div created="20150527203214369" creator="fmezou" modified="20150527212655958" modifier="fmezou" tags="How-to" title="How to tune your environment">
+<pre>By default, you have nothing to tune. The default value of [[environment variables|Environment Variables]] allows a working with the following features:
+
+*all action, expect debug one, are only logged in a text file name &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (Typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
+
+*the [[applist]] files (at least &lt;&lt;file &quot;applist-all.txt&quot;&gt;&gt;) are stored in the &lt;&lt;file appstore&gt;&gt; directory located at the same level that the directory containing the [[appdeploy]] script.
+
+If these features do not comply with your need, you must consider tuning the [[environment variables|Environment Variables]].
+
+*To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable.
+
+*To change the level of message logged, you must tune the [[LOGLEVEL]] environment variable.
+
+*To receive an email with a summary and detailed information on actions done by lAppUpdate, you must tune the [[LOGMAIL]] environment variable, and specifies your account mail configuration in [[SMTP_SERVER]] (eventually [[SMTP_SERVER_PORT]] and [[SYSADM_TO_ADDR]] environment variables.
+
+*To run the script in an interactive (i.e. following installation actions in real time), you must tune the [[SILENT]] environment variable.
+
+Typical settings of [[environment variables|Environment Variables]] are detailed in the following How-to:
+
+*[[How to make an applications deploying DVD]]
+
+*[[How to deploy application through a network]]
+</pre>
+</div>
+<div created="20150503171234542" creator="fmezou" modified="20150527212644475" modifier="fmezou" tags="TableOfContents" title="How-to">
 <pre>To deploy application, there are two main use cases. The first one is based on a share network, the second is based on a DVD distribution. These cases have their own constraints and answer to specific need. The main advantage to have a centralised application deploying system is to allow to a system administrator to have a consistency application park.
 
 &lt;&lt;note &quot;If you manage a unique PC connected to Internet, the easiest way is to let each application managing its own upgrades (automatically or manual way).&quot;&gt;&gt;
@@ -6238,7 +6259,7 @@ But, these two use cases comply with the following steps
 
 #[[Build the application list to deploy| How to build the application list]]
 
-#Build the medium ([[DVD| How to make a applications deploying DVD]] or [[Network share| How to deploy application through a network]])
+#Build the medium ([[DVD| How to make an applications deploying DVD]] or [[Network share| How to deploy application through a network]])
 
 #Deploy application from a [[DVD| How to deploy application from a DVD]] or [[Network share| How to deploy application through a network]]
 
