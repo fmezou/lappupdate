@@ -117,6 +117,10 @@ Error message and password prompt
 
 <p>This <a class="tc-tiddlylink-external" href="http://tiddlywiki.com" target="_blank">TiddlyWiki</a> contains the following tiddlers:</p><p><ul>
 
+<li>_appfilter</li>
+
+<li>_log2mail</li>
+
 <li>$:/config/DefaultSidebarTab</li>
 
 <li>$:/config/Navigation/UpdateAddressBar</li>
@@ -173,6 +177,8 @@ Error message and password prompt
 
 <li>$:/state/toc/Reference-File Formats-1455273453</li>
 
+<li>$:/state/toc/Reference-Naming conventions--81657105</li>
+
 <li>$:/state/toc/Reference-Usage--81657105</li>
 
 <li>$:/state/toc/Reference-Usage-497309061</li>
@@ -223,8 +229,6 @@ Error message and password prompt
 
 <li>appdeploy</li>
 
-<li>appfilter</li>
-
 <li>applist</li>
 
 <li>APPLIST</li>
@@ -249,11 +253,11 @@ Error message and password prompt
 
 <li>lAppUpdate Versioning</li>
 
-<li>log2mail</li>
-
 <li>LOGLEVEL</li>
 
 <li>LOGMAIL</li>
+
+<li>Naming conventions</li>
 
 <li>Read-me</li>
 
@@ -268,6 +272,8 @@ Error message and password prompt
 <li>Requirements</li>
 
 <li>RoadMap</li>
+
+<li>Scripts naming</li>
 
 <li>SILENT</li>
 
@@ -305,6 +311,68 @@ Error message and password prompt
 <!--~~ Ordinary tiddlers ~~-->
 
 <div id="storeArea" style="display:none;">
+<div created="20150522080114584" creator="fmezou" modified="20150523132039236" modifier="fmezou" tags="Usages" title="_appfilter">
+<pre>This script filters an [[applist]] file by verifying which applications were installed and if it needed to be updated. See [[Usage description syntax]] for details about used syntax.
+
+This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be launched with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
+(e.g. `cscript.exe _appfilter.vbs x64`) 
+
+!!Usage 
+
+`_appfilter.vbs [{x86|x64}]`
+
+!!Arguments
+
+|^`x86` |^specifies that the target architecture is a 32 bits one, therefore only 32 bits installation packages taken into account. This is the default value. |
+|^`x64` |^:specifies that the target architecture is a 64 bits one, therefore only 64 bits installation packages taken into account. |
+
+!!Exit code
+
+|''0'' |no error |
+|''1'' |an error occurred while filtering application |
+|''2'' |invalid argument. An argument of the command line is not valid (see Usage) |
+
+!!Environment variables
+
+The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
+
+|^[[APPLIST]] |^{{APPLIST!!contents}}  |
+|^[[APPLIST_TO_INSTALL]] |^{{APPLIST_TO_INSTALL!!contents}}  |
+|^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
+|^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |</pre>
+</div>
+<div created="20150522095003653" creator="fmezou" modified="20150523132708895" modifier="fmezou" tags="Usages" title="_log2mail">
+<pre>This script sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
+
+This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
+(e.g. `cscript.exe _log2mail.vbs`) 
+
+!!Usage 
+
+`_log2mail`
+
+!!Arguments
+
+none
+
+!!Exit code
+
+|''0'' |no error |
+|''1'' |the summary log doesn’t exist |
+
+!!Environment variables
+
+The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
+
+|^[[SYSADM_TO_ADDR]] |^{{SYSADM_TO_ADDR!!contents}} |
+|^[[SMTP_SERVER]] |^{{SMTP_SERVER!!contents}} |
+|^[[SMTP_SERVER_PORT]] |^{{SMTP_SERVER_PORT!!contents}} |
+|^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
+|^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |
+|^[[UPDATE_LOGFILE]] |^{{UPDATE_LOGFILE!!contents}} |
+
+This script use [[Microsoft Collaboration Data Objects for Windows 2000|https://msdn.microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx]] and is inspired from the '[[VBScript To Send Email Using CDO|http://www.paulsadowski.com/wsh/cdo.htm]]' from [[Paul Sadowski|http://www.paulsadowski.com/]].</pre>
+</div>
 <div modified="20150518220701768" modifier="fmezou" title="$:/config/DefaultSidebarTab">
 <pre>TableOfContents</pre>
 </div>
@@ -5834,7 +5902,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle">
 <pre>lAppUpdate Wiki</pre>
 </div>
-<div modified="20150527211133355" modifier="fmezou" title="$:/state/showeditpreview">
+<div modified="20150530094010248" modifier="fmezou" title="$:/state/showeditpreview">
 <pre>yes</pre>
 </div>
 <div modified="20150518201242454" modifier="fmezou" title="$:/state/sidebar">
@@ -5858,10 +5926,10 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150522123636032" modifier="fmezou" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Info</pre>
 </div>
-<div modified="20150525175934938" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
-<pre>$:/core/ui/MoreSideBar/All</pre>
+<div modified="20150530084818555" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
+<pre>$:/core/ui/MoreSideBar/Missing</pre>
 </div>
-<div modified="20150527202454735" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<div modified="20150530085431513" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
 <pre>TableOfContents</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
@@ -5887,6 +5955,9 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 </div>
 <div modified="20150521170654501" modifier="fmezou" title="$:/state/toc/Reference-File Formats-1455273453">
 <pre>close</pre>
+</div>
+<div modified="20150530103458916" modifier="fmezou" title="$:/state/toc/Reference-Naming conventions--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150521164840088" modifier="fmezou" title="$:/state/toc/Reference-Usage--81657105">
 <pre>open</pre>
@@ -5915,8 +5986,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150518215337926" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--1022525576">
 <pre>close</pre>
 </div>
-<div modified="20150523092855699" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
-<pre>close</pre>
+<div modified="20150529172555756" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150521143858780" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to-497309061">
 <pre>close</pre>
@@ -5939,7 +6010,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="LOGLEVEL appdeploy applist About How-to [[How to tune your environment]] Releases" title="$:/StoryList">
+<div list="[[Scripts naming]] About How-to Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -5956,7 +6027,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     }
 }</pre>
 </div>
-<div created="20150517172601950" creator="fmezou" modified="20150525181247709" modifier="fmezou" title="$:/temp/NewTagName">
+<div created="20150517172601950" creator="fmezou" modified="20150530094611580" modifier="fmezou" title="$:/temp/NewTagName">
 <pre></pre>
 </div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.8">
@@ -6100,36 +6171,6 @@ The following environment variables affect the execution of &lt;code&gt;{{!!titl
 |^[[LOGMAIL]] |^{{LOGMAIL!!contents}}  |
 |^[[LOGLEVEL]] |^{{LOGLEVEL!!contents}}  |</pre>
 </div>
-<div created="20150522080114584" creator="fmezou" modified="20150523132039236" modifier="fmezou" tags="Usages" title="appfilter">
-<pre>This script filters an [[applist]] file by verifying which applications were installed and if it needed to be updated. See [[Usage description syntax]] for details about used syntax.
-
-This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be launched with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
-(e.g. `cscript.exe appfilter.vbs x64`) 
-
-!!Usage 
-
-`appfilter.vbs [{x86|x64}]`
-
-!!Arguments
-
-|^`x86` |^specifies that the target architecture is a 32 bits one, therefore only 32 bits installation packages taken into account. This is the default value. |
-|^`x64` |^:specifies that the target architecture is a 64 bits one, therefore only 64 bits installation packages taken into account. |
-
-!!Exit code
-
-|''0'' |no error |
-|''1'' |an error occurred while filtering application |
-|''2'' |invalid argument. An argument of the command line is not valid (see Usage) |
-
-!!Environment variables
-
-The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
-
-|^[[APPLIST]] |^{{APPLIST!!contents}}  |
-|^[[APPLIST_TO_INSTALL]] |^{{APPLIST_TO_INSTALL!!contents}}  |
-|^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
-|^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |</pre>
-</div>
 <div created="20150503173655790" creator="fmezou" modified="20150523141316261" modifier="fmezou" tags="[[File Formats]]" title="applist">
 <pre>applist files describes a list of application packages which which will be deployed on a workstation or a server.
 
@@ -6170,7 +6211,7 @@ x64; Java 7 Update 67 (64-bit); 7.0.670; %APP_STORE_DIR%\Java\jre-7u67-windows-x
 x86; 7-Zip 9.20; 9.20.00.0; %APP_STORE_DIR%\7-zip\7z920.msi
 ```</pre>
 </div>
-<div contents="Contain the full pathname of the [[appfilter]] output file. This file matches a subset of [[applist]] syntax by containing only //appName//, //appVersion//, //appPackage// and //appArgs// columns." created="20150523115544248" creator="fmezou" default-value="none" modified="20150523124420325" modifier="fmezou" tags="[[Environment Variables]]" title="APPLIST_TO_INSTALL">
+<div contents="Contain the full pathname of the [[_appfilter]] output file. This file matches a subset of [[applist]] syntax by containing only //appName//, //appVersion//, //appPackage// and //appArgs// columns." created="20150523115544248" creator="fmezou" default-value="none" modified="20150523124420325" modifier="fmezou" tags="[[Environment Variables]]" title="APPLIST_TO_INSTALL">
 <pre>{{!!contents}}
 
 Default value: {{!!default-value}}</pre>
@@ -6220,7 +6261,7 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications' updates if any (or the full installation package).</pre>
 </div>
-<div created="20150527203214369" creator="fmezou" modified="20150527212655958" modifier="fmezou" tags="How-to" title="How to tune your environment">
+<div created="20150527203214369" creator="fmezou" modified="20150529172847189" modifier="fmezou" tags="How-to" title="How to tune your environment">
 <pre>By default, you have nothing to tune. The default value of [[environment variables|Environment Variables]] allows a working with the following features:
 
 *all action, expect debug one, are only logged in a text file name &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (Typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
@@ -6233,7 +6274,7 @@ If these features do not comply with your need, you must consider tuning the [[e
 
 *To change the level of message logged, you must tune the [[LOGLEVEL]] environment variable.
 
-*To receive an email with a summary and detailed information on actions done by lAppUpdate, you must tune the [[LOGMAIL]] environment variable, and specifies your account mail configuration in [[SMTP_SERVER]] (eventually [[SMTP_SERVER_PORT]] and [[SYSADM_TO_ADDR]] environment variables.
+*To receive an email with a summary and detailed information on actions done by lAppUpdate, you must tune the [[LOGMAIL]] environment variable, and specifies your account mail configuration in [[SMTP_SERVER]] (eventually [[SMTP_SERVER_PORT]]) and [[SYSADM_TO_ADDR]] environment variables.
 
 *To run the script in an interactive (i.e. following installation actions in real time), you must tune the [[SILENT]] environment variable.
 
@@ -6244,7 +6285,7 @@ Typical settings of [[environment variables|Environment Variables]] are detailed
 *[[How to deploy application through a network]]
 </pre>
 </div>
-<div created="20150503171234542" creator="fmezou" modified="20150527212644475" modifier="fmezou" tags="TableOfContents" title="How-to">
+<div created="20150503171234542" creator="fmezou" modified="20150530085323700" modifier="fmezou" tags="TableOfContents" title="How-to">
 <pre>To deploy application, there are two main use cases. The first one is based on a share network, the second is based on a DVD distribution. These cases have their own constraints and answer to specific need. The main advantage to have a centralised application deploying system is to allow to a system administrator to have a consistency application park.
 
 &lt;&lt;note &quot;If you manage a unique PC connected to Internet, the easiest way is to let each application managing its own upgrades (automatically or manual way).&quot;&gt;&gt;
@@ -6259,9 +6300,9 @@ But, these two use cases comply with the following steps
 
 #[[Build the application list to deploy| How to build the application list]]
 
-#Build the medium ([[DVD| How to make an applications deploying DVD]] or [[Network share| How to deploy application through a network]])
+#[[Build the medium]]
 
-#Deploy application from a [[DVD| How to deploy application from a DVD]] or [[Network share| How to deploy application through a network]]
+#Deploy applications from a [[DVD|  How to deploy application from a DVD]] or [[Network share| How to deploy application through a network]]
 
 Additional how-to:
 
@@ -6299,38 +6340,6 @@ Each new alpha or beta release will bump the `PATCH` version number. This breaks
 
 During development when a new release is being prepared, the pre-release label is set to `prerelease`.</pre>
 </div>
-<div created="20150522095003653" creator="fmezou" modified="20150523132708895" modifier="fmezou" tags="Usages" title="log2mail">
-<pre>This script sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
-
-This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
-(e.g. `cscript.exe log2mail.vbs`) 
-
-!!Usage 
-
-`log2mail`
-
-!!Arguments
-
-none
-
-!!Exit code
-
-|''0'' |no error |
-|''1'' |the summary log doesn’t exist |
-
-!!Environment variables
-
-The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
-
-|^[[SYSADM_TO_ADDR]] |^{{SYSADM_TO_ADDR!!contents}} |
-|^[[SMTP_SERVER]] |^{{SMTP_SERVER!!contents}} |
-|^[[SMTP_SERVER_PORT]] |^{{SMTP_SERVER_PORT!!contents}} |
-|^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
-|^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |
-|^[[UPDATE_LOGFILE]] |^{{UPDATE_LOGFILE!!contents}} |
-
-This script use [[Microsoft Collaboration Data Objects for Windows 2000|https://msdn.microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx]] and is inspired from the '[[VBScript To Send Email Using CDO|http://www.paulsadowski.com/wsh/cdo.htm]]' from [[Paul Sadowski|http://www.paulsadowski.com/]].</pre>
-</div>
 <div contents="Specify the maximum level of log entries written in log files (see [[UPDATE_LOGFILE]] and [[WARNING_LOGFILE]])." created="20150523105018660" creator="fmezou" default-value="INFO" modified="20150523135453427" modifier="fmezou" tags="[[Environment Variables]]" title="LOGLEVEL">
 <pre>{{!!contents}}
 
@@ -6344,7 +6353,7 @@ The value is one of:
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div contents="Specify if a mail containing the current appdeploy log messages will be sent (see [[log2mail]] script)." created="20150523104212950" creator="fmezou" default-value="1" modified="20150523135429557" modifier="fmezou" tags="[[Environment Variables]]" title="LOGMAIL">
+<div contents="Specify if a mail containing the current appdeploy log messages will be sent (see [[_log2mail]] script)." created="20150523104212950" creator="fmezou" default-value="1" modified="20150523135429557" modifier="fmezou" tags="[[Environment Variables]]" title="LOGMAIL">
 <pre>{{!!contents}}
 
 The value is one of:
@@ -6353,6 +6362,11 @@ The value is one of:
 |^`1` |^A mail with the content of the log files is sent to [[SYSADM_TO_ADDR]] |
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div created="20150530094541485" creator="fmezou" modified="20150530094841227" modifier="fmezou" tags="Reference" title="Naming conventions">
+<pre>The following topics details the usage of lAppUpdate scripts.
+
+&lt;&lt;list-links &quot;[tag[Naming conventions]sort[]]&quot;&gt;&gt;</pre>
 </div>
 <div created="20150521191309589" creator="fmezou" modified="20150522074836313" modifier="fmezou" tags="Read-me" title="Read-me">
 <pre>!{{History of lAppUpdate!!title}}
@@ -6432,9 +6446,27 @@ This release includes many improvements to the documentation.
 
 #* `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[app64]`
 
-# [[appfilter]]: installed program searching use regular expression to well identify application even when version number is bumped in the display name field.
+# [[_appfilter]]: installed program searching use regular expression to well identify application even when version number is bumped in the display name field.
 
 Also see the issues list on ~GitHub: https://github.com/fmezou/lAppUpdate</pre>
+</div>
+<div created="20150530085540729" creator="fmezou" modified="20150530103533387" modifier="fmezou" tags="[[Naming conventions]]" title="Scripts naming">
+<pre>Scripts have short, all-lowercase names. 
+
+A script may be ''public'', ''non-public'' or a ''hook''. 
+
+''Public scripts'' are those that you can use, with the commitment to avoid backward incompatible changes (i.e. specially with the command line options). Public scripts have all-lowercase names (e.g. `appdeploy`).
+
+''Non-public scripts'' are those that are not intended to be used by third parties, so these scripts may change or even removed. Non-public scripts have all-lowercase names with a leading underscore (e.g. `_log2mail`).
+
+&lt;&lt;note &quot;I don't use the term 'private' for non-public, since no script is really private.&quot;&gt;&gt;
+
+''Hook scripts'' are only call from lAppUpdate script and have a public interface (see above). This scripts are planned to offer a place for doing additional task (e.g. tuning the environment) at specific time (i.e before starting the script). Hook scripts have all-lowercase names with a double leading and trailing underscore (e.g. `__init__`). 
+
+&lt;&lt;note &quot;a hook script name is hard coded in the caller script, so the name is considered like a reserved keyword and cannot be modified&quot; &gt;&gt;
+
+Furthermore, naming convention is inspired from the naming convention defining in 'Python Developer's Guide' [[PEP 0008|https://www.python.org/dev/peps/pep-0008/#package-and-module-names]].
+</pre>
 </div>
 <div contents="Specify the scripts logging mode." created="20150523102849578" creator="fmezou" default-value="1" modified="20150523135405614" modifier="fmezou" tags="[[Environment Variables]]" title="SILENT">
 <pre>{{!!contents}}
@@ -6504,7 +6536,7 @@ Furthermore, usage topics comply the rules defining in 'Python Developer's Guide
 <pre>This script ... .... See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be launched with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
-(e.g. `cscript.exe appfilter.vbs x64`) 
+(e.g. `cscript.exe _appfilter.vbs x64`) 
 
 !!Usage 
 

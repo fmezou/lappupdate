@@ -1,11 +1,11 @@
-' log2mail
+' _log2mail
 ' This script sends a mail containing the current appdeploy log messages. See 
 ' Usage description syntax for details about used syntax.
 '
 ' This script is a Windows Script one. Thus, it must be used launch with cscript 
-' command. (e.g. cscript.exe log2mail.vbs) 
+' command. (e.g. cscript.exe _log2mail.vbs) 
 '
-' Usage : log2mail
+' Usage : _log2mail
 '
 ' Exit code
 '   0 : no error

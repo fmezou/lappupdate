@@ -1,12 +1,12 @@
-' appfilter
+' _appfilter
 ' This script filters an applist file by verifying which applications were 
 ' installed and if it needed to be updated. See Usage description syntax for 
 ' details about used syntax.
 ' 
 ' This script is a Windows Script one.  Thus, it must be used launch with 
-' cscript command.(e.g. cscript.exe appfilter.vbs x64) 
+' cscript command.(e.g. cscript.exe _appfilter.vbs x64) 
 ' 
-' Usage: appfilter.vbs [{x86|x64}]
+' Usage: _appfilter.vbs [{x86|x64}]
 '   x86: specifies that the target architecture is a 32 bits one, therefore only 
 '   32 bits installation packages taken into account. This is the default value.
 '   x64: specifies that the target architecture is a 64 bits one, therefore only
@@ -112,7 +112,7 @@ Sub TerminateLog
     
     Set objFileSystem = CreateObject("Scripting.FileSystemObject")
     Set objShell = WScript.CreateObject("WScript.Shell")
-    ' If a log is empty, the file is deleted to prevent error in log2mail script
+    ' If a log is empty, the file is deleted to prevent error in _log2mail script
     lstrLogFileName=objShell.ExpandEnvironmentStrings("%SUMMARY_LOGFILE%")
     Set lobjFile = objFileSystem.GetFile(lstrLogFileName)
     If lobjFile.Size <= 2 Then

@@ -29,7 +29,7 @@ if not defined SYSADM_TO_ADDR  set SYSADM_TO_ADDR=sysadmin@example.com
 rem By default, the message log are only write in the log file. To have a copy on the standard 
 rem output, you must set the SILENT environment variable to 0. 
 rem By default, a mail with the content of the below log files is sent to a sysadmin
-rem (see log2mail script). To prevent this behavior, you must set the LOGMAIL environment variable to 0.
+rem (see _log2mail script). To prevent this behavior, you must set the LOGMAIL environment variable to 0.
 rem By default, only the Error, Warning or Informational entry are logged. You can tuned this behavior
 rem by setting the LOGLEVEL environment variable.
 rem     LOGLEVEL=ERROR   : only the Error entry are logged  
@@ -231,7 +231,7 @@ if exist "%APP_STORE_DIR%\%APPLIST_PREFIX%%SETNAME%.txt" (
 set APPLIST_TO_INSTALL=%TEMP%\apptoinstall.txt
 call :WriteInfoLog Checking installed applications
 if exist "%APPLIST_TO_INSTALL%" del "%APPLIST_TO_INSTALL%"
-%CSCRIPT_PATH% //Nologo //E:vbs appfilter.vbs %OS_ARCH%
+%CSCRIPT_PATH% //Nologo //E:vbs _appfilter.vbs %OS_ARCH%
 if errorlevel 1 goto CustSoftFail
 
 if not exist "%APPLIST_TO_INSTALL%" goto NoApp
@@ -259,7 +259,7 @@ goto cleanup
 :CustSoftFail
 call :WriteErrorLog Applications installation failed
 rem archive the current log and send a mail to sysadmin
-if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
+if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs _log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
 call :ArchiveAndCleanUp
 endlocal                                                       
 exit /b 1
@@ -274,7 +274,7 @@ exit /b 1
 :NoReg
 call :WriteErrorLog Registry tool %REG_PATH% not found
 rem archive the current log and send a mail to sysadmin
-if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
+if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs _log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
 call :ArchiveAndCleanUp
 endlocal                                                       
 exit /b 1
@@ -284,7 +284,7 @@ call :WriteErrorLog  Usage : %0 [set].
 call :WriteErrorLog  set is the set name, the script use a file named applist-[set].txt
 call :WriteErrorLog  which describing applications to install. all is the default value.
 rem archive the current log and send a mail to sysadmin
-if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
+if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs _log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
 call :ArchiveAndCleanUp
 popd
 endlocal
@@ -293,7 +293,7 @@ exit /b 2
 :Cleanup 
 rem archive the current log and send a mail to sysadmin
 if defined APPINSTALLED (
-    if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
+    if %LOGMAIL%==1 %CSCRIPT_PATH% //Nologo //E:vbs _log2mail.vbs "%SUMMARY_LOGFILE%" "%WARNING_LOGFILE%" "%UPDATE_LOGFILE%"
 )
 call :ArchiveAndCleanUp
 popd
