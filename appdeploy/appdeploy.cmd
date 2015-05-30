@@ -1,6 +1,7 @@
 @echo off
 rem appdeploy
-rem This script launches the installer package of the standard application.
+rem This script launches the installer package of the standard application. See 
+rem Usage description syntax for details about used syntax. 
 rem
 rem Usage: appdeploy [set]
 rem     set is the set name, the script use a file named applist-[set].txt which
@@ -15,8 +16,10 @@ setlocal
 pushd "%~dp0"
 
 rem Setting the environment
-rem Theses settings may be overwritten in the current execution environment.
+rem Execute initialization hook ***
+if exist .\__init__.cmd call .\__init__.cmd
 
+rem Theses settings may be overwritten in the current execution environment.
 rem By default, data files including installer packages were stored in the appstore directory.
 if not defined APP_STORE_DIR set APP_STORE_DIR=..\appstore
 
@@ -28,8 +31,8 @@ if not defined SYSADM_TO_ADDR  set SYSADM_TO_ADDR=sysadmin@example.com
 
 rem By default, the message log are only write in the log file. To have a copy on the standard 
 rem output, you must set the SILENT environment variable to 0. 
-rem By default, a mail with the content of the below log files is sent to a sysadmin
-rem (see _log2mail script). To prevent this behavior, you must set the LOGMAIL environment variable to 0.
+rem By default, no mail with the content of the below log files is sent to a sysadmin
+rem (see _log2mail script). To prevent this behavior, you must set the LOGMAIL environment variable to 1.
 rem By default, only the Error, Warning or Informational entry are logged. You can tuned this behavior
 rem by setting the LOGLEVEL environment variable.
 rem     LOGLEVEL=ERROR   : only the Error entry are logged  
@@ -41,7 +44,7 @@ if not defined WARNING_LOGFILE set WARNING_LOGFILE=%TEMP%\appdeploy_warn_today.l
 if not defined SUMMARY_LOGFILE set SUMMARY_LOGFILE=%TEMP%\appdeploy_summary_today.log
 if not defined ARCHIVE_LOGFILE set ARCHIVE_LOGFILE=%SystemRoot%\appdeploy.log
 if not defined SILENT          set SILENT=1
-if not defined LOGMAIL         set LOGMAIL=1
+if not defined LOGMAIL         set LOGMAIL=0
 if not defined LOGLEVEL        set LOGLEVEL=INFO
 if exist "%UPDATE_LOGFILE%" del "%UPDATE_LOGFILE%"
 if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
@@ -70,7 +73,6 @@ if %LOGLEVEL%==DEBUG (
     set LOGDEBUG=1
 )
 set APPDEPLOY_VERSION=0.1
-
 goto Main  
 
 rem **** This section contains the subroutine used by the script by a recurse call (see call)
@@ -134,6 +136,8 @@ type "%UPDATE_LOGFILE%" >>"%ARCHIVE_LOGFILE%"
 if exist "%UPDATE_LOGFILE%" del "%UPDATE_LOGFILE%"
 if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
 if exist "%SUMMARY_LOGFILE%" del "%SUMMARY_LOGFILE%"
+rem Execute completion hook ***
+if exist .\__exit__.cmd call .\__exit__.cmd
 goto :EOF
 
 rem InstallExe

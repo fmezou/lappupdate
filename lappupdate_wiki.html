@@ -117,6 +117,10 @@ Error message and password prompt
 
 <p>This <a class="tc-tiddlylink-external" href="http://tiddlywiki.com" target="_blank">TiddlyWiki</a> contains the following tiddlers:</p><p><ul>
 
+<li>__exit__</li>
+
+<li>__init__</li>
+
 <li>_appfilter</li>
 
 <li>_log2mail</li>
@@ -311,7 +315,45 @@ Error message and password prompt
 <!--~~ Ordinary tiddlers ~~-->
 
 <div id="storeArea" style="display:none;">
-<div created="20150522080114584" creator="fmezou" modified="20150523132039236" modifier="fmezou" tags="Usages" title="_appfilter">
+<div created="20150530163019100" creator="fmezou" modified="20150530170224440" modifier="fmezou" tags="Usages [[Hook scripts]]" title="__exit__">
+<pre>This script is a hook script called when [[appdeploy]] script end. See [[Usage description syntax]] for details about used syntax. 
+
+When `__exit__` is called completion tasks have been launched. It is the reverse script of [[__init__]] hook script. Thus this hook is designed to host yours additional completion tasks.
+
+!!Usage 
+
+`__exit__`
+
+None
+
+!!Exit code
+
+|''0'' |no error |
+
+!!Environment variables
+
+None</pre>
+</div>
+<div created="20150530161245554" creator="fmezou" modified="20150530170247353" modifier="fmezou" tags="Usages [[Hook scripts]]" title="__init__">
+<pre>This script is a hook script called when [[appdeploy]] script start. See [[Usage description syntax]] for details about used syntax. 
+
+When `__init__` is called no initialisation task have been launched and no [[environment variables|Environment Variables]] are set. Thus this hook is designed to host yours additional initialisation tasks (e.g. tuning environment variables)
+
+!!Usage 
+
+`__init__`
+
+None
+
+!!Exit code
+
+|''0'' |no error |
+
+!!Environment variables
+
+None</pre>
+</div>
+<div created="20150522080114584" creator="fmezou" modified="20150530170340230" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_appfilter">
 <pre>This script filters an [[applist]] file by verifying which applications were installed and if it needed to be updated. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be launched with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
@@ -341,7 +383,7 @@ The following environment variables affect the execution of &lt;code&gt;{{!!titl
 |^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
 |^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |</pre>
 </div>
-<div created="20150522095003653" creator="fmezou" modified="20150523132708895" modifier="fmezou" tags="Usages" title="_log2mail">
+<div created="20150522095003653" creator="fmezou" modified="20150530170354293" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_log2mail">
 <pre>This script sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
@@ -353,7 +395,7 @@ This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc
 
 !!Arguments
 
-none
+None
 
 !!Exit code
 
@@ -5902,7 +5944,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle">
 <pre>lAppUpdate Wiki</pre>
 </div>
-<div modified="20150530094010248" modifier="fmezou" title="$:/state/showeditpreview">
+<div modified="20150530173827748" modifier="fmezou" title="$:/state/showeditpreview">
 <pre>yes</pre>
 </div>
 <div modified="20150518201242454" modifier="fmezou" title="$:/state/sidebar">
@@ -5926,10 +5968,10 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150522123636032" modifier="fmezou" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Info</pre>
 </div>
-<div modified="20150530084818555" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
-<pre>$:/core/ui/MoreSideBar/Missing</pre>
+<div modified="20150530170109634" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
+<pre>$:/core/ui/MoreSideBar/Tags</pre>
 </div>
-<div modified="20150530085431513" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<div modified="20150530171204399" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
 <pre>TableOfContents</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
@@ -6010,7 +6052,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="[[Scripts naming]] About How-to Releases" title="$:/StoryList">
+<div list="[[How to tune your environment]] APP_STORE_DIR __exit__ SILENT [[How to tune your environment]] Usages appdeploy __init__ About How-to Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6027,7 +6069,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     }
 }</pre>
 </div>
-<div created="20150517172601950" creator="fmezou" modified="20150530094611580" modifier="fmezou" title="$:/temp/NewTagName">
+<div created="20150517172601950" creator="fmezou" modified="20150530170408249" modifier="fmezou" title="$:/temp/NewTagName">
 <pre></pre>
 </div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.8">
@@ -6138,7 +6180,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 Default value: &lt;code&gt;&lt;&lt;file &quot;{{!!default-value}}&quot;&gt;&gt;&lt;/code&gt;</pre>
 </div>
-<div created="20150503172254169" creator="fmezou" modified="20150523143332807" modifier="fmezou" tags="Usages" title="appdeploy">
+<div created="20150503172254169" creator="fmezou" modified="20150530170412877" modifier="fmezou" tags="Usages [[Public scripts]]" title="appdeploy">
 <pre>This script launches the installer package of the standard application.  See [[Usage description syntax]] for details about used syntax. 
 
 !!Usage 
@@ -6261,16 +6303,16 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications' updates if any (or the full installation package).</pre>
 </div>
-<div created="20150527203214369" creator="fmezou" modified="20150529172847189" modifier="fmezou" tags="How-to" title="How to tune your environment">
+<div created="20150527203214369" creator="fmezou" modified="20150530175059998" modifier="fmezou" tags="How-to" title="How to tune your environment">
 <pre>By default, you have nothing to tune. The default value of [[environment variables|Environment Variables]] allows a working with the following features:
 
-*all action, expect debug one, are only logged in a text file name &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (Typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
+*all action, expect debug one, are only logged in a text file name &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
 
 *the [[applist]] files (at least &lt;&lt;file &quot;applist-all.txt&quot;&gt;&gt;) are stored in the &lt;&lt;file appstore&gt;&gt; directory located at the same level that the directory containing the [[appdeploy]] script.
 
 If these features do not comply with your need, you must consider tuning the [[environment variables|Environment Variables]].
 
-*To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable.
+*To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable. The most efficient way to do that is to use [[__init__]] and [[__exit__]] hook scripts. See &lt;&lt;file &amp;#95;&amp;#95;init&amp;#95;&amp;#95;.cmd.example&gt;&gt; and &lt;&lt;file  &amp;#95;&amp;#95;exit&amp;#95;&amp;#95;.cmd.example&gt;&gt; located in the directory containing the [[appdeploy]] script. in to have examples.
 
 *To change the level of message logged, you must tune the [[LOGLEVEL]] environment variable.
 
@@ -6353,7 +6395,7 @@ The value is one of:
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div contents="Specify if a mail containing the current appdeploy log messages will be sent (see [[_log2mail]] script)." created="20150523104212950" creator="fmezou" default-value="1" modified="20150523135429557" modifier="fmezou" tags="[[Environment Variables]]" title="LOGMAIL">
+<div contents="Specify if a mail containing the current appdeploy log messages will be sent (see [[_log2mail]] script)." created="20150523104212950" creator="fmezou" default-value="0" modified="20150530155249916" modifier="fmezou" tags="[[Environment Variables]]" title="LOGMAIL">
 <pre>{{!!contents}}
 
 The value is one of:
@@ -6450,22 +6492,22 @@ This release includes many improvements to the documentation.
 
 Also see the issues list on ~GitHub: https://github.com/fmezou/lAppUpdate</pre>
 </div>
-<div created="20150530085540729" creator="fmezou" modified="20150530103533387" modifier="fmezou" tags="[[Naming conventions]]" title="Scripts naming">
+<div created="20150530085540729" creator="fmezou" modified="20150530141701995" modifier="fmezou" tags="[[Naming conventions]]" title="Scripts naming">
 <pre>Scripts have short, all-lowercase names. 
 
 A script may be ''public'', ''non-public'' or a ''hook''. 
 
 ''Public scripts'' are those that you can use, with the commitment to avoid backward incompatible changes (i.e. specially with the command line options). Public scripts have all-lowercase names (e.g. `appdeploy`).
 
-''Non-public scripts'' are those that are not intended to be used by third parties, so these scripts may change or even removed. Non-public scripts have all-lowercase names with a leading underscore (e.g. `_log2mail`).
+''Non-public scripts'' are those that are not intended to be used by third parties, so these scripts may change or even removed. Non-public scripts have all lowercase names with a leading underscore (e.g. `_log2mail`).
 
 &lt;&lt;note &quot;I don't use the term 'private' for non-public, since no script is really private.&quot;&gt;&gt;
 
-''Hook scripts'' are only call from lAppUpdate script and have a public interface (see above). This scripts are planned to offer a place for doing additional task (e.g. tuning the environment) at specific time (i.e before starting the script). Hook scripts have all-lowercase names with a double leading and trailing underscore (e.g. `__init__`). 
+''Hook scripts'' are only call from lAppUpdate scripts and have a public interface (see above). These scripts are designed for doing third parties tasks (e.g. tuning the environment) at specific time (i.e before starting the script). Hook scripts have all lowercase names with a double leading and trailing underscore (e.g. `__init__`). 
 
 &lt;&lt;note &quot;a hook script name is hard coded in the caller script, so the name is considered like a reserved keyword and cannot be modified&quot; &gt;&gt;
 
-Furthermore, naming convention is inspired from the naming convention defining in 'Python Developer's Guide' [[PEP 0008|https://www.python.org/dev/peps/pep-0008/#package-and-module-names]].
+Furthermore, this set of rules is inspired from the naming convention defining in 'Python Developer's Guide' [[PEP 0008|https://www.python.org/dev/peps/pep-0008/#package-and-module-names]].
 </pre>
 </div>
 <div contents="Specify the scripts logging mode." created="20150523102849578" creator="fmezou" default-value="1" modified="20150523135405614" modifier="fmezou" tags="[[Environment Variables]]" title="SILENT">
@@ -6561,10 +6603,26 @@ The following environment variables affect the execution of &lt;code&gt;{{!!titl
 
 |^[[VAR template]] |^{{VAR template!!contents}}  |</pre>
 </div>
-<div created="20150518211631519" creator="fmezou" modified="20150522094822766" modifier="fmezou" tags="Reference" title="Usages">
-<pre>The following topics details the usage of lAppUpdate scripts.
+<div created="20150518211631519" creator="fmezou" modified="20150530170444725" modifier="fmezou" tags="Reference" title="Usages">
+<pre>The following topics details the usage of lAppUpdate scripts. Complying with the [[script naming convention|Scripts naming]] 
 
-&lt;&lt;list-links &quot;[tag[Usages]sort[]]&quot;&gt;&gt;</pre>
+!!Public scripts
+Public scripts are those that you can use.
+
+&lt;&lt;list-links &quot;[tag[Usages]tag[Public scripts]sort[]]&quot;&gt;&gt;
+
+!!Hook scripts
+
+Hook scripts are only call from lAppUpdate scripts and have a public interface. These scripts are designed for doing third parties tasks at specific time.
+
+&lt;&lt;list-links &quot;[tag[Usages]tag[Hook scripts]sort[]]&quot;&gt;&gt;
+
+!!Non-public scripts
+
+Non-public scripts are those that are not intended to be used by third parties, so these scripts may change or even removed. ''Their presence here is only in a purpose of information.'' 
+
+&lt;&lt;list-links &quot;[tag[Usages]tag[Non-public scripts]sort[]]&quot;&gt;&gt;
+</pre>
 </div>
 <div contents="describe the content or the role of the variable" created="20150523140440521" creator="fmezou" default-value="VALUE" modified="20150523140756753" modifier="fmezou" tags="Templates" title="VAR template">
 <pre>{{!!contents}}

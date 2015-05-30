@@ -1,0 +1,14 @@
+rem __exit__ 
+rem This script is a hook script called when appdeploy script end. See Usage 
+rem description syntax for details about used syntax.
+rem When __exit__ is called completion tasks have been launched. It is the 
+rem reverse script of __init__ hook script. Thus this hook is designed to host
+rem yours additional completion tasks.
+rem 
+rem Usage: __exit__
+rem 
+rem Exit code
+rem     0: no error
+rem 
+rem Environment variables
+rem     None

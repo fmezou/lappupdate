@@ -57,3 +57,5 @@ docs/_build/
 target/
 /appdeploy/mysetenv.cmd
 /*.lnk
+desktop.ini
+__*__.cmd
