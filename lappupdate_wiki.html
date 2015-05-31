@@ -223,6 +223,8 @@ Error message and password prompt
 
 <li>$:/temp/NewTagName</li>
 
+<li>$:/temp/search</li>
+
 <li>$:/themes/tiddlywiki/snowwhite</li>
 
 <li>$:/themes/tiddlywiki/vanilla</li>
@@ -268,6 +270,10 @@ Error message and password prompt
 <li>Reference</li>
 
 <li>Release 0.1</li>
+
+<li>Release 0.2.0 (in development)</li>
+
+<li>Release X.Y.Z template</li>
 
 <li>Releases</li>
 
@@ -383,7 +389,7 @@ The following environment variables affect the execution of &lt;code&gt;{{!!titl
 |^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
 |^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |</pre>
 </div>
-<div created="20150522095003653" creator="fmezou" modified="20150530170354293" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_log2mail">
+<div created="20150522095003653" creator="fmezou" modified="20150531104826669" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_log2mail">
 <pre>This script sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
@@ -401,6 +407,8 @@ None
 
 |''0'' |no error |
 |''1'' |the summary log doesn’t exist |
+|''2'' |the server name is empty or not defined (fix [[SMTP_SERVER]] environment variable) |
+|''3'' |the recipient mail address is empty or not defined (fix [[SYSADM_TO_ADDR]] environment variable) |
 
 !!Environment variables
 
@@ -5944,8 +5952,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle">
 <pre>lAppUpdate Wiki</pre>
 </div>
-<div modified="20150530173827748" modifier="fmezou" title="$:/state/showeditpreview">
-<pre>yes</pre>
+<div modified="20150531104824110" modifier="fmezou" title="$:/state/showeditpreview">
+<pre>no</pre>
 </div>
 <div modified="20150518201242454" modifier="fmezou" title="$:/state/sidebar">
 <pre>yes</pre>
@@ -5956,8 +5964,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150523141645398" modifier="fmezou" title="$:/state/tab--2112689675">
 <pre>$:/core/ui/ControlPanel/Basics</pre>
 </div>
-<div modified="20150518204137685" modifier="fmezou" title="$:/state/tab--60931677">
-<pre>Release 0.1</pre>
+<div modified="20150531141007666" modifier="fmezou" title="$:/state/tab--60931677">
+<pre>Release 0.2.0 (in development)</pre>
 </div>
 <div modified="20150522123632720" modifier="fmezou" title="$:/state/tab--86143343">
 <pre>$:/core/ui/ControlPanel/Plugins/Installed/Plugins</pre>
@@ -5968,20 +5976,20 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150522123636032" modifier="fmezou" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Info</pre>
 </div>
-<div modified="20150530170109634" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
+<div modified="20150531094304596" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
 <pre>$:/core/ui/MoreSideBar/Tags</pre>
 </div>
-<div modified="20150530171204399" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<div modified="20150531104101492" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
 <pre>TableOfContents</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
 <pre>open</pre>
 </div>
-<div modified="20150525170302087" modifier="fmezou" title="$:/state/toc/About-Releases--81657105">
-<pre>open</pre>
+<div modified="20150531140942310" modifier="fmezou" title="$:/state/toc/About-Releases--81657105">
+<pre>close</pre>
 </div>
-<div modified="20150523101009654" modifier="fmezou" title="$:/state/toc/Reference-Environment Variables--81657105">
-<pre>open</pre>
+<div modified="20150531140948938" modifier="fmezou" title="$:/state/toc/Reference-Environment Variables--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521164840928" modifier="fmezou" title="$:/state/toc/Reference-File Format--81657105">
 <pre>open</pre>
@@ -5992,14 +6000,14 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150521143859956" modifier="fmezou" title="$:/state/toc/Reference-File Format-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150523094714702" modifier="fmezou" title="$:/state/toc/Reference-File Formats--81657105">
-<pre>open</pre>
+<div modified="20150531140947130" modifier="fmezou" title="$:/state/toc/Reference-File Formats--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521170654501" modifier="fmezou" title="$:/state/toc/Reference-File Formats-1455273453">
 <pre>close</pre>
 </div>
-<div modified="20150530103458916" modifier="fmezou" title="$:/state/toc/Reference-Naming conventions--81657105">
-<pre>open</pre>
+<div modified="20150531140946482" modifier="fmezou" title="$:/state/toc/Reference-Naming conventions--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521164840088" modifier="fmezou" title="$:/state/toc/Reference-Usage--81657105">
 <pre>open</pre>
@@ -6007,8 +6015,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150521143900572" modifier="fmezou" title="$:/state/toc/Reference-Usage-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150523093552700" modifier="fmezou" title="$:/state/toc/Reference-Usages--81657105">
-<pre>open</pre>
+<div modified="20150531140945426" modifier="fmezou" title="$:/state/toc/Reference-Usages--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521170655891" modifier="fmezou" title="$:/state/toc/Reference-Usages-1455273453">
 <pre>close</pre>
@@ -6016,8 +6024,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150518215341423" modifier="fmezou" title="$:/state/toc/TableOfContents-About--1022525576">
 <pre>close</pre>
 </div>
-<div modified="20150523094736468" modifier="fmezou" title="$:/state/toc/TableOfContents-About--81657105">
-<pre>open</pre>
+<div modified="20150531140953338" modifier="fmezou" title="$:/state/toc/TableOfContents-About--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521143857614" modifier="fmezou" title="$:/state/toc/TableOfContents-About-497309061">
 <pre>close</pre>
@@ -6028,14 +6036,14 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150518215337926" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--1022525576">
 <pre>close</pre>
 </div>
-<div modified="20150529172555756" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
-<pre>open</pre>
+<div modified="20150531140950882" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521143858780" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150523093551046" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference--81657105">
-<pre>open</pre>
+<div modified="20150531140950058" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference--81657105">
+<pre>close</pre>
 </div>
 <div modified="20150521143901588" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference-497309061">
 <pre>close</pre>
@@ -6052,7 +6060,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="[[How to tune your environment]] APP_STORE_DIR __exit__ SILENT [[How to tune your environment]] Usages appdeploy __init__ About How-to Releases" title="$:/StoryList">
+<div list="About How-to Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6070,6 +6078,9 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 }</pre>
 </div>
 <div created="20150517172601950" creator="fmezou" modified="20150530170408249" modifier="fmezou" title="$:/temp/NewTagName">
+<pre></pre>
+</div>
+<div created="20150531093233036" creator="fmezou" modified="20150531093640155" modifier="fmezou" title="$:/temp/search">
 <pre></pre>
 </div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.8">
@@ -6303,16 +6314,16 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications' updates if any (or the full installation package).</pre>
 </div>
-<div created="20150527203214369" creator="fmezou" modified="20150530175059998" modifier="fmezou" tags="How-to" title="How to tune your environment">
+<div created="20150527203214369" creator="fmezou" modified="20150531095348330" modifier="fmezou" tags="How-to" title="How to tune your environment">
 <pre>By default, you have nothing to tune. The default value of [[environment variables|Environment Variables]] allows a working with the following features:
 
 *all action, expect debug one, are only logged in a text file name &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
 
 *the [[applist]] files (at least &lt;&lt;file &quot;applist-all.txt&quot;&gt;&gt;) are stored in the &lt;&lt;file appstore&gt;&gt; directory located at the same level that the directory containing the [[appdeploy]] script.
 
-If these features do not comply with your need, you must consider tuning the [[environment variables|Environment Variables]].
+If these features do not comply with your need, you must consider tuning the [[environment variables|Environment Variables]]. The most efficient way to do that is to use [[__init__]] and [[__exit__]] hook scripts. See &lt;&lt;file &amp;#95;&amp;#95;init&amp;#95;&amp;#95;.cmd.example&gt;&gt; and &lt;&lt;file  &amp;#95;&amp;#95;exit&amp;#95;&amp;#95;.cmd.example&gt;&gt; located in the directory containing the [[appdeploy]] script. in to have examples.
 
-*To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable. The most efficient way to do that is to use [[__init__]] and [[__exit__]] hook scripts. See &lt;&lt;file &amp;#95;&amp;#95;init&amp;#95;&amp;#95;.cmd.example&gt;&gt; and &lt;&lt;file  &amp;#95;&amp;#95;exit&amp;#95;&amp;#95;.cmd.example&gt;&gt; located in the directory containing the [[appdeploy]] script. in to have examples.
+*To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable. 
 
 *To change the level of message logged, you must tune the [[LOGLEVEL]] environment variable.
 
@@ -6441,7 +6452,33 @@ Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 This release includes many improvements to the documentation.
 </pre>
 </div>
-<div created="20150517174315007" creator="fmezou" modified="20150518222751025" modifier="fmezou" tags="About" title="Releases">
+<div caption="0.2.0" created="20150531091121027" creator="fmezou" modified="20150531094701621" modifier="fmezou" released="20151231000000" tags="ReleaseNotes" title="Release 0.2.0 (in development)" type="text/vnd.tiddlywiki">
+<pre>//[[See GitHub for detailed change history of this release|https://github.com/fmezou/lAppUpdate/compare/v0.1...develop]]//
+
+This release includes many improvements to the documentation.
+
+!! Usability Improvements
+
+* [[Added|https://github.com/fmezou/lappupdate/commit/{sha}]] Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+!! Bug Fixes
+
+* [[Fixed|https://github.com/fmezou/lappupdate/commit/{sha}]] Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</pre>
+</div>
+<div caption="X.Y.Z" created="20150531094334510" creator="fmezou" modified="20150531094628518" modifier="fmezou" released="yyyymmddhhmmss" tags="Templates" title="Release X.Y.Z template">
+<pre>//[[See GitHub for detailed change history of this release|https://github.com/fmezou/lAppUpdate/compare/{previousversiontag}...{currentversiontag}]]//
+
+This release includes many improvements to the documentation.
+
+!! Usability Improvements
+
+* [[Added|https://github.com/fmezou/lappupdate/commit/{sha}]] Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+!! Bug Fixes
+
+* [[Fixed|https://github.com/fmezou/lappupdate/commit/{sha}]] Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</pre>
+</div>
+<div created="20150517174315007" creator="fmezou" modified="20150531093929939" modifier="fmezou" tags="About" title="Releases" type="">
 <pre>Here are the details of recent releases of lAppUpdate. See [[lAppUpdate Versioning]] for details of how releases are named.
 
 (BetaReleases and AlphaReleases are listed separately).
@@ -6451,12 +6488,13 @@ This release includes many improvements to the documentation.
 &lt;/$list&gt;
 </pre>
 </div>
-<div created="20150518202904190" creator="fmezou" modified="20150518204025338" modifier="fmezou" tags="" title="ReleaseTemplate">
+<div created="20150518202904190" creator="fmezou" modified="20150531093913868" modifier="fmezou" tags="" title="ReleaseTemplate">
 <pre>&lt;h2&gt;&lt;$link to=&lt;&lt;currentTab&gt;&gt;&gt;&lt;$view tiddler=&lt;&lt;currentTab&gt;&gt; field=&quot;title&quot;/&gt;&lt;/$link&gt;&lt;/h2&gt;
 
 ^^Released &lt;$view tiddler=&lt;&lt;currentTab&gt;&gt; field=&quot;released&quot; format=&quot;date&quot; template=&quot;DDth MMM YYYY at 0hh:0mm&quot;&gt;TBA&lt;/$view&gt;^^
 
-&lt;$transclude tiddler=&lt;&lt;currentTab&gt;&gt; /&gt;</pre>
+&lt;$transclude tiddler=&lt;&lt;currentTab&gt;&gt; /&gt;
+</pre>
 </div>
 <div created="20150503150320388" creator="fmezou" modified="20150522075333397" modifier="fmezou" tags="About" title="Requirements" type="">
 <pre>The requirements for this project were:
@@ -6520,7 +6558,7 @@ The value is one of:
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div contents="Contain the fully qualified name of the SMTP server to use" created="20150523100616017" creator="fmezou" default-value="smtp.example.com" modified="20150523124530378" modifier="fmezou" tags="[[Environment Variables]]" title="SMTP_SERVER">
+<div contents="Contain the fully qualified name of the SMTP server to use" created="20150523100616017" creator="fmezou" default-value="none" modified="20150531103730473" modifier="fmezou" tags="[[Environment Variables]]" title="SMTP_SERVER">
 <pre>{{!!contents}}
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
@@ -6535,7 +6573,7 @@ Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div contents="Contain the mail address of the mail recipient (typically a system administrator)" created="20150523100647324" creator="fmezou" default-value="sysadmin@example.com" modified="20150523124520331" modifier="fmezou" tags="[[Environment Variables]]" title="SYSADM_TO_ADDR">
+<div contents="Contain the mail address of the mail recipient (typically a system administrator)" created="20150523100647324" creator="fmezou" default-value="none" modified="20150531103803290" modifier="fmezou" tags="[[Environment Variables]]" title="SYSADM_TO_ADDR">
 <pre>{{!!contents}}
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>

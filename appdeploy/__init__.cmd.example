@@ -18,6 +18,7 @@ rem a network based one. According to your need, you can uncomment the following
 rem lines and adapt them.
 rem
 rem USB stick based deployment
+rem if not exist "%CD%\..\log" mkdir "%CD%\..\log"
 rem ARCHIVE_LOGFILE=%CD%\..\log\appdeploy.log
 rem set SILENT=0
 rem set LOGMAIL=0

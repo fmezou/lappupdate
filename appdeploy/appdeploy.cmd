@@ -23,16 +23,13 @@ rem Theses settings may be overwritten in the current execution environment.
 rem By default, data files including installer packages were stored in the appstore directory.
 if not defined APP_STORE_DIR set APP_STORE_DIR=..\appstore
 
-rem By default, logs are mailed to sysadmin@examplecom (see below LOGMAIL) using a
-rem SMTP server smtp.example.com. Theses MUST be tuned to your environment
-if not defined SMTP_SERVER  set SMTP_SERVER=smtp.example.com
-if not defined SMTP_SERVER_PORT  set SMTP_SERVER_PORT=25
-if not defined SYSADM_TO_ADDR  set SYSADM_TO_ADDR=sysadmin@example.com 
+rem By default, no mail with the content of the below log files is sent to a sysadmin
+rem (see _log2mail script). To prevent this behavior, you must set the LOGMAIL environment variable to 1.
+if not defined LOGMAIL set LOGMAIL=0
+if not defined SMTP_SERVER_PORT set SMTP_SERVER_PORT=25
 
 rem By default, the message log are only write in the log file. To have a copy on the standard 
 rem output, you must set the SILENT environment variable to 0. 
-rem By default, no mail with the content of the below log files is sent to a sysadmin
-rem (see _log2mail script). To prevent this behavior, you must set the LOGMAIL environment variable to 1.
 rem By default, only the Error, Warning or Informational entry are logged. You can tuned this behavior
 rem by setting the LOGLEVEL environment variable.
 rem     LOGLEVEL=ERROR   : only the Error entry are logged  
@@ -44,7 +41,6 @@ if not defined WARNING_LOGFILE set WARNING_LOGFILE=%TEMP%\appdeploy_warn_today.l
 if not defined SUMMARY_LOGFILE set SUMMARY_LOGFILE=%TEMP%\appdeploy_summary_today.log
 if not defined ARCHIVE_LOGFILE set ARCHIVE_LOGFILE=%SystemRoot%\appdeploy.log
 if not defined SILENT          set SILENT=1
-if not defined LOGMAIL         set LOGMAIL=0
 if not defined LOGLEVEL        set LOGLEVEL=INFO
 if exist "%UPDATE_LOGFILE%" del "%UPDATE_LOGFILE%"
 if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
@@ -72,7 +68,10 @@ if %LOGLEVEL%==DEBUG (
     set LOGINFO=1
     set LOGDEBUG=1
 )
-set APPDEPLOY_VERSION=0.1
+rem Each release of lAppUpdate is identified by a version number that complies 
+rem with the Semantic Versioning 2.0.0 standard (see http://semver.org/).
+set APPDEPLOY_VERSION=0.1.0
+
 goto Main  
 
 rem **** This section contains the subroutine used by the script by a recurse call (see call)
@@ -194,8 +193,8 @@ if errorlevel 1 (
 goto :EOF
 
 :Main
-call :WriteInfoLog Starting AppDeploy (v. %APPDEPLOY_VERSION%)
-call :WriteSummary Starting AppDeploy (v. %APPDEPLOY_VERSION%)
+call :WriteInfoLog Starting AppDeploy (%APPDEPLOY_VERSION%)
+call :WriteSummary Starting AppDeploy (%APPDEPLOY_VERSION%)
 call :WriteDebugLog Used path '%CD%' on %COMPUTERNAME% (user: %USERNAME%)
 call :WriteDebugLog Command line  '%CMDCMDLINE%'
 
