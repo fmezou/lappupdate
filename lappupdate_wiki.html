@@ -121,6 +121,8 @@ Error message and password prompt
 
 <li>__init__</li>
 
+<li>__postinstall__</li>
+
 <li>_appfilter</li>
 
 <li>_log2mail</li>
@@ -168,6 +170,8 @@ Error message and password prompt
 <li>$:/state/tag-manager/About</li>
 
 <li>$:/state/toc/About-Releases--81657105</li>
+
+<li>$:/state/toc/Reference-Concepts--81657105</li>
 
 <li>$:/state/toc/Reference-Environment Variables--81657105</li>
 
@@ -245,6 +249,8 @@ Error message and password prompt
 
 <li>ARCHIVE_LOGFILE</li>
 
+<li>Concepts</li>
+
 <li>Environment Variables</li>
 
 <li>File format template</li>
@@ -253,11 +259,17 @@ Error message and password prompt
 
 <li>History of lAppUpdate</li>
 
+<li>Hook script</li>
+
 <li>How to</li>
 
 <li>How to build the application list</li>
 
 <li>How to build the medium</li>
+
+<li>How to deploy from a DVD</li>
+
+<li>How to deploy through a network</li>
 
 <li>How to tune your environment</li>
 
@@ -270,6 +282,10 @@ Error message and password prompt
 <li>LOGMAIL</li>
 
 <li>Naming conventions</li>
+
+<li>Non-public script</li>
+
+<li>Public script</li>
 
 <li>Read-me</li>
 
@@ -327,8 +343,8 @@ Error message and password prompt
 <!--~~ Ordinary tiddlers ~~-->
 
 <div id="storeArea" style="display:none;">
-<div created="20150530163019100" creator="fmezou" modified="20150530170224440" modifier="fmezou" tags="Usages [[Hook scripts]]" title="__exit__">
-<pre>This script is a hook script called when [[appdeploy]] script end. See [[Usage description syntax]] for details about used syntax. 
+<div created="20150530163019100" creator="fmezou" modified="20150602205037635" modifier="fmezou" tags="Usages [[Hook scripts]]" title="__exit__">
+<pre>This optional script is a [[hook script|Hook script]] called when [[appdeploy]] script end. See [[Usage description syntax]] for details about used syntax. 
 
 When `__exit__` is called completion tasks have been launched. It is the reverse script of [[__init__]] hook script. Thus this hook is designed to host yours additional completion tasks.
 
@@ -336,6 +352,8 @@ When `__exit__` is called completion tasks have been launched. It is the reverse
 
 `__exit__`
 
+!!Arguments
+
 None
 
 !!Exit code
@@ -346,8 +364,8 @@ None
 
 None</pre>
 </div>
-<div created="20150530161245554" creator="fmezou" modified="20150530170247353" modifier="fmezou" tags="Usages [[Hook scripts]]" title="__init__">
-<pre>This script is a hook script called when [[appdeploy]] script start. See [[Usage description syntax]] for details about used syntax. 
+<div created="20150530161245554" creator="fmezou" modified="20150602205049018" modifier="fmezou" tags="Usages [[Hook scripts]]" title="__init__">
+<pre>This optional script is a [[hook script|Hook script]] called when [[appdeploy]] script start. See [[Usage description syntax]] for details about used syntax. 
 
 When `__init__` is called no initialisation task have been launched and no [[environment variables|Environment Variables]] are set. Thus this hook is designed to host yours additional initialisation tasks (e.g. tuning environment variables)
 
@@ -355,6 +373,8 @@ When `__init__` is called no initialisation task have been launched and no [[env
 
 `__init__`
 
+!!Arguments
+
 None
 
 !!Exit code
@@ -365,8 +385,31 @@ None
 
 None</pre>
 </div>
-<div created="20150522080114584" creator="fmezou" modified="20150530170340230" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_appfilter">
-<pre>This script filters an [[applist]] file by verifying which applications were installed and if it needed to be updated. See [[Usage description syntax]] for details about used syntax.
+<div created="20150602175521586" creator="fmezou" modified="20150602205546873" modifier="fmezou" tags="[[Hook scripts]] Usages" title="__postinstall__">
+<pre>This optional script is a [[hook script|Hook script]] called when [[appdeploy]] script ended an installation. See [[Usage description syntax]] for details about used syntax. 
+
+When `__postinstall__` is called the installation package execution ended.  Thus this hook is designed to host yours additional post installation tasks like customize the start menu or install additional packs (e.g. Firefox extensions, ~VirtualBox Extension Pack, Tortoise Language Pack...).
+
+If this script exist, it must stored in the same directory that the installer, so it exists one hook for each installer.
+
+!!Usage 
+
+`__postinstall__`
+
+!!Arguments
+
+None
+
+!!Exit code
+
+|''0'' |no error |
+
+!!Environment variables
+
+None</pre>
+</div>
+<div created="20150522080114584" creator="fmezou" modified="20150602205304397" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_appfilter">
+<pre>This script is a [[non-public script|Non-public script]]. It filters an [[applist]] file by verifying which applications were installed and if it needed to be updated. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be launched with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
 (e.g. `cscript.exe _appfilter.vbs x64`) 
@@ -395,8 +438,8 @@ The following environment variables affect the execution of &lt;code&gt;{{!!titl
 |^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
 |^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |</pre>
 </div>
-<div created="20150522095003653" creator="fmezou" modified="20150531104826669" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_log2mail">
-<pre>This script sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
+<div created="20150522095003653" creator="fmezou" modified="20150602205258101" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_log2mail">
+<pre>This script is a [[non-public script|Non-public script]]. It sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
 (e.g. `cscript.exe _log2mail.vbs`) 
@@ -5924,19 +5967,7 @@ Releases
 <div status="complete" title="$:/Import">
 <pre>The following tiddlers were imported:
 
-# [[$:/DefaultTiddlers]]
-# [[$:/isEncrypted]]
-# [[$:/SiteSubtitle]]
-# [[$:/SiteTitle]]
-# [[$:/status/UserName]]
-# [[$:/themes/tiddlywiki/snowwhite]]
-# [[$:/themes/tiddlywiki/vanilla]]
-# [[About...]]
-# [[appdeploy usage]]
-# [[applist format]]
-# [[Requirements]]
-# [[TableOfContent]]
-# [[Use case]]</pre>
+# [[config-tsdoctor.reg]]</pre>
 </div>
 <div title="$:/isEncrypted">
 <pre>no</pre>
@@ -5958,8 +5989,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle">
 <pre>lAppUpdate Wiki</pre>
 </div>
-<div modified="20150531211722850" modifier="fmezou" title="$:/state/showeditpreview">
-<pre>yes</pre>
+<div modified="20150602215051010" modifier="fmezou" title="$:/state/showeditpreview">
+<pre>no</pre>
 </div>
 <div modified="20150518201242454" modifier="fmezou" title="$:/state/sidebar">
 <pre>yes</pre>
@@ -5970,7 +6001,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150531150724872" modifier="fmezou" title="$:/state/tab--2112689675">
 <pre>$:/core/ui/ControlPanel/Advanced</pre>
 </div>
-<div modified="20150531151143823" modifier="fmezou" title="$:/state/tab--60931677">
+<div modified="20150602174114069" modifier="fmezou" title="$:/state/tab--60931677">
 <pre>Release 0.2.0 (in development)</pre>
 </div>
 <div modified="20150522123632720" modifier="fmezou" title="$:/state/tab--86143343">
@@ -5982,17 +6013,20 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150531150718080" modifier="fmezou" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Info</pre>
 </div>
-<div modified="20150531094304596" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
-<pre>$:/core/ui/MoreSideBar/Tags</pre>
+<div modified="20150602221621705" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
+<pre>$:/core/ui/MoreSideBar/System</pre>
 </div>
-<div modified="20150531212354110" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
-<pre>TableOfContents</pre>
+<div modified="20150602221841107" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<pre>$:/core/ui/SideBar/More</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
 <pre>open</pre>
 </div>
 <div modified="20150531140942310" modifier="fmezou" title="$:/state/toc/About-Releases--81657105">
 <pre>close</pre>
+</div>
+<div modified="20150602204754027" modifier="fmezou" title="$:/state/toc/Reference-Concepts--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150531201452253" modifier="fmezou" title="$:/state/toc/Reference-Environment Variables--81657105">
 <pre>open</pre>
@@ -6012,8 +6046,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150521170654501" modifier="fmezou" title="$:/state/toc/Reference-File Formats-1455273453">
 <pre>close</pre>
 </div>
-<div modified="20150531140946482" modifier="fmezou" title="$:/state/toc/Reference-Naming conventions--81657105">
-<pre>close</pre>
+<div modified="20150602174208515" modifier="fmezou" title="$:/state/toc/Reference-Naming conventions--81657105">
+<pre>open</pre>
 </div>
 <div modified="20150521164840088" modifier="fmezou" title="$:/state/toc/Reference-Usage--81657105">
 <pre>open</pre>
@@ -6066,7 +6100,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="[[How to]] Read-me applist APPLIST How-to [[How to build the medium]] [[How to build the application list]] [[How to tune your environment]]" title="$:/StoryList">
+<div list="$:/Import About How-to Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6083,10 +6117,10 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     }
 }</pre>
 </div>
-<div created="20150517172601950" creator="fmezou" modified="20150530170408249" modifier="fmezou" title="$:/temp/NewTagName">
+<div created="20150517172601950" creator="fmezou" modified="20150602204336571" modifier="fmezou" title="$:/temp/NewTagName">
 <pre></pre>
 </div>
-<div created="20150531093233036" creator="fmezou" modified="20150531145649845" modifier="fmezou" title="$:/temp/search">
+<div created="20150531093233036" creator="fmezou" modified="20150602221616577" modifier="fmezou" title="$:/temp/search">
 <pre></pre>
 </div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.8">
@@ -6199,8 +6233,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 Default value: &lt;code&gt;&lt;&lt;file &quot;{{!!default-value}}&quot;&gt;&gt;&lt;/code&gt;</pre>
 </div>
-<div created="20150503172254169" creator="fmezou" modified="20150530170412877" modifier="fmezou" tags="Usages [[Public scripts]]" title="appdeploy">
-<pre>This script launches the installer package of the standard application.  See [[Usage description syntax]] for details about used syntax. 
+<div created="20150503172254169" creator="fmezou" modified="20150602205334699" modifier="fmezou" tags="Usages [[Public scripts]]" title="appdeploy">
+<pre>This script is a [[public script|Public script]]. It launches the installer package of the standard application.  See [[Usage description syntax]] for details about used syntax. 
 
 !!Usage 
 
@@ -6232,7 +6266,7 @@ The following environment variables affect the execution of &lt;code&gt;{{!!titl
 |^[[LOGMAIL]] |^{{LOGMAIL!!contents}}  |
 |^[[LOGLEVEL]] |^{{LOGLEVEL!!contents}}  |</pre>
 </div>
-<div created="20150503173655790" creator="fmezou" modified="20150531210921027" modifier="fmezou" tags="[[File Formats]]" title="applist">
+<div created="20150503173655790" creator="fmezou" modified="20150602210606800" modifier="fmezou" tags="[[File Formats]]" title="applist">
 <pre>applist files describes a list of application packages which will be deployed on a workstation or a server. 
 
 &lt;&lt;note &quot;These files are [[text file|http://en.wikipedia.org/wiki/Text_file]] complying with the [[Windows standard|http://en.wikipedia.org/wiki/Text_file#Standard_Windows_.txt_files]]. Since these files are used by scripts written in [[Command shell|https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR]] or [[Windows Script Host|https://msdn.microsoft.com/library/d1wf56tt.aspx]], so it must use [[ASCII printable characters|http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters]] (i.e. no national or accented characters).&quot;&gt;&gt;
@@ -6253,7 +6287,7 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 `appVersion` is the version number of the application as it appears in the Program Control Panel.  
 
-`appPackage` is the full path name of executable file, command or MSI package, without argument, to launch for installing or upgrading the application. The `appPackage` may be prefixed with the [[APP_STORE_DIR]] environment variable (e.g. `%APP_STORE_DIR%\dummy.exe`)  
+`appPackage` is the path name (full or relative) of executable file, command or MSI package, without argument, to launch for installing or upgrading the application. The `appPackage` may be prefixed with the [[APP_STORE_DIR]] environment variable (e.g. `%APP_STORE_DIR%\dummy.exe`)  
 
 `appArgs`  are arguments to use when launching `appPackage`  
 
@@ -6283,6 +6317,11 @@ Default value: {{!!default-value}}</pre>
 <pre>{{!!contents}}
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
+<div created="20150602204311789" creator="fmezou" modified="20150602204746002" modifier="fmezou" tags="Reference" title="Concepts">
+<pre>These are the concepts underlying lAppUpdate. 
+
+&lt;&lt;list-links &quot;[tag[Concepts]]&quot;&gt;&gt;</pre>
 </div>
 <div created="20150523094841204" creator="fmezou" modified="20150523101046701" modifier="fmezou" tags="Reference" title="Environment Variables">
 <pre>The following topics details environment variables used by lAppUpdate scripts.
@@ -6324,6 +6363,13 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications' updates if any (or the full installation package).</pre>
 </div>
+<div created="20150602203612887" creator="fmezou" modified="20150602204935213" modifier="fmezou" tags="Concepts" title="Hook script">
+<pre>Hook scripts are only call from lAppUpdate scripts and have a public interface (see above). These scripts are designed for doing third parties tasks (e.g. tuning the environment) at specific time (i.e before starting the script). 
+
+&lt;&lt;note &quot;a hook script name is hard coded in the caller script, so the name is considered like a reserved keyword and cannot be modified.&quot; &gt;&gt;
+
+&lt;&lt;note &quot;by definition, a hook script is optional and may be not exist.&quot; &gt;&gt;</pre>
+</div>
 <div created="20150531212326050" creator="fmezou" modified="20150531212739016" modifier="fmezou" tags="Read-me" title="How to">
 <pre>!{{How-to!!title}}
 
@@ -6344,28 +6390,31 @@ So I choose to develop my own deployment system built around two main module : t
 ---
 ,,This file was automatically generated by [[TiddlyWiki|http://tiddlywiki.com/]].,,</pre>
 </div>
-<div created="20150531151544121" creator="fmezou" modified="20150531203657839" modifier="fmezou" tags="How-to" title="How to build the application list">
-<pre>The [[appdeploy]] script use two [[applist]] files to verify which applications were installed and if it needs to be updated: the first one is named &lt;&lt;file applist-all.txt&gt;&gt; and ''must be exist'' even if it is empty; the second is named  &lt;&lt;file applist-&amp;lt;set&amp;gt;.txt&gt;&gt; where `&lt;set&gt;` is the argument passed to appdeploy on the command line (e.g. `.\appdeploy dummy`).
+<div created="20150531151544121" creator="fmezou" modified="20150602221033838" modifier="fmezou" tags="How-to" title="How to build the application list">
+<pre>The [[appdeploy]] script uses two [[applist]] files to verify which applications were installed and if it needs to be updated: the first one is named &lt;&lt;file applist-all.txt&gt;&gt; and ''must be exist'' even if it is empty; the second is named  &lt;&lt;file applist-&amp;lt;set&amp;gt;.txt&gt;&gt; where `&lt;set&gt;` is the argument passed to appdeploy on the command line (e.g. `.\appdeploy dummy`).
 
-&lt;&lt;note &quot;applist file may be empty including applist-all.txt&quot;&gt;&gt;
+&lt;&lt;note &quot;applist file may be empty including applist-all.txt.&quot;&gt;&gt;
 
-These files are [[text file|http://en.wikipedia.org/wiki/Text_file]] complying with the [[Windows standard|http://en.wikipedia.org/wiki/Text_file#Standard_Windows_.txt_files]]. So you can use any text editor (e.g. notepad++, vim...) to edit them. 
+These files are [[text file|http://en.wikipedia.org/wiki/Text_file]] complying with the [[Windows standard|http://en.wikipedia.org/wiki/Text_file#Standard_Windows_.txt_files]]. So you can use any text editor (e.g. notepad, notepad++, vim...) to edit them. 
+
+The [[applist topic|applist]] details the format of these files.
 
 In fact, you can have so much file as you want according to your needs. For example, you can have an [[applist]] file per computer or a set of computer (e.g. children, purchasing department...). If you use a domain controller, you can match [[applist]] files with your Organisational Units (OU).
 
 By default, the [[applist]] files are stored in the &lt;&lt;file appstore&gt;&gt; directory located at the same level that the directory containing the [[appdeploy]] script. To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable. 
 
-The [[applist topic|applist]] details the format of these files.
+!!Applications store
+A way of making is to store installers into the same directory that [[applist]] files with a separate folder for each product (Mozilla Firefox and its extension may be considered as one product). It clarifies the installers organisation and allow to have a [[__postinstall__]] [[hook script|Hook script]] for each of them.
 
 !example
 
 {{applist example}}
 </pre>
 </div>
-<div created="20150531203907510" creator="fmezou" modified="20150531214356785" modifier="fmezou" tags="How-to" title="How to build the medium">
-<pre>The [[appdeploy]] script is designed to be independent from the used type of media. This can be a network share reached from its UNC name (e.g. &lt;&lt;file \\myserver\share&gt;&gt;), a DVD or CD, a USB Stick or any removable media. Thus the media building is limited to file copy or to use your favourite CD/DVD burner utility. 
+<div created="20150531203907510" creator="fmezou" modified="20150602212001872" modifier="fmezou" tags="How-to" title="How to build the medium">
+<pre>The [[appdeploy]] script is designed to be independent from the used type of media. This can be a network share reached from its UNC name (e.g. &lt;&lt;file \\myserver\share&gt;&gt;), a DVD or CD, a USB Stick or any removable media. Thus the media building is limited to copy files or use your favourite CD/DVD burner utility. 
 
-The medium must contain the directory with installation packages according to the [[APP_STORE_DIR]] environment variable and the following files from the &lt;&lt;file appdeploy&gt;&gt; directory: 
+The medium must contain the directory with installers (see  '[[How to build the application list]]') according to the [[APP_STORE_DIR]] environment variable and the following files from the &lt;&lt;file appdeploy&gt;&gt; directory: 
 
 *&lt;&lt;file appdeploy.cmd&gt;&gt;
 
@@ -6376,7 +6425,6 @@ The medium must contain the directory with installation packages according to th
 *&lt;&lt;file &amp;#95;&amp;#95;exit&amp;#95;&amp;#95;.cmd&gt;&gt; //(optional)//
 
 *&lt;&lt;file &amp;#95;&amp;#95;init&amp;#95;&amp;#95;.cmd&gt;&gt; //(optional)//
-
 
 !!example
 
@@ -6398,17 +6446,41 @@ The below block show a typical file tree for a media of deployment.
     ├───dummy
     │       aninstaller.cmd
     │       aninstaller.msi
-    │       postinstall.cmd
-    │       
+    │              
     └───extended dummy
             aninstaller.cmd
-            postinstall.cmd
+            __postinstall__.cmd
 ```</pre>
 </div>
-<div created="20150527203214369" creator="fmezou" modified="20150531095348330" modifier="fmezou" tags="How-to" title="How to tune your environment">
-<pre>By default, you have nothing to tune. The default value of [[environment variables|Environment Variables]] allows a working with the following features:
+<div created="20150602213341244" creator="fmezou" modified="20150602220940360" modifier="fmezou" tags="How-to" title="How to deploy from a DVD">
+<pre>he phase of deployment start by calling [[appdeploy]] script from a command shell. The only argument to pass is the set name according to your organisation choice (see [[How to build the application list]])
 
-*all action, expect debug one, are only logged in a text file name &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
+As any installation of program, you must launch the script with administrator privilege (right click on the command prompt link, and choose `run as administrator`) . 
+
+TODO : put an example of config (init hook)
+
+!!example
+&lt;kbd&gt;C:\&gt;d:\appdeploy\appdeploy.cmd dummy&lt;/kbd&gt;
+
+</pre>
+</div>
+<div created="20150602214712942" creator="fmezou" modified="20150602220943583" modifier="fmezou" tags="How-to" title="How to deploy through a network">
+<pre>The phase of deployment start by calling [[appdeploy]] script from a command shell. The only argument to pass is the set name according to your organisation choice (see [[How to build the application list]])
+
+As any installation of program, you must launch the script with administrator privilege (right click on the command prompt link, and choose `run as administrator`) . 
+
+TODO : put an example of config (init hook)
+
+To push system integration further, you can call this script from a schedule task with the sending of an summary mail (see [[How to tune your environment]]). 
+
+!!example
+&lt;kbd&gt;C:&gt;\\myserver\share\appdeploy.cmd dummy&lt;/kbd&gt;
+</pre>
+</div>
+<div created="20150527203214369" creator="fmezou" modified="20150602173448283" modifier="fmezou" tags="How-to" title="How to tune your environment">
+<pre>By default, you have nothing to tune. The default values of [[environment variables|Environment Variables]] allows a working with the following features:
+
+*all action, expect debug one, are only logged in a text file named &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
 
 *the [[applist]] files (at least &lt;&lt;file &quot;applist-all.txt&quot;&gt;&gt;) are stored in the &lt;&lt;file appstore&gt;&gt; directory located at the same level that the directory containing the [[appdeploy]] script.
 
@@ -6416,11 +6488,11 @@ If these features do not comply with your need, you must consider tuning the [[e
 
 *To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable. 
 
-*To change the level of message logged, you must tune the [[LOGLEVEL]] environment variable.
+*To change the level of messages logged, you must tune the [[LOGLEVEL]] environment variable.
 
-*To receive an email with a summary and detailed information on actions done by lAppUpdate, you must tune the [[LOGMAIL]] environment variable, and specifies your account mail configuration in [[SMTP_SERVER]] (eventually [[SMTP_SERVER_PORT]]) and [[SYSADM_TO_ADDR]] environment variables.
+*To receive an email with a summary and detailed informations on actions done by lAppUpdate, you must tune the [[LOGMAIL]] environment variable, and specifies your account mail configuration in [[SMTP_SERVER]] (eventually [[SMTP_SERVER_PORT]]) and [[SYSADM_TO_ADDR]] environment variables.
 
-*To run the script in an interactive (i.e. following installation actions in real time), you must tune the [[SILENT]] environment variable.
+*To run the script in an interactive mode (i.e. following installation actions in real time through the command shell), you must tune the [[SILENT]] environment variable.
 
 Typical settings of [[environment variables|Environment Variables]] are detailed in the following How-to:
 
@@ -6429,16 +6501,16 @@ Typical settings of [[environment variables|Environment Variables]] are detailed
 *[[How to deploy application through a network]]
 </pre>
 </div>
-<div created="20150503171234542" creator="fmezou" modified="20150531203952996" modifier="fmezou" tags="TableOfContents" title="How-to">
-<pre>To deploy application, there are two main use cases. The first one is based on a share network, the second is based on a DVD distribution. These cases have their own constraints and answer to specific need. The main advantage to have a centralised application deploying system is to allow to a system administrator to have a consistency application park.
+<div created="20150503171234542" creator="fmezou" modified="20150602221110012" modifier="fmezou" tags="TableOfContents" title="How-to">
+<pre>To deploy application, there are two main use cases. The first one is based on a share network, the second is based on a DVD distribution. These cases have their own constraints and answer to specific needs. The main advantage to have a centralised application deploying system is to allow to a system administrator to have a consistency application park.
 
 &lt;&lt;note &quot;If you manage a unique PC connected to Internet, the easiest way is to let each application managing its own upgrades (automatically or manual way).&quot;&gt;&gt;
 
-The use of a network share implies that the pc is connected to a local network, with a file server available. This use case is recommended for SOHO application deploying (less than 10 pc) and allows silent installation of patches or new applications. 
+The use of a network share implies that the pc is connected to a local network, with an available file server. This use case is recommended for SOHO application deploying (less than 10 pc) and allows silent installation of patches or new applications. 
 
-The use of a DVD is attractive for use in a standalone non connected environment (e.g. Industrial PC or access control management console).
+The use of a DVD is attractive for use in a standalone and non connected environment (e.g. Industrial PC or access control management console).
 
-But, these two use cases comply with the following steps
+But, these two use cases comply with the following steps:
 
 #[[Tune your environment |How to tune your environment]]
 
@@ -6446,11 +6518,8 @@ But, these two use cases comply with the following steps
 
 #[[Build the medium|How to build the medium]]
 
-#Deploy applications from a [[DVD|  How to deploy application from a DVD]] or [[Network share| How to deploy application through a network]]
+#Deploy applications from a [[DVD|How to deploy from a DVD]] or [[Network share|How to deploy through a network]]
 
-Additional how-to:
-
-&lt;&lt;list-links &quot;[tag[How-to]]&quot;&gt;&gt;
 </pre>
 </div>
 <div created="20150518221720263" creator="fmezou" modified="20150518222232135" modifier="fmezou" tags="Releases" title="lAppUpdate Versioning">
@@ -6511,6 +6580,15 @@ Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 <pre>The following topics details the usage of lAppUpdate scripts.
 
 &lt;&lt;list-links &quot;[tag[Naming conventions]sort[]]&quot;&gt;&gt;</pre>
+</div>
+<div created="20150602203429357" creator="fmezou" modified="20150602204951389" modifier="fmezou" tags="Concepts" title="Non-public script">
+<pre>Non-public scripts are those that are not intended to be used by third parties, so these scripts may change or even removed.
+
+&lt;&lt;note &quot;I don't use the term 'private' for non-public, since no script is really private.&quot;&gt;&gt;
+</pre>
+</div>
+<div created="20150602203335597" creator="fmezou" modified="20150602205006126" modifier="fmezou" tags="Concepts" title="Public script">
+<pre>Public scripts are those that you can use, with the commitment to avoid backward incompatible changes (i.e. specially with the command line options).</pre>
 </div>
 <div created="20150521191309589" creator="fmezou" modified="20150522074836313" modifier="fmezou" tags="Read-me" title="Read-me">
 <pre>!{{History of lAppUpdate!!title}}
@@ -6586,7 +6664,7 @@ This release is a {initial development|maintenance|minor|major} one. &lt;short d
 &lt;$transclude tiddler=&lt;&lt;currentTab&gt;&gt; /&gt;
 </pre>
 </div>
-<div created="20150503150320388" creator="fmezou" modified="20150522075333397" modifier="fmezou" tags="About" title="Requirements" type="">
+<div created="20150503150320388" creator="fmezou" modified="20150602200642790" modifier="fmezou" tags="About" title="Requirements" type="">
 <pre>The requirements for this project were:
 
 * [[appdeploy]] must run on windows 7 without prerequisites (I.e. no agent must be prior installed). Theses implies that this modules must be written in [[Command shell|https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR]] or [[Windows Script Host|https://msdn.microsoft.com/library/d1wf56tt.aspx]].
@@ -6595,7 +6673,7 @@ This release is a {initial development|maintenance|minor|major} one. &lt;short d
 
 * [[appdeploy]] must work with any type of installation package (MSI package, EXE package or a classic distribution with files and a setup.exe).
 
-* [[appdeploy]] must have pre install and post installation hook to customize the start menu or install additional packs (Firefox extension, ~VirtualBox Extension Pack, Tortoise Language Pack...)</pre>
+* [[appdeploy]] must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, ~VirtualBox Extension Pack, Tortoise Language Pack...)</pre>
 </div>
 <div created="20150517175826026" creator="fmezou" modified="20150522075736240" modifier="fmezou" tags="About" title="RoadMap">
 <pre>There are still many improvements planned for the coming months:
@@ -6620,20 +6698,16 @@ This release is a {initial development|maintenance|minor|major} one. &lt;short d
 
 Also see the issues list on ~GitHub: https://github.com/fmezou/lAppUpdate</pre>
 </div>
-<div created="20150530085540729" creator="fmezou" modified="20150530141701995" modifier="fmezou" tags="[[Naming conventions]]" title="Scripts naming">
+<div created="20150530085540729" creator="fmezou" modified="20150602204131809" modifier="fmezou" tags="[[Naming conventions]]" title="Scripts naming">
 <pre>Scripts have short, all-lowercase names. 
 
-A script may be ''public'', ''non-public'' or a ''hook''. 
+A script may be [[public|Public script]], [[non-public|Non-public script]] or a [[hook|Hook script]]. 
 
-''Public scripts'' are those that you can use, with the commitment to avoid backward incompatible changes (i.e. specially with the command line options). Public scripts have all-lowercase names (e.g. `appdeploy`).
+[[Public scripts|Public script]] have all-lowercase names (e.g. `appdeploy`).
 
-''Non-public scripts'' are those that are not intended to be used by third parties, so these scripts may change or even removed. Non-public scripts have all lowercase names with a leading underscore (e.g. `_log2mail`).
+[[Non-public scripts|Non-public script]] have all lowercase names with a leading underscore (e.g. `_log2mail`).
 
-&lt;&lt;note &quot;I don't use the term 'private' for non-public, since no script is really private.&quot;&gt;&gt;
-
-''Hook scripts'' are only call from lAppUpdate scripts and have a public interface (see above). These scripts are designed for doing third parties tasks (e.g. tuning the environment) at specific time (i.e before starting the script). Hook scripts have all lowercase names with a double leading and trailing underscore (e.g. `__init__`). 
-
-&lt;&lt;note &quot;a hook script name is hard coded in the caller script, so the name is considered like a reserved keyword and cannot be modified&quot; &gt;&gt;
+[[Hook scripts|Hook script]] have all lowercase names with a double leading and trailing underscore (e.g. `__init__`). 
 
 Furthermore, this set of rules is inspired from the naming convention defining in 'Python Developer's Guide' [[PEP 0008|https://www.python.org/dev/peps/pep-0008/#package-and-module-names]].
 </pre>

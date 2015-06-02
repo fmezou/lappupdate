@@ -152,12 +152,12 @@ if errorlevel 1 (
 ) else (
     call :WriteInfoLog Installation of %* succeded
 )
-if not exist "%~dp1postinstall.cmd" goto :EOF
-call "%~dp1postinstall.cmd">>"%UPDATE_LOGFILE%"
+if not exist "%~dp1__postinstall__.cmd" goto :EOF
+call "%~dp1__postinstall__.cmd">>"%UPDATE_LOGFILE%"
 if errorlevel 1 (
-    call :WriteWarningLog Post Installation of "%~dp1postinstall.cmd" failed ^(Errorlevel: %errorlevel%^)
+    call :WriteWarningLog Post Installation of "%~dp1__postinstall__.cmd" failed ^(Errorlevel: %errorlevel%^)
 ) else (
-    call :WriteInfoLog Post Installation of "%~dp1postinstall.cmd" succeded
+    call :WriteInfoLog Post Installation of "%~dp1__postinstall__.cmd" succeded
 )
 goto :EOF
 
@@ -183,12 +183,12 @@ if exist "%~dpn1.mst" (
     call :WriteInfoLog Installed "%~dpn1.msi"
   )  
 )
-if not exist "%~dp1postinstall.cmd" goto :EOF
-call "%~dp1postinstall.cmd">>"%UPDATE_LOGFILE%"
+if not exist "%~dp1__postinstall__.cmd" goto :EOF
+call "%~dp1__postinstall__.cmd">>"%UPDATE_LOGFILE%"
 if errorlevel 1 (
-    call :WriteWarningLog Post Installation of "%~dp1postinstall.cmd" failed ^(Errorlevel: %errorlevel%^)
+    call :WriteWarningLog Post Installation of "%~dp1__postinstall__.cmd" failed ^(Errorlevel: %errorlevel%^)
 ) else (
-    call :WriteInfoLog Post Installation of "%~dp1postinstall.cmd" succeded
+    call :WriteInfoLog Post Installation of "%~dp1__postinstall__.cmd" succeded
 )
 goto :EOF
 
