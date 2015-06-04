@@ -1,0 +1,1 @@
+@echo a dummy installer... dummy application installed ([%0] [%1] [%2])

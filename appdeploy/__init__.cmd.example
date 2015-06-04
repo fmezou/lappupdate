@@ -1,0 +1,31 @@
+rem __init__
+rem This script is a hook script called when appdeploy script start. See Usage 
+rem description syntax for details about used syntax.
+rem When __init__ is called no initialisation task have been launched and no 
+rem environment variables are set. Thus this hook is designed to host yours 
+rem additional initialisation tasks (e.g. tuning environment variables)
+rem
+rem Usage: __init__
+rem 
+rem Exit code
+rem     0: no error
+rem 
+rem Environment variables
+rem     None
+rem 
+rem The following section give an example for a USB Stick based deployment and
+rem a network based one. According to your need, you can uncomment the following
+rem lines and adapt them.
+rem
+rem USB stick based deployment
+rem if not exist "%CD%\..\log" mkdir "%CD%\..\log"
+rem ARCHIVE_LOGFILE=%CD%\..\log\appdeploy.log
+rem set SILENT=0
+rem set LOGMAIL=0
+rem
+rem Network based deployment
+rem Please tune the three below variables to you mail environment. 
+rem set SMTP_SERVER=smtp.example.com
+rem set SMTP_SERVER_PORT=25
+rem set SYSADM_TO_ADDR=sysadmin@example.com  
+rem set LOGMAIL=1

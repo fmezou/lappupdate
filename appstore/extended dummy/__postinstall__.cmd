@@ -1,0 +1,23 @@
+@echo off
+rem __postinstall__
+rem This script is a hook script called when appdeploy script ended an 
+rem installation. See Usage description syntax for details about used syntax.
+rem When __postinstall__ is called the installation package execution ended. 
+rem Thus this hook is designed to host yours additional post installation tasks
+rem  like customize the start menu or install additional packs (e.g. Firefox 
+rem extensions, VirtualBox Extension Pack, Tortoise Language Pack...).
+rem Usage: __postinstall__
+rem
+rem Exit code
+rem     0: no error
+rem 
+rem Environment variables
+rem     None
+rem
+rem The following section give an example for a USB Stick based deployment and
+rem a network based one. According to your need, you can uncomment the following
+rem lines and adapt them.
+set StartMenuPath=\Microsoft\Windows\Start Menu\Programs
+set AllUsersStartMenuPath=%ALLUSERSPROFILE%%StartMenuPath%
+set LocalStartMenuPath=%APPDATA%%StartMenuPath%
+echo a dummy extented postinstaller installer... dummy application fixed
