@@ -1,1 +1,134 @@
-<h1 class="">History of lAppUpdate</h1><p>At the beginning, I searched a means to deploy application for my two personal pc from a home server (based on <a class="tc-tiddlylink-external" href="http://www.freenas.org/" target="_blank">freenas</a>). My searches led me to the following products:</p><ul><li><a class="tc-tiddlylink-external" href="http://www.ocsinventory-ng.org/en/" target="_blank">OCS Inventory NG</a>: it's a good choice for IT professional who manages thousands of PC, and an agent must be deployed on every PC.</li><li>Active Directory GPO:  you can do this with a Windows Server or a server with <a class="tc-tiddlylink-external" href="https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO" target="_blank">Samba configured in domain controller mode</a>. The main constraint is that GPO accept only MSI package.</li></ul><p>So I choose to develop my own deployment system built around two main module : the first one, named <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#appdeploy">appdeploy</a>, deploys application, the second one, named <a class="tc-tiddlylink tc-tiddlylink-missing" href="#appdownload">appdownload</a>, checks and downloads applications' updates if any (or the full installation package).</p><h1 class="">Requirements</h1><p>The requirements for this project were:</p><ul><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#appdeploy">appdeploy</a> must run on windows 7 without prerequisites (I.e. no agent must be prior installed). Theses implies that this modules must be written in <a class="tc-tiddlylink-external" href="https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR" target="_blank">Command shell</a> or <a class="tc-tiddlylink-external" href="https://msdn.microsoft.com/library/d1wf56tt.aspx" target="_blank">Windows Script Host</a>.</li><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#appdeploy">appdeploy</a> must run from a network share (aka from a UNC path) or a removable disk (CD or DVD, USB stick...).</li><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#appdeploy">appdeploy</a> must work with any type of installation package (MSI package, EXE package or a classic distribution with files and a setup.exe).</li><li><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#appdeploy">appdeploy</a> must have pre install and post installation hook to customize the start menu or install additional packs (Firefox extension, VirtualBox Extension Pack, Tortoise Language Pack...)</li></ul><h1 class="">appdeploy</h1><p>This script launches the installer package of the standard application.  See <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#Usage%20description%20syntax">Usage description syntax</a> for details about used syntax. </p><h2 class="">Usage </h2><p><code>appdeploy [set]</code></p><h2 class="">Arguments</h2><table><tbody><tr class="evenRow"><td align="left" valign="top"><code>set</code></td><td align="left" valign="top">is the set name, the script use a file named  which matching <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#applist">applist file format</a>. <code>all</code> is the default value.</td></tr></tbody></table><h2 class="">Exit code</h2><table><tbody><tr class="evenRow"><td align="left"><strong>0</strong></td><td align="left">no error</td></tr><tr class="oddRow"><td align="left"><strong>1</strong></td><td align="left">an error occurred while filtering application</td></tr><tr class="evenRow"><td align="left"><strong>2</strong></td><td align="left">invalid argument. An argument of the command line is not valid (see Usage)</td></tr></tbody></table><h2 class="">Environment variables</h2><p>The following environment variables affect the execution of <code>appdeploy</code>:</p><table><tbody><tr class="evenRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#APP_STORE_DIR">APP_STORE_DIR</a></td><td align="left" valign="top">Contain the path for installation package and the <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#applist">applist</a> files.</td></tr><tr class="oddRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#SYSADM_TO_ADDR">SYSADM_TO_ADDR</a></td><td align="left" valign="top">Contain the mail address of the mail recipient (typically a system administrator)</td></tr><tr class="evenRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#SMTP_SERVER">SMTP_SERVER</a></td><td align="left" valign="top">Contain the fully qualified name of the SMTP server to use</td></tr><tr class="oddRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#SMTP_SERVER_PORT">SMTP_SERVER_PORT</a></td><td align="left" valign="top">Contain the SMTP server’s port number to use</td></tr><tr class="evenRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#UPDATE_LOGFILE">UPDATE_LOGFILE</a></td><td align="left" valign="top">Contain the full path name of the current log file. All log entries for the current update transaction are write in this file.</td></tr><tr class="oddRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#WARNING_LOGFILE">WARNING_LOGFILE</a></td><td align="left" valign="top">Contain the full path name of the current warning log file. All warning messages for the current update transaction are write in this file.</td></tr><tr class="evenRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#SUMMARY_LOGFILE">SUMMARY_LOGFILE</a></td><td align="left" valign="top">Contain the full path name of the current summary log file. All summary messages for the current update transaction are write in this file.</td></tr><tr class="oddRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#ARCHIVE_LOGFILE">ARCHIVE_LOGFILE</a></td><td align="left" valign="top">Contain the full path name of the persistent log file. All messages for the current update transaction are write in this file.</td></tr><tr class="evenRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#SILENT">SILENT</a></td><td align="left" valign="top">Specify the scripts logging mode.</td></tr><tr class="oddRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#LOGMAIL">LOGMAIL</a></td><td align="left" valign="top">Specify if a mail containing the current appdeploy log messages will be sent (see <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#_log2mail">_log2mail</a> script).</td></tr><tr class="evenRow"><td align="left" valign="top"><a class="tc-tiddlylink tc-tiddlylink-resolves" href="#LOGLEVEL">LOGLEVEL</a></td><td align="left" valign="top">Specify the maximum level of log entries written in log files (see <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#UPDATE_LOGFILE">UPDATE_LOGFILE</a> and <a class="tc-tiddlylink tc-tiddlylink-resolves" href="#WARNING_LOGFILE">WARNING_LOGFILE</a>).</td></tr></tbody></table><hr><p><sub>This file was automatically generated by <a class="tc-tiddlylink-external" href="http://tiddlywiki.com/" target="_blank">TiddlyWiki</a>.</sub></p>
+# History of lAppUpdate
+
+At the beginning, I searched a means to deploy application for my two personal
+pc from a home server (based on [freenas][1]). My searches led me to the
+following products:
+
+  * [OCS Inventory NG][2]: it's a good choice for IT professional who manages thousands of PC, and an agent must be deployed on every PC.
+  * Active Directory GPO: you can do this with a Windows Server or a server with [Samba configured in domain controller mode][3]. The main constraint is that GPO accept only MSI package.
+
+So I choose to develop my own deployment system built around two main module :
+the first one, named [appdeploy][4], deploys application, the second one,
+named [appdownload][5], checks and downloads applications' updates if any (or
+the full installation package).
+
+# Requirements
+
+The requirements for this project were:
+
+  * [appdeploy][4] must run on windows 7 without prerequisites (I.e. no agent must be prior installed). Theses implies that this modules must be written in [Command shell][6] or [Windows Script Host][7].
+  * [appdeploy][4] must run from a network share (aka from a UNC path) or a removable disk (CD or DVD, USB stick...).
+  * [appdeploy][4] must work with any type of installation package (MSI package, EXE package or a classic distribution with files and a setup.exe).
+  * [appdeploy][4] must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, VirtualBox Extension Pack, Tortoise Language Pack...)
+
+# appdeploy
+
+This script is a [public script][8]. It launches the installer package of the
+standard application. See [Usage description syntax][9] for details about used
+syntax.
+
+## Usage
+
+`appdeploy [set]`
+
+## Arguments
+
+`set`
+
+is the set name, the script use a file named which matching [applist file
+format][10]. `all` is the default value.
+
+## Exit code
+
+**0**
+no error
+
+**1**
+an error occurred while filtering application
+
+**2**
+invalid argument. An argument of the command line is not valid (see Usage)
+
+## Environment variables
+
+The following environment variables affect the execution of `appdeploy`:
+
+[APP_STORE_DIR][11]
+
+Contain the path for installation package and the [applist][10] files.
+
+[SYSADM_TO_ADDR][12]
+
+Contain the mail address of the mail recipient (typically a system
+administrator)
+
+[SMTP_SERVER][13]
+
+Contain the fully qualified name of the SMTP server to use
+
+[SMTP_SERVER_PORT][14]
+
+Contain the SMTP server’s port number to use
+
+[UPDATE_LOGFILE][15]
+
+Contain the full path name of the current log file. All log entries for the
+current update transaction are write in this file.
+
+[WARNING_LOGFILE][16]
+
+Contain the full path name of the current warning log file. All warning
+messages for the current update transaction are write in this file.
+
+[SUMMARY_LOGFILE][17]
+
+Contain the full path name of the current summary log file. All summary
+messages for the current update transaction are write in this file.
+
+[ARCHIVE_LOGFILE][18]
+
+Contain the full path name of the persistent log file. All messages for the
+current update transaction are write in this file.
+
+[SILENT][19]
+
+Specify the scripts logging mode.
+
+[LOGMAIL][20]
+
+Specify if a mail containing the current appdeploy log messages will be sent
+(see [_log2mail][21] script).
+
+[LOGLEVEL][22]
+
+Specify the maximum level of log entries written in log files (see
+[UPDATE_LOGFILE][15] and [WARNING_LOGFILE][16]).
+
+* * *
+
+This file was automatically generated by [TiddlyWiki][23].
+
+   [1]: http://www.freenas.org/
+   [2]: http://www.ocsinventory-ng.org/en/
+   [3]: https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO
+   [4]: #appdeploy
+   [5]: #appdownload
+   [6]: https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR
+   [7]: https://msdn.microsoft.com/library/d1wf56tt.aspx
+   [8]: #Public%20script
+   [9]: #Usage%20description%20syntax
+   [10]: #applist
+   [11]: #APP_STORE_DIR
+   [12]: #SYSADM_TO_ADDR
+   [13]: #SMTP_SERVER
+   [14]: #SMTP_SERVER_PORT
+   [15]: #UPDATE_LOGFILE
+   [16]: #WARNING_LOGFILE
+   [17]: #SUMMARY_LOGFILE
+   [18]: #ARCHIVE_LOGFILE
+   [19]: #SILENT
+   [20]: #LOGMAIL
+   [21]: #_log2mail
+   [22]: #LOGLEVEL
+   [23]: http://tiddlywiki.com/
+
