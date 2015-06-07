@@ -35,8 +35,8 @@ syntax.
 
 `set`
 
-is the set name, the script use a file named which matching [applist file
-format][10]. `all` is the default value.
+is the set name, the script use a file named _applist-[set].txt_ which
+matching [applist file format][10]. `all` is the default value.
 
 ## Exit code
 

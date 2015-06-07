@@ -6,6 +6,10 @@ their own constraints and answer to specific needs. The main advantage to have
 a centralised application deploying system is to allow to a system
 administrator to have a consistency application park.
 
+_**Note**: If you manage a unique PC connected to Internet, the easiest way is
+to let each application managing its own upgrades (automatically or manual
+way)._
+
 The use of a network share implies that the pc is connected to a local
 network, with an available file server. This use case is recommended for SOHO
 application deploying (less than 10 pc) and allows silent installation of
@@ -26,13 +30,14 @@ But, these two use cases comply with the following steps:
 By default, you have nothing to tune. The default values of [environment
 variables][6] allows a working with the following features:
 
-  * all action, expect debug one, are only logged in a text file named in the `%SystemRoot%` directory (typically ).
-  * the [applist][7] files (at least ) are stored in the directory located at the same level that the directory containing the [appdeploy][8] script.
+  * all action, expect debug one, are only logged in a text file named _appdeploy.log_ in the `%SystemRoot%` directory (typically _C:\Windows\appdeploy.log_).
+  * the [applist][7] files (at least _applist-all.txt_) are stored in the _appstore_ directory located at the same level that the directory containing the [appdeploy][8] script.
 
 If these features do not comply with your need, you must consider tuning the
 [environment variables][6]. The most efficient way to do that is to use
-[__init__][9] and [__exit__][10] hook scripts. See and located in the
-directory containing the [appdeploy][8] script. in to have examples.
+[__init__][9] and [__exit__][10] hook scripts. See ___init__.cmd.example_ and
+___exit__.cmd.example_ located in the directory containing the [appdeploy][8]
+script. in to have examples.
 
   * To change the location of [applist][7] files and installers packages, you must tune the [APP_STORE_DIR][11] environment variable. 
   * To change the level of messages logged, you must tune the [LOGLEVEL][12] environment variable.
@@ -43,9 +48,11 @@ directory containing the [appdeploy][8] script. in to have examples.
 
 The [appdeploy][8] script uses two [applist][7] files to verify which
 applications were installed and if it needs to be updated: the first one is
-named and **must be exist** even if it is empty; the second is named where
-`<set>` is the argument passed to appdeploy on the command line (e.g.
-`.\appdeploy dummy`).
+named _applist-all.txt_ and **must be exist** even if it is empty; the second
+is named _applist-<set>.txt_ where `<set>` is the argument passed to appdeploy
+on the command line (e.g. `.\appdeploy dummy`).
+
+_**Note**: applist file may be empty including applist-all.txt._
 
 These files are [text file][18] complying with the [Windows standard][19]. So
 you can use any text editor (e.g. notepad, notepad++, vim...) to edit them.
@@ -57,10 +64,10 @@ example, you can have an [applist][7] file per computer or a set of computer
 (e.g. children, purchasing department...). If you use a domain controller, you
 can match [applist][7] files with your Organisational Units (OU).
 
-By default, the [applist][7] files are stored in the directory located at the
-same level that the directory containing the [appdeploy][8] script. To change
-the location of [applist][7] files and installers packages, you must tune the
-[APP_STORE_DIR][11] environment variable.
+By default, the [applist][7] files are stored in the _appstore_ directory
+located at the same level that the directory containing the [appdeploy][8]
+script. To change the location of [applist][7] files and installers packages,
+you must tune the [APP_STORE_DIR][11] environment variable.
 
 ## Applications store
 
@@ -80,16 +87,20 @@ script][21] for each of them.
 # Build the medium
 
 The [appdeploy][8] script is designed to be independent from the type of used
-media. This can be a network share reached from its UNC name (e.g. ), a DVD or
-CD, a USB Stick or any removable media. Thus the media building is limited to
-copy files or use your favourite CD/DVD burner utility.
+media. This can be a network share reached from its UNC name (e.g.
+_\\myserver\share_), a DVD or CD, a USB Stick or any removable media. Thus the
+media building is limited to copy files or use your favourite CD/DVD burner
+utility.
 
 The medium must contain the directory with installers (see '[How to build the
 application list][2]') according to the [APP_STORE_DIR][11] environment
-variable and the following files from the directory:
+variable and the following files from the _appdeploy_ directory:
 
-  *   *   *   * _(optional)_
-  * _(optional)_
+  * _appdeploy.cmd_
+  * __appfilter.vbs_
+  * __log2mail.vbs_
+  * ___exit__.cmd_ _(optional)_
+  * ___init__.cmd_ _(optional)_
 
 ## example
 
