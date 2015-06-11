@@ -6100,7 +6100,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="Read-me [[How to]] About How-to Releases" title="$:/StoryList">
+<div list="About RoadMap How-to Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6671,28 +6671,12 @@ This release is a {initial development|maintenance|minor|major} one. &lt;short d
 
 * [[appdeploy]] must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, ~VirtualBox Extension Pack, Tortoise Language Pack...)</pre>
 </div>
-<div created="20150517175826026" creator="fmezou" modified="20150522075736240" modifier="fmezou" tags="About" title="RoadMap">
+<div created="20150517175826026" creator="fmezou" modified="20150609173230111" modifier="fmezou" tags="About" title="RoadMap">
 <pre>There are still many improvements planned for the coming months:
 
-# [[appdeploy]]: use a lock while distributions server update (push). If this lock is present , the script immediately exit.
+&lt;&lt;note &quot;major improvements will be defined later.&quot;&gt;&gt;
 
-# [[appdeploy]]: make an installation sub routine for each classic installer framework (NSIS, ~InstallShield, Windows Installer (setup), Windows Installer MSI…) for doing a silent install.
-
-# [[appdeploy]]: ~DisplayName, ~Version, ~Category are passed as argument to Post install script
-
-# [[appdeploy]]: make a preinstall script
-
-# [[appdeploy]]: tag if a installation package is a standard one or a prerequiste.
-
-# [[appdeploy]]: make a uninstall script based on registry key `UninstallString`.
-
-#* `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\[app32]`
-
-#* `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[app64]`
-
-# [[_appfilter]]: installed program searching use regular expression to well identify application even when version number is bumped in the display name field.
-
-Also see the issues list on ~GitHub: https://github.com/fmezou/lAppUpdate</pre>
+Also see the issues list on ~GitHub: https://github.com/fmezou/lappupdate/issues</pre>
 </div>
 <div created="20150530085540729" creator="fmezou" modified="20150602204131809" modifier="fmezou" tags="[[Naming conventions]]" title="Scripts naming">
 <pre>Scripts have short, all-lowercase names. 
