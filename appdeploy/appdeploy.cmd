@@ -32,10 +32,10 @@ rem By default, the message log are only write in the log file. To have a copy o
 rem output, you must set the SILENT environment variable to 0. 
 rem By default, only the Error, Warning or Informational entry are logged. You can tuned this behavior
 rem by setting the LOGLEVEL environment variable.
-rem     LOGLEVEL=ERROR   : only the Error entry are logged  
-rem     LOGLEVEL=WARNING : only the Error or Warning entry are logged
-rem     LOGLEVEL=INFO    : only the Error, Warning or Informational entry are logged
-rem     LOGLEVEL=DEBUG   : all the entry are logged
+rem     LOGLEVEL=ERROR: only the Error entry are logged  
+rem     LOGLEVEL=WARNING: only the Error or Warning entry are logged
+rem     LOGLEVEL=INFO: only the Error, Warning or Informational entry are logged
+rem     LOGLEVEL=DEBUG: all the entry are logged
 if not defined UPDATE_LOGFILE  set UPDATE_LOGFILE=%TEMP%\appdeploy_today.log
 if not defined WARNING_LOGFILE set WARNING_LOGFILE=%TEMP%\appdeploy_warn_today.log
 if not defined SUMMARY_LOGFILE set SUMMARY_LOGFILE=%TEMP%\appdeploy_summary_today.log
@@ -70,7 +70,7 @@ if %LOGLEVEL%==DEBUG (
 )
 rem Each release of lAppUpdate is identified by a version number that complies 
 rem with the Semantic Versioning 2.0.0 standard (see http://semver.org/).
-set APPDEPLOY_VERSION=0.2.0
+set APPDEPLOY_VERSION=0.2.1
 
 goto Main  
 
@@ -79,7 +79,7 @@ rem ****
 rem WriteErrorLog
 rem     Write a error entry in log file or on console output (based on the syslog format) 
 rem     Usage call :WriteErrorLog string...
-rem         string : is the string explaining the log entry 
+rem         string: is the string explaining the log entry 
 :WriteErrorLog
 if not defined LOGERROR goto :EOF
 echo %DATE% %TIME%; %COMPUTERNAME%; %~nx0 [ERROR]; %* >>"%UPDATE_LOGFILE%"
@@ -90,7 +90,7 @@ goto :EOF
 rem WriteWarningLog
 rem     Write a warning entry in log file or on console output (based on the syslog format) 
 rem     Usage call :WriteWarningLog string...
-rem         string : is the string explaining the log entry 
+rem         string: is the string explaining the log entry 
 :WriteWarningLog
 if not defined LOGWARNING goto :EOF
 echo %DATE% %TIME%; %COMPUTERNAME%; %~nx0 [WARNING]; %* >>"%UPDATE_LOGFILE%"
@@ -101,7 +101,7 @@ goto :EOF
 rem WriteInfoLog
 rem     Write an informational entry in log file or on console output (based on the syslog format) 
 rem     Usage call :WriteInfoLog string...
-rem         string : is the string explaining the log entry 
+rem         string: is the string explaining the log entry 
 :WriteInfoLog
 if not defined LOGINFO goto :EOF
 echo %DATE% %TIME%; %COMPUTERNAME%; %~nx0 [INFO]; %* >>"%UPDATE_LOGFILE%"
@@ -111,7 +111,7 @@ goto :EOF
 rem WriteDebugLog
 rem     Write a debugging entry in log file or on console output (based on the syslog format) 
 rem     Usage call :WriteDebugLog string...
-rem         string : is the string explaining the log entry 
+rem         string: is the string explaining the log entry 
 :WriteDebugLog
 if not defined LOGDEBUG goto :EOF
 echo %DATE% %TIME%; %COMPUTERNAME%; %~nx0 [DEBUG]; %* >>"%UPDATE_LOGFILE%"
@@ -121,7 +121,7 @@ goto :EOF
 rem WriteSummary
 rem     Write a summary entry in summary log file or on console output
 rem     Usage call :WriteSummary string...
-rem         string : is the string explaining the log entry 
+rem         string: is the string explaining the log entry 
 :WriteSummary
 echo %* >>"%SUMMARY_LOGFILE%"
 goto :EOF
@@ -142,8 +142,8 @@ goto :EOF
 rem InstallExe
 rem     Execute the installation package and the postinstall script if it exist.
 rem     Usage call :Install package options...
-rem         package : is the full name of the installation package
-rem         options : are the command line options of the installation package (specific to the package) 
+rem         package: is the full name of the installation package
+rem         options: are the command line options of the installation package (specific to the package) 
 :InstallExe
 call :WriteInfoLog Executing %*
 call %*>>"%UPDATE_LOGFILE%"
@@ -164,7 +164,7 @@ goto :EOF
 rem InstallMSI
 rem     Execute the MSI package with the optional transform file and the postinstall script if it exist.
 rem     Usage call :Install package ...
-rem         package : is the full name of the installation package
+rem         package: is the full name of the installation package
 :InstallMSI
 if exist "%~dpn1.mst" (
   call :WriteInfoLog Installing "%~dpn1.msi" using "%~dpn1.mst"...
@@ -283,7 +283,7 @@ endlocal
 exit /b 1
 
 :Usage
-call :WriteErrorLog  Usage : %0 [set].
+call :WriteErrorLog  Usage: %0 [set].
 call :WriteErrorLog  set is the set name, the script use a file named applist-[set].txt
 call :WriteErrorLog  which describing applications to install. all is the default value.
 rem archive the current log and send a mail to sysadmin

@@ -136,8 +136,8 @@ End Sub
 
 ' WriteErrorLog
 '   Write a error entry in log file or on console output (based on the syslog format) 
-'   Usage : WriteErrorLog string
-'       string : is the string explaining the log entry 
+'   Usage: WriteErrorLog string
+'       string: is the string explaining the log entry 
 Sub WriteErrorLog (lstrEntry)
     Dim lstrTime, lstrDate, lstrComputerName, lstrScriptName, lstrFormated
     
@@ -157,8 +157,8 @@ End Sub
 
 ' WriteWarningLog
 '   Write a Warning entry in log file or on console output (based on the syslog format) 
-'   Usage : WriteWarningLog string
-'       string : is the string explaining the log entry 
+'   Usage: WriteWarningLog string
+'       string: is the string explaining the log entry 
 Sub WriteWarningLog (lstrEntry)
     Dim lstrTime, lstrDate, lstrComputerName, lstrScriptName, lstrFormated
     
@@ -178,8 +178,8 @@ End Sub
 
 ' WriteInfoLog
 '   Write an informational entry in log file or on console output (based on the syslog format) 
-'   Usage : WriteInfoLog string
-'       string : is the string explaining the log entry 
+'   Usage: WriteInfoLog string
+'       string: is the string explaining the log entry 
 Sub WriteInfoLog (lstrEntry)
     Dim lstrTime, lstrDate, lstrComputerName, lstrScriptName, lstrFormated
     
@@ -198,8 +198,8 @@ End Sub
 
 ' WriteDebugLog
 '   Write a debugging entry in log file or on console output (based on the syslog format) 
-'   Usage : WriteDebugLog string
-'       string : is the string explaining the log entry 
+'   Usage: WriteDebugLog string
+'       string: is the string explaining the log entry 
 Sub WriteDebugLog (lstrEntry)
     Dim lstrTime, lstrDate, lstrComputerName, lstrScriptName, lstrFormated
     
@@ -218,8 +218,8 @@ End Sub
 
 ' WriteSummary
 '   Write a summary entry in summary file or on console output
-'   Usage : WriteSummary string
-'       string : is the string explaining the log entry 
+'   Usage: WriteSummary string
+'       string: is the string explaining the log entry 
 Sub WriteSummary (lstrEntry)
     Dim lstrTime, lstrDate, lstrComputerName, lstrScriptName, lstrFormated
     objSummaryLogFile.WriteLine lstrEntry
@@ -295,16 +295,16 @@ strArch="x86"
 If WScript.Arguments.Count >= 1 Then
     strArch=LCase(WScript.Arguments(0))
     if not (strArch = "x86" or strArch = "x64") Then
-        WriteErrorLog "Invalid Argument : Unknown OS Architecture ("&strArch&"). Must be x86 either x64."
+        WriteErrorLog "Invalid Argument: Unknown OS Architecture ("&strArch&"). Must be x86 either x64."
         WScript.Quit(2)
     End If
 End If
 
 strAppFileName = objShell.ExpandEnvironmentStrings("%APPLIST%")
-WriteDebugLog "Input file is : ["&strAppFileName&"]"
+WriteDebugLog "Input file is: ["&strAppFileName&"]"
 Set objAppFile = objFileSystem.OpenTextFile(strAppFileName, FOR_READING, False)
 strOutFileName = objShell.ExpandEnvironmentStrings("%APPLIST_TO_INSTALL%")
-WriteDebugLog "Output file is : ["&strOutFileName&"]"
+WriteDebugLog "Output file is: ["&strOutFileName&"]"
 Set objOutFile = objFileSystem.CreateTextFile(strOutFileName, True)
 
 Do While objAppFile.AtEndOfStream <> True
@@ -357,7 +357,7 @@ Do While objAppFile.AtEndOfStream <> True
                 End If
                         
             Case Else
-                WriteErrorLog "Invalid target architecture type items for ["&strAppName&"]. Found : "&strAppTarget&" vs [x86 or x64]"
+                WriteErrorLog "Invalid target architecture type items for ["&strAppName&"]. Found: "&strAppTarget&" vs [x86 or x64]"
                 WScript.Quit(1)
         End Select
     End if
