@@ -5,27 +5,28 @@
 ' This script is a Windows Script one. Thus, it must be used launch with cscript 
 ' command. (e.g. cscript.exe _log2mail.vbs) 
 '
-' Usage : _log2mail
+' Usage: _log2mail
 '
 ' Exit code
 '   0: no error
 '   1: the summary log doesn't exist
 '   2: the server name is empty or not defined (fix %SMTP_SERVER% environment 
 '      variable)
-'   3: the recipient mail address is empty or not defined (fix %SYSADM_TO_ADDR%
+'   3: the recipient mail address is empty or not defined (fix %TO_MAIL_ADDR%
 '      environment variable)  
 '
 ' The SMTP configuration is specified in the below environment variables.
-'   %SYSADM_TO_ADDR% :  contains the mail address of the mail recipient
-'   (typically a system administrator)       
-'   %SMTP_SERVER% : contains the fully qualified name of the SMTP server to use  
-'   %SMTP_SERVER_PORT% : contains the SMTP server's port number to use
+'   %TO_MAIL_ADDR%:  contains the mail address of the mail recipient
+'   (typically a system administrator)
+'   %FROM_MAIL_ADDR% :	Contain the mail address of the mail sender (typically machine mail address)       
+'   %SMTP_SERVER%: contains the fully qualified name of the SMTP server to use  
+'   %SMTP_SERVER_PORT%: contains the SMTP server's port number to use
 '
 ' The log files are specified in the below environment variables.
-'   %SUMMARY_LOGFILE% : contains the installation summary
-'   %WARNING_LOGFILE% : contains the warning messages occurred while script
+'   %SUMMARY_LOGFILE%: contains the installation summary
+'   %WARNING_LOGFILE%: contains the warning messages occurred while script
 '    execution 
-'   %UPDATE_LOGFILE% : contains all messages occurred while  script execution 
+'   %UPDATE_LOGFILE%: contains all messages occurred while  script execution 
 '
 ' This script use 'Microsoft Collaboration Data Objects for Windows 2000' 
 ' (see https://msdn.microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx)
@@ -60,7 +61,7 @@ Else
     End If
 End If
 If (numLog2MailError=0) Then 
-    strMailAddr=Trim(wshShell.ExpandEnvironmentStrings("%SYSADM_TO_ADDR%"))
+    strMailAddr=Trim(wshShell.ExpandEnvironmentStrings("%TO_MAIL_ADDR%"))
     If (strMailAddr="" Or Left(strMailAddr,1)="%") Then
         numLog2MailError=3
     End If
@@ -69,10 +70,10 @@ End If
 If (numLog2MailError=0) Then 
     ' Create the mail
     Set objMessage = CreateObject("CDO.Message")
-    objMessage.Subject = STR_SUBJECT
-    objMessage.From = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%") & "." & wshShell.ExpandEnvironmentStrings("%USERDNSDOMAIN%")& "@free.fr")
+    objMessage.Subject = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%")) & " appdeploy results" 
+    objMessage.From = LCase(wshShell.ExpandEnvironmentStrings("%FROM_MAIL_ADDR%"))
     objMessage.To = strMailAddr
-    objMessage.TextBody = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%") & "." & wshShell.ExpandEnvironmentStrings("%USERDNSDOMAIN%")) & " AppDeploy log messages" & vbCrlf 
+    objMessage.TextBody = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%")) & " appdeploy log messages" & vbCrlf 
 
     ' Add the summary
     strLogFileName=wshShell.ExpandEnvironmentStrings("%SUMMARY_LOGFILE%")
