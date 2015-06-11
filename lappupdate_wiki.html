@@ -257,6 +257,8 @@ Error message and password prompt
 
 <li>File Formats</li>
 
+<li>FROM_MAIL_ADDR</li>
+
 <li>History of lAppUpdate</li>
 
 <li>Hook script</li>
@@ -295,6 +297,8 @@ Error message and password prompt
 
 <li>Release 0.2.0</li>
 
+<li>Release 0.2.1</li>
+
 <li>Release X.Y.Z template</li>
 
 <li>Releases</li>
@@ -315,9 +319,9 @@ Error message and password prompt
 
 <li>SUMMARY_LOGFILE</li>
 
-<li>SYSADM_TO_ADDR</li>
-
 <li>TableOfContents</li>
+
+<li>TO_MAIL_ADDR</li>
 
 <li>Typography</li>
 
@@ -438,7 +442,7 @@ The following environment variables affect the execution of &lt;code&gt;{{!!titl
 |^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
 |^[[WARNING_LOGFILE]] |^{{WARNING_LOGFILE!!contents}}  |</pre>
 </div>
-<div created="20150522095003653" creator="fmezou" modified="20150602205258101" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_log2mail">
+<div created="20150522095003653" creator="fmezou" modified="20150611194700229" modifier="fmezou" tags="Usages [[Non-public scripts]]" title="_log2mail">
 <pre>This script is a [[non-public script|Non-public script]]. It sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
@@ -457,13 +461,14 @@ None
 |''0'' |no error |
 |''1'' |the summary log doesn’t exist |
 |''2'' |the server name is empty or not defined (fix [[SMTP_SERVER]] environment variable) |
-|''3'' |the recipient mail address is empty or not defined (fix [[SYSADM_TO_ADDR]] environment variable) |
+|''3'' |the recipient mail address is empty or not defined (fix [[TO_MAIL_ADDR]] environment variable) |
 
 !!Environment variables
 
 The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
 
-|^[[SYSADM_TO_ADDR]] |^{{SYSADM_TO_ADDR!!contents}} |
+|^[[TO_MAIL_ADDR]] |^{{TO_MAIL_ADDR!!contents}} |
+|^[[FROM_MAIL_ADDR]] |^{{FROM_MAIL_ADDR!!contents}} |
 |^[[SMTP_SERVER]] |^{{SMTP_SERVER!!contents}} |
 |^[[SMTP_SERVER_PORT]] |^{{SMTP_SERVER_PORT!!contents}} |
 |^[[SUMMARY_LOGFILE]] |^{{SUMMARY_LOGFILE!!contents}}  |
@@ -6001,8 +6006,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150604211029817" modifier="fmezou" title="$:/state/tab--2112689675">
 <pre>$:/core/ui/ControlPanel/Basics</pre>
 </div>
-<div modified="20150604213028131" modifier="fmezou" title="$:/state/tab--60931677">
-<pre>Release 0.2.0</pre>
+<div modified="20150611195604847" modifier="fmezou" title="$:/state/tab--60931677">
+<pre>Release 0.2.1</pre>
 </div>
 <div modified="20150522123632720" modifier="fmezou" title="$:/state/tab--86143343">
 <pre>$:/core/ui/ControlPanel/Plugins/Installed/Plugins</pre>
@@ -6013,10 +6018,10 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150531150718080" modifier="fmezou" title="$:/state/tab-1749438307">
 <pre>$:/core/ui/ControlPanel/Info</pre>
 </div>
-<div modified="20150607123031123" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
+<div modified="20150604213044803" modifier="fmezou" title="$:/state/tab/moresidebar-401116514">
 <pre>$:/core/ui/MoreSideBar/Tags</pre>
 </div>
-<div modified="20150607123028587" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
+<div modified="20150611214844796" modifier="fmezou" title="$:/state/tab/sidebar--1835078512">
 <pre>$:/core/ui/SideBar/More</pre>
 </div>
 <div modified="20150522122757949" modifier="fmezou" title="$:/state/tag-manager/About">
@@ -6025,10 +6030,10 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150531140942310" modifier="fmezou" title="$:/state/toc/About-Releases--81657105">
 <pre>close</pre>
 </div>
-<div modified="20150603203852543" modifier="fmezou" title="$:/state/toc/Reference-Concepts--81657105">
+<div modified="20150611194954229" modifier="fmezou" title="$:/state/toc/Reference-Concepts--81657105">
 <pre>close</pre>
 </div>
-<div modified="20150603203853414" modifier="fmezou" title="$:/state/toc/Reference-Environment Variables--81657105">
+<div modified="20150611194955115" modifier="fmezou" title="$:/state/toc/Reference-Environment Variables--81657105">
 <pre>close</pre>
 </div>
 <div modified="20150521164840928" modifier="fmezou" title="$:/state/toc/Reference-File Format--81657105">
@@ -6055,7 +6060,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150521143900572" modifier="fmezou" title="$:/state/toc/Reference-Usage-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150603203916599" modifier="fmezou" title="$:/state/toc/Reference-Usages--81657105">
+<div modified="20150611194957004" modifier="fmezou" title="$:/state/toc/Reference-Usages--81657105">
 <pre>close</pre>
 </div>
 <div modified="20150521170655891" modifier="fmezou" title="$:/state/toc/Reference-Usages-1455273453">
@@ -6076,13 +6081,13 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div modified="20150518215337926" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--1022525576">
 <pre>close</pre>
 </div>
-<div modified="20150604213037699" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
+<div modified="20150611194952219" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to--81657105">
 <pre>close</pre>
 </div>
 <div modified="20150521143858780" modifier="fmezou" title="$:/state/toc/TableOfContents-How-to-497309061">
 <pre>close</pre>
 </div>
-<div modified="20150603203931295" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference--81657105">
+<div modified="20150611194957955" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference--81657105">
 <pre>close</pre>
 </div>
 <div modified="20150521143901588" modifier="fmezou" title="$:/state/toc/TableOfContents-Reference-497309061">
@@ -6100,7 +6105,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150503134933696" creator="f" modified="20150503134934824" modifier="fmezo" title="$:/status/UserName">
 <pre>fmezou</pre>
 </div>
-<div list="About RoadMap How-to Releases" title="$:/StoryList">
+<div list="Read-me [[How to]] About How-to Releases" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -6120,7 +6125,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 <div created="20150517172601950" creator="fmezou" modified="20150602204336571" modifier="fmezou" title="$:/temp/NewTagName">
 <pre></pre>
 </div>
-<div created="20150531093233036" creator="fmezou" modified="20150602221616577" modifier="fmezou" title="$:/temp/search">
+<div created="20150531093233036" creator="fmezou" modified="20150611194950212" modifier="fmezou" title="$:/temp/search">
 <pre></pre>
 </div>
 <div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.8">
@@ -6233,7 +6238,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 Default value: &lt;code&gt;&lt;&lt;file &quot;{{!!default-value}}&quot;&gt;&gt;&lt;/code&gt;</pre>
 </div>
-<div created="20150503172254169" creator="fmezou" modified="20150602205334699" modifier="fmezou" tags="Usages [[Public scripts]]" title="appdeploy">
+<div created="20150503172254169" creator="fmezou" modified="20150611194916517" modifier="fmezou" tags="Usages [[Public scripts]]" title="appdeploy">
 <pre>This script is a [[public script|Public script]]. It launches the installer package of the standard application.  See [[Usage description syntax]] for details about used syntax. 
 
 !!Usage 
@@ -6255,7 +6260,8 @@ Default value: &lt;code&gt;&lt;&lt;file &quot;{{!!default-value}}&quot;&gt;&gt;&
 The following environment variables affect the execution of &lt;code&gt;{{!!title}}&lt;/code&gt;:
 
 |^[[APP_STORE_DIR]] |^{{APP_STORE_DIR!!contents}}  |
-|^[[SYSADM_TO_ADDR]] |^{{SYSADM_TO_ADDR!!contents}} |
+|^[[TO_MAIL_ADDR]] |^{{TO_MAIL_ADDR!!contents}} |
+|^[[FROM_MAIL_ADDR]] |^{{FROM_MAIL_ADDR!!contents}} |
 |^[[SMTP_SERVER]] |^{{SMTP_SERVER!!contents}} |
 |^[[SMTP_SERVER_PORT]] |^{{SMTP_SERVER_PORT!!contents}} |
 |^[[UPDATE_LOGFILE]] |^{{UPDATE_LOGFILE!!contents}}  |
@@ -6353,6 +6359,11 @@ Blank lines and comments introduced by a '#' sign are ignored.
 &lt;&lt;list-links &quot;[tag[File Formats]]&quot;&gt;&gt;
 </pre>
 </div>
+<div contents="Contain the mail address of the mail sender (typically machine mail address)" created="20150611193732156" creator="fmezou" default-value="none" modified="20150611194134535" modifier="fmezou" tags="[[Environment Variables]]" title="FROM_MAIL_ADDR">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
+</div>
 <div created="20150503135230327" creator="fmezou" modified="20150522075011014" modifier="fmezou" tags="About" title="History of lAppUpdate">
 <pre>At the beginning, I searched a means to deploy application for my two personal pc from a home server (based on [[freenas|http://www.freenas.org/]]). My searches led me to the following products:
 
@@ -6370,7 +6381,7 @@ So I choose to develop my own deployment system built around two main module : t
 
 &lt;&lt;note &quot;by definition, a hook script is optional and may be not exist.&quot; &gt;&gt;</pre>
 </div>
-<div created="20150531212326050" creator="fmezou" modified="20150607123122099" modifier="fmezou" tags="Read-me" title="How to">
+<div created="20150531212326050" creator="fmezou" modified="20150611214906395" modifier="fmezou" tags="Read-me" title="How to">
 <pre>&lt;$importvariables filter=&quot;[[$:/core/ui/PageMacros]] [all[shadows+tiddlers]tag[$:/tags/Macro]!has[draft.of]]&quot;&gt;
 
 !{{How-to!!title}}
@@ -6484,7 +6495,7 @@ To push system integration further, you can call this script from a schedule tas
 &lt;kbd&gt;C:&gt;\\myserver\share\appdeploy.cmd dummy&lt;/kbd&gt;
 </pre>
 </div>
-<div created="20150527203214369" creator="fmezou" modified="20150603203719921" modifier="fmezou" tags="How-to" title="How to tune your environment">
+<div created="20150527203214369" creator="fmezou" modified="20150611194824983" modifier="fmezou" tags="How-to" title="How to tune your environment">
 <pre>By default, you have nothing to tune. The default values of [[environment variables|Environment Variables]] allows a working with the following features:
 
 *all action, expect debug one, are only logged in a text file named &lt;&lt;file &quot;appdeploy.log&quot;&gt;&gt; in the `%SystemRoot%` directory (typically &lt;&lt;file &quot;C:\Windows\appdeploy.log&quot;&gt;&gt;).
@@ -6497,7 +6508,7 @@ If these features do not comply with your need, you must consider tuning the [[e
 
 *To change the level of messages logged, you must tune the [[LOGLEVEL]] environment variable.
 
-*To receive an email with a summary and detailed informations on actions done by lAppUpdate, you must tune the [[LOGMAIL]] environment variable, and specifies your account mail configuration in [[SMTP_SERVER]] (eventually [[SMTP_SERVER_PORT]]) and [[SYSADM_TO_ADDR]] environment variables.
+*To receive an email with a summary and detailed informations on actions done by lAppUpdate, you must tune the [[LOGMAIL]] environment variable, and specifies your account mail configuration in [[SMTP_SERVER]] (eventually [[SMTP_SERVER_PORT]]),  [[FROM_MAIL_ADDR]] and [[TO_MAIL_ADDR]] environment variables.
 
 *To run the script in an interactive mode (i.e. following installation actions in real time through the command shell), you must tune the [[SILENT]] environment variable.
 </pre>
@@ -6573,7 +6584,7 @@ Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 The value is one of:
 
 |^`0` |^No mail is sent |
-|^`1` |^A mail with the content of the log files is sent to [[SYSADM_TO_ADDR]] |
+|^`1` |^A mail with the content of the log files is sent to [[TO_MAIL_ADDR]] |
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
@@ -6591,7 +6602,7 @@ Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 <div created="20150602203335597" creator="fmezou" modified="20150602205006126" modifier="fmezou" tags="Concepts" title="Public script">
 <pre>Public scripts are those that you can use, with the commitment to avoid backward incompatible changes (i.e. specially with the command line options).</pre>
 </div>
-<div created="20150521191309589" creator="fmezou" modified="20150607151906437" modifier="fmezou" tags="Read-me" title="Read-me">
+<div created="20150521191309589" creator="fmezou" modified="20150611214933516" modifier="fmezou" tags="Read-me" title="Read-me">
 <pre>&lt;$importvariables filter=&quot;[[$:/core/ui/PageMacros]] [all[shadows+tiddlers]tag[$:/tags/Macro]!has[draft.of]]&quot;&gt;
 
 !{{History of lAppUpdate!!title}}
@@ -6628,6 +6639,14 @@ This release is the ''initial commit'' of the project and contains only a README
 <pre>//See ~GitHub for [[detailed change history|https://github.com/fmezou/lappupdate/compare/v0.1...v0.2.0]]  of this [[release|https://github.com/fmezou/lappupdate/tree/v0.2.0]] and [[download it|https://github.com/fmezou/lappupdate/archive/v0.2.0.zip]].//
 
 This release is a initial development one. It is the first release including scripts and documentation.</pre>
+</div>
+<div caption="0.2.1" created="20150611195046386" creator="fmezou" modified="20150611214228194" modifier="fmezou" released="20150611234200" tags="ReleaseNotes" title="Release 0.2.1">
+<pre>//See ~GitHub for [[detailed change history|https://github.com/fmezou/lappupdate/compare/v0.2.0...0.2.1]]  of this [[release|https://github.com/fmezou/lappupdate/tree/0.2.1]] and [[download it|https://github.com/fmezou/lappupdate/archive/0.2.1.zip]].//
+
+This release is a bug fix one.
+
+*[[issue #7|https://github.com/fmezou/lappupdate/issues/7]] 
+</pre>
 </div>
 <div caption="X.Y.Z" created="20150531094334510" creator="fmezou" modified="20150531151058299" modifier="fmezou" released="yyyymmddhhmmss" sha-1="" tags="Templates" title="Release X.Y.Z template">
 <pre>//See ~GitHub for [[detailed change history|https://github.com/fmezou/lappupdate/compare/&lt;previousversiontag&gt;...&lt;currentversiontag&gt;]]  of this [[release|https://github.com/fmezou/lappupdate/tree/&lt;currentversiontag&gt;]] and [[download it|https://github.com/fmezou/lappupdate/archive/&lt;currentversiontag&gt;.zip]].//
@@ -6671,7 +6690,7 @@ This release is a {initial development|maintenance|minor|major} one. &lt;short d
 
 * [[appdeploy]] must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, ~VirtualBox Extension Pack, Tortoise Language Pack...)</pre>
 </div>
-<div created="20150517175826026" creator="fmezou" modified="20150609173230111" modifier="fmezou" tags="About" title="RoadMap">
+<div created="20150517175826026" creator="fmezou" modified="20150611213059975" modifier="fmezou" tags="About" title="RoadMap">
 <pre>There are still many improvements planned for the coming months:
 
 &lt;&lt;note &quot;major improvements will be defined later.&quot;&gt;&gt;
@@ -6717,17 +6736,17 @@ Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div contents="Contain the mail address of the mail recipient (typically a system administrator)" created="20150523100647324" creator="fmezou" default-value="none" modified="20150531103803290" modifier="fmezou" tags="[[Environment Variables]]" title="SYSADM_TO_ADDR">
-<pre>{{!!contents}}
-
-Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
-</div>
 <div caption="{{$:/language/SideBar/Contents/Caption}}" created="20150503151104523" creator="fmezou" list="About How-to Reference" list-after="$:/core/ui/SideBar/Open" modified="20150521143816430" modifier="fmezou" tags="$:/tags/SideBar" title="TableOfContents" type="text/vnd.tiddlywiki">
 <pre>&lt;div class=&quot;tc-table-of-contents&quot;&gt;
 
 &lt;&lt;toc-selective-expandable 'TableOfContents'&gt;&gt;
 
 &lt;/div&gt;</pre>
+</div>
+<div contents="Contain the mail address of the mail recipient (typically a system administrator)" created="20150523100647324" creator="fmezou" default-value="none" modified="20150611194549999" modifier="fmezou" tags="[[Environment Variables]]" title="TO_MAIL_ADDR">
+<pre>{{!!contents}}
+
+Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
 <div created="20150522114658025" creator="fmezou" modified="20150525180240237" modifier="fmezou" tags="About" title="Typography">
 <pre>The following macros are used throughout lAppUpdate documentation. 
