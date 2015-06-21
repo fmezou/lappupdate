@@ -55,7 +55,10 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Custom
 /appdeploy/mysetenv.cmd
 /*.lnk
 desktop.ini
 __*__.cmd
+/appdownload/.idea
