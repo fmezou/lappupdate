@@ -32,15 +32,16 @@ The following environment variables affect the execution of <code>{{!!title}}</c
 """
 
 
-import cots
-import cots.adobeflashplayer
+from cots import adobeflashplayer
+
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.3.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
+
 if __name__ == "__main__":
-    print(__doc__)
-    print(cots.__version__)
-    print(cots.adobeflashplayer.__version__)
+    my_class=adobeflashplayer.AdobeFlashPlayerActiveX()
+    #my_class.check_update("1.0", "2015-01-01")
+
