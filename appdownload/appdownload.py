@@ -1,38 +1,34 @@
-"""This script checks and downloads applications' updates if any (or the full
-installation package). See [[Usage description syntax]] for details about used
-syntax.
+"""Check and download applications' updates if any.
 
-This script is a [[Python Script|https://www.python.org/]] one. Thus, it must be
-launched with [[python|https://docs.python.org/3/tutorial/interpreter.html#invoking-the-interpreter]]
-command. (e.g. `python.exe -m appdownload`)
+Usage
+appdownload.py [-h] [-c | -d | -t] [--version]
 
-!!Usage
+optional arguments:
+  -h, --help       show this help message and exit
+  -c, --checkonly  check and report if applications' updates are available
+                   without download it
+  -d, --download   download applications' updates based on the last build
+                   catalog (useful to recover a crashed application storage)
 
-`appdownload [args...]`
+  -t, --testconf   check an appdownload.ini configuration file for internal
+                   correctness
+  --version        show program's version number and exit
 
-!!Arguments
+Exit code
+  0: no error
+  1: an error occurred (error messages are print on stderr stream console
+     and write in a log file.
+  2: invalid argument. An argument of the command line isn't valid (see Usage).
 
-|^`args` |^specifies ..... |
-
-
-!!Exit code
-
-|''0'' |no error |
-|''1'' |an error occurred while filtering application |
-|''2'' |invalid argument. An argument of the command line is not valid (see Usage) |
-|''...'' |... |
-
-
-!!Environment variables
-
-The following environment variables affect the execution of <code>{{!!title}}</code>:
-
-|^[[VAR template]] |^{{VAR template!!contents}}  |
-
+Environment variables
+The following environment variables affect the execution of this script:
+#TODO:
 """
 
 
-from cots import adobeflashplayer
+import argparse
+
+# from cots import adobeflashplayer
 
 
 __author__ = "Frederic MEZOU"
@@ -40,8 +36,46 @@ __version__ = "0.3.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
+class AppDownload:
+    def __init__(self):
+        pass
 
-if __name__ == "__main__":
-    my_class=adobeflashplayer.AdobeFlashPlayerActiveX()
-    #my_class.check_update("1.0", "2015-01-01")
+    def run(self):
+        raise NotImplementedError
 
+    def check(self):
+        raise NotImplementedError
+
+    def download(self):
+        raise NotImplementedError
+
+    def test_configuration(self):
+        raise NotImplementedError
+
+
+# Entry point
+# Build the command line parser
+parser = argparse.ArgumentParser(
+    description="Check and download applications\' updates if any.")
+general = parser.add_mutually_exclusive_group()
+general.add_argument("-c", "--checkonly", action="store_true",
+                     help="check and report if applications' updates are available without"
+                          " download it")
+general.add_argument("-d", "--download", action="store_true",
+                     help="download applications' updates based on the last build catalog"
+                          " (useful to recover a crashed application storage)")
+general.add_argument("-t", "--testconf", action="store_true",
+                     help="check an appdownload.ini configuration file for internal correctness")
+parser.add_argument("--version", action="version", version="%(prog)s version "+ __version__)
+
+# Parse and run.
+args = parser.parse_args()
+maintask = AppDownload()
+if args.checkonly:
+    rc = maintask.check()
+elif  args.download:
+    rc = maintask.download()
+elif  args.testconf:
+    rc = maintask.test_configuration()
+else:
+    rc = maintask.run()
