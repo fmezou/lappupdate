@@ -108,10 +108,10 @@ class AppDownload:
         Parameters
             None
         """
-        assert(self._config_file is not None)
+        assert self._config_file is not None
         self._config = configparser.ConfigParser(
             interpolation=configparser.ExtendedInterpolation())
-        self._config.read(self._config_file)
+        self._config.read_file(self._config_file)
         print("Sections : ", self._config.sections())
         if self._config.sections():
             for app in self._config["app"]:
@@ -120,8 +120,8 @@ class AppDownload:
                     appsection = self._config[app]
                     for key in appsection:
                         print(key, ":", appsection[key])
-        else:
-            print("Invalid file : "+self._config_file)
+        self._config_file.close()
+        self._config_file = None
 
 if __name__ == "__main__":
     # Entry point
@@ -140,6 +140,7 @@ if __name__ == "__main__":
                          help="check an appdownload.ini configuration file for "
                               "internal correctness")
     parser.add_argument("--configfile", default="appdownload.ini",
+                        type=argparse.FileType(mode='r'),
                         help="The file specified contains the configuration "
                              "details. The information in this file includes "
                              "application catalog. See appdownload.ini for "
