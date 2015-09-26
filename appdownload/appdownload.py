@@ -43,6 +43,24 @@ __version__ = "0.3.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
+class Error(Exception):
+    """Base class for AppDownload exceptions."""
+
+    def __init__(self, msg=""):
+        self.message = msg
+
+    def __str__(self):
+        return self.message
+
+
+class MissingMandatorySectionError(Error):
+    """ Raised when a mandatory section is missing."""
+
+    def __init__(self, section):
+        Error.__init__(self, "No Section: %r" % (section,))
+        self.section = section
+
+
 class AppDownload:
     """Application class.
 
@@ -113,13 +131,15 @@ class AppDownload:
             interpolation=configparser.ExtendedInterpolation())
         self._config.read_file(self._config_file)
         print("Sections : ", self._config.sections())
-        if self._config.sections():
+        if "app" in self._config.sections():
             for app in self._config["app"]:
                 print(app, ":", self._config["app"].getboolean(app))
                 if self._config["app"].getboolean(app):
                     appsection = self._config[app]
                     for key in appsection:
                         print(key, ":", appsection[key])
+        else:
+            raise MissingMandatorySectionError("app")
         self._config_file.close()
         self._config_file = None
 
