@@ -1,0 +1,26 @@
+{
+    "description": "lAppUpdate Wiki",
+    "plugins": [
+        "tiddlywiki/tiddlyweb",
+        "tiddlywiki/filesystem",
+        "tiddlywiki/highlight"
+    ],
+    "themes": [
+        "tiddlywiki/vanilla",
+        "tiddlywiki/snowwhite"
+    ],
+    "build": {
+		"lappupdate": [
+            "--output",".",
+            "--rendertiddler","$:/core/save/all","lappupdate_wiki.html","text/plain"
+        ],
+		"readme": [
+            "--output",".",
+            "--rendertiddler","Read-me","README.html"
+        ],
+		"howto": [
+            "--output",".",
+            "--rendertiddler","How to","HOWTO.html"
+        ]        
+	}
+}
