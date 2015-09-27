@@ -1,0 +1,1 @@
+tiddlywiki ..\wiki --server
