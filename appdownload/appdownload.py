@@ -50,31 +50,31 @@ __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
 # Sections and values names used in the configuration file (see appdownload.ini)
-_APPS_LIST_SECT_NAME = "applications"
-_APP_INSTALL_KEY_NAME = "install"
-_APP_MODULE_KEY_NAME = "module"
-_APP_PATH_KEY_NAME = "path"
-_APP_SET_KEY_NAME = "set"
+_APPS_LIST_SECTNAME = "applications"
+_APP_INSTALL_KEYNAME = "install"
+_APP_MODULE_KEYNAME = "module"
+_APP_PATH_KEYNAME = "path"
+_APP_SET_KEYNAME = "set"
 
-_CORE_SECT_NAME = "core"
-_STORE_KEY_NAME = "store"
+_CORE_SECTNAME = "core"
+_STORE_KEYNAME = "store"
 
-_SETS_LIST_SEC_NAME = "sets"
+_SETS_LIST_SECTNAME = "sets"
 
 # Sections and values names used in the catalog file (see catalog.ini)
-_CATALOG_FILE_NAME = "catalog.ini"
-_PROD_NAME_KEY_NAME = "name"
-_PROD_VERSION_KEY_NAME = "version"
-_PROD_PUBDATE_KEY_NAME = "published"
-_PROD_TARGET_KEY_NAME = "target"
+_CATALOG_FILENAME = "catalog.ini"
+_PROD_NAME_KEYNAME = "name"
+_PROD_VERSION_KEYNAME = "version"
+_PROD_PUBDATE_KEYNAME = "published"
+_PROD_TARGET_KEYNAME = "target"
 _PROD_TARGET_X86 = "x86"
 _PROD_TARGET_X64 = "x64"
 _PROD_TARGET_UNIFIED = "unified"
-_PROD_REL_NOTE_URL_KEY_NAME = "release_note"
-_PROD_INSTALLER_KEY_NAME = "installer"
-_PROD_STD_INSTALL_ARGS_KEY_NAME = "std_inst_args"
-_PROD_SILENT_INSTALL_ARGS_KEY_NAME = "silent_inst_args"
-_PROD_UPDATE_AVAIL_KEY_NAME = "update_available"
+_PROD_REL_NOTE_URL_KEYNAME = "release_note"
+_PROD_INSTALLER_KEYNAME = "installer"
+_PROD_STD_INSTALL_ARGS_KEYNAME = "std_inst_args"
+_PROD_SILENT_INSTALL_ARGS_KEYNAME = "silent_inst_args"
+_PROD_UPDATE_AVAIL_KEYNAME = "update_available"
 
 # APPLIST files
 _APPLIST_SEP = ";"
@@ -123,17 +123,17 @@ class MissingAppSectionError(Error):
 class MissingKeyError(Error):
     """ Raised when a key section is missing in a section."""
 
-    def __init__(self, section_name, key_name):
+    def __init__(self, section_name, keyname):
         """constructor.
 
         Parameters
             section_name: Name of the section containing the missing key.
-            key_name: name of missing key.
+            keyname: name of missing key.
         """
         msg = "Key '{1}' is missing in '{0}' application description."
-        Error.__init__(self, msg.format(section_name, key_name))
+        Error.__init__(self, msg.format(section_name, keyname))
         self.section_name = section_name
-        self.key_name = key_name
+        self.keyname = keyname
 
 
 class NotDeclaredSetError(Error):
@@ -243,14 +243,11 @@ class AppDownload:
         Parameters
             None
         """
-        assert self._config_file is not None
         print("Checking the configuration details loaded from '{0}'."
               .format(self._config_file.name))
         self._load_config()
         if self._checked_config:
             print("Configuration details are validated.")
-        else:
-            print("Configuration details contain errors. see above for details")
 
     def _check_update(self):
         """check and report if applications' updates are available without
@@ -261,10 +258,10 @@ class AppDownload:
             None
         """
         assert self._checked_config is True
-        for app_id in self._config[_APPS_LIST_SECT_NAME]:
-            if self._config[_APPS_LIST_SECT_NAME].getboolean(app_id):
+        for app_id in self._config[_APPS_LIST_SECTNAME]:
+            if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
                 print("Checking '{0}' product.".format(app_id))
-                mod_name = self._config[app_id][_APP_MODULE_KEY_NAME]
+                mod_name = self._config[app_id][_APP_MODULE_KEYNAME]
                 app_mod = importlib.import_module(mod_name)
                 app = app_mod.Product()
                 self._load_product(app_id, app)
@@ -285,25 +282,25 @@ class AppDownload:
             None
         """
         assert self._checked_config is True
-        for app_id in self._config[_APPS_LIST_SECT_NAME]:
-            if self._config[_APPS_LIST_SECT_NAME].getboolean(app_id):
-                print("Checking '{0}' product.".format(app_id))
-                mod_name = self._config[app_id][_APP_MODULE_KEY_NAME]
+        for app_id in self._config[_APPS_LIST_SECTNAME]:
+            if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
+                print("Fetching '{0}' product.".format(app_id))
+                mod_name = self._config[app_id][_APP_MODULE_KEYNAME]
                 app_mod = importlib.import_module(mod_name)
                 app = app_mod.Product()
                 self._load_product(app_id, app)
-                if _APP_PATH_KEY_NAME not in self._config[app_id]:
+                if _APP_PATH_KEYNAME not in self._config[app_id]:
                     path = os.path.join(
-                        self._config[_CORE_SECT_NAME][_STORE_KEY_NAME],
+                        self._config[_CORE_SECTNAME][_STORE_KEYNAME],
                         app_id
                     )
                 else:
-                    path = self._config[app_id][_APP_PATH_KEY_NAME]
+                    path = self._config[app_id][_APP_PATH_KEYNAME]
                 app.fetch_update(path)
                 self._dump_product(app_id, app)
+                print("'{0}' product fetched -> '{1}'.".format(app_id, app.installer))
                 del app
                 del app_mod
-                print("'{0}' product updated.".format(app_id))
             else:
                 print("'{0}' product ignored.".format(app_id))
 
@@ -313,54 +310,52 @@ class AppDownload:
         Parameters
             None
         """
-        assert self._config_file is not None
         self._config.read_file(self._config_file)
         # Check the core section
-        if _CORE_SECT_NAME in self._config.sections():
-            section = self._config[_CORE_SECT_NAME]
+        if _CORE_SECTNAME in self._config.sections():
+            section = self._config[_CORE_SECTNAME]
             # 'store' key is mandatory
-            if _STORE_KEY_NAME in section:
+            if _STORE_KEYNAME in section:
                 # Set the catalog filename (absolute path).
                 self._catalog_filename = os.path.join(
-                    self._config[_CORE_SECT_NAME][_STORE_KEY_NAME],
-                    _CATALOG_FILE_NAME
+                    self._config[_CORE_SECTNAME][_STORE_KEYNAME],
+                    _CATALOG_FILENAME
                 )
                 self._catalog_filename = os.path.abspath(self._catalog_filename)
-                print("DEBUG (_load_config) : catalog_fname =", self._catalog_filename)
             else:
-                raise MissingKeyError(_STORE_KEY_NAME, _CORE_SECT_NAME)
+                raise MissingKeyError(_STORE_KEYNAME, _CORE_SECTNAME)
         else:
-            raise MissingMandatorySectionError(_CORE_SECT_NAME)
+            raise MissingMandatorySectionError(_CORE_SECTNAME)
 
         # Check the sets section
-        if _SETS_LIST_SEC_NAME in self._config.sections():
-            sets = self._config[_SETS_LIST_SEC_NAME]
+        if _SETS_LIST_SECTNAME in self._config.sections():
+            sets = self._config[_SETS_LIST_SECTNAME]
         else:
-            raise MissingMandatorySectionError(_SETS_LIST_SEC_NAME)
+            raise MissingMandatorySectionError(_SETS_LIST_SECTNAME)
 
         # Check the applications section
-        if _APPS_LIST_SECT_NAME in self._config.sections():
-            for app_name in self._config[_APPS_LIST_SECT_NAME]:
-                if self._config[_APPS_LIST_SECT_NAME].getboolean(app_name):
+        if _APPS_LIST_SECTNAME in self._config.sections():
+            for app_name in self._config[_APPS_LIST_SECTNAME]:
+                if self._config[_APPS_LIST_SECTNAME].getboolean(app_name):
                     if app_name in self._config.sections():
                         app_desc = self._config[app_name]
                         # 'module' key is mandatory
-                        if _APP_MODULE_KEY_NAME in app_desc:
+                        if _APP_MODULE_KEYNAME in app_desc:
                             pass
                         else:
-                            raise MissingKeyError(app_name, _APP_MODULE_KEY_NAME)
+                            raise MissingKeyError(app_name, _APP_MODULE_KEYNAME)
                         # 'set' key is mandatory and must be declared in the sets section
-                        if _APP_SET_KEY_NAME in app_desc:
-                            if app_desc[_APP_SET_KEY_NAME] in sets:
+                        if _APP_SET_KEYNAME in app_desc:
+                            if app_desc[_APP_SET_KEYNAME] in sets:
                                 pass
                             else:
-                                raise NotDeclaredSetError(app_name, app_desc[ _APP_SET_KEY_NAME])
+                                raise NotDeclaredSetError(app_name, app_desc[_APP_SET_KEYNAME])
                         else:
-                            raise MissingKeyError(app_name, _APP_SET_KEY_NAME)
+                            raise MissingKeyError(app_name, _APP_SET_KEYNAME)
                     else:
                         raise MissingAppSectionError(app_name)
         else:
-            raise MissingMandatorySectionError(_APPS_LIST_SECT_NAME)
+            raise MissingMandatorySectionError(_APPS_LIST_SECTNAME)
         # Checked
         self._checked_config = True
         self._config_file.close()
@@ -375,8 +370,6 @@ class AppDownload:
         try:
             with open(self._catalog_filename, "r+t") as file:
                 self._catalog.read_file(file)
-                for i, v in enumerate(self._catalog.sections()):
-                    print("DEBUG (_read_catalog) : #{0} - v: {1}".format(i, v))
         except FileNotFoundError as err:
             print("_read_catalog", err)
 
@@ -425,24 +418,24 @@ class AppDownload:
         if section_name in self._catalog.sections():
             app_props = self._catalog[section_name]
             product.id = section_name
-            if _PROD_NAME_KEY_NAME in app_props:
-                product.name = app_props[_PROD_NAME_KEY_NAME]
-            if _PROD_VERSION_KEY_NAME in app_props:
-                product.version = app_props[_PROD_VERSION_KEY_NAME]
-            if _PROD_PUBDATE_KEY_NAME in app_props:
-                product.published = app_props[_PROD_PUBDATE_KEY_NAME]
-            if _PROD_TARGET_KEY_NAME in app_props:
-                product.target = app_props[_PROD_TARGET_KEY_NAME]
-            if _PROD_REL_NOTE_URL_KEY_NAME in app_props:
-                product.release_note = app_props[_PROD_REL_NOTE_URL_KEY_NAME]
-            if _PROD_INSTALLER_KEY_NAME in app_props:
-                product.installer = app_props[_PROD_INSTALLER_KEY_NAME]
-            if _PROD_STD_INSTALL_ARGS_KEY_NAME in app_props:
-                product.std_inst_args = app_props[_PROD_STD_INSTALL_ARGS_KEY_NAME]
-            if _PROD_SILENT_INSTALL_ARGS_KEY_NAME in app_props:
-                product.silent_inst_arg = app_props[_PROD_SILENT_INSTALL_ARGS_KEY_NAME]
-            if _PROD_UPDATE_AVAIL_KEY_NAME in app_props:
-                product.update_available = app_props.getboolean(_PROD_UPDATE_AVAIL_KEY_NAME)
+            if _PROD_NAME_KEYNAME in app_props:
+                product.name = app_props[_PROD_NAME_KEYNAME]
+            if _PROD_VERSION_KEYNAME in app_props:
+                product.version = app_props[_PROD_VERSION_KEYNAME]
+            if _PROD_PUBDATE_KEYNAME in app_props:
+                product.published = app_props[_PROD_PUBDATE_KEYNAME]
+            if _PROD_TARGET_KEYNAME in app_props:
+                product.target = app_props[_PROD_TARGET_KEYNAME]
+            if _PROD_REL_NOTE_URL_KEYNAME in app_props:
+                product.release_note = app_props[_PROD_REL_NOTE_URL_KEYNAME]
+            if _PROD_INSTALLER_KEYNAME in app_props:
+                product.installer = app_props[_PROD_INSTALLER_KEYNAME]
+            if _PROD_STD_INSTALL_ARGS_KEYNAME in app_props:
+                product.std_inst_args = app_props[_PROD_STD_INSTALL_ARGS_KEYNAME]
+            if _PROD_SILENT_INSTALL_ARGS_KEYNAME in app_props:
+                product.silent_inst_arg = app_props[_PROD_SILENT_INSTALL_ARGS_KEYNAME]
+            if _PROD_UPDATE_AVAIL_KEYNAME in app_props:
+                product.update_available = app_props.getboolean(_PROD_UPDATE_AVAIL_KEYNAME)
 
     def _dump_product(self, section_name, product):
         """Dump a product class.
@@ -469,18 +462,18 @@ class AppDownload:
             self._catalog.remove_section(section_name)
             self._catalog.add_section(section_name)
         app_properties = self._catalog[section_name]
-        app_properties[_PROD_NAME_KEY_NAME] = product.name
-        app_properties[_PROD_VERSION_KEY_NAME] = product.version
-        app_properties[_PROD_PUBDATE_KEY_NAME] = product.published
-        app_properties[_PROD_TARGET_KEY_NAME] = product.target
-        app_properties[_PROD_REL_NOTE_URL_KEY_NAME] = product.release_note
-        app_properties[_PROD_INSTALLER_KEY_NAME] = product.installer
-        app_properties[_PROD_STD_INSTALL_ARGS_KEY_NAME] = product.std_inst_args
-        app_properties[_PROD_SILENT_INSTALL_ARGS_KEY_NAME] = product.silent_inst_arg
+        app_properties[_PROD_NAME_KEYNAME] = product.name
+        app_properties[_PROD_VERSION_KEYNAME] = product.version
+        app_properties[_PROD_PUBDATE_KEYNAME] = product.published
+        app_properties[_PROD_TARGET_KEYNAME] = product.target
+        app_properties[_PROD_REL_NOTE_URL_KEYNAME] = product.release_note
+        app_properties[_PROD_INSTALLER_KEYNAME] = product.installer
+        app_properties[_PROD_STD_INSTALL_ARGS_KEYNAME] = product.std_inst_args
+        app_properties[_PROD_SILENT_INSTALL_ARGS_KEYNAME] = product.silent_inst_arg
         if product.update_available:
-            app_properties[_PROD_UPDATE_AVAIL_KEY_NAME] = "yes"
+            app_properties[_PROD_UPDATE_AVAIL_KEYNAME] = "yes"
         else:
-            app_properties[_PROD_UPDATE_AVAIL_KEY_NAME] = "no"
+            app_properties[_PROD_UPDATE_AVAIL_KEYNAME] = "no"
 
     def _write_applist(self):
         """Write the applist files from the catalog.
@@ -495,44 +488,39 @@ class AppDownload:
             "# Please modify the configuration file instead (appdowload.ini by default).\n"\
             "# ------------------------------------------------------------------------------\n"
 
-        for app_id in self._config[_APPS_LIST_SECT_NAME]:
-            if self._config[_APPS_LIST_SECT_NAME].getboolean(app_id):
-                print("DEBUG (_write_applist), '{0}' product.".format(app_id))
+        for app_id in self._config[_APPS_LIST_SECTNAME]:
+            if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
                 # build the catalog line
                 app_desc = self._catalog[app_id]
                 app_line = \
-                    app_desc[_PROD_TARGET_KEY_NAME] + _APPLIST_SEP + \
-                    app_desc[_PROD_NAME_KEY_NAME] + _APPLIST_SEP + \
-                    app_desc[_PROD_VERSION_KEY_NAME] + _APPLIST_SEP + \
-                    app_desc[_PROD_INSTALLER_KEY_NAME] + _APPLIST_SEP + \
-                    app_desc[_PROD_SILENT_INSTALL_ARGS_KEY_NAME]
+                    app_desc[_PROD_TARGET_KEYNAME] + _APPLIST_SEP + \
+                    app_desc[_PROD_NAME_KEYNAME] + _APPLIST_SEP + \
+                    app_desc[_PROD_VERSION_KEYNAME] + _APPLIST_SEP + \
+                    app_desc[_PROD_INSTALLER_KEYNAME] + _APPLIST_SEP + \
+                    app_desc[_PROD_SILENT_INSTALL_ARGS_KEYNAME]
 
-                store_path = self._config[_CORE_SECT_NAME][_STORE_KEY_NAME]
-                app_set_name = self._config[app_id][_APP_SET_KEY_NAME]
-                comps = self._config[_SETS_LIST_SEC_NAME][app_set_name]
+                store_path = self._config[_CORE_SECTNAME][_STORE_KEYNAME]
+                app_set_name = self._config[app_id][_APP_SET_KEYNAME]
+                comps = self._config[_SETS_LIST_SECTNAME][app_set_name]
                 comp_set = comps.split(",")
                 for comp_name in comp_set:
                     comp_name = comp_name.strip()
-                    print("DEBUG (_write_applist), '{0}'.".format(comp_name))
-                    file_name = _APPLIST_PREFIX + comp_name + _APPLIST_EXT
-                    file_name = os.path.join(store_path, file_name)
+                    filename = _APPLIST_PREFIX + comp_name + _APPLIST_EXT
+                    filename = os.path.join(store_path, filename)
                     if comp_name not in self._app_set_file:
-                        file = open(file_name, "w+t")
+                        file = open(filename, "w+t")
                         self._app_set_file[comp_name] = file
-                        print("DEBUG (_write_applist), '{0}' set created '{1}'.".format(comp_name, file_name))
+                        print("INFO (_write_applist), '{0}' set created '{1}'.".format(comp_name, filename))
                         dt = (datetime.datetime.now()).replace(microsecond=0)
                         file.write(header.format(dt.isoformat(), comp_name))
                     else:
                         file = self._app_set_file[comp_name]
                     file.write(app_line + "\n")
-
-                print("DEBUG (_write_applist), '{0}' product checked.".format(app_id))
             else:
                 print("DEBUG (_write_applist), '{0}' product ignored.".format(app_id))
 
         # Terminate by closing the files
         for comp_name, file in self._app_set_file.items():
-            print("DEBUG (_write_applist), '{0}' closed.".format(file.name))
             file.close()
 
 

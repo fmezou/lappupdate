@@ -41,7 +41,6 @@ class Product(core.BaseProduct):
             None
         """
         super().__init__()
-        self.id = "dummy"
 
     def check_update(self):
         """checks if a new version is available
@@ -50,8 +49,6 @@ class Product(core.BaseProduct):
             version: version of the currently deployed product.
             modified: release date of the currently deployed product.
         """
-        print("checks if a new version is available, current version {0} - "
-              "released {1}".format(self.version, self.published))
         self.update_available = True
 
     def fetch_update(self, path):
@@ -60,7 +57,6 @@ class Product(core.BaseProduct):
         Parameters
             None
         """
-        print("downloads the latest version of the installer.")
         self.id = "dummy"
         self.name = "dummy application display name"
         self.version = "1.0"

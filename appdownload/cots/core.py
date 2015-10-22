@@ -13,7 +13,7 @@ Constant
 
 
 __all__ = [
-    "Product"
+    "BaseProduct"
 ]
 
 
