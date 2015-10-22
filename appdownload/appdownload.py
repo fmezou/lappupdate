@@ -41,7 +41,6 @@ import argparse
 import configparser
 import importlib
 
-# TODO: rename core in interface (separate core class from interface)
 from cots import core
 
 
@@ -178,10 +177,11 @@ class AppDownload:
             partial one or a full path one.
         """
         # check parameters type
-        # TODO: use assert or raise a TypeError
-        assert isinstance(config_file, io.TextIOBase), \
-            "config_file argument must be a class 'io.TextIOBase'. not {0}"\
-            .format(config_file.__class__)
+        if not isinstance(config_file, io.TextIOBase):
+            msg = "config_file argument must be a class 'io.TextIOBase'. not {0}"
+            msg = msg.format(config_file.__class__)
+            raise TypeError(msg)
+
         self._config = configparser.ConfigParser(
             interpolation=configparser.ExtendedInterpolation())
         self._checked_config = False
@@ -348,19 +348,15 @@ class AppDownload:
                         if _APP_MODULE_KEY_NAME in app_desc:
                             pass
                         else:
-                            raise MissingKeyError(app_name,
-                                                  _APP_MODULE_KEY_NAME)
-                        # 'set' key is mandatory and must be declared in the
-                        # sets section
+                            raise MissingKeyError(app_name, _APP_MODULE_KEY_NAME)
+                        # 'set' key is mandatory and must be declared in the sets section
                         if _APP_SET_KEY_NAME in app_desc:
                             if app_desc[_APP_SET_KEY_NAME] in sets:
                                 pass
                             else:
-                                raise NotDeclaredSetError(app_name,
-                                                      app_desc[_APP_SET_KEY_NAME])
+                                raise NotDeclaredSetError(app_name, app_desc[ _APP_SET_KEY_NAME])
                         else:
-                            raise MissingKeyError(app_name,
-                                                  _APP_SET_KEY_NAME)
+                            raise MissingKeyError(app_name, _APP_SET_KEY_NAME)
                     else:
                         raise MissingAppSectionError(app_name)
         else:
@@ -376,7 +372,6 @@ class AppDownload:
         Parameters
             None
         """
-        # FIXME : hox to check the consitency of the catalog (i.e. architecture)
         try:
             with open(self._catalog_filename, "r+t") as file:
                 self._catalog.read_file(file)
@@ -418,35 +413,36 @@ class AppDownload:
 
         """
         # check parameters type
-        # TODO: use assert or raise a TypeError
-        assert isinstance(product, core.BaseProduct), \
-            "product argument must be a class 'core.BaseProduct'. not {0}"\
-                .format(product.__class__)
-        assert isinstance(section_name, str), \
-            "name argument must be a class 'str'. not {0}"\
-                .format(section_name.__class__)
+        if not isinstance(product, core.BaseProduct):
+            msg = "product argument must be a class 'core.BaseProduct'. not {0}"
+            msg = msg.format(product.__class__)
+            raise TypeError(msg)
+        if not isinstance(section_name, str):
+            msg = "section_name argument must be a class 'str'. not {0}"
+            msg = msg.format(section_name.__class__)
+            raise TypeError(msg)
 
         if section_name in self._catalog.sections():
-            app_properties = self._catalog[section_name]
+            app_props = self._catalog[section_name]
             product.id = section_name
-            if _PROD_NAME_KEY_NAME in app_properties:
-                product.name = app_properties[_PROD_NAME_KEY_NAME]
-            if _PROD_VERSION_KEY_NAME in app_properties:
-                product.version = app_properties[_PROD_VERSION_KEY_NAME]
-            if _PROD_PUBDATE_KEY_NAME in app_properties:
-                product.published = app_properties[_PROD_PUBDATE_KEY_NAME]
-            if _PROD_TARGET_KEY_NAME in app_properties:
-                product.target = app_properties[_PROD_TARGET_KEY_NAME]
-            if _PROD_REL_NOTE_URL_KEY_NAME in app_properties:
-                product.release_note = app_properties[_PROD_REL_NOTE_URL_KEY_NAME]
-            if _PROD_INSTALLER_KEY_NAME in app_properties:
-                product.installer = app_properties[_PROD_INSTALLER_KEY_NAME]
-            if _PROD_STD_INSTALL_ARGS_KEY_NAME in app_properties:
-                product.std_inst_args = app_properties[_PROD_STD_INSTALL_ARGS_KEY_NAME]
-            if _PROD_SILENT_INSTALL_ARGS_KEY_NAME in app_properties:
-                product.silent_inst_arg = app_properties[_PROD_SILENT_INSTALL_ARGS_KEY_NAME]
-            if _PROD_UPDATE_AVAIL_KEY_NAME in app_properties:
-                product.update_available = app_properties.getboolean(_PROD_UPDATE_AVAIL_KEY_NAME)
+            if _PROD_NAME_KEY_NAME in app_props:
+                product.name = app_props[_PROD_NAME_KEY_NAME]
+            if _PROD_VERSION_KEY_NAME in app_props:
+                product.version = app_props[_PROD_VERSION_KEY_NAME]
+            if _PROD_PUBDATE_KEY_NAME in app_props:
+                product.published = app_props[_PROD_PUBDATE_KEY_NAME]
+            if _PROD_TARGET_KEY_NAME in app_props:
+                product.target = app_props[_PROD_TARGET_KEY_NAME]
+            if _PROD_REL_NOTE_URL_KEY_NAME in app_props:
+                product.release_note = app_props[_PROD_REL_NOTE_URL_KEY_NAME]
+            if _PROD_INSTALLER_KEY_NAME in app_props:
+                product.installer = app_props[_PROD_INSTALLER_KEY_NAME]
+            if _PROD_STD_INSTALL_ARGS_KEY_NAME in app_props:
+                product.std_inst_args = app_props[_PROD_STD_INSTALL_ARGS_KEY_NAME]
+            if _PROD_SILENT_INSTALL_ARGS_KEY_NAME in app_props:
+                product.silent_inst_arg = app_props[_PROD_SILENT_INSTALL_ARGS_KEY_NAME]
+            if _PROD_UPDATE_AVAIL_KEY_NAME in app_props:
+                product.update_available = app_props.getboolean(_PROD_UPDATE_AVAIL_KEY_NAME)
 
     def _dump_product(self, section_name, product):
         """Dump a product class.
@@ -457,13 +453,14 @@ class AppDownload:
             product: is the Product class to dump
         """
         # check parameters type
-        # TODO: use assert or raise a TypeError
-        assert isinstance(product, core.BaseProduct), \
-            "product argument must be a class 'core.BaseProduct'. not {0}"\
-                .format(product.__class__)
-        assert isinstance(section_name, str), \
-            "name argument must be a class 'str'. not {0}"\
-                .format(section_name.__class__)
+        if not isinstance(product, core.BaseProduct):
+            msg = "product argument must be a class 'core.BaseProduct'. not {0}"
+            msg = msg.format(product.__class__)
+            raise TypeError(msg)
+        if not isinstance(section_name, str):
+            msg = "section_name argument must be a class 'str'. not {0}"
+            msg = msg.format(section_name.__class__)
+            raise TypeError(msg)
 
         if section_name not in self._catalog.sections():
             self._catalog.add_section(section_name)
