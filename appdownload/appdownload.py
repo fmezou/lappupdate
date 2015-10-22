@@ -317,6 +317,8 @@ class AppDownload:
             # 'store' key is mandatory
             if _STORE_KEYNAME in section:
                 # Set the catalog filename (absolute path).
+                # TODO : treat the exception for os.makedirs
+                os.makedirs(self._config[_CORE_SECTNAME][_STORE_KEYNAME], exist_ok=True)
                 self._catalog_filename = os.path.join(
                     self._config[_CORE_SECTNAME][_STORE_KEYNAME],
                     _CATALOG_FILENAME
