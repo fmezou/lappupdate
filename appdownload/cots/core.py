@@ -61,19 +61,19 @@ class BaseProduct:
             None
         """
         self.id = None
-        self.name = None
-        self.version = None
-        self.published = None
-        self.target = None
-        self.release_note = None
-        self.installer = None
-        self.std_inst_args = None
-        self.silent_inst_arg = None
+        self.name = ""
+        self.version = ""
+        self.published = ""
+        self.target = ""
+        self.release_note = ""
+        self.installer = ""
+        self.std_inst_args = ""
+        self.silent_inst_arg = ""
         self.update_available = False
 
-        self._location = None
-        self._catalog_location = None
-        self._product_code = None
+        self._location = ""
+        self._catalog_location = ""
+        self._product_code = ""
 
     def check_update(self):
         """checks if a new version is available
@@ -83,11 +83,11 @@ class BaseProduct:
         """
         raise NotImplementedError
 
-    def fetch_update(self):
+    def fetch_update(self, path):
         """downloads the latest version of the installer
 
         Parameters
-            None
+            path: is the path name where to store the installer package.
         """
         raise NotImplementedError
 

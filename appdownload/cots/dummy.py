@@ -42,19 +42,6 @@ class Product(core.BaseProduct):
         """
         super().__init__()
         self.id = "dummy"
-        self.name = "dummy application display name"
-        self.version = None
-        self.published = None
-        self.target = "Unified"
-        self.release_note = None
-        self.installer = None
-        self.std_inst_args = "/STD"
-        self.silent_inst_arg = "/SILENT"
-        self.update_available = False
-
-        self._location = None
-        self._catalog_location = None
-        self._product_code = None
 
     def check_update(self):
         """checks if a new version is available
@@ -65,19 +52,24 @@ class Product(core.BaseProduct):
         """
         print("checks if a new version is available, current version {0} - "
               "released {1}".format(self.version, self.published))
-        self.version = "1.0"
-        dt = (datetime.datetime.now()).replace(microsecond=0)
-        self.published = dt.isoformat()
-        self.release_note = "http://www.example.com/release_note.txt"
-        self._location = "http://www.example.com/dummy.zip"
         self.update_available = True
 
-    def fetch_update(self):
+    def fetch_update(self, path):
         """downloads the latest version of the installer
 
         Parameters
             None
         """
         print("downloads the latest version of the installer.")
-        self.installer = r"..\dummy\aninstaller.cmd"
+        self.id = "dummy"
+        self.name = "dummy application display name"
+        self.version = "1.0"
+        dt = (datetime.datetime.now()).replace(microsecond=0)
+        self.published = dt.isoformat()
+        self.target = "x64"
+        self.release_note = "http://www.example.com/release_note.txt"
+        self._location = "http://www.example.com/dummy.zip"
+        self.installer = os.path.join(path, "aninstaller.cmd")
+        self.std_inst_args = "/STD"
+        self.silent_inst_arg = "/SILENT"
 
