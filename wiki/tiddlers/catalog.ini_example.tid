@@ -1,0 +1,17 @@
+created: 20151011134218867
+modified: 20151011134343537
+tags: [[File Examples]]
+title: catalog.ini example
+type: text/vnd.tiddlywiki
+
+```
+[adobe flash player activex]
+display_name=Adobe Flash Player 18 ActiveX # futur: it's a regex
+version = 18.0.0.209
+modified = 2015-07-12T06:43:57.918Z
+target = unified
+releasenote={local file|url}
+installer=..\appstore\FlashPlayer\install_flash_player_18_active_x.msi
+std_inst_args=
+silent_inst_arg=
+```
