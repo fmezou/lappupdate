@@ -11,6 +11,8 @@ Constant
 
 """
 
+import logging
+
 
 __all__ = [
     "BaseProduct"
@@ -39,7 +41,11 @@ class BaseProduct:
         installer: filename of the installer (local full path)
         std_inst_args: arguments to do a standard installation.
         silent_inst_arg: arguments to do a silent installation.
-        update_available : flag indicating if a new version is available or not.
+        update_available: is a flag indicating if a new version is available
+          or not.
+        update_version: is the version of the last release of the product.
+        update_published:is the publication date of the last release of
+          the product.
 
     Public methods
         None
@@ -70,10 +76,14 @@ class BaseProduct:
         self.std_inst_args = ""
         self.silent_inst_arg = ""
         self.update_available = False
+        self.update_version = ""
+        self.update_published = ""
 
         self._location = ""
         self._catalog_location = ""
         self._product_code = ""
+
+        self.logger = None
 
     def check_update(self):
         """checks if a new version is available
