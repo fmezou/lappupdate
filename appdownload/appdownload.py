@@ -338,7 +338,7 @@ class AppDownload:
                 else:
                     path = self._config[app_id][_APP_PATH_KEYNAME]
                 app.fetch_update(path)
-                msg = "The new version of '{0}' fetched. saved as '{1}'."\
+                msg = "New version of '{0}' fetched. saved as '{1}'."\
                       .format(app_id, app.installer)
                 self.logger.info(msg)
 
