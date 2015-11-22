@@ -20,6 +20,7 @@ Constant
 
 """
 
+import os
 import logging
 import re
 import xml.etree.ElementTree
@@ -29,6 +30,12 @@ class Error(Exception):
     """Base class for PADParser exceptions."""
 
     def __init__(self, message=""):
+        """Constructor.
+
+        Parameters
+            :param message: is the message explaining the reason of the
+            exception raise.
+        """
         self.message = message
 
     def __str__(self):
@@ -39,10 +46,10 @@ class SpecSyntaxError(Error):
     """Raised when spec file is erroneous."""
 
     def __init__(self, name):
-        """constructor.
+        """Constructor.
 
         Parameters
-            tag_name: name of the missing tag.
+            :param name: name of the missing tag.
         """
         msg = "PAD Specification file is erroneous. Tag '{0}' is missing."
         Error.__init__(self, msg.format(name))
@@ -56,7 +63,8 @@ class PADSyntaxError(Error):
         """constructor.
 
         Parameters
-            tag_name: name of the erroneous tag.
+            :param name: is the name of the erroneous tag.
+            :param value: is the value of the erroneous tag
         """
         msg = "PAD file is erroneous. The value ('{1}') of '{0}' tag " \
               "don't match the PAD Specs."
@@ -78,17 +86,27 @@ class PadParser(xml.etree.ElementTree.ElementTree):
     Subclass API Methods (i.e. must be overwritten by subclass)
     """
     _PADSPECS_FILENAME = "padspec40.xml"
+
     def __init__(self, element=None, file=None):
         """Constructor
 
         Parameters
-            element: is an optional root element node,
-            file: is an optional file handle or file name of an XML file whose
-            contents will be used to initialize the tree with.
+            :param element: is an optional root element node,
+            :param file: is an optional file handle or file name of an XML
+            file whose contents will be used to initialize the tree with.
         """
-        super().__init__()
-        self._specs = xml.etree.ElementTree.parse(PadParser._PADSPECS_FILENAME)
+        super().__init__(element, file)
+        filename = os.path.join(os.path.dirname(__file__),
+                                PadParser._PADSPECS_FILENAME)
+        self._specs = xml.etree.ElementTree.parse(filename)
         self._tree = None
+
+        # To make the module as versatile as possible, an nullHandler is added.
+        # see 'Configuring Logging for a Library'
+        # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+        self._logger = logging.getLogger(__name__)
+        self._logger.addHandler(logging.NullHandler())
+        self._logger.debug("Instance created.")
 
     def parse(self, source, parser=None):
         """Load external PAD file into element tree.
@@ -96,14 +114,16 @@ class PadParser(xml.etree.ElementTree.ElementTree):
         The PAD compliance is done at this time.
 
         Parameters
-            source: is a file name or file object.
-            parser: is an optional parser instance that defaults to XMLParser.
+            :param source: is a file name or file object.
+            :param parser: is an optional parser instance that defaults
+            to XMLParser.
 
         Exception
-            ParseError is raised if the parser fails to parse the document.
+            :exception ParseError: is raised if the parser fails to parse the
+            document.
 
         Returns
-            the root element of the given source document.
+            :return: the root element of the given source document.
         """
         super().parse(source, parser)
 
@@ -116,6 +136,9 @@ class PadParser(xml.etree.ElementTree.ElementTree):
                 raise SpecSyntaxError("PAD_Spec_Version")
             if root[1].tag != "Fields":
                 raise SpecSyntaxError("Fields")
+            msg = "PAD Spec version : '{0}'".format(root[0].text)
+            self._logger.info(msg)
+
             for field in list(root[1]):
                 name = field.find("Name")
                 path = field.find("Path")

@@ -1,4 +1,4 @@
-"""Implementation of a dummy product class
+"""Implementation of a dummy product class.
 
 Classes
     Product : dummy product class
@@ -39,7 +39,7 @@ class Product(core.BaseProduct):
         """Constructor
 
         Parameters
-            logger : is a logger object
+            :param logger : is a logger object
         """
         super().__init__(logger)
         # set the default value
@@ -54,8 +54,8 @@ class Product(core.BaseProduct):
         """checks if a new version is available
 
         Parameters
-            version: version of the currently deployed product.
-            modified: release date of the currently deployed product.
+            :param version: version of the currently deployed product.
+            :param modified: release date of the currently deployed product.
         """
         msg = "Checks if a new version is available. " \
               "Current version is '{0}'".format(self.version)
@@ -77,7 +77,7 @@ class Product(core.BaseProduct):
         """downloads the latest version of the installer
 
         Parameters
-            None
+            :param path:
         """
         self.version = "1.0"
         dt = (datetime.datetime.now()).replace(microsecond=0)

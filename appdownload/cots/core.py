@@ -1,4 +1,4 @@
-"""COTS core module
+"""COTS core module.
 
 Classes
     Product : base class for a product
@@ -60,10 +60,10 @@ class BaseProduct:
     """
 
     def __init__(self, logger=logging.getLogger(__name__)):
-        """Constructor
+        """Constructor.
 
         Parameters
-            logger : is a logger object
+            :param logger: is a logger object
         """
         self.id = None
         self.name = ""
@@ -95,14 +95,12 @@ class BaseProduct:
         self._logger.debug("Instance created.")
 
     def load(self, attributes=None):
-        # attrib
         """Load a product class.
 
         Parameters
-            attributes: is a dictionary object containing the instance
-            variables values.
-            If attributes is not present or have the None value, instance
-            variables keep to their default values.
+            :param attributes: is a dictionary object containing the instance
+            variables values. If attributes is not present or have the None
+            value, instance variables keep to their default values.
             Key value pairs which don't exist in the instance variables
             dictionary are ignored.
         """
@@ -115,13 +113,13 @@ class BaseProduct:
 
         # set instance variables
         self._logger.info("Load the product.")
-        for k,v in self.__dict__.items():
+        for k, v in self.__dict__.items():
             if k.startswith('_'):
-                continue # non-public instance variables are ignored
+                continue  # non-public instance variables are ignored
             else:
                 attr = attributes.get(k)
                 if attr is not None:
-                    self.__dict__[k]=attributes.get(k)
+                    self.__dict__[k] = attributes.get(k)
                     msg = "Instance variables '{0}' : " \
                           "'{1}' -> '{2}'".format(k, v, attr)
                     self._logger.debug(msg)
@@ -133,12 +131,12 @@ class BaseProduct:
             None
 
         Return
-            attributes: is a dictionary object containing a copy of the instance
+            :return: a dictionary object containing a copy of the instance
             variables values.
         """
         attributes = {}
         self._logger.info("Dump the product.")
-        for k,v in self.__dict__.items():
+        for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
             else:
@@ -146,7 +144,7 @@ class BaseProduct:
         return attributes
 
     def check_update(self):
-        """checks if a new version is available
+        """checks if a new version is available.
 
         Parameters
             None.
@@ -157,6 +155,6 @@ class BaseProduct:
         """downloads the latest version of the installer
 
         Parameters
-            path: is the path name where to store the installer package.
+            :param path: is the path name where to store the installer package.
         """
         raise NotImplementedError

@@ -44,8 +44,6 @@ import logging
 import logging.config
 import json
 
-from cots import core
-
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.3.0-dev"
@@ -91,6 +89,12 @@ class Error(Exception):
     """Base class for AppDownload exceptions."""
 
     def __init__(self, message=""):
+        """Constructor.
+
+        Parameters
+            :param message: is the message explaining the reason of the
+            exception raise.
+        """
         self.message = message
 
     def __str__(self):
@@ -104,7 +108,7 @@ class MissingMandatorySectionError(Error):
         """constructor.
 
         Parameters
-            section_name: Name of the missing section.
+            :param section_name: is the name of the missing section.
         """
         msg = "Section '{0}' is missing."
         Error.__init__(self, msg.format(section_name))
@@ -118,7 +122,7 @@ class MissingAppSectionError(Error):
         """constructor.
 
         Parameters
-            section_name: Name of the missing section.
+            :param section_name: is the name of the missing section.
         """
         msg = "Application description section '{0}' is missing."
         Error.__init__(self, msg.format(section_name))
@@ -132,8 +136,9 @@ class MissingKeyError(Error):
         """constructor.
 
         Parameters
-            section_name: Name of the section containing the missing key.
-            keyname: name of missing key.
+            :param section_name: is the name of the section containing the
+            missing key.
+            :param keyname: is the name of missing key.
         """
         msg = "Key '{1}' is missing in '{0}' application description."
         Error.__init__(self, msg.format(section_name, keyname))
@@ -142,14 +147,15 @@ class MissingKeyError(Error):
 
 
 class NotDeclaredSetError(Error):
-    """ Raised when a set not declared in the sets section."""
+    """ Raised when a set not declared in the `sets` section."""
 
     def __init__(self, app_name, set_name):
         """constructor.
 
         Parameters
-            app_name: name of the application (i.e containing the missing key.
-            set_name: name of missing set.
+            :param app_name: is the name of the application
+            (i.e containing the missing key).
+            :param set_name: is the name of missing set.
         """
         msg = "Set '{1}' is not declared in Sets section for application " \
               "named '{0}'."
@@ -178,12 +184,13 @@ class AppDownload:
         """constructor.
 
         Parameters
-            config_file: Name of the configuration file. The name may be a
-            partial one or a full path one.
+            :param config_file: is the name of the configuration file. It may
+            be a partial or a full path.
         """
         # check parameters type
         if not isinstance(config_file, io.TextIOBase):
-            msg = "config_file argument must be a class 'io.TextIOBase'. not {0}"
+            msg = "config_file argument must be a class 'io.TextIOBase'. " \
+                  "not {0}"
             msg = msg.format(config_file.__class__)
             raise TypeError(msg)
 
@@ -291,7 +298,9 @@ class AppDownload:
                          "available.")
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
-                self.logger.debug("Load and set the '{0}' module.".format(app_id))
+                self.logger.debug(
+                    "Load and set the '{0}' module.".format(app_id)
+                )
                 mod_name = self._config[app_id][_APP_MODULE_KEYNAME]
                 app_mod = importlib.import_module(mod_name)
                 app = app_mod.Product()
@@ -329,7 +338,9 @@ class AppDownload:
                          "build catalog.")
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
-                self.logger.debug("Load and set the '{0}' module.".format(app_id))
+                self.logger.debug(
+                    "Load and set the '{0}' module.".format(app_id)
+                )
                 mod_name = self._config[app_id][_APP_MODULE_KEYNAME]
                 app_mod = importlib.import_module(mod_name)
                 app = app_mod.Product()
@@ -379,7 +390,10 @@ class AppDownload:
             if _STORE_KEYNAME in section:
                 # Set the catalog filename (absolute path).
                 # TODO : treat the exception for os.makedirs
-                os.makedirs(self._config[_CORE_SECTNAME][_STORE_KEYNAME], exist_ok=True)
+                os.makedirs(
+                    self._config[_CORE_SECTNAME][_STORE_KEYNAME],
+                    exist_ok=True
+                )
                 self._catalog_filename = os.path.join(
                     self._config[_CORE_SECTNAME][_STORE_KEYNAME],
                     _CATALOG_FILENAME
@@ -407,12 +421,16 @@ class AppDownload:
                             pass
                         else:
                             raise MissingKeyError(app_name, _APP_MODULE_KEYNAME)
-                        # 'set' key is mandatory and must be declared in the sets section
+                        # 'set' key is mandatory and must be declared
+                        # in the sets section
                         if _APP_SET_KEYNAME in app_desc:
                             if app_desc[_APP_SET_KEYNAME] in sets:
                                 pass
                             else:
-                                raise NotDeclaredSetError(app_name, app_desc[_APP_SET_KEYNAME])
+                                raise NotDeclaredSetError(
+                                    app_name,
+                                    app_desc[_APP_SET_KEYNAME]
+                                )
                         else:
                             raise MissingKeyError(app_name, _APP_SET_KEYNAME)
                     else:
@@ -450,20 +468,20 @@ class AppDownload:
         Parameters
             None
         """
-        msg = "Write the products' catalog ({0}).".format(self._catalog_filename)
-        self.logger.info(msg)
+        msg = "Write the products' catalog ({0})."
+        self.logger.info(msg.format(self._catalog_filename))
 
         warning = \
             "This file is automatically generated on {0}, and must not be " \
             "manually modified. It contains the applications database and " \
             "specifies for each application the following properties. " \
-            "Appdownload script uses this database to build the applist files " \
-            "used by appdeploy script."
+            "Appdownload script uses this database to build the applist " \
+            "files used by appdeploy script."
         with open(self._catalog_filename, "w+t") as file:
             # write the warning header with a naive time representation.
             dt = (datetime.datetime.now()).replace(microsecond=0)
-            self._catalog["__warning__"]=warning.format(dt.isoformat())
-            json.dump(self._catalog, file,indent=4, sort_keys=True)
+            self._catalog["__warning__"] = warning.format(dt.isoformat())
+            json.dump(self._catalog, file, indent=4, sort_keys=True)
         msg = "Products' catalog saved, " \
               "{0} products written.".format(len(self._catalog))
         self.logger.info(msg)
@@ -477,11 +495,15 @@ class AppDownload:
         self.logger.info("Write the applist files from the catalog.")
 
         header = \
-            "# ------------------------------------------------------------------------------\n"\
+            "# --------------------------------------------------------------" \
+            "----------------\n"\
             "# This applist file generated on {0} for '{1}'.\n"\
-            "# This file is automatically generated, and must not be manually modified.\n"\
-            "# Please modify the configuration file instead (appdowload.ini by default).\n"\
-            "# ------------------------------------------------------------------------------\n"
+            "# This file is automatically generated, and must not be " \
+            "manually modified.\n"\
+            "# Please modify the configuration file instead (appdowload.ini " \
+            "by default).\n"\
+            "# -------------------------------------------------------------" \
+            "-----------------\n"
 
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
@@ -505,7 +527,11 @@ class AppDownload:
                     if comp_name not in self._app_set_file:
                         file = open(filename, "w+t")
                         self._app_set_file[comp_name] = file
-                        self.logger.info("'{0}' applist file created -> '{1}'.".format(comp_name, filename))
+                        self.logger.info(
+                            "'{0}' applist file created -> '{1}'.".format(
+                                comp_name, filename
+                            )
+                        )
                         dt = (datetime.datetime.now()).replace(microsecond=0)
                         file.write(header.format(dt.isoformat(), comp_name))
                     else:

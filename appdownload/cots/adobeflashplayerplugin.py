@@ -11,10 +11,6 @@ Constant
 
 """
 
-
-import os
-
-from cots import core
 from cots import adobeflashplayer
 
 
