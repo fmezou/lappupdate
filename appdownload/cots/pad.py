@@ -79,7 +79,7 @@ class PadParser(xml.etree.ElementTree.ElementTree):
     Public instance variables
 
     Public methods
-        None
+        parse : load external PAD file into element tree.
 
     Subclass API variables (i.e. may be use by subclass)
 
@@ -136,7 +136,7 @@ class PadParser(xml.etree.ElementTree.ElementTree):
                 raise SpecSyntaxError("PAD_Spec_Version")
             if root[1].tag != "Fields":
                 raise SpecSyntaxError("Fields")
-            msg = "PAD Spec version : '{0}'".format(root[0].text)
+            msg = "Supported PAD Spec version : '{0}'".format(root[0].text)
             self._logger.info(msg)
 
             for field in list(root[1]):
@@ -159,6 +159,9 @@ class PadParser(xml.etree.ElementTree.ElementTree):
                 if item is not None:
                     if regex.text is not None:
                         result = re.match(regex.text, item.text)
-                        if result is None:
+                        if result is not None:
+                            msg = "'{0}':'{1}' - OK"
+                            self._logger.debug(msg.format(path.text, item.text))
+                        else:
                             raise PADSyntaxError(item.tag, item.text)
         return self._root
