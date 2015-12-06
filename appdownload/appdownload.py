@@ -215,13 +215,13 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdowload (%s)", __version__)
+        self.logger.info("Starting Appdownload (%s)", __version__)
         self._read_catalog()
         self._check_update()
         self._fetch_update()
         self._write_catalog()
         self._write_applist()
-        self.logger.info("Appdowload (%s) completed.", __version__)
+        self.logger.info("Appdownload (%s) completed.", __version__)
 
     def check(self):
         """check and report if applications' updates are available without
@@ -231,12 +231,12 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdowload (%s), check and report if "
+        self.logger.info("Starting Appdownload (%s), check and report if "
                          "applications' updates are available.", __version__)
         self._read_catalog()
         self._check_update()
         self._write_catalog()
-        self.logger.info("Appdowload (%s) completed.", __version__)
+        self.logger.info("Appdownload (%s) completed.", __version__)
 
     def download(self):
         """download applications' updates based on the last build catalog.
@@ -245,13 +245,13 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdowload (%s), download applications' "
+        self.logger.info("Starting Appdownload (%s), download applications' "
                          "updates based on the last build catalog.",
                          __version__)
         self._read_catalog()
         self._fetch_update()
         self._write_catalog()
-        self.logger.info("Appdowload (%s) completed.", __version__)
+        self.logger.info("Appdownload (%s) completed.", __version__)
 
     def make(self):
         """make applist files based on the last build catalog
@@ -260,11 +260,11 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdowload (%s), make applist files based "
+        self.logger.info("Starting Appdownload (%s), make applist files based "
                          "on the last build catalog.", __version__)
         self._read_catalog()
         self._write_applist()
-        self.logger.info("Appdowload (%s) completed.", __version__)
+        self.logger.info("Appdownload (%s) completed.", __version__)
 
     def test_config(self):
         """check the configuration file for internal correctness.
@@ -275,14 +275,14 @@ class AppDownload:
         # The logging configuration may be not valid, events are only print on
         # the console with print(). Furthermore, the use case of this method is
         # typically in interactive mode.
-        print("Starting Appdowload ({0}), check the configuration file for "
+        print("Starting Appdownload ({0}), check the configuration file for "
               "internal correctness.".format(__version__))
         print("Configuration details are loaded from '{0}'."
               .format(self._config_file.name))
         self._load_config()
         if self._checked_config:
             print("Configuration details are validated.")
-        print("Appdowload ({0}) completed.".format(__version__))
+        print("Appdownload ({0}) completed.".format(__version__))
 
     def _check_update(self):
         """check and report if applications' updates are available without
