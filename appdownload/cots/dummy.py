@@ -54,8 +54,7 @@ class Product(core.BaseProduct):
         """checks if a new version is available
 
         Parameters
-            :param version: version of the currently deployed product.
-            :param modified: release date of the currently deployed product.
+            None
         """
         msg = "Checks if a new version is available. " \
               "Current version is '{0}'".format(self.version)
@@ -77,14 +76,14 @@ class Product(core.BaseProduct):
         """downloads the latest version of the installer
 
         Parameters
-            :param path:
+            :param path: is the path name where to store the installer package.
         """
         self.version = "1.0"
         dt = (datetime.datetime.now()).replace(microsecond=0)
         self.published = dt.isoformat()
         self.target = "x64"
         self.release_note = "http://www.example.com/release_note.txt"
-        self._location = "http://www.example.com/dummy.zip"
+        self.update_location = "http://www.example.com/dummy.zip"
         filename = "aninstaller_{0}.cmd".format(self.version)
         self.installer = os.path.join(path, filename)
         self.std_inst_args = "/STD"
