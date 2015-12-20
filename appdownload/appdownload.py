@@ -31,9 +31,11 @@ Exit code
 
 Environment variables
 The following environment variables affect the execution of this script:
-#TODO:
+TODO
 """
-
+# TODO add a field in the applist which to contain a regex string for the
+# searching of installed application. The display name wil be used only in log.
+# add this field as a propertie of BaseProduct Class (see cots.core)
 import io
 import os.path
 import datetime
@@ -54,6 +56,7 @@ __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 _APPS_LIST_SECTNAME = "applications"
 _APP_INSTALL_KEYNAME = "install"
 _APP_MODULE_KEYNAME = "module"
+_APP_PACKAGE_NAME = "cots"
 _APP_PATH_KEYNAME = "path"
 _APP_SET_KEYNAME = "set"
 
@@ -352,14 +355,7 @@ class AppDownload:
                     self.logger.warning(msg)
 
                 self.logger.debug("Fetch the update.")
-                if _APP_PATH_KEYNAME not in self._config[app_id]:
-                    path = os.path.join(
-                        self._config[_CORE_SECTNAME][_STORE_KEYNAME],
-                        app_id
-                    )
-                else:
-                    path = self._config[app_id][_APP_PATH_KEYNAME]
-                app.fetch_update(path)
+                app.fetch_update(self._config[app_id][_APP_PATH_KEYNAME])
                 msg = "New version of '{0}' fetched. saved as '{1}'."\
                       .format(app_id, app.installer)
                 self.logger.info(msg)
@@ -414,15 +410,24 @@ class AppDownload:
         if _APPS_LIST_SECTNAME in self._config.sections():
             for app_name in self._config[_APPS_LIST_SECTNAME]:
                 if self._config[_APPS_LIST_SECTNAME].getboolean(app_name):
+                    # Pre compute default value for the Application section
+                    app_module = ".".join((_APP_PACKAGE_NAME, app_name))
+                    store_path = self._config[_CORE_SECTNAME][_STORE_KEYNAME]
+                    app_path = os.path.join(store_path, app_name)
+                    app_set = "__all__"
+
+                    # Checks the item in the application section
+                    # If a section or a key is missing, it is added in the
+                    # config object, so this object will contain a complete
+                    # configuration
                     if app_name in self._config.sections():
                         app_desc = self._config[app_name]
-                        # 'module' key is mandatory
-                        if _APP_MODULE_KEYNAME in app_desc:
-                            pass
-                        else:
-                            raise MissingKeyError(app_name, _APP_MODULE_KEYNAME)
-                        # 'set' key is mandatory and must be declared
-                        # in the sets section
+                        if _APP_MODULE_KEYNAME not in app_desc:
+                            app_desc[_APP_MODULE_KEYNAME] = app_module
+                        if _APP_PATH_KEYNAME not in app_desc:
+                            app_desc[_APP_PATH_KEYNAME] = app_path
+                        # 'set' key must be declared in the sets section if it
+                        # exist.
                         if _APP_SET_KEYNAME in app_desc:
                             if app_desc[_APP_SET_KEYNAME] in sets:
                                 pass
@@ -432,11 +437,17 @@ class AppDownload:
                                     app_desc[_APP_SET_KEYNAME]
                                 )
                         else:
-                            raise MissingKeyError(app_name, _APP_SET_KEYNAME)
+                            app_desc[_APP_SET_KEYNAME] = app_set
                     else:
-                        raise MissingAppSectionError(app_name)
+                        # Set the default value
+                        self._config[app_name] = {}
+                        app_desc = self._config[app_name]
+                        app_desc[_APP_MODULE_KEYNAME] = app_module
+                        app_desc[_APP_PATH_KEYNAME] = app_path
+                        app_desc[_APP_SET_KEYNAME] = app_set
         else:
             raise MissingMandatorySectionError(_APPS_LIST_SECTNAME)
+
         # Checked
         self._checked_config = True
         self._config_file.close()
