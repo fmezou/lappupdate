@@ -49,7 +49,7 @@ class Product(core.BaseProduct):
         # All others attributes will be discovered during catalog parsing
         # (`check_update`) and update downloading (`fetch_update`)
         self.name = "dummy application display name"
-        self._catalog_location = "http://www.example.com/catalog.xml"
+        self._catalog_location = "http://www.example.com/index.html"
 
     def check_update(self):
         """checks if a new version is available
@@ -74,21 +74,22 @@ class Product(core.BaseProduct):
         self._logger.debug(msg)
 
         # Parse the catalog
-        # Reset the update properties to have a up to date products catalog.
+        # Reset the update property to have a up to date products catalog.
         # (i.e. obsolete information may be retrieved during the last checking)
-        self.update_available = False
-        self.update_version = ""
-        self.update_published = ""
-        self.update_location = ""
-        version = "1.1"
+        if self.update is not None:
+            del self.update
+            self.update = None
+        major, minor = self.version.split(".")
+        version = "{}.{}".format(major, (int(minor)+1))
         if version > self.version:
-            self.update_available = True
-            self.update_version = version
+            prod = Product()
+            prod.version = version
             dt = (datetime.datetime.now()).replace(microsecond=0)
-            self.update_published = dt.isoformat()
-            self.update_location = "http://www.example.com/update.exe"
+            prod.published = dt.isoformat()
+            prod.location = "http://www.example.com/index.html"
+            self.update = prod
             msg = "A new version exist ({0}) published on {1}."
-            msg = msg.format(self.update_version, self.update_published)
+            msg = msg.format(self.update.version, self.update.published)
             self._logger.info(msg)
         else:
             msg = "No new version available."
@@ -109,18 +110,23 @@ class Product(core.BaseProduct):
         msg = "Downloads the latest version of the installer."
         self._logger.info(msg)
 
-        local_filename, headers = \
-            self._file_retrieve(self.update_location, path)
+        # Update the update object
+        prod = self.update
+        if prod is not None:
+            local_filename, headers = \
+                self._file_retrieve(prod.location, path)
 
-        # Update the properties
-        self.version = self.update_version
-        self.published = self.update_published
-        self.target = ""
-        self.release_note = "http://www.example.com/release_note.xml"
-        self.std_inst_args = ""
-        self.silent_inst_args = "/silent"
-        self.product_code = ""
-        self._rename_installer(local_filename)
-        msg = "Update downloaded in '{}'".format(self.installer)
-        self._logger.info(msg)
+            prod.target = ""
+            prod.release_note = "http://www.example.com/release_note.txt"
+            prod.std_inst_args = ""
+            prod.silent_inst_args = "/silent"
+            prod.product_code = ""
+            prod._rename_installer(local_filename)
+            self.load(prod.dump())  # update the current instance
+            msg = "Update downloaded in '{}'".format(self.installer)
+            self._logger.info(msg)
+        else:
+            msg = "No new version available."
+            self._logger.info(msg)
+
 

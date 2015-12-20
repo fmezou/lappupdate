@@ -250,6 +250,7 @@ class BaseProduct:
           Control Panel.
         version: is the current version of the product
         published: is the date of the installer’s publication (ISO 8601 format)
+        location: location (url) of the current version of the installer.
         target: is the target architecture type (the Windows’ one) for the
           application. This argument must be one of the following values:
           'x86', 'x64' or 'unified'.
@@ -262,12 +263,8 @@ class BaseProduct:
         installer: filename of the installer (local full path)
         std_inst_args: arguments to do a standard installation.
         silent_inst_args: arguments to do a silent installation.
-        update_available: is a flag indicating if a new version is available
-          or not.
-        update_version: is the version of the last release of the product.
-        update_published:is the publication date of the last release of
-          the product.
-        update_location: location (url) of the last version of the installer.
+        update: is a Product class instance describing the updated version of
+          the product. The None value indicate that no new version is available.
         product_code: UID of the product (see MSI product code)
 
     Public methods
@@ -290,15 +287,13 @@ class BaseProduct:
         self.name = ""
         self.version = ""
         self.published = ""
+        self.location = ""
         self.target = ""
         self.release_note = ""
         self.installer = ""
         self.std_inst_args = ""
         self.silent_inst_args = ""
-        self.update_available = False
-        self.update_version = ""
-        self.update_published = ""
-        self.update_location = ""
+        self.update = None
         self.product_code = ""
 
         self._catalog_location = ""
@@ -338,6 +333,15 @@ class BaseProduct:
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
+            elif k == "update":  # recursive treatment for update attribute
+                attr = attributes.get(k)
+                if attr is not None:
+                    if self.update is not None:
+                        del self.update
+                    self.update = BaseProduct() # TODO use the real class
+                    self.update.load(attr)
+                else:
+                    self.__dict__[k] = None
             else:
                 attr = attributes.get(k)
                 if attr is not None:
@@ -360,6 +364,11 @@ class BaseProduct:
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
+            elif k == "update":  # recursive treatment for update attribute
+                if self.update is not None:
+                    attributes[k] = self.update.dump()
+                else:
+                    attributes[k] = None
             else:
                 attributes[k] = v
         return attributes

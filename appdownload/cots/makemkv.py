@@ -75,23 +75,23 @@ class Product(core.BaseProduct):
         self._logger.debug(msg)
 
         # Parse the catalog based on a PAD File
-        # Reset the update properties to have a up to date products catalog.
+        # Reset the update property to have a up to date products catalog.
         # (i.e. obsolete information may be retrieved during the last checking)
-        self.update_available = False
-        self.update_version = ""
-        self.update_published = ""
-        self.update_location = ""
+        if self.update is not None:
+            del self.update
+            self.update = None
         self._parser.parse(local_filename)
         version = self._get_version()
         if version is not None:
             # TODO: do a comparison based on semantic versioning specification
             if version > self.version:
-                self.update_available = True
-                self.update_version = version
-                self.update_published = self._get_release_date()
-                self.update_location = self._get_location()
+                prod = Product()
+                prod.version = version
+                prod.published = self._get_release_date()
+                prod.location = self._get_location()
+                self.update = prod
                 msg = "A new version exist ({0}) published on {1}."
-                msg = msg.format(self.update_version, self.update_published)
+                msg = msg.format(self.update.version, self.update.published)
                 self._logger.info(msg)
             else:
                 msg = "No new version available."
@@ -112,23 +112,25 @@ class Product(core.BaseProduct):
         msg = "Downloads the latest version of the installer."
         self._logger.info(msg)
 
-        local_filename, headers = \
-            self._file_retrieve(self.update_location, path)
+        # Update the update object
+        prod = self.update
+        if prod is not None:
+            local_filename, headers = \
+                self._file_retrieve(prod.location, path)
 
-        # Update the properties
-        # fixme: an other solution is to create an other product object for the
-        # updated one and to link it into the current object.
-        self.version = self.update_version
-        self.version = self.update_version
-        self.published = self.update_published
-        self.target = ""
-        self.release_note = self._get_release_note()
-        self.std_inst_args = ""
-        self.silent_inst_args = "/S"
-        self.product_code = ""
-        self._rename_installer(local_filename)
-        msg = "Update downloaded in '{}'".format(self.installer)
-        self._logger.info(msg)
+            prod.target = ""
+            prod.release_note = self._get_release_note()
+            prod.std_inst_args = ""
+            prod.silent_inst_args = "/S"
+            prod.product_code = ""
+            prod._rename_installer(local_filename)
+            self.load(prod.dump())  # update the current instance
+            msg = "Update downloaded in '{}'".format(self.installer)
+            self._logger.info(msg)
+        else:
+            msg = "No new version available."
+            self._logger.info(msg)
+
 
     def _get_version(self):
         """Get the version from the PAD File.
