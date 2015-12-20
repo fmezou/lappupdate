@@ -246,7 +246,6 @@ class BaseProduct:
     """Common base class for all products.
 
     Public instance variables
-        id: id of the product (may be the name or any unique id)
         name: is the name of the application as it appears in the Program
           Control Panel.
         version: is the current version of the product
@@ -282,15 +281,12 @@ class BaseProduct:
         check_update: checks if a new version is available
         fetch_update: downloads the latest version of the installer
     """
-# TODO suppress the id attribute, it's the name of module.
-
     def __init__(self, logger=logging.getLogger(__name__)):
         """Constructor.
 
         Parameters
             :param logger: is a logger object
         """
-        self.id = None
         self.name = ""
         self.version = ""
         self.published = ""
@@ -559,7 +555,7 @@ class BaseProduct:
 
         Exceptions
             TypeError: Raised a parameter have an inappropriate type.
-            The others exception are the same as for `os.rename`.
+            The others exception are the same as for `os.replace`.
 
         Return
             None.
@@ -570,12 +566,12 @@ class BaseProduct:
             msg = msg.format(filename.__class__)
             raise TypeError(msg)
 
-        # Compute the destination name and rename
+        # Compute the destination name and replace it
         basename = os.path.dirname(filename)
         ext = os.path.splitext(filename)[1]
         dest = "{}_{}{}".format(self.name, self.version, ext)
         self.installer = os.path.normpath(os.path.join(basename, dest))
-        os.rename(filename, self.installer)
+        os.replace(filename, self.installer)
 
 
 class Error(Exception):

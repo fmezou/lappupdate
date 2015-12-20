@@ -24,17 +24,16 @@ class Product(core.BaseProduct):
     """MakeMKV product class.
 
     Public instance variables
-        .
+        Same as `core.BaseProduct`.
 
     Public methods
-        None
+        Same as `core.BaseProduct`.
 
     Subclass API variables (i.e. may be use by subclass)
         None
 
     Subclass API Methods (i.e. must be overwritten by subclass)
         None
-
     """
     def __init__(self, logger=logging.getLogger(__name__)):
         """Constructor
@@ -50,7 +49,6 @@ class Product(core.BaseProduct):
         # At this point, only name and catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`check_update`) and update downloading (`fetch_update`)
-        self.id = "makemkv"
         self.name = "MakeMKV"
         self._catalog_location = "http://www.makemkv.com/makemkv.xml"
         self._parser = pad.PadParser()
@@ -68,9 +66,8 @@ class Product(core.BaseProduct):
             pad module exception raised by the `parse` method.
             exception raised by the `_temporary_retrieve` method.
         """
-        msg = "Checks if a new version is available. " \
-              "Current version is '{0}'".format(self.version)
-        self._logger.info(msg)
+        msg = "Checks if a new version is available. Current version is '{0}'"
+        self._logger.info(msg.format(self.version))
 
         local_filename, headers = \
             self._temporary_retrieve(self._catalog_location)
@@ -121,7 +118,7 @@ class Product(core.BaseProduct):
         # Update the properties
         # fixme: an other solution is to create an other product object for the
         # updated one and to link it into the current object.
-        self.name = "MakeMKV"
+        self.version = self.update_version
         self.version = self.update_version
         self.published = self.update_published
         self.target = ""
