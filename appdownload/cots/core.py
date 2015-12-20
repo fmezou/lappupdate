@@ -14,12 +14,13 @@ Constant
 import logging
 import time
 import tempfile
+import os
 import urllib.request
+import contextlib
 
 __all__ = [
     "BaseProduct"
 ]
-
 
 
 def _isu_format_prefix(value, unit):
@@ -126,11 +127,11 @@ class TextProgressBar:
             raise TypeError(msg)
 
         self._t0 = time.time()
-        self._content_len = 0
-        self._max_len = max_len
+        self._length = 0
+        self._content_length = max_len
         self._t1 = 0.0
 
-    def compute(self, read_len, max_len=-1):
+    def compute(self, length, content_length=-1):
         """Compute the progress bar and print it.
 
         The printed string match the following format:
@@ -146,25 +147,25 @@ class TextProgressBar:
         4 time per second.
 
         Parameters
-            :param read_len: is a positive integer specifying the length of
+            :param length: is a positive integer specifying the length of
                 received data.
-            :param max_len: is a positive integer specifying the content length
-            that the progress bar is going to represent. A negative number
-            specify that the content length is unknown.
+            :param content_length: is a positive integer specifying the content
+            length that the progress bar is going to represent. A negative
+            number specify that the content length is unknown.
         """
         # check parameters type
-        if not isinstance(read_len, int):
-            msg = "read_len argument must be a class 'int'. not {0}"
-            msg = msg.format(read_len.__class__)
+        if not isinstance(length, int):
+            msg = "length argument must be a class 'int'. not {0}"
+            msg = msg.format(length.__class__)
             raise TypeError(msg)
 
-        if not isinstance(max_len, int):
-            msg = "max_len argument must be a class 'int'. not {0}"
-            msg = msg.format(max_len.__class__)
+        if not isinstance(content_length, int):
+            msg = "content_length argument must be a class 'int'. not {0}"
+            msg = msg.format(content_length.__class__)
             raise TypeError(msg)
 
-        self._max_len = max_len
-        self._content_len = read_len
+        self._content_length = content_length
+        self._length = length
 
         last_refresh = time.time() - self._t1
         if last_refresh > 0.25:
@@ -172,15 +173,15 @@ class TextProgressBar:
             # compute the rate
             base_unit = "B/s"
             duration = int(time.time() - self._t0)
-            if duration != 0 and read_len != 0:
-                rate = _isu_format_prefix(read_len / duration, base_unit)
+            if duration != 0 and length != 0:
+                rate = _isu_format_prefix(length / duration, base_unit)
             else:
                 rate = "----" + " " + "" + base_unit
 
             # compute the eta
             eta = "--:--:--"
-            if read_len <= self._max_len and read_len != 0:
-                t = (self._max_len - read_len) / read_len * duration
+            if length <= self._content_length and length != 0:
+                t = (self._content_length - length) / length * duration
                 h = int(t // 3600)
                 r = int(t % 3600)
                 m = int(r // 60)
@@ -190,13 +191,13 @@ class TextProgressBar:
             # compute the percent
             bargraph = ""
             percent = " --%"
-            if read_len <= self._max_len != 0:
-                p = read_len / self._max_len
+            if length <= self._content_length != 0:
+                p = length / self._content_length
                 percent = "{:>4.0%}".format(p)
                 bargraph = "[" + ("=" * int(p * 30)).ljust(30) + "]"
 
             # compute the length of received data
-            receive = _isu_format_thousand(read_len).rjust(15)
+            receive = _isu_format_thousand(length).rjust(15)
 
             progress = "{} {} {} - {} - eta {}".format(percent, bargraph,
                                                        receive, rate, eta)
@@ -218,13 +219,13 @@ class TextProgressBar:
             :return: is a string representing the progress information.
         """
         # compute the length of received data
-        receive = _isu_format_prefix(self._content_len, "B")
+        receive = _isu_format_prefix(self._length, "B")
 
         # compute the rate
         base_unit = "B/s"
         duration = int(time.time() - self._t0)
-        if duration != 0 and self._content_len != 0:
-            rate = _isu_format_prefix(self._content_len / duration, base_unit)
+        if duration != 0 and self._length != 0:
+            rate = _isu_format_prefix(self._length / duration, base_unit)
         else:
             rate = "----" + " " + "" + base_unit
 
@@ -281,6 +282,7 @@ class BaseProduct:
         check_update: checks if a new version is available
         fetch_update: downloads the latest version of the installer
     """
+# TODO suppress the id attribute, it's the name of module.
 
     def __init__(self, logger=logging.getLogger(__name__)):
         """Constructor.
@@ -328,8 +330,8 @@ class BaseProduct:
             Key value pairs which don't exist in the instance variables
             dictionary are ignored.
         """
+        # check parameters type
         if attributes is not None:
-            # check parameters type
             if not isinstance(attributes, dict):
                 msg = "props argument must be a class 'dict'. not {0}"
                 msg = msg.format(attributes.__class__)
@@ -344,9 +346,8 @@ class BaseProduct:
                 attr = attributes.get(k)
                 if attr is not None:
                     self.__dict__[k] = attributes.get(k)
-                    msg = "Instance variables '{0}' : " \
-                          "'{1}' -> '{2}'".format(k, v, attr)
-                    self._logger.debug(msg)
+                    msg = "Instance variables '{0}' : '{1}' -> '{2}'"
+                    self._logger.debug(msg.format(k, v, attr))
 
     def dump(self):
         """Dump a product class.
@@ -383,70 +384,198 @@ class BaseProduct:
         """
         raise NotImplementedError
 
-    def _retrieve_catalog(self, url, mime_type=None):
-        """Retrieve a catalog URL into a temporary location on disk.
+    def _temporary_retrieve(self, url, content_type=None):
+        """Retrieve a URL into a temporary location on disk.
 
         Parameters  The catalog is
-            :param url: is a string specifying the URL of the catalog.
-            :param mime_type: is a string specifying the mime type of the
-            retrieved catalog. If the received type is different, a
+            :param url: is a string specifying the URL.
+            :param content_type: is a string specifying the content type of the
+            retrieved resource. If the received type is different, an exception
             BadTypeResource is raised.
 
+        Exceptions
+            TypeError: Raised a parameter have an inappropriate type.
+            BadTypeResource: Raised when downloaded content-type does not match.
+            ContentTooShortError:Raised when downloaded size does not match
+            content-length.
+            The others exception are the same as for `urllib.request.urlopen()`.
+
         Return
-            :return:
+            :return: a tuple (filename, headers) where filename is the local
+            file name, and headers is whatever the info() method of the object
+            returned by urlopen() returned.
         """
-        with urllib.request.urlopen(url) as file:
-            headers = file.info()
+        # check parameters type
+        if not isinstance(url, str):
+            msg = "url argument must be a class 'str'. not {0}"
+            msg = msg.format(url.__class__)
+            raise TypeError(msg)
+        if content_type is not None:
+            if not isinstance(content_type, str):
+                msg = "content_type argument must be a class 'str'. not {0}"
+                msg = msg.format(content_type.__class__)
+                raise TypeError(msg)
 
-            if "Content-Type" in headers and mime_type is not None:
-                if headers["Content-Type"] != mime_type:
-                    raise BadTypeResource(url,
-                                          headers["Content-Type"],
-                                          mime_type)
+        # default value
+        content_length = -1
+        length = 0
+        result = None
 
-            size = int(headers["Content-Length"])
+        # retrieve the resource
+        msg = "Retrieve '{}'"
+        self._logger.debug(msg.format(url))
 
-            temp_file = tempfile.NamedTemporaryFile(delete=False)
-            filename = temp_file.name
-            self._temp_files.append(filename)
+        with contextlib.closing(urllib.request.urlopen(url)) as stream:
+            headers = stream.info()
+            if "Content-Type" in headers and content_type is not None:
+                if headers["Content-Type"] != content_type:
+                    raise BadTypeResource(url, headers["Content-Type"],
+                                          content_type)
+            if "Content-Length" in headers:
+                content_length = int(headers["Content-Length"])
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                self._temp_files.append(temp_file.name)
+                result = temp_file.name, headers
+                msg = "Retrieve '{}' in '{}'"
+                self._logger.debug(msg.format(url, temp_file.name))
 
-            with temp_file:
-                result = filename, headers
-                bs = 1500
-                size = -1
-                read = 0
-                if "Content-Length" in headers:
-                    size = int(headers["Content-Length"])
-
-                progress_bar = TextProgressBar(size)
-                progress_bar.compute(read, size)
-
+                progress_bar = TextProgressBar(content_length)
+                progress_bar.compute(length, content_length)
                 while True:
-                    block = file.read(bs)
-                    if not block:
+                    data = stream.read(4096)
+                    if not data:
                         break
-                    read += len(block)
-                    temp_file.write(block)
-                    progress_bar.compute(read, size)
-                str = progress_bar.finish()
+                    length += len(data)
+                    temp_file.write(data)
+                    progress_bar.compute(length, content_length)
+                msg = "'{}' retrieved - ".format(url)
+                msg = msg + progress_bar.finish()
+                self._logger.debug(msg)
 
-        if size >= 0 and read < size:
-            raise ContentTooShortError(url, read, size)
+        if content_length >= 0 and length < content_length:
+            raise ContentTooShortError(url, length, content_length)
 
         return result
 
+    def _file_retrieve(self, url, dir_name, content_type=None):
+        """Retrieve a catalog URL into a location on disk.
 
-    def _retrieve_update(self, url, path):
-        """Retrieve a catalog URL into the installer directory.
+        The filename is the same as the name of the retrieved resource.
 
         Parameters  The catalog is
             :param url: is a string specifying the URL of the catalog.
-            :param path: is the path name where to store the installer package.
+            :param dir_name: is a string specifying the directory location on
+              the disk where the retrieved is going to be written.
+            :param content_type: is a string specifying the mime type of the
+            retrieved catalog. If the received type is different, a
+            BadTypeResource is raised.
+
+        Exceptions
+            TypeError: Raised a parameter have an inappropriate type.
+            BadTypeResource: Raised when downloaded content-type does not match.
+            ContentTooShortError:Raised when downloaded size does not match
+            content-length.
+            The others exception are the same as for `urllib.request.urlopen()`.
 
         Return
-            :return:
+            :return: a tuple (filename, headers) where filename is the local
+            file name, and headers is whatever the info() method
+            of the object returned by urlopen() returned.
         """
-        pass
+        # check parameters type
+        if not isinstance(url, str):
+            msg = "url argument must be a class 'str'. not {0}"
+            msg = msg.format(url.__class__)
+            raise TypeError(msg)
+        if not isinstance(dir_name, str):
+            msg = "dir_name argument must be a class 'str'. not {0}"
+            msg = msg.format(dir_name.__class__)
+            raise TypeError(msg)
+        if content_type is not None:
+            if not isinstance(content_type, str):
+                msg = "content_type argument must be a class 'str'. not {0}"
+                msg = msg.format(content_type.__class__)
+                raise TypeError(msg)
+
+        # default value
+        content_length = -1
+        length = 0
+        result = None
+
+        # retrieve the resource
+        msg = "Retrieve '{}'"
+        self._logger.debug(msg.format(url))
+
+        with contextlib.closing(urllib.request.urlopen(url)) as stream:
+            headers = stream.info()
+            if "Content-Type" in headers and content_type is not None:
+                if headers["Content-Type"] != content_type:
+                    raise BadTypeResource(url, headers["Content-Type"],
+                                          content_type)
+            if "Content-Length" in headers:
+                content_length = int(headers["Content-Length"])
+
+            # TODO : treat the exception for os.makedirs
+            os.makedirs(dir_name, exist_ok=True)
+            basename = os.path.basename(urllib.request.url2pathname(url))
+            filename = os.path.join(dir_name, basename)
+            part_filename = filename + ".partial"
+            with open(part_filename, mode="wb") as file:
+                result = filename, headers
+                msg = "Retrieve '{}' in '{}'"
+                self._logger.debug(msg.format(url, file.name))
+
+                progress_bar = TextProgressBar(content_length)
+                progress_bar.compute(length, content_length)
+                while True:
+                    data = stream.read(4096)
+                    if not data:
+                        break
+                    length += len(data)
+                    file.write(data)
+                    progress_bar.compute(length, content_length)
+                msg = "'{}' retrieved - ".format(url)
+                msg = msg + progress_bar.finish()
+                self._logger.debug(msg)
+            os.replace(part_filename, filename)
+
+        if content_length >= 0 and length < content_length:
+            raise ContentTooShortError(url, length, content_length)
+
+        return result
+
+    def _rename_installer(self, filename):
+        """Rename the installer executable.
+
+        Installer name match the following format:
+        <name>_<version>.<extension>
+        name: is the name of the product
+        version: is the version of the product
+        extension: is the original extension of the download resource.
+
+        Parameters  The catalog is
+            :param filename: is a string specifying the local name of the
+            installer executable.
+
+        Exceptions
+            TypeError: Raised a parameter have an inappropriate type.
+            The others exception are the same as for `os.rename`.
+
+        Return
+            None.
+        """
+        # check parameters type
+        if not isinstance(filename, str):
+            msg = "url argument must be a class 'str'. not {0}"
+            msg = msg.format(filename.__class__)
+            raise TypeError(msg)
+
+        # Compute the destination name and rename
+        basename = os.path.dirname(filename)
+        ext = os.path.splitext(filename)[1]
+        dest = "{}_{}{}".format(self.name, self.version, ext)
+        self.installer = os.path.normpath(os.path.join(basename, dest))
+        os.rename(filename, self.installer)
 
 
 class Error(Exception):
@@ -468,40 +597,41 @@ class Error(Exception):
 class ContentTooShortError(Error):
     """Raised when downloaded size does not match content-length."""
 
-    def __init__(self, url, read_len, max_len):
+    def __init__(self, url, length, content_length):
         """Constructor.
 
         Parameters
             :param url: is a string specifying the URL.
-            :param read_len: is a positive integer specifying the length of
+            :param length: is a positive integer specifying the length of
                 received data.
-            :param max_len: is a positive integer specifying the content length.
-            A negative number specify that the content length is unknown.
+            :param content_length: is a positive integer specifying the content
+             length. A negative number specify that the content length is
+             unknown.
         """
         msg = "Retrieval incomplete: {0} received bytes vs. {1} waited. \n" \
               "Url '{2}'."
-        Error.__init__(self, msg.format(read_len, max_len, url))
-        self.read_len = read_len
-        self.max_len = max_len
+        Error.__init__(self, msg.format(length, content_length, url))
+        self.length = length
+        self.max_len = content_length
         self.url = url
 
 
 class BadTypeResource(Error):
-    """Raised when downloaded mime-type does not match."""
+    """Raised when downloaded content-type does not match."""
 
-    def __init__(self, url, read_mime, waited_mime):
+    def __init__(self, url, content_type, waited_content_type):
         """Constructor.
 
         Parameters
             :param url: is a string specifying the URL.
-            :param read_len: is a positive integer specifying the length of
-                received data.
-            :param max_len: is a positive integer specifying the content length.
-            A negative number specify that the content length is unknown.
+            :param content_type: is a string specifying the received
+            content_type.
+            :param waited_content_type: is a string specifying the waited
+            content_type.
         """
-        msg = "Unexpected mime-type: '{0}' received vs. '{1}' waited. \n" \
+        msg = "Unexpected content type: '{0}' received vs. '{1}' waited. \n" \
               "Url '{2}'."
-        Error.__init__(self, msg.format(read_mime, waited_mime, url))
-        self.read_mime = read_mime
-        self.waited_mime = waited_mime
+        Error.__init__(self, msg.format(content_type, waited_content_type, url))
+        self.read_type = content_type
+        self.waited_type = waited_content_type
         self.url = url

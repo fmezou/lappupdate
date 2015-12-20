@@ -39,7 +39,7 @@ class Product(core.BaseProduct):
         """Constructor
 
         Parameters
-            :param logger : is a logger object
+            :param logger: is a logger object
         """
         super().__init__(logger)
         # set the default value
