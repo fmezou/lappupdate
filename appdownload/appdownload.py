@@ -316,10 +316,10 @@ class AppDownload:
 
                 self.logger.debug("Check if an update is available")
                 app.check_update()
-                if app.update_available:
+                if app.update is not None:
                     msg = "A new version of '{0}' exist ({1}) published " \
-                          "on {2}.".format(app_id, app.update_version,
-                                           app.update_published)
+                          "on {2}.".format(app_id, app.update.version,
+                                           app.update.published)
                     self.logger.info(msg)
 
                 self._catalog[app_id] = app.dump()
