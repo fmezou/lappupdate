@@ -338,7 +338,10 @@ class BaseProduct:
                 if attr is not None:
                     if self.update is not None:
                         del self.update
-                    self.update = BaseProduct() # TODO use the real class
+                    # The use of a base class instance is sufficient,
+                    # because only the public member are used to store
+                    # information on the updated version.
+                    self.update = BaseProduct()
                     self.update.load(attr)
                 else:
                     self.__dict__[k] = None
