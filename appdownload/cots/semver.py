@@ -325,8 +325,9 @@ def _comp_prerelease(prerelease1, prerelease2):
     < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0
 
     Parameters
-        :param prerelease1: is the list of fields from the pre-release identifier,
-        constituted by only ASCII alphanumerics and hyphen [0-9A-Za-z-].
+        :param prerelease1: is the list of fields from the pre-release
+        identifier, constituted by only ASCII alphanumerics and
+        hyphen [0-9A-Za-z-].
         The list may be empty.
         :param prerelease2: same as prerelease1 (see above)
 
