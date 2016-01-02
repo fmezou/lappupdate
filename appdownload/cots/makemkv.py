@@ -18,6 +18,7 @@ import logging
 
 from cots import core
 from cots import pad
+from cots import semver
 
 
 class Product(core.BaseProduct):
@@ -83,8 +84,9 @@ class Product(core.BaseProduct):
         self._parser.parse(local_filename)
         version = self._get_version()
         if version is not None:
-            # TODO: do a comparison based on semantic versioning specification
-            if version > self.version:
+            local_version = semver.SemVer(self.version)
+            remote_version = semver.SemVer(self._get_version())
+            if local_version < remote_version:
                 prod = Product()
                 prod.version = version
                 prod.published = self._get_release_date()
@@ -130,7 +132,6 @@ class Product(core.BaseProduct):
         else:
             msg = "No new version available."
             self._logger.info(msg)
-
 
     def _get_version(self):
         """Get the version from the PAD File.
