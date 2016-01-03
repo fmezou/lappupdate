@@ -1,20 +1,18 @@
 created: 20151108160921178
-editor: 
-installer: 
-modified: 20151108170417265
+description: ~MakeMKV is your one-click solution to convert video that you own into free and patents-unencumbered format that can be played everywhere. ~MakeMKV is a format converter, otherwise called "transcoder".
+editor: ~GuinpinSoft inc
+icon: mkv_icon.png
+installer: NSIS
+modified: 20160103171312590
 tags: [[Supported Products]]
 title: MakeMKV
 type: text/vnd.tiddlywiki
-website: 
+website: http://www.makemkv.com/
 
-!! abstract
+Published by {{!!editor}}, {{!!description}}
 
-__will be later completed__
+Product web site: {{!!website}}
 
-!! Silent installation
+The following tabs give more information about the installation process.
 
-__will be later completed__
-
-!! New version or update notification
-
-__will be later completed__
+<<tabs "[tag[MakeMKV]nsort[order]]">> 

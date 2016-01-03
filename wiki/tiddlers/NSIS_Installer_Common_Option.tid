@@ -1,0 +1,19 @@
+created: 20160103164755006
+modified: 20160103165041125
+tags: NSIS
+title: NSIS Installer Common Option
+type: text/vnd.tiddlywiki
+
+Installers accept a few options on the command line. These options give the user a bit more control over the installation process (see [[Installer Usage|http://nsis.sourceforge.net/Docs/Chapter3.html#installerusagecommon]] for more details).
+
+|^`/NCRC` |^disables the CRC check, unless CRCCheck force was used in the script. |
+|^`/S` |^runs the installer silently. |
+|^`/D` |^sets the default installation directory. It must be the last parameter used in the command line and must not contain any quotes, even if the path contains spaces. Only absolute paths are supported. |
+
+__Examples__
+
+```
+installer.exe /S
+installer.exe /NCRC /S /D=C:\Program Files\NSIS
+
+```
