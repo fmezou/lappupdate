@@ -22,6 +22,10 @@ __all__ = [
     "BaseProduct"
 ]
 
+PROD_TARGET_X86 = "x86"
+PROD_TARGET_X64 = "x64"
+PROD_TARGET_UNIFIED = "unified"
+
 
 def _isu_format_prefix(value, unit):
     """ return a string using standard prefix for unit.
@@ -48,24 +52,24 @@ def _isu_format_prefix(value, unit):
         raise TypeError(msg)
 
     mul_unit = " " + "" + unit
-    isu_str = "----" + unit
+    result = "----" + unit
     r = float(value)
     for prefix in ["", "k", "M", "G", "T", "P", "E", "Z", "Y"]:
         mul_unit = " " + prefix + unit
         if r < 1000.0:
             if r < 10.0:
-                isu_str = ("{:>1.2f}" + mul_unit).format(r)
+                result = ("{:>1.2f}" + mul_unit).format(r)
             elif r < 100.0:
-                isu_str = ("{:>2.1f}" + mul_unit).format(r)
+                result = ("{:>2.1f}" + mul_unit).format(r)
             else:
-                isu_str = ("{:>4.0f}" + mul_unit).format(r)
+                result = ("{:>4.0f}" + mul_unit).format(r)
             break
         else:
             r /= 1000.0
     else:
-        isu_str = ">999 " + mul_unit
+        result = ">999 " + mul_unit
 
-    return isu_str
+    return result
 
 
 def _isu_format_thousand(value):
@@ -87,11 +91,11 @@ def _isu_format_thousand(value):
         raise TypeError(msg)
 
     if isinstance(value, int):
-        isu_str = ("{:>,d}".format(value)).replace(",", " ")
+        result = ("{:>,d}".format(value)).replace(",", " ")
     else:
-        isu_str = ("{:>,f}".format(value)).replace(",", " ")
+        result = ("{:>,f}".format(value)).replace(",", " ")
 
-    return isu_str
+    return result
 
 
 class TextProgressBar:
@@ -246,26 +250,32 @@ class BaseProduct:
     """Common base class for all products.
 
     Public instance variables
-        name: is the name of the application as it appears in the Program
-          Control Panel.
-        version: is the current version of the product
+        name: is the name of the product (used in report mail and log file)
+        display_name: is the name of the product as it appears in the 'Programs
+        and Features' control panel
+        version: is the current version of the product (string)
         published: is the date of the installer’s publication (ISO 8601 format)
-        location: location (url) of the current version of the installer.
+        description: is a short description of the product (~250 characters)
+        editor: is the name of the editor of the product
+        location: is the location (url) of the current version of the installer
+        file_size: is the size of the product installer expressed in bytes
+        hash : is the hash value of the product installer. It's a tupple
+        containing, in this order, the name of hash algorithm (see
+        `hashlib.algorithms_guaranteed`) and the hash value in hexadecimal
+        notation.
+        icon: is the name of the icon file (in the same directory the installer)
         target: is the target architecture type (the Windows’ one) for the
-          application. This argument must be one of the following values:
+          product. This argument must be one of the following values:
           'x86', 'x64' or 'unified'.
           x86: the application works only on 32 bits architecture
           x64: the application works only on 64 bits architecture
           unified: the application or the installation program work on both
            architectures
         release_note: is the release note’s URL for the current version of the
-          application.
+        product
         installer: filename of the installer (local full path)
-        std_inst_args: arguments to do a standard installation.
-        silent_inst_args: arguments to do a silent installation.
-        update: is a Product class instance describing the updated version of
-          the product. The None value indicate that no new version is available.
-        product_code: UID of the product (see MSI product code)
+        std_inst_args: arguments to use to for a standard installation.
+        silent_inst_args: arguments to use for a silent installation.
 
     Public methods
         load: load a product class.
@@ -285,15 +295,20 @@ class BaseProduct:
             None
         """
         self.name = ""
+        self.display_name = ""
         self.version = ""
         self.published = ""
+        self.description = ""
+        self.editor = ""
         self.location = ""
+        self.file_size = 0
+        self.hash = None
+        self.icon = ""
         self.target = ""
         self.release_note = ""
         self.installer = ""
         self.std_inst_args = ""
         self.silent_inst_args = ""
-        self.update = None
         self.product_code = ""
 
         self._catalog_location = ""
@@ -328,18 +343,6 @@ class BaseProduct:
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
-            elif k == "update":  # recursive treatment for update attribute
-                attr = attributes.get(k)
-                if attr is not None:
-                    if self.update is not None:
-                        del self.update
-                    # The use of a base class instance is sufficient,
-                    # because only the public member are used to store
-                    # information on the updated version.
-                    self.update = BaseProduct()
-                    self.update.load(attr)
-                else:
-                    self.__dict__[k] = None
             else:
                 attr = attributes.get(k)
                 if attr is not None:
@@ -362,28 +365,42 @@ class BaseProduct:
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
-            elif k == "update":  # recursive treatment for update attribute
-                if self.update is not None:
-                    attributes[k] = self.update.dump()
-                else:
-                    attributes[k] = None
             else:
                 attributes[k] = v
         return attributes
 
-    def check_update(self):
-        """checks if a new version is available.
+    def get_origin(self, version=None):
+        """Get product information from the remote repository.
+
+        The latest catalog of the product is downloaded and parsed.
 
         Parameters
-            None.
+            :param version: is the version of the reference product (i.e. the
+            deployed product). It'a string following the editor rule.
         """
         raise NotImplementedError
 
-    def fetch_update(self, path):
-        """downloads the latest version of the installer
+    def fetch(self, path):
+        """Downloads the product installer.
 
         Parameters
             :param path: is the path name where to store the installer package.
+        """
+        raise NotImplementedError
+
+    def is_update(self, product):
+        """ Return if this instance is an update of product
+
+        This method compare the version of the two product, and return the
+        comparison result. The version numbers used by the editor are compliant
+        with the semantic versioning specification 2.0.0 (see `semver`module)
+
+        Parameters
+            :param product: is the reference product (i.e. the deployed product)
+
+        Returns
+            :return: true if this instance is an update of the product specified
+            by the `product` parameter.
         """
         raise NotImplementedError
 
@@ -461,7 +478,7 @@ class BaseProduct:
         return result
 
     def _file_retrieve(self, url, dir_name, content_type=None):
-        """Retrieve a catalog URL into a location on disk.
+        """Retrieve a URL into a location on disk.
 
         The filename is the same as the name of the retrieved resource.
 
@@ -527,7 +544,9 @@ class BaseProduct:
                 result = filename, headers
                 msg = "Retrieve '{}' in '{}'"
                 self._logger.debug(msg.format(url, file.name))
-
+                # TODO: do secure hash while downloading
+                # use the scheme specified in hash attribute (SHA-256 by
+                # default)
                 progress_bar = TextProgressBar(content_length)
                 progress_bar.compute(length, content_length)
                 while True:
@@ -542,6 +561,7 @@ class BaseProduct:
                 self._logger.debug(msg)
             os.replace(part_filename, filename)
 
+        # TODO: check againt the file_size attribute
         if content_length >= 0 and length < content_length:
             raise ContentTooShortError(url, length, content_length)
 
@@ -556,7 +576,7 @@ class BaseProduct:
         version: is the version of the product
         extension: is the original extension of the download resource.
 
-        Parameters  The catalog is
+        Parameters
             :param filename: is a string specifying the local name of the
             installer executable.
 
@@ -579,6 +599,119 @@ class BaseProduct:
         dest = "{}_{}{}".format(self.name, self.version, ext)
         self.installer = os.path.normpath(os.path.join(basename, dest))
         os.replace(filename, self.installer)
+
+    def _get_name(self):
+        """Extract the name of the product (used in report mail and log file).
+
+        This method fixes the `name` attribute with a hardcoded value or an
+        extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_display_name(self):
+        """Extract the name of the product as it appears in the 'Programs and
+        Features' control panel.
+
+        This method fixes the `display_name` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_version(self):
+        """Extract the current version of the product.
+
+        This method fixes the `version` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_published(self):
+        """Extract the date of the installer’s publication (ISO 8601 format).
+
+        This method fixes the `published` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_description(self):
+        """Extract the short description of the product (~250 characters).
+
+        This method fixes the `description` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_editor(self):
+        """Extract the name of the editor of the product.
+
+        This method fixes the `editor` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_location(self):
+        """Extract the location (url) of the current version of the installer
+
+        This method fixes the `location` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_file_size(self):
+        """Extract the size of the product installer expressed in bytes
+
+        This method fixes the `file_size` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_hash(self):
+        """Extract the hash value of the product installer (tupple).
+
+        This method fixes the `hash` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_icon(self):
+        """Extract the name of the icon file.
+
+        This method fixes the `hash` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_target(self):
+        """Extract the target architecture type (the Windows’ one).
+
+        This method fixes the `target` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_release_note(self):
+        """Extract the release note’s URL.
+
+        This method fixes the `release_note` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_std_inst_args(self):
+        """Extract the arguments to use for a standard installation.
+
+        This method fixes the `std_inst_args` attribute with a hardcoded value
+        or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
+
+    def _get_silent_inst_args(self):
+        """Extract the arguments to use for a silent installation.
+
+        This method fixes the `silent_inst_args` attribute with a hardcoded
+        value or an extracted value from the remote product catalog.
+        """
+        raise NotImplementedError
 
 
 class Error(Exception):

@@ -302,7 +302,7 @@ def _comp_version(version1, version2):
         raise TypeError(msg)
 
     # comparison of each field of the pre-release version
-    result = 0  # default other
+    result = 0
     for i in range(3):
         cmp = version1[i] - version2[i]
         if cmp != 0:
@@ -348,7 +348,7 @@ def _comp_prerelease(prerelease1, prerelease2):
         raise TypeError(msg)
 
     # comparison of each field of pre-release version identifiers.
-    result = 0  # default other
+    result = 0
     if len(prerelease1) == 0 and len(prerelease2) == 0:
         pass
     elif len(prerelease1) == 0:
@@ -405,7 +405,7 @@ def _compstr(string1, string2):
         raise TypeError(msg)
 
     # comparison
-    result = 0  # default other
+    result = 0
     if string1.isdigit() and string2.isdigit():
         # numerical comparison
         cmp = int(string1) - int(string2)
