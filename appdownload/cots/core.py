@@ -278,11 +278,11 @@ class BaseProduct:
         check_update: checks if a new version is available
         fetch_update: downloads the latest version of the installer
     """
-    def __init__(self, logger=logging.getLogger(__name__)):
+    def __init__(self):
         """Constructor.
 
         Parameters
-            :param logger: is a logger object
+            None
         """
         self.name = ""
         self.version = ""
@@ -299,15 +299,10 @@ class BaseProduct:
         self._catalog_location = ""
         self._temp_files = []
 
-        # check logger parameter
-        self._logger = logger
-        if not isinstance(logger, logging.Logger):
-            msg = "logger argument must be a class 'logging.Logger'. not {0}"
-            msg = msg.format(logger.__class__)
-            raise TypeError(msg)
         # To make the module as versatile as possible, an nullHandler is added.
         # see 'Configuring Logging for a Library'
         # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+        self._logger = logging.getLogger(__name__)
         self._logger.addHandler(logging.NullHandler())
         self._logger.debug("Instance created.")
 

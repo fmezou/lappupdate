@@ -34,16 +34,23 @@ class Product(core.BaseProduct):
     Subclass API Methods (i.e. must be overwritten by subclass)
         None
     """
-    def __init__(self, logger=logging.getLogger(__name__)):
+    def __init__(self):
         """Constructor
 
         Parameters
-            :param logger: is a logger object
+            None
 
         Exception
             None
         """
-        super().__init__(logger)
+        super().__init__()
+
+        # To make the module as versatile as possible, an nullHandler is added.
+        # see 'Configuring Logging for a Library'
+        # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+        self._logger = logging.getLogger(__name__)
+        self._logger.addHandler(logging.NullHandler())
+        self._logger.debug("Instance created.")
 
         # At this point, only name and catalog location are known.
         # All others attributes will be discovered during catalog parsing

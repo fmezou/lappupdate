@@ -33,7 +33,7 @@ ignored = off
 #   applications section.
 # module (optional): is the name of the Python module used to check if a new
 #   version is available and eventually download it.
-#   The default value is 'cots\<section name>'.
+#   The default value is 'cots.<section name>'.
 # path (optional): is the path name where to store the installer package.
 #   The default value is '${core:store}\<section name>'.
 # set (optional): is the name of the set associated with the application

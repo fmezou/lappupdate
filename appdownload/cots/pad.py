@@ -96,10 +96,6 @@ class PadParser(xml.etree.ElementTree.ElementTree):
             file whose contents will be used to initialize the tree with.
         """
         super().__init__(element, file)
-        filename = os.path.join(os.path.dirname(__file__),
-                                PadParser._PADSPECS_FILENAME)
-        self._specs = xml.etree.ElementTree.parse(filename)
-        self._tree = None
 
         # To make the module as versatile as possible, an nullHandler is added.
         # see 'Configuring Logging for a Library'
@@ -107,6 +103,12 @@ class PadParser(xml.etree.ElementTree.ElementTree):
         self._logger = logging.getLogger(__name__)
         self._logger.addHandler(logging.NullHandler())
         self._logger.debug("Instance created.")
+
+        filename = os.path.join(os.path.dirname(__file__),
+                                PadParser._PADSPECS_FILENAME)
+        self._specs = xml.etree.ElementTree.parse(filename)
+        self._tree = None
+
 
     def parse(self, source, parser=None):
         """Load external PAD file into element tree.
