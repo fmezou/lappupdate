@@ -293,16 +293,16 @@
             <Name>Program_Release_Month</Name>
             <Path>XML_DIZ_INFO/Program_Info/Program_Release_Month</Path>
             <Title>Release month</Title>
-            <ShortDescription>Month that the program was released. Must be 2 digits: 01-12</ShortDescription>
-            <RegExDocumentation>2 digits 01-12</RegExDocumentation>
-            <RegEx>^(0[1-9]|1[0-2])\Z</RegEx>
+            <ShortDescription>Month that the program was released. Must be 1 or 2 digits: 1-12</ShortDescription>
+            <RegExDocumentation>1 or 2 digits 1-12</RegExDocumentation>
+            <RegEx>^([1-9]|0[1-9]|1[0-2])\Z</RegEx>
         </Field>
         <Field>
             <Name>Program_Release_Day</Name>
             <Path>XML_DIZ_INFO/Program_Info/Program_Release_Day</Path>
             <Title>Release day</Title>
             <ShortDescription>Day of the month the program was released. Must be 1 or 2 digits: 1-31</ShortDescription>
-            <RegExDocumentation>2 digits 01-31</RegExDocumentation>
+            <RegExDocumentation>1 or  digits 1-31</RegExDocumentation>
             <RegEx>^([1-9]|0[1-9]|[12][0-9]|3[01])\Z</RegEx>
         </Field>
         <Field>
