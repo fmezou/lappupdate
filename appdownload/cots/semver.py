@@ -252,9 +252,9 @@ class SemVer:
         self._version.append(int(match.group("patch")))
         msg = "{} -> Major:{}, Minor:{}, Patch:{}"
         _logger.debug(msg.format(version_string,
-                                      self._version[0],
-                                      self._version[1],
-                                      self._version[2]))
+                                 self._version[0],
+                                 self._version[1],
+                                 self._version[2]))
         if self._version[0] == 0:
             self._unstable = True
             msg = "{} -> Major version is zero, it's an unstable version."

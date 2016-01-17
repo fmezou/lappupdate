@@ -97,6 +97,7 @@ _APPLIST_EXT = ".txt"
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
+
 class Error(Exception):
     """Base class for AppDownload exceptions."""
 
@@ -244,7 +245,7 @@ class AppDownload:
         """
         self._load_config()
         _logger.info("Starting Appdownload (%s), check and report if "
-                         "applications' updates are available.", __version__)
+                     "applications' updates are available.", __version__)
         self._read_catalog()
         self._check_update()
         self._write_catalog()
@@ -258,8 +259,8 @@ class AppDownload:
         """
         self._load_config()
         _logger.info("Starting Appdownload (%s), download applications' "
-                         "updates based on the last build catalog.",
-                         __version__)
+                     "updates based on the last build catalog.",
+                     __version__)
         self._read_catalog()
         self._fetch_update()
         self._write_catalog()
@@ -273,7 +274,7 @@ class AppDownload:
         """
         self._load_config()
         _logger.info("Starting Appdownload (%s), make applist files based "
-                         "on the last build catalog.", __version__)
+                     "on the last build catalog.", __version__)
         self._read_catalog()
         self._write_applist()
         _logger.info("Appdownload (%s) completed.", __version__)
@@ -307,7 +308,7 @@ class AppDownload:
         assert self._checked_config is True
 
         _logger.info("Checking and report if applications' updates are "
-                         "available.")
+                     "available.")
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
                 _logger.debug(
@@ -327,8 +328,8 @@ class AppDownload:
                             msg = "A new version of '{0}' exist ({1}) " \
                                   "published on {2}."
                             _logger.info(msg.format(app_id,
-                                                        origin_app.version,
-                                                        origin_app.published))
+                                                    origin_app.version,
+                                                    origin_app.published))
                             app_entry[_CAT_ORIGIN_KEYNAME] = origin_app.dump()
                     else:
                         msg = "The product '{0}' isn't deployed.".format(app_id)
@@ -338,8 +339,8 @@ class AppDownload:
                         msg = "A version of '{0}' exist ({1}) " \
                               "published on {2}."
                         _logger.info(msg.format(app_id,
-                                                    origin_app.version,
-                                                    origin_app.published))
+                                                origin_app.version,
+                                                origin_app.published))
                         app_entry[_CAT_ORIGIN_KEYNAME] = origin_app.dump()
                 else:
                     msg = "The product '{0}' don't exist. A new one will " \
@@ -355,8 +356,8 @@ class AppDownload:
                     msg = "A version of '{0}' exist ({1}) " \
                           "published on {2}."
                     _logger.info(msg.format(app_id,
-                                                origin_app.version,
-                                                origin_app.published))
+                                            origin_app.version,
+                                            origin_app.published))
                     app_entry[_CAT_ORIGIN_KEYNAME] = origin_app.dump()
 
                 del app
@@ -375,7 +376,7 @@ class AppDownload:
         assert self._checked_config is True
 
         _logger.info("Download applications' updates based on the last "
-                         "build catalog.")
+                     "build catalog.")
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
                 _logger.debug(
@@ -509,7 +510,7 @@ class AppDownload:
         except FileNotFoundError:
             # the catalog may be not exist
             _logger.warning("The product's catalog don't exist. A new one "
-                                "will be created.")
+                            "will be created.")
             self._catalog[_CAT_WARNING_KEYNAME] = _CAT_WARNING
             self._catalog[_CAT_VERSION_KEYNAME] = _CAT_VERSION
             self._catalog[_CAT_MODIFIED_KEYNAME] = ""

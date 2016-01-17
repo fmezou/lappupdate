@@ -112,7 +112,6 @@ class PadParser(xml.etree.ElementTree.ElementTree):
         msg = "Instance of {} created."
         _logger.debug(msg.format(self.__class__))
 
-
     def parse(self, source, parser=None):
         """Load external PAD file into element tree.
 
