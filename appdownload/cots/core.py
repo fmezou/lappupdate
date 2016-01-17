@@ -12,7 +12,6 @@ Constant
 """
 
 import logging
-import time
 import tempfile
 import os
 import urllib.request
@@ -47,7 +46,7 @@ class BaseProduct:
         published: is the date of the installer’s publication (ISO 8601 format)
         description: is a short description of the product (~250 characters)
         editor: is the name of the editor of the product
-        location: is the location (url) of the current version of the installer
+        url: is the url of the current version of the installer
         file_size: is the size of the product installer expressed in bytes
         hash : is the hash value of the product installer. It's a tupple
         containing, in this order, the name of hash algorithm (see
@@ -72,7 +71,7 @@ class BaseProduct:
         dump: dump a product class.
 
     Subclass API variables (i.e. may be use by subclass)
-        _catalog_location: location (url) of the product catalog.
+        _catalog_url: url of the product catalog.
 
     Subclass API Methods (i.e. must be overwritten by subclass)
         check_update: checks if a new version is available
@@ -90,7 +89,7 @@ class BaseProduct:
         self.published = ""
         self.description = ""
         self.editor = ""
-        self.location = ""
+        self.url = ""
         self.file_size = 0
         self.hash = None
         self.icon = ""
@@ -99,10 +98,8 @@ class BaseProduct:
         self.installer = ""
         self.std_inst_args = ""
         self.silent_inst_args = ""
-        self.product_code = ""
 
-        self._catalog_location = ""
-        self._temp_files = []
+        self._catalog_url = ""
 
         msg = "Instance of {} created."
         _logger.debug(msg.format(self.__class__))
@@ -163,16 +160,63 @@ class BaseProduct:
         Parameters
             :param version: is the version of the reference product (i.e. the
             deployed product). It'a string following the editor rule.
+
+        Exceptions
+            exception raised by the `parse` method.
+            exception raised by the `retrieve_tempfile` function.
         """
-        raise NotImplementedError
+        # check parameters type
+        if version is not None and not isinstance(version, str):
+            msg = "version argument must be a class 'str' or None. not {0}"
+            msg = msg.format(version.__class__)
+            raise TypeError(msg)
+
+        msg = "Get the latest product information. Current version is '{0}'"
+        _logger.debug(msg.format(self.version))
+
+        local_filename, headers = \
+            retrieve_tempfile(self._catalog_url)
+        msg = "Catalog downloaded: '{0}'".format(local_filename)
+        _logger.debug(msg)
+
+        # Parse the catalog and retrieve information
+        self._parse_catalog(local_filename)
+        self._get_name()
+        self._get_version()
+        self._get_display_name()
+        self._get_published()
+        self._get_description()
+        self._get_editor()
+        self._get_url()
+        self._get_file_size()
+        self._get_hash()
+        self._get_icon()
+        self._get_target()
+        self._get_release_note()
+        self._get_std_inst_args()
+        self._get_silent_inst_args()
+
+        # clean up the temporary files
+        os.unlink(local_filename)
 
     def fetch(self, path):
         """Downloads the product installer.
 
         Parameters
             :param path: is the path name where to store the installer package.
+
+        Exceptions
+            exception raised by the `_file_retrieve` method.
         """
-        raise NotImplementedError
+        msg = "Downloads the latest version of the installer."
+        _logger.debug(msg)
+
+        # Update the update object
+        local_filename, headers = \
+            retrieve_file(self.url, path)
+        self._rename_installer(local_filename)
+        msg = "Update downloaded in '{}'".format(self.installer)
+        _logger.debug(msg)
 
     def is_update(self, product):
         """ Return if this instance is an update of product
@@ -189,169 +233,6 @@ class BaseProduct:
             by the `product` parameter.
         """
         raise NotImplementedError
-
-    def _temporary_retrieve(self, url, content_type=None):
-        """Retrieve a URL into a temporary location on disk.
-
-        Parameters  The catalog is
-            :param url: is a string specifying the URL.
-            :param content_type: is a string specifying the content type of the
-            retrieved resource. If the received type is different, an exception
-            BadTypeResource is raised.
-
-        Exceptions
-            TypeError: Raised a parameter have an inappropriate type.
-            BadTypeResource: Raised when downloaded content-type does not match.
-            ContentTooShortError:Raised when downloaded size does not match
-            content-length.
-            The others exception are the same as for `urllib.request.urlopen()`.
-
-        Return
-            :return: a tuple (filename, headers) where filename is the local
-            file name, and headers is whatever the info() method of the object
-            returned by urlopen() returned.
-        """
-        # check parameters type
-        if not isinstance(url, str):
-            msg = "url argument must be a class 'str'. not {0}"
-            msg = msg.format(url.__class__)
-            raise TypeError(msg)
-        if content_type is not None:
-            if not isinstance(content_type, str):
-                msg = "content_type argument must be a class 'str'. not {0}"
-                msg = msg.format(content_type.__class__)
-                raise TypeError(msg)
-
-        # default value
-        content_length = -1
-        length = 0
-        result = None
-
-        # retrieve the resource
-        msg = "Retrieve '{}'"
-        _logger.debug(msg.format(url))
-
-        with contextlib.closing(urllib.request.urlopen(url)) as stream:
-            headers = stream.info()
-            if "Content-Type" in headers and content_type is not None:
-                if headers["Content-Type"] != content_type:
-                    raise BadTypeResource(url, headers["Content-Type"],
-                                          content_type)
-            if "Content-Length" in headers:
-                content_length = int(headers["Content-Length"])
-            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                self._temp_files.append(temp_file.name)
-                result = temp_file.name, headers
-                msg = "Retrieve '{}' in '{}'"
-                _logger.debug(msg.format(url, temp_file.name))
-
-                progress_bar = progressbar.TextProgressBar(content_length)
-                progress_bar.compute(length, content_length)
-                while True:
-                    data = stream.read(4096)
-                    if not data:
-                        break
-                    length += len(data)
-                    temp_file.write(data)
-                    progress_bar.compute(length, content_length)
-                msg = "'{}' retrieved - ".format(url)
-                msg = msg + progress_bar.finish()
-                _logger.debug(msg)
-
-        if content_length >= 0 and length < content_length:
-            raise ContentTooShortError(url, length, content_length)
-
-        return result
-
-    def _file_retrieve(self, url, dir_name, content_type=None):
-        """Retrieve a URL into a location on disk.
-
-        The filename is the same as the name of the retrieved resource.
-
-        Parameters  The catalog is
-            :param url: is a string specifying the URL of the catalog.
-            :param dir_name: is a string specifying the directory location on
-              the disk where the retrieved is going to be written.
-            :param content_type: is a string specifying the mime type of the
-            retrieved catalog. If the received type is different, a
-            BadTypeResource is raised.
-
-        Exceptions
-            TypeError: Raised a parameter have an inappropriate type.
-            BadTypeResource: Raised when downloaded content-type does not match.
-            ContentTooShortError:Raised when downloaded size does not match
-            content-length.
-            The others exception are the same as for `urllib.request.urlopen()`.
-
-        Return
-            :return: a tuple (filename, headers) where filename is the local
-            file name, and headers is whatever the info() method
-            of the object returned by urlopen() returned.
-        """
-        # check parameters type
-        if not isinstance(url, str):
-            msg = "url argument must be a class 'str'. not {0}"
-            msg = msg.format(url.__class__)
-            raise TypeError(msg)
-        if not isinstance(dir_name, str):
-            msg = "dir_name argument must be a class 'str'. not {0}"
-            msg = msg.format(dir_name.__class__)
-            raise TypeError(msg)
-        if content_type is not None:
-            if not isinstance(content_type, str):
-                msg = "content_type argument must be a class 'str'. not {0}"
-                msg = msg.format(content_type.__class__)
-                raise TypeError(msg)
-
-        # default value
-        content_length = -1
-        length = 0
-        result = None
-
-        # retrieve the resource
-        msg = "Retrieve '{}'"
-        _logger.debug(msg.format(url))
-
-        with contextlib.closing(urllib.request.urlopen(url)) as stream:
-            headers = stream.info()
-            if "Content-Type" in headers and content_type is not None:
-                if headers["Content-Type"] != content_type:
-                    raise BadTypeResource(url, headers["Content-Type"],
-                                          content_type)
-            if "Content-Length" in headers:
-                content_length = int(headers["Content-Length"])
-
-            # TODO : treat the exception for os.makedirs
-            os.makedirs(dir_name, exist_ok=True)
-            basename = os.path.basename(urllib.request.url2pathname(url))
-            filename = os.path.join(dir_name, basename)
-            part_filename = filename + ".partial"
-            with open(part_filename, mode="wb") as file:
-                result = filename, headers
-                msg = "Retrieve '{}' in '{}'"
-                _logger.debug(msg.format(url, file.name))
-                # TODO: do secure hash while downloading
-                # use the scheme specified in hash attribute (SHA-256 by
-                # default)
-                progress_bar = progressbar.TextProgressBar(content_length)
-                progress_bar.compute(length, content_length)
-                while True:
-                    data = stream.read(4096)
-                    if not data:
-                        break
-                    length += len(data)
-                    file.write(data)
-                    progress_bar.compute(length, content_length)
-                msg = "'{}' retrieved - ".format(url)
-                msg = msg + progress_bar.finish()
-                _logger.debug(msg)
-            os.replace(part_filename, filename)
-
-        # TODO: check againt the file_size attribute
-        if content_length >= 0 and length < content_length:
-            raise ContentTooShortError(url, length, content_length)
-
-        return result
 
     def _rename_installer(self, filename):
         """Rename the installer executable.
@@ -385,6 +266,18 @@ class BaseProduct:
         dest = "{}_{}{}".format(self.name, self.version, ext)
         self.installer = os.path.normpath(os.path.join(basename, dest))
         os.replace(filename, self.installer)
+
+    def _parse_catalog(self, filename):
+        """ Parse the catalog.
+
+        This method parses the downloaded product catalog to prepare
+        `_get_...` call.
+
+        Parameters
+            :param filename: is a string specifying the local name of the
+            downloaded product catalog.
+         """
+        raise NotImplementedError
 
     def _get_name(self):
         """Extract the name of the product (used in report mail and log file).
@@ -435,10 +328,10 @@ class BaseProduct:
         """
         raise NotImplementedError
 
-    def _get_location(self):
-        """Extract the location (url) of the current version of the installer
+    def _get_url(self):
+        """Extract the url of the current version of the installer
 
-        This method fixes the `location` attribute with a hardcoded value
+        This method fixes the `url` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
         """
         raise NotImplementedError
@@ -557,3 +450,167 @@ class BadTypeResource(Error):
         self.read_type = content_type
         self.waited_type = waited_content_type
         self.url = url
+
+
+def retrieve_tempfile(url, content_type=None):
+    """Retrieve a URL into a temporary url on disk.
+
+    Parameters
+        :param url: is a string specifying the URL.
+        :param content_type: is a string specifying the content type of the
+        retrieved resource. If the received type is different, an exception
+        BadTypeResource is raised.
+
+    Exceptions
+        TypeError: Raised a parameter have an inappropriate type.
+        BadTypeResource: Raised when downloaded content-type does not match.
+        ContentTooShortError:Raised when downloaded size does not match
+        content-length.
+        The others exception are the same as for `urllib.request.urlopen()`.
+
+    Return
+        :return: a tuple (filename, headers) where filename is the local
+        file name, and headers is whatever the info() method of the object
+        returned by urlopen() returned.
+    """
+    # check parameters type
+    if not isinstance(url, str):
+        msg = "url argument must be a class 'str'. not {0}"
+        msg = msg.format(url.__class__)
+        raise TypeError(msg)
+    if content_type is not None:
+        if not isinstance(content_type, str):
+            msg = "content_type argument must be a class 'str'. not {0}"
+            msg = msg.format(content_type.__class__)
+            raise TypeError(msg)
+
+    # default value
+    content_length = -1
+    length = 0
+    result = None
+
+    # retrieve the resource
+    msg = "Retrieve '{}'"
+    _logger.debug(msg.format(url))
+
+    with contextlib.closing(urllib.request.urlopen(url)) as stream:
+        headers = stream.info()
+        if "Content-Type" in headers and content_type is not None:
+            if headers["Content-Type"] != content_type:
+                raise BadTypeResource(url, headers["Content-Type"],
+                                      content_type)
+        if "Content-Length" in headers:
+            content_length = int(headers["Content-Length"])
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            result = temp_file.name, headers
+            msg = "Retrieve '{}' in '{}'"
+            _logger.debug(msg.format(url, temp_file.name))
+
+            progress_bar = progressbar.TextProgressBar(content_length)
+            progress_bar.compute(length, content_length)
+            while True:
+                data = stream.read(4096)
+                if not data:
+                    break
+                length += len(data)
+                temp_file.write(data)
+                progress_bar.compute(length, content_length)
+            msg = "'{}' retrieved - ".format(url)
+            msg = msg + progress_bar.finish()
+            _logger.debug(msg)
+
+    if content_length >= 0 and length < content_length:
+        raise ContentTooShortError(url, length, content_length)
+
+    return result
+
+
+def retrieve_file(url, dir_name, content_type=None):
+    """Retrieve a URL into a url on disk.
+
+    The filename is the same as the name of the retrieved resource.
+
+    Parameters  The catalog is
+        :param url: is a string specifying the URL of the catalog.
+        :param dir_name: is a string specifying the directory url on
+          the disk where the retrieved is going to be written.
+        :param content_type: is a string specifying the mime type of the
+        retrieved catalog. If the received type is different, a
+        BadTypeResource is raised.
+
+    Exceptions
+        TypeError: Raised a parameter have an inappropriate type.
+        BadTypeResource: Raised when downloaded content-type does not match.
+        ContentTooShortError:Raised when downloaded size does not match
+        content-length.
+        The others exception are the same as for `urllib.request.urlopen()`.
+
+    Return
+        :return: a tuple (filename, headers) where filename is the local
+        file name, and headers is whatever the info() method
+        of the object returned by urlopen() returned.
+    """
+    # check parameters type
+    if not isinstance(url, str):
+        msg = "url argument must be a class 'str'. not {0}"
+        msg = msg.format(url.__class__)
+        raise TypeError(msg)
+    if not isinstance(dir_name, str):
+        msg = "dir_name argument must be a class 'str'. not {0}"
+        msg = msg.format(dir_name.__class__)
+        raise TypeError(msg)
+    if content_type is not None:
+        if not isinstance(content_type, str):
+            msg = "content_type argument must be a class 'str'. not {0}"
+            msg = msg.format(content_type.__class__)
+            raise TypeError(msg)
+
+    # default value
+    content_length = -1
+    length = 0
+    result = None
+
+    # retrieve the resource
+    msg = "Retrieve '{}'"
+    _logger.debug(msg.format(url))
+
+    with contextlib.closing(urllib.request.urlopen(url)) as stream:
+        headers = stream.info()
+        if "Content-Type" in headers and content_type is not None:
+            if headers["Content-Type"] != content_type:
+                raise BadTypeResource(url, headers["Content-Type"],
+                                      content_type)
+        if "Content-Length" in headers:
+            content_length = int(headers["Content-Length"])
+
+        # TODO : treat the exception for os.makedirs
+        os.makedirs(dir_name, exist_ok=True)
+        basename = os.path.basename(urllib.request.url2pathname(url))
+        filename = os.path.join(dir_name, basename)
+        part_filename = filename + ".partial"
+        with open(part_filename, mode="wb") as file:
+            result = filename, headers
+            msg = "Retrieve '{}' in '{}'"
+            _logger.debug(msg.format(url, file.name))
+            # TODO: do secure hash while downloading
+            # use the scheme specified in hash attribute (SHA-256 by
+            # default)
+            progress_bar = progressbar.TextProgressBar(content_length)
+            progress_bar.compute(length, content_length)
+            while True:
+                data = stream.read(4096)
+                if not data:
+                    break
+                length += len(data)
+                file.write(data)
+                progress_bar.compute(length, content_length)
+            msg = "'{}' retrieved - ".format(url)
+            msg = msg + progress_bar.finish()
+            _logger.debug(msg)
+        os.replace(part_filename, filename)
+
+    # TODO: check against the file_size attribute
+    if content_length >= 0 and length < content_length:
+        raise ContentTooShortError(url, length, content_length)
+
+    return result

@@ -12,7 +12,6 @@ Constant
 """
 
 
-import os
 import datetime
 import logging
 import semver
@@ -53,75 +52,11 @@ class Product(core.BaseProduct):
         """
         super().__init__()
 
-        # At this point, only name and catalog location are known.
+        # At this point, only name and catalog url are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "Dummy Product"
-        self._catalog_location = "http://www.example.com/index.html"
-
-    def get_origin(self, version=None):
-        """Get product information from the remote repository.
-
-        The latest catalog of the product is downloaded and parsed.
-
-        Parameters
-            :param version: is the version of the reference product (i.e. the
-            deployed product). It'a string following the editor rule.
-            Not used here.
-
-        Exceptions
-            exception raised by the `_temporary_retrieve` method.
-        """
-        # check parameters type
-        if version is not None and not isinstance(version, str):
-            msg = "version argument must be a class 'str' or None. not {0}"
-            msg = msg.format(version.__class__)
-            raise TypeError(msg)
-
-        msg = "Get the latest product information. Current version is '{0}'"
-        _logger.debug(msg.format(self.version))
-
-        local_filename, headers = \
-            self._temporary_retrieve(self._catalog_location)
-        msg = "Catalog downloaded: '{0}'".format(local_filename)
-        _logger.debug(msg)
-
-        self._get_name()
-        self._get_version()
-        self._get_display_name()
-        self._get_published()
-        self._get_description()
-        self._get_editor()
-        self._get_location()
-        self._get_file_size()
-        self._get_hash()
-        self._get_icon()
-        self._get_target()
-        self._get_release_note()
-        self._get_std_inst_args()
-        self._get_silent_inst_args()
-
-        # clean up the temporary files
-        os.unlink(local_filename)
-
-    def fetch(self, path):
-        """Downloads the product installer.
-
-        Parameters
-            :param path: is the path name where to store the installer package.
-
-        Exceptions
-            exception raised by the `_file_retrieve` method.
-        """
-        msg = "Downloads the latest version of the installer."
-        _logger.debug(msg)
-
-        # Update the update object
-        local_filename, headers = \
-            self._file_retrieve(self.location, path)
-        self._rename_installer(local_filename)
-        msg = "Update downloaded in '{}'".format(self.installer)
-        _logger.debug(msg)
+        self._catalog_url = "http://www.example.com/index.html"
 
     def is_update(self, product):
         """ Return if this instance is an update of product
@@ -134,7 +69,8 @@ class Product(core.BaseProduct):
             :param product: is the reference product (i.e. the deployed product)
 
         Exceptions
-            exception raised by the `_temporary_retrieve` method.
+            `semver` module exception raised by the rich comparison method of
+            SemVer class.
 
         Returns
             :return: true if this instance is an update of the product specified
@@ -156,6 +92,19 @@ class Product(core.BaseProduct):
             msg = "No new version available."
             _logger.debug(msg)
         return result
+
+    def _parse_catalog(self, filename):
+        """ Parse the catalog.
+
+        This method parses the downloaded product catalog to prepare
+        `_get_...` call.
+        This catalog is a PAD File (see `pad` module).
+
+        Parameters
+            :param filename: is a string specifying the local name of the
+            downloaded product catalog.
+         """
+        _logger.debug(filename)
 
     def _get_name(self):
         """
@@ -195,10 +144,10 @@ class Product(core.BaseProduct):
         """
         self.editor = "Example. inc"
 
-    def _get_location(self):
-        """Extract the location (url) of the current version of the installer
+    def _get_url(self):
+        """Extract the url of the current version of the installer
         """
-        self.location = "http://www.example.com/index.html"
+        self.url = "http://www.example.com/index.html"
 
     def _get_file_size(self):
         """Extract the size of the product installer expressed in bytes
