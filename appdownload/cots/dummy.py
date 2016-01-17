@@ -20,6 +20,13 @@ import semver
 from cots import core
 
 
+# To make the module as versatile as possible, an nullHandler is added.
+# see 'Configuring Logging for a Library'
+# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
+
+
 class Product(core.BaseProduct):
     """Dummy product class.
 
@@ -46,17 +53,10 @@ class Product(core.BaseProduct):
         """
         super().__init__()
 
-        # To make the module as versatile as possible, an nullHandler is added.
-        # see 'Configuring Logging for a Library'
-        # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
-        self._logger = logging.getLogger(__name__)
-        self._logger.addHandler(logging.NullHandler())
-        self._logger.debug("Instance created.")
-
         # At this point, only name and catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
-        self.name = "Dummy Application"
+        self.name = "Dummy Product"
         self._catalog_location = "http://www.example.com/index.html"
 
     def get_origin(self, version=None):
@@ -79,12 +79,12 @@ class Product(core.BaseProduct):
             raise TypeError(msg)
 
         msg = "Get the latest product information. Current version is '{0}'"
-        self._logger.debug(msg.format(self.version))
+        _logger.debug(msg.format(self.version))
 
         local_filename, headers = \
             self._temporary_retrieve(self._catalog_location)
         msg = "Catalog downloaded: '{0}'".format(local_filename)
-        self._logger.debug(msg)
+        _logger.debug(msg)
 
         self._get_name()
         self._get_version()
@@ -114,14 +114,14 @@ class Product(core.BaseProduct):
             exception raised by the `_file_retrieve` method.
         """
         msg = "Downloads the latest version of the installer."
-        self._logger.debug(msg)
+        _logger.debug(msg)
 
         # Update the update object
         local_filename, headers = \
             self._file_retrieve(self.location, path)
         self._rename_installer(local_filename)
         msg = "Update downloaded in '{}'".format(self.installer)
-        self._logger.debug(msg)
+        _logger.debug(msg)
 
     def is_update(self, product):
         """ Return if this instance is an update of product
@@ -151,10 +151,10 @@ class Product(core.BaseProduct):
         if semver.SemVer(self.version) < semver.SemVer(product.version):
             result = True
             msg = "A new version exist ({})."
-            self._logger.debug(msg.format(product.version))
+            _logger.debug(msg.format(product.version))
         else:
             msg = "No new version available."
-            self._logger.debug(msg)
+            _logger.debug(msg)
         return result
 
     def _get_name(self):
@@ -188,7 +188,7 @@ class Product(core.BaseProduct):
         """Extract the short description of the product (~250 characters).
         """
         self.description = "This dummy module is a trivial example of a " \
-                           "Product class implentation. "
+                           "Product class implementation. "
 
     def _get_editor(self):
         """Extract the name of the editor of the product.

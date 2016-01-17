@@ -86,12 +86,16 @@ _PROD_TARGET_KEYNAME = "target"
 _PROD_INSTALLER_KEYNAME = "installer"
 _PROD_SILENT_INSTALL_ARGS_KEYNAME = "silent_inst_args"
 
-
 # APPLIST files
 _APPLIST_SEP = ";"
 _APPLIST_PREFIX = "applist-"
 _APPLIST_EXT = ".txt"
 
+# To make the module as versatile as possible, an nullHandler is added.
+# see 'Configuring Logging for a Library'
+# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
 
 class Error(Exception):
     """Base class for AppDownload exceptions."""
@@ -213,8 +217,8 @@ class AppDownload:
         self._catalog = {}
         self._app_set_file = {}
 
-        # initialise the logging based on logging module.
-        self.logger = logging.getLogger(__name__)
+        msg = "Instance of {} created <- {}"
+        _logger.debug(msg.format(self.__class__, config_file))
 
     def run(self):
         """run the AppDownload application.
@@ -223,13 +227,13 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdownload (%s)", __version__)
+        _logger.info("Starting Appdownload (%s)", __version__)
         self._read_catalog()
         self._check_update()
         self._fetch_update()
         self._write_catalog()
         self._write_applist()
-        self.logger.info("Appdownload (%s) completed.", __version__)
+        _logger.info("Appdownload (%s) completed.", __version__)
 
     def check(self):
         """check and report if applications' updates are available without
@@ -239,12 +243,12 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdownload (%s), check and report if "
+        _logger.info("Starting Appdownload (%s), check and report if "
                          "applications' updates are available.", __version__)
         self._read_catalog()
         self._check_update()
         self._write_catalog()
-        self.logger.info("Appdownload (%s) completed.", __version__)
+        _logger.info("Appdownload (%s) completed.", __version__)
 
     def download(self):
         """download applications' updates based on the last build catalog.
@@ -253,13 +257,13 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdownload (%s), download applications' "
+        _logger.info("Starting Appdownload (%s), download applications' "
                          "updates based on the last build catalog.",
                          __version__)
         self._read_catalog()
         self._fetch_update()
         self._write_catalog()
-        self.logger.info("Appdownload (%s) completed.", __version__)
+        _logger.info("Appdownload (%s) completed.", __version__)
 
     def make(self):
         """make applist files based on the last build catalog
@@ -268,11 +272,11 @@ class AppDownload:
             None
         """
         self._load_config()
-        self.logger.info("Starting Appdownload (%s), make applist files based "
+        _logger.info("Starting Appdownload (%s), make applist files based "
                          "on the last build catalog.", __version__)
         self._read_catalog()
         self._write_applist()
-        self.logger.info("Appdownload (%s) completed.", __version__)
+        _logger.info("Appdownload (%s) completed.", __version__)
 
     def test_config(self):
         """check the configuration file for internal correctness.
@@ -302,11 +306,11 @@ class AppDownload:
         """
         assert self._checked_config is True
 
-        self.logger.info("Checking and report if applications' updates are "
+        _logger.info("Checking and report if applications' updates are "
                          "available.")
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
-                self.logger.debug(
+                _logger.debug(
                     "Load and set the '{0}' module.".format(app_id)
                 )
                 mod_name = self._config[app_id][_APP_MODULE_KEYNAME]
@@ -316,41 +320,41 @@ class AppDownload:
                     app_entry = self._catalog[_CAT_PRODUCTS_KEYNAME][app_id]
                     if len(app_entry[_CAT_DEPLOYED_KEYNAME]) != 0:
                         app.load(app_entry[_CAT_DEPLOYED_KEYNAME])
-                        self.logger.debug("Check if an update is available")
+                        _logger.debug("Check if an update is available")
                         origin_app = app_mod.Product()
                         origin_app.get_origin(app.version)
                         if origin_app.is_update(app):
                             msg = "A new version of '{0}' exist ({1}) " \
                                   "published on {2}."
-                            self.logger.info(msg.format(app_id,
+                            _logger.info(msg.format(app_id,
                                                         origin_app.version,
                                                         origin_app.published))
                             app_entry[_CAT_ORIGIN_KEYNAME] = origin_app.dump()
                     else:
                         msg = "The product '{0}' isn't deployed.".format(app_id)
-                        self.logger.info(msg.format(app_id))
+                        _logger.info(msg.format(app_id))
                         origin_app = app_mod.Product()
                         origin_app.get_origin()
                         msg = "A version of '{0}' exist ({1}) " \
                               "published on {2}."
-                        self.logger.info(msg.format(app_id,
+                        _logger.info(msg.format(app_id,
                                                     origin_app.version,
                                                     origin_app.published))
                         app_entry[_CAT_ORIGIN_KEYNAME] = origin_app.dump()
                 else:
                     msg = "The product '{0}' don't exist. A new one will " \
                           "be created.".format(app_id)
-                    self.logger.warning(msg)
+                    _logger.warning(msg)
                     self._catalog[_CAT_PRODUCTS_KEYNAME][app_id] = {}
                     app_entry = self._catalog[_CAT_PRODUCTS_KEYNAME][app_id]
                     app_entry[_CAT_DEPLOYED_KEYNAME] = {}
                     app_entry[_CAT_ORIGIN_KEYNAME] = {}
-                    self.logger.debug("Check if an update is available")
+                    _logger.debug("Check if an update is available")
                     origin_app = app_mod.Product()
                     origin_app.get_origin()
                     msg = "A version of '{0}' exist ({1}) " \
                           "published on {2}."
-                    self.logger.info(msg.format(app_id,
+                    _logger.info(msg.format(app_id,
                                                 origin_app.version,
                                                 origin_app.published))
                     app_entry[_CAT_ORIGIN_KEYNAME] = origin_app.dump()
@@ -358,9 +362,9 @@ class AppDownload:
                 del app
                 del origin_app
                 del app_mod
-                self.logger.debug("'{0}' checked.".format(app_id))
+                _logger.debug("'{0}' checked.".format(app_id))
             else:
-                self.logger.info("'{0}' ignored.".format(app_id))
+                _logger.info("'{0}' ignored.".format(app_id))
 
     def _fetch_update(self):
         """download applications' updates based on the last build catalog.
@@ -370,11 +374,11 @@ class AppDownload:
         """
         assert self._checked_config is True
 
-        self.logger.info("Download applications' updates based on the last "
+        _logger.info("Download applications' updates based on the last "
                          "build catalog.")
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
-                self.logger.debug(
+                _logger.debug(
                     "Load and set the '{0}' module.".format(app_id)
                 )
                 mod_name = self._config[app_id][_APP_MODULE_KEYNAME]
@@ -384,25 +388,25 @@ class AppDownload:
                     app_entry = self._catalog[_CAT_PRODUCTS_KEYNAME][app_id]
                     if len(app_entry[_CAT_ORIGIN_KEYNAME]) != 0:
                         app.load(app_entry[_CAT_ORIGIN_KEYNAME])
-                        self.logger.debug("Fetch the update.")
+                        _logger.debug("Fetch the update.")
                         app.fetch(self._config[app_id][_APP_PATH_KEYNAME])
                         msg = "New version of '{0}' fetched. saved as '{1}'."
-                        self.logger.info(msg.format(app_id, app.installer))
+                        _logger.info(msg.format(app_id, app.installer))
 
                         # replace the deployed product by the newest.
                         app_entry[_CAT_DEPLOYED_KEYNAME] = app.dump()
                         app_entry[_CAT_ORIGIN_KEYNAME] = {}
                     else:
                         msg = "No update for product '{0}'."
-                        self.logger.info(msg.format(app_id))
+                        _logger.info(msg.format(app_id))
                 else:
                     msg = "The product '{0}' don't exist. Request ignored."
-                    self.logger.warning(msg.format(app_id))
+                    _logger.warning(msg.format(app_id))
 
                 del app
                 del app_mod
             else:
-                self.logger.info("'{0}' ignored.".format(app_id))
+                _logger.info("'{0}' ignored.".format(app_id))
 
     def _load_config(self):
         """load the configuration details from the configuration file.
@@ -498,13 +502,13 @@ class AppDownload:
             None
         """
         msg = "Load the products' catalog ({0}).".format(self._catalog_filename)
-        self.logger.info(msg)
+        _logger.info(msg)
         try:
             with open(self._catalog_filename, "r+t") as file:
                 self._catalog = json.load(file)
         except FileNotFoundError:
             # the catalog may be not exist
-            self.logger.warning("The product's catalog don't exist. A new one "
+            _logger.warning("The product's catalog don't exist. A new one "
                                 "will be created.")
             self._catalog[_CAT_WARNING_KEYNAME] = _CAT_WARNING
             self._catalog[_CAT_VERSION_KEYNAME] = _CAT_VERSION
@@ -512,7 +516,7 @@ class AppDownload:
             self._catalog[_CAT_PRODUCTS_KEYNAME] = {}
         else:
             msg = "Products' catalog loaded."
-            self.logger.info(msg)
+            _logger.info(msg)
 
     def _write_catalog(self):
         """write the catalog product file.
@@ -521,7 +525,7 @@ class AppDownload:
             None
         """
         msg = "Write the products' catalog ({0})."
-        self.logger.info(msg.format(self._catalog_filename))
+        _logger.info(msg.format(self._catalog_filename))
 
         with open(self._catalog_filename, "w+t") as file:
             # write the warning header with a naive time representation.
@@ -529,7 +533,7 @@ class AppDownload:
             self._catalog[_CAT_MODIFIED_KEYNAME] = dt.isoformat()
             json.dump(self._catalog, file, indent=4, sort_keys=True)
         msg = "Products' catalog saved"
-        self.logger.info(msg)
+        _logger.info(msg)
 
     def _write_applist(self):
         """Write the applist files from the catalog.
@@ -537,7 +541,7 @@ class AppDownload:
         Parameters
             None
         """
-        self.logger.info("Write the applist files from the catalog.")
+        _logger.info("Write the applist files from the catalog.")
 
         header = \
             "# --------------------------------------------------------------" \
@@ -573,7 +577,7 @@ class AppDownload:
                     if comp_name not in self._app_set_file:
                         file = open(filename, "w+t")
                         self._app_set_file[comp_name] = file
-                        self.logger.info(
+                        _logger.info(
                             "'{0}' applist file created -> '{1}'.".format(
                                 comp_name, filename
                             )
@@ -584,7 +588,7 @@ class AppDownload:
                         file = self._app_set_file[comp_name]
                     file.write(app_line + "\n")
             else:
-                self.logger.info("'{0}' ignored.".format(app_id))
+                _logger.info("'{0}' ignored.".format(app_id))
 
         # Terminate by closing the files
         for comp_name, file in self._app_set_file.items():

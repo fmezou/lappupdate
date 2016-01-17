@@ -27,6 +27,13 @@ PROD_TARGET_X64 = "x64"
 PROD_TARGET_UNIFIED = "unified"
 
 
+# To make the module as versatile as possible, an nullHandler is added.
+# see 'Configuring Logging for a Library'
+# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
+
+
 def _isu_format_prefix(value, unit):
     """ return a string using standard prefix for unit.
 
@@ -314,12 +321,8 @@ class BaseProduct:
         self._catalog_location = ""
         self._temp_files = []
 
-        # To make the module as versatile as possible, an nullHandler is added.
-        # see 'Configuring Logging for a Library'
-        # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
-        self._logger = logging.getLogger(__name__)
-        self._logger.addHandler(logging.NullHandler())
-        self._logger.debug("Instance created.")
+        msg = "Instance of {} created."
+        _logger.debug(msg.format(self.__class__))
 
     def load(self, attributes=None):
         """Load a product class.
@@ -339,7 +342,7 @@ class BaseProduct:
                 raise TypeError(msg)
 
         # set instance variables
-        self._logger.info("Load the product.")
+        _logger.info("Load the product.")
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
@@ -348,7 +351,7 @@ class BaseProduct:
                 if attr is not None:
                     self.__dict__[k] = attributes.get(k)
                     msg = "Instance variables '{0}' : '{1}' -> '{2}'"
-                    self._logger.debug(msg.format(k, v, attr))
+                    _logger.debug(msg.format(k, v, attr))
 
     def dump(self):
         """Dump a product class.
@@ -361,7 +364,7 @@ class BaseProduct:
             variables values.
         """
         attributes = {}
-        self._logger.info("Dump the product.")
+        _logger.info("Dump the product.")
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
@@ -443,7 +446,7 @@ class BaseProduct:
 
         # retrieve the resource
         msg = "Retrieve '{}'"
-        self._logger.debug(msg.format(url))
+        _logger.debug(msg.format(url))
 
         with contextlib.closing(urllib.request.urlopen(url)) as stream:
             headers = stream.info()
@@ -457,7 +460,7 @@ class BaseProduct:
                 self._temp_files.append(temp_file.name)
                 result = temp_file.name, headers
                 msg = "Retrieve '{}' in '{}'"
-                self._logger.debug(msg.format(url, temp_file.name))
+                _logger.debug(msg.format(url, temp_file.name))
 
                 progress_bar = TextProgressBar(content_length)
                 progress_bar.compute(length, content_length)
@@ -470,7 +473,7 @@ class BaseProduct:
                     progress_bar.compute(length, content_length)
                 msg = "'{}' retrieved - ".format(url)
                 msg = msg + progress_bar.finish()
-                self._logger.debug(msg)
+                _logger.debug(msg)
 
         if content_length >= 0 and length < content_length:
             raise ContentTooShortError(url, length, content_length)
@@ -524,7 +527,7 @@ class BaseProduct:
 
         # retrieve the resource
         msg = "Retrieve '{}'"
-        self._logger.debug(msg.format(url))
+        _logger.debug(msg.format(url))
 
         with contextlib.closing(urllib.request.urlopen(url)) as stream:
             headers = stream.info()
@@ -543,7 +546,7 @@ class BaseProduct:
             with open(part_filename, mode="wb") as file:
                 result = filename, headers
                 msg = "Retrieve '{}' in '{}'"
-                self._logger.debug(msg.format(url, file.name))
+                _logger.debug(msg.format(url, file.name))
                 # TODO: do secure hash while downloading
                 # use the scheme specified in hash attribute (SHA-256 by
                 # default)
@@ -558,7 +561,7 @@ class BaseProduct:
                     progress_bar.compute(length, content_length)
                 msg = "'{}' retrieved - ".format(url)
                 msg = msg + progress_bar.finish()
-                self._logger.debug(msg)
+                _logger.debug(msg)
             os.replace(part_filename, filename)
 
         # TODO: check againt the file_size attribute

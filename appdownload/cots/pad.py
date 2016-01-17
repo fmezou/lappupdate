@@ -26,6 +26,13 @@ import re
 import xml.etree.ElementTree
 
 
+# To make the module as versatile as possible, an nullHandler is added.
+# see 'Configuring Logging for a Library'
+# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
+
+
 class Error(Exception):
     """Base class for PADParser exceptions."""
 
@@ -97,17 +104,13 @@ class PadParser(xml.etree.ElementTree.ElementTree):
         """
         super().__init__(element, file)
 
-        # To make the module as versatile as possible, an nullHandler is added.
-        # see 'Configuring Logging for a Library'
-        # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
-        self._logger = logging.getLogger(__name__)
-        self._logger.addHandler(logging.NullHandler())
-        self._logger.debug("Instance created.")
-
         filename = os.path.join(os.path.dirname(__file__),
                                 PadParser._PADSPECS_FILENAME)
         self._specs = xml.etree.ElementTree.parse(filename)
         self._tree = None
+
+        msg = "Instance of {} created."
+        _logger.debug(msg.format(self.__class__))
 
 
     def parse(self, source, parser=None):
@@ -139,7 +142,7 @@ class PadParser(xml.etree.ElementTree.ElementTree):
             if root[1].tag != "Fields":
                 raise SpecSyntaxError("Fields")
             msg = "Supported PAD Spec version : '{0}'".format(root[0].text)
-            self._logger.info(msg)
+            _logger.info(msg)
 
             for field in list(root[1]):
                 name = field.find("Name")
@@ -163,7 +166,7 @@ class PadParser(xml.etree.ElementTree.ElementTree):
                         result = re.match(regex.text, item.text)
                         if result is not None:
                             msg = "'{0}':'{1}' - OK"
-                            self._logger.debug(msg.format(path.text, item.text))
+                            _logger.debug(msg.format(path.text, item.text))
                         else:
                             raise PADSyntaxError(item.tag, item.text)
         return self._root

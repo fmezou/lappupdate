@@ -24,6 +24,13 @@ Constant
 import logging
 import re
 
+
+# To make the module as versatile as possible, an nullHandler is added.
+# see 'Configuring Logging for a Library'
+# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
+
 # Regular expression which match the semantics rules.
 # Like the regular expression is fixed, it is compiled at the loading of the
 # module to improve the efficiency of the `SemVer` class method.
@@ -74,15 +81,11 @@ class SemVer:
         self._build = ""
         self._unstable = False
 
-        # To make the module as versatile as possible, an nullHandler is added.
-        # see 'Configuring Logging for a Library'
-        # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
-        self._logger = logging.getLogger(__name__)
-        self._logger.addHandler(logging.NullHandler())
-        self._logger.debug("Instance created.")
-
         # Parse the string
         self._parse(version_string)
+
+        msg = "Instance of {} created <- {}."
+        _logger.debug(msg.format(self.__class__, version_string))
 
     @property
     def major(self):
@@ -175,14 +178,14 @@ class SemVer:
             result = True
 
         msg = "{} vs {} -> {}"
-        self._logger.debug(msg.format(self, other, result))
+        _logger.debug(msg.format(self, other, result))
         return result
 
     def __ne__(self, other):
         """Rich comparison method, return self != other."""
         result = not self.__eq__(other)
         msg = "{} vs {} -> {}"
-        self._logger.debug(msg.format(self, other, result))
+        _logger.debug(msg.format(self, other, result))
         return result
 
     def __gt__(self, other):
@@ -201,7 +204,7 @@ class SemVer:
             result = True
 
         msg = "{} vs {} -> {}"
-        self._logger.debug(msg.format(self, other, result))
+        _logger.debug(msg.format(self, other, result))
         return result
 
     def __lt__(self, other):
@@ -220,7 +223,7 @@ class SemVer:
             result = True
 
         msg = "{} vs {} -> {}"
-        self._logger.debug(msg.format(self, other, result))
+        _logger.debug(msg.format(self, other, result))
         return result
 
     def _parse(self, version_string):
@@ -248,27 +251,27 @@ class SemVer:
         self._version.append(int(match.group("minor")))
         self._version.append(int(match.group("patch")))
         msg = "{} -> Major:{}, Minor:{}, Patch:{}"
-        self._logger.debug(msg.format(version_string,
+        _logger.debug(msg.format(version_string,
                                       self._version[0],
                                       self._version[1],
                                       self._version[2]))
         if self._version[0] == 0:
             self._unstable = True
             msg = "{} -> Major version is zero, it's an unstable version."
-            self._logger.debug(msg.format(version_string))
+            _logger.debug(msg.format(version_string))
 
         pre_release = match.group("pre_release")
         if pre_release is not None:
             self._unstable = True
             self._pre_release = pre_release.split(".")
             msg = "{} -> Pre-release:{}, it's an unstable version."
-            self._logger.debug(msg.format(version_string, self._pre_release))
+            _logger.debug(msg.format(version_string, self._pre_release))
 
         build = match.group("build")
         if build is not None:
             self._build = build
             msg = "{} -> Build metadata:{}, it will be ignored."
-            self._logger.debug(msg.format(version_string, self._build))
+            _logger.debug(msg.format(version_string, self._build))
 
 
 def _comp_version(version1, version2):

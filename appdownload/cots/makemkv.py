@@ -21,6 +21,13 @@ from cots import pad
 from cots import semver
 
 
+# To make the module as versatile as possible, an nullHandler is added.
+# see 'Configuring Logging for a Library'
+# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+_logger = logging.getLogger(__name__)
+_logger.addHandler(logging.NullHandler())
+
+
 class Product(core.BaseProduct):
     """MakeMKV product class.
 
@@ -46,13 +53,6 @@ class Product(core.BaseProduct):
             None
         """
         super().__init__()
-
-        # To make the module as versatile as possible, an nullHandler is added.
-        # see 'Configuring Logging for a Library'
-        # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
-        self._logger = logging.getLogger(__name__)
-        self._logger.addHandler(logging.NullHandler())
-        self._logger.debug("Instance created.")
 
         # At this point, only name and catalog location are known.
         # All others attributes will be discovered during catalog parsing
@@ -83,12 +83,12 @@ class Product(core.BaseProduct):
             raise TypeError(msg)
 
         msg = "Get the latest product information. Current version is '{0}'"
-        self._logger.debug(msg.format(self.version))
+        _logger.debug(msg.format(self.version))
 
         local_filename, headers = \
             self._temporary_retrieve(self._catalog_location)
         msg = "Catalog downloaded: '{0}'".format(local_filename)
-        self._logger.debug(msg)
+        _logger.debug(msg)
 
         # Parse the catalog based on a PAD File
         self._parser.parse(local_filename)
@@ -120,14 +120,14 @@ class Product(core.BaseProduct):
             exception raised by the `_file_retrieve` method.
         """
         msg = "Downloads the latest version of the installer."
-        self._logger.debug(msg)
+        _logger.debug(msg)
 
         # Update the update object
         local_filename, headers = \
             self._file_retrieve(self.location, path)
         self._rename_installer(local_filename)
         msg = "Update downloaded in '{}'".format(self.installer)
-        self._logger.debug(msg)
+        _logger.debug(msg)
 
     def is_update(self, product):
         """ Return if this instance is an update of product
@@ -158,10 +158,10 @@ class Product(core.BaseProduct):
         if semver.SemVer(self.version) > semver.SemVer(product.version):
             result = True
             msg = "A new version exist ({})."
-            self._logger.debug(msg.format(self.version))
+            _logger.debug(msg.format(self.version))
         else:
             msg = "No new version available."
-            self._logger.debug(msg)
+            _logger.debug(msg)
         return result
 
     def _get_name(self):
@@ -182,10 +182,10 @@ class Product(core.BaseProduct):
         if item is not None:
             self.name = item.text
             msg = "Product name :'{0}'"
-            self._logger.debug(msg.format(self.name))
+            _logger.debug(msg.format(self.name))
         else:
             msg = "Unknown product name"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_display_name(self):
         """Extract the name of the product as it appears in the 'Programs and
@@ -224,10 +224,10 @@ class Product(core.BaseProduct):
         if item is not None:
             self.version = item.text
             msg = "Product version :'{0}'"
-            self._logger.debug(msg.format(self.version))
+            _logger.debug(msg.format(self.version))
         else:
             msg = "Unknown product version"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_published(self):
         """Extract the date of the installer’s publication from the PAD file.
@@ -255,16 +255,16 @@ class Product(core.BaseProduct):
                     day = int(item.text)
                     self.published = datetime.date(year, month, day).isoformat()
                     msg = "Release date :'{0}'"
-                    self._logger.debug(msg.format(self.published))
+                    _logger.debug(msg.format(self.published))
                 else:
                     msg = "Unknown release day"
-                    self._logger.warning(msg)
+                    _logger.warning(msg)
             else:
                 msg = "Unknown release month"
-                self._logger.warning(msg)
+                _logger.warning(msg)
         else:
             msg = "Unknown release year"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_description(self):
         """Extract the short description of the product (~250 characters).
@@ -284,10 +284,10 @@ class Product(core.BaseProduct):
         if item is not None:
             self.description = item.text
             msg = "Product description :'{0}'"
-            self._logger.debug(msg.format(self.description))
+            _logger.debug(msg.format(self.description))
         else:
             msg = "Unknown product description"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_editor(self):
         """Extract the name of the editor of the product.
@@ -307,10 +307,10 @@ class Product(core.BaseProduct):
         if item is not None:
             self.editor = item.text
             msg = "Product editor :'{0}'"
-            self._logger.debug(msg.format(self.editor))
+            _logger.debug(msg.format(self.editor))
         else:
             msg = "Unknown product editor"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_location(self):
         """Extract the location (url) of the current version of the installer
@@ -330,10 +330,10 @@ class Product(core.BaseProduct):
         if item is not None:
             self.location = item.text
             msg = "Download url (for windows version) :'{0}'"
-            self._logger.debug(msg.format(self.location))
+            _logger.debug(msg.format(self.location))
         else:
             msg = "Unknown Download url"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_file_size(self):
         """Extract the size of the product installer expressed in bytes
@@ -353,10 +353,10 @@ class Product(core.BaseProduct):
         if item is not None:
             self.file_size = int(item.text)
             msg = "File size :'{0}'"
-            self._logger.debug(msg.format(self.file_size))
+            _logger.debug(msg.format(self.file_size))
         else:
             msg = "Unknown File size"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_hash(self):
         """Extract the hash value of the product installer (tuple).
@@ -392,10 +392,10 @@ class Product(core.BaseProduct):
         if item is not None:
             self.icon = item.text
             msg = "Icon file :'{0}'"
-            self._logger.debug(msg.format(self.icon))
+            _logger.debug(msg.format(self.icon))
         else:
             msg = "Unknown icon"
-            self._logger.warning(msg)
+            _logger.warning(msg)
 
     def _get_target(self):
         """Extract the target architecture type (the Windows’ one).
@@ -411,7 +411,7 @@ class Product(core.BaseProduct):
         """
         self.target = core.PROD_TARGET_UNIFIED
         msg = "Target :'{0}'"
-        self._logger.debug(msg.format(self.icon))
+        _logger.debug(msg.format(self.icon))
 
     def _get_release_note(self):
         """Extract the release note’s URL from the PAD File.
@@ -426,7 +426,7 @@ class Product(core.BaseProduct):
         """
         self.release_note = "http://www.makemkv.com/download/history.html"
         msg = "Release note :'{0}'"
-        self._logger.debug(msg.format(self.release_note))
+        _logger.debug(msg.format(self.release_note))
 
     def _get_std_inst_args(self):
         """Extract the arguments to use for a standard installation.
@@ -442,7 +442,7 @@ class Product(core.BaseProduct):
         """
         self.std_inst_args = ""
         msg = "Standard installation options :'{0}'"
-        self._logger.debug(msg.format(self.std_inst_args))
+        _logger.debug(msg.format(self.std_inst_args))
 
     def _get_silent_inst_args(self):
         """Extract the arguments to use for a silent installation.
@@ -458,4 +458,4 @@ class Product(core.BaseProduct):
         """
         self.silent_inst_args = "/S"
         msg = "Silent installation option :'{0}'"
-        self._logger.debug(msg.format(self.silent_inst_args))
+        _logger.debug(msg.format(self.silent_inst_args))
