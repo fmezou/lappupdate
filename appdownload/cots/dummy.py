@@ -161,7 +161,7 @@ class Product(core.BaseProduct):
         """
         Extract the name of the product (used in report mail and log file).
         """
-        self.name = "Dummy Application"
+        self.name = "Dummy Product"
 
     def _get_display_name(self):
         """Extract the name of the product as it appears in the 'Programs and
