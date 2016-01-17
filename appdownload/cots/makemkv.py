@@ -306,9 +306,9 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_hash(self):
-        """Extract the hash value of the product installer (tuple).
+        """Extract the secure_hash value of the product installer (tuple).
 
-        The PAD file doesn't specify a hash for the installer product.
+        The PAD file doesn't specify a secure_hash for the installer product.
 
         Parameters
             None.
@@ -319,7 +319,7 @@ class Product(core.BaseProduct):
         Return
             None.
         """
-        self.hash = None
+        self.secure_hash = None
 
     def _get_icon(self):
         """Extract the name of the icon file.

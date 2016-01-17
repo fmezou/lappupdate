@@ -155,9 +155,9 @@ class Product(core.BaseProduct):
         self.file_size = 0
 
     def _get_hash(self):
-        """Extract the hash value of the product installer (tuple).
+        """Extract the secure_hash value of the product installer (tuple).
         """
-        self.hash = None
+        self.secure_hash = None
 
     def _get_icon(self):
         """Extract the name of the icon file.

@@ -14,8 +14,10 @@ Constant
 import logging
 import tempfile
 import os
+import io
 import urllib.request
 import contextlib
+import hashlib
 
 from cots import progressbar
 
@@ -48,10 +50,10 @@ class BaseProduct:
         editor: is the name of the editor of the product
         url: is the url of the current version of the installer
         file_size: is the size of the product installer expressed in bytes
-        hash : is the hash value of the product installer. It's a tupple
-        containing, in this order, the name of hash algorithm (see
-        `hashlib.algorithms_guaranteed`) and the hash value in hexadecimal
-        notation.
+        secure_hash : is the secure_hash value of the product installer. 
+        It's a tuple containing, in this order, the name of secure_hash 
+        algorithm (see `hashlib.algorithms_guaranteed`) and the secure_hash 
+        value in hexadecimal notation.
         icon: is the name of the icon file (in the same directory the installer)
         target: is the target architecture type (the Windows’ one) for the
           product. This argument must be one of the following values:
@@ -91,7 +93,7 @@ class BaseProduct:
         self.editor = ""
         self.url = ""
         self.file_size = 0
-        self.hash = None
+        self.secure_hash = None
         self.icon = ""
         self.target = ""
         self.release_note = ""
@@ -174,8 +176,7 @@ class BaseProduct:
         msg = "Get the latest product information. Current version is '{0}'"
         _logger.debug(msg.format(self.version))
 
-        local_filename, headers = \
-            retrieve_tempfile(self._catalog_url)
+        local_filename = retrieve_tempfile(self._catalog_url)
         msg = "Catalog downloaded: '{0}'".format(local_filename)
         _logger.debug(msg)
 
@@ -212,8 +213,7 @@ class BaseProduct:
         _logger.debug(msg)
 
         # Update the update object
-        local_filename, headers = \
-            retrieve_file(self.url, path)
+        local_filename = retrieve_file(self.url, path)
         self._rename_installer(local_filename)
         msg = "Update downloaded in '{}'".format(self.installer)
         _logger.debug(msg)
@@ -345,9 +345,9 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_hash(self):
-        """Extract the hash value of the product installer (tupple).
+        """Extract the secure_hash value of the product installer (tupple).
 
-        This method fixes the `hash` attribute with a hardcoded value
+        This method fixes the `secure_hash` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
         """
         raise NotImplementedError
@@ -355,7 +355,7 @@ class BaseProduct:
     def _get_icon(self):
         """Extract the name of the icon file.
 
-        This method fixes the `hash` attribute with a hardcoded value
+        This method fixes the `secure_hash` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
         """
         raise NotImplementedError
@@ -409,123 +409,117 @@ class Error(Exception):
         return self.message
 
 
-class ContentTooShortError(Error):
-    """Raised when downloaded size does not match content-length."""
-
-    def __init__(self, url, length, content_length):
+class UnexpectedContentLengthError(Error):
+    """Raised when content length don't match.
+    """
+    def __init__(self, url, expected, received):
         """Constructor.
 
         Parameters
             :param url: is a string specifying the URL.
-            :param length: is a positive integer specifying the length of
-                received data.
-            :param content_length: is a positive integer specifying the content
-             length. A negative number specify that the content length is
-             unknown.
+            :param expected: is a positive integer specifying the expected
+            content length. 
+            :param received: is a positive integer specifying the received 
+            content length.  
         """
-        msg = "Retrieval incomplete: {0} received bytes vs. {1} waited. \n" \
-              "Url '{2}'."
-        Error.__init__(self, msg.format(length, content_length, url))
-        self.length = length
-        self.max_len = content_length
+        msg = "Unexpected content length: {0} received bytes vs. {1} " \
+              "waited. \nUrl '{2}'."
+        Error.__init__(self, msg.format(received, expected, url))
+        self.expected = expected
+        self.received = received
         self.url = url
 
 
-class BadTypeResource(Error):
-    """Raised when downloaded content-type does not match."""
-
-    def __init__(self, url, content_type, waited_content_type):
+class UnexpectedContentError(Error):
+    """Raised when content secure hash don't match.
+    """
+    def __init__(self, url, algorithm, expected, computed):
         """Constructor.
 
         Parameters
             :param url: is a string specifying the URL.
-            :param content_type: is a string specifying the received
-            content_type.
-            :param waited_content_type: is a string specifying the waited
-            content_type.
+            :param algorithm: is a string specifying the name of the secure hash
+            algorithm.
+            :param expected: is a string specifying the expected secure hash 
+            value in hexadecimal notation. 
+            :param computed: is a string specifying the computed secure hash 
+            value in hexadecimal notation. 
+        """
+        msg = "Unexpected content secure hash: {0} computed bytes vs. {1} " \
+              "waited. \nUrl '{2}'."
+        Error.__init__(self, msg.format(computed, expected, url))
+        self.algorithm = algorithm
+        self.expected = expected
+        self.computed = computed
+        self.url = url
+
+
+class UnexpectedContentTypeError(Error):
+    """Raised when content-type don't match."""
+
+    def __init__(self, url, expected, received):
+        """Constructor.
+
+        Parameters
+            :param url: is a string specifying the URL.
+            :param expected: is a string specifying the expected content-type. 
+            :param received: is a string specifying the received content-type. 
         """
         msg = "Unexpected content type: '{0}' received vs. '{1}' waited. \n" \
               "Url '{2}'."
-        Error.__init__(self, msg.format(content_type, waited_content_type, url))
-        self.read_type = content_type
-        self.waited_type = waited_content_type
+        Error.__init__(self, msg.format(received, expected, url))
+        self.expected = expected
+        self.received = received
         self.url = url
 
 
-def retrieve_tempfile(url, content_type=None):
+def retrieve_tempfile(url,
+                      content_type=None, content_length=-1, content_hash=None):
     """Retrieve a URL into a temporary url on disk.
 
     Parameters
         :param url: is a string specifying the URL.
-        :param content_type: is a string specifying the content type of the
-        retrieved resource. If the received type is different, an exception
-        BadTypeResource is raised.
+        :param content_type: is a string specifying the mime type of the
+        retrieved catalog. If the received type is different, a
+        UnexpectedContentTypeError is raised.
+        :param content_length: is the expected length of the retrieved file
+        expressed in bytes. -1 means that the expected length is unknown.
+        :param content_hash : is the expected secure hash value of the
+        retrieved file.
+        It's a tuple containing, in this order, the name of secure hash
+        algorithm (see `hashlib.algorithms_guaranteed`) and the secure hash
+        value in hexadecimal notation. If the secure hash algorithm is not
+        supported, it will be ignored.
 
     Exceptions
         TypeError: Raised a parameter have an inappropriate type.
-        BadTypeResource: Raised when downloaded content-type does not match.
-        ContentTooShortError:Raised when downloaded size does not match
-        content-length.
+        UnexpectedContentTypeError: Raised when downloaded content-type
+        don't match.
+        UnexpectedContentLengthError: Raised when content length don't match.
+        UnexpectedContentError: raised when content secure hash don't match.
         The others exception are the same as for `urllib.request.urlopen()`.
 
     Return
-        :return: a tuple (filename, headers) where filename is the local
-        file name, and headers is whatever the info() method of the object
-        returned by urlopen() returned.
+        :return: a string specifying the local file name.
     """
     # check parameters type
     if not isinstance(url, str):
         msg = "url argument must be a class 'str'. not {0}"
         msg = msg.format(url.__class__)
         raise TypeError(msg)
-    if content_type is not None:
-        if not isinstance(content_type, str):
-            msg = "content_type argument must be a class 'str'. not {0}"
-            msg = msg.format(content_type.__class__)
-            raise TypeError(msg)
 
     # default value
-    content_length = -1
-    length = 0
-    result = None
+    filename = ""
 
-    # retrieve the resource
-    msg = "Retrieve '{}'"
-    _logger.debug(msg.format(url))
+    with tempfile.NamedTemporaryFile(delete=False) as file:
+        filename = file.name
+        _retrieve_file(url, file, content_type, content_length, content_hash)
 
-    with contextlib.closing(urllib.request.urlopen(url)) as stream:
-        headers = stream.info()
-        if "Content-Type" in headers and content_type is not None:
-            if headers["Content-Type"] != content_type:
-                raise BadTypeResource(url, headers["Content-Type"],
-                                      content_type)
-        if "Content-Length" in headers:
-            content_length = int(headers["Content-Length"])
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            result = temp_file.name, headers
-            msg = "Retrieve '{}' in '{}'"
-            _logger.debug(msg.format(url, temp_file.name))
-
-            progress_bar = progressbar.TextProgressBar(content_length)
-            progress_bar.compute(length, content_length)
-            while True:
-                data = stream.read(4096)
-                if not data:
-                    break
-                length += len(data)
-                temp_file.write(data)
-                progress_bar.compute(length, content_length)
-            msg = "'{}' retrieved - ".format(url)
-            msg = msg + progress_bar.finish()
-            _logger.debug(msg)
-
-    if content_length >= 0 and length < content_length:
-        raise ContentTooShortError(url, length, content_length)
-
-    return result
+    return filename
 
 
-def retrieve_file(url, dir_name, content_type=None):
+def retrieve_file(url, dir_name,
+                  content_type=None, content_length=-1, content_hash=None):
     """Retrieve a URL into a url on disk.
 
     The filename is the same as the name of the retrieved resource.
@@ -536,19 +530,26 @@ def retrieve_file(url, dir_name, content_type=None):
           the disk where the retrieved is going to be written.
         :param content_type: is a string specifying the mime type of the
         retrieved catalog. If the received type is different, a
-        BadTypeResource is raised.
+        UnexpectedContentTypeError is raised.
+        :param content_length: is the expected length of the retrieved file
+        expressed in bytes. -1 means that the expected length is unknown.
+        :param content_hash : is the expected secure hash value of the
+        retrieved file.
+        It's a tuple containing, in this order, the name of secure hash
+        algorithm (see `hashlib.algorithms_guaranteed`) and the secure hash
+        value in hexadecimal notation. If the secure hash algorithm is not
+        supported, it will be ignored.
 
     Exceptions
         TypeError: Raised a parameter have an inappropriate type.
-        BadTypeResource: Raised when downloaded content-type does not match.
-        ContentTooShortError:Raised when downloaded size does not match
-        content-length.
+        UnexpectedContentTypeError: Raised when downloaded content-type
+        don't match.
+        UnexpectedContentLengthError: Raised when content length don't match.
+        UnexpectedContentError: raised when content secure hash don't match.
         The others exception are the same as for `urllib.request.urlopen()`.
 
     Return
-        :return: a tuple (filename, headers) where filename is the local
-        file name, and headers is whatever the info() method
-        of the object returned by urlopen() returned.
+        :return: a string specifying the local file name.
     """
     # check parameters type
     if not isinstance(url, str):
@@ -559,16 +560,76 @@ def retrieve_file(url, dir_name, content_type=None):
         msg = "dir_name argument must be a class 'str'. not {0}"
         msg = msg.format(dir_name.__class__)
         raise TypeError(msg)
+
+    # default value
+    filename = ""
+
+    # TODO : treat the exception for os.makedirs
+    os.makedirs(dir_name, exist_ok=True)
+    basename = os.path.basename(urllib.request.url2pathname(url))
+    filename = os.path.join(dir_name, basename)
+    part_filename = filename + ".partial"
+    with open(part_filename, mode="wb") as file:
+        _retrieve_file(url, file, content_type, content_length, content_hash)
+    os.replace(part_filename, filename)  # rename with the real name
+
+    return filename
+
+
+def _retrieve_file(url, file,
+                   content_type=None, content_length=-1, content_hash=None):
+    """Retrieve a URL into a url on disk.
+
+    Parameters  The catalog is
+        :param url: is a string specifying the URL of the catalog.
+        :param file: is a file-like object to use to store the retrieved data.
+        :param content_type: is a string specifying the mime type of the
+        retrieved catalog. If the received type is different, a
+        UnexpectedContentTypeError is raised.
+        :param content_length: is the expected length of the retrieved file
+        expressed in bytes. -1 means that the expected length is unknown.
+        :param content_hash : is the expected secure hash value of the
+        retrieved file.
+        It's a tuple containing, in this order, the name of secure hash
+        algorithm (see `hashlib.algorithms_guaranteed`) and the secure hash
+        value in hexadecimal notation. If the secure hash algorithm is not
+        supported, it will be ignored.
+
+    Exceptions
+        TypeError: Raised a parameter have an inappropriate type.
+        UnexpectedContentTypeError: Raised when downloaded content-type
+        don't match.
+        UnexpectedContentLengthError: Raised when content length don't match.
+        UnexpectedContentError: raised when content secure hash don't match.
+        The others exception are the same as for `urllib.request.urlopen()`.
+
+    Return
+        None
+    """
+    # check parameters type
+    if not isinstance(url, str):
+        msg = "url argument must be a class 'str'. not {0}"
+        msg = msg.format(url.__class__)
+        raise TypeError(msg)
     if content_type is not None:
         if not isinstance(content_type, str):
             msg = "content_type argument must be a class 'str'. not {0}"
             msg = msg.format(content_type.__class__)
             raise TypeError(msg)
-
-    # default value
-    content_length = -1
-    length = 0
-    result = None
+    if not isinstance(content_length, int):
+        msg = "content_length argument must be a class 'int'. not {0}"
+        msg = msg.format(content_length.__class__)
+        raise TypeError(msg)
+    if content_hash is not None:
+        if not isinstance(content_hash, tuple):
+            msg = "content_hash argument must be a class 'tuple'. not {0}"
+            msg = msg.format(content_hash.__class__)
+            raise TypeError(msg)
+        if content_hash[0] not in hashlib.algorithms_available:
+            msg = "Hash algorithm {} is not supported. Hash control " \
+                  "will be ignored."
+            _logger.warning(msg.format(content_hash[0]))
+            content_hash = None  # Deactivate the secure hash control
 
     # retrieve the resource
     msg = "Retrieve '{}'"
@@ -576,41 +637,53 @@ def retrieve_file(url, dir_name, content_type=None):
 
     with contextlib.closing(urllib.request.urlopen(url)) as stream:
         headers = stream.info()
+        # Check the expected content
         if "Content-Type" in headers and content_type is not None:
             if headers["Content-Type"] != content_type:
-                raise BadTypeResource(url, headers["Content-Type"],
-                                      content_type)
+                raise UnexpectedContentTypeError(url, content_type,
+                                                 headers["Content-Type"])
+
         if "Content-Length" in headers:
-            content_length = int(headers["Content-Length"])
+            length = int(headers["Content-Length"])
+            if content_length == -1:
+                content_length = length
+            else:
+                if length != content_length:
+                    raise UnexpectedContentLengthError(url,
+                                                       content_length,
+                                                       length)
 
-        # TODO : treat the exception for os.makedirs
-        os.makedirs(dir_name, exist_ok=True)
-        basename = os.path.basename(urllib.request.url2pathname(url))
-        filename = os.path.join(dir_name, basename)
-        part_filename = filename + ".partial"
-        with open(part_filename, mode="wb") as file:
-            result = filename, headers
-            msg = "Retrieve '{}' in '{}'"
-            _logger.debug(msg.format(url, file.name))
-            # TODO: do secure hash while downloading
-            # use the scheme specified in hash attribute (SHA-256 by
-            # default)
-            progress_bar = progressbar.TextProgressBar(content_length)
+        msg = "Retrieve '{}' in '{}'"
+        _logger.debug(msg.format(url, file.name))
+
+        length = 0
+        secure_hash = None
+        if content_hash is not None:
+            secure_hash = hashlib.new(content_hash[0])
+
+        progress_bar = progressbar.TextProgressBar(content_length)
+        progress_bar.compute(length, content_length)
+
+        while True:
+            data = stream.read(4096)
+            if not data:
+                break
+            length += len(data)
+            file.write(data)
+            if secure_hash is not None:
+                secure_hash.update(data)
             progress_bar.compute(length, content_length)
-            while True:
-                data = stream.read(4096)
-                if not data:
-                    break
-                length += len(data)
-                file.write(data)
-                progress_bar.compute(length, content_length)
-            msg = "'{}' retrieved - ".format(url)
-            msg = msg + progress_bar.finish()
-            _logger.debug(msg)
-        os.replace(part_filename, filename)
 
-    # TODO: check against the file_size attribute
-    if content_length >= 0 and length < content_length:
-        raise ContentTooShortError(url, length, content_length)
+        msg = "'{}' retrieved - ".format(url)
+        msg = msg + progress_bar.finish()
+        _logger.debug(msg)
 
-    return result
+        # Content checking
+        if content_length >= 0 and length < content_length:
+            raise UnexpectedContentLengthError(url, content_length, length)
+        if secure_hash is not None and secure_hash.hexdigest() != \
+                content_hash[1]:
+            raise UnexpectedContentError(url,
+                                         content_hash[0],
+                                         content_hash[1],
+                                         secure_hash.hexdigest())
