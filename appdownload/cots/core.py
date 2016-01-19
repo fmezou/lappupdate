@@ -92,7 +92,7 @@ class BaseProduct:
         self.description = ""
         self.editor = ""
         self.url = ""
-        self.file_size = 0
+        self.file_size = -1
         self.secure_hash = None
         self.icon = ""
         self.target = ""
@@ -213,7 +213,10 @@ class BaseProduct:
         _logger.debug(msg)
 
         # Update the update object
-        local_filename = retrieve_file(self.url, path)
+        local_filename = retrieve_file(self.url, path,
+                                       content_type=None,
+                                       content_length = self.file_size,
+                                       content_hash = self.secure_hash)
         self._rename_installer(local_filename)
         msg = "Update downloaded in '{}'".format(self.installer)
         _logger.debug(msg)

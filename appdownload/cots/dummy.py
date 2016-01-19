@@ -152,7 +152,7 @@ class Product(core.BaseProduct):
     def _get_file_size(self):
         """Extract the size of the product installer expressed in bytes
         """
-        self.file_size = 0
+        self.file_size = -1
 
     def _get_hash(self):
         """Extract the secure_hash value of the product installer (tuple).
@@ -182,4 +182,4 @@ class Product(core.BaseProduct):
     def _get_silent_inst_args(self):
         """Extract the arguments to use for a silent installation.
         """
-        self.silent_inst_args = "/slent"
+        self.silent_inst_args = "/silent"
