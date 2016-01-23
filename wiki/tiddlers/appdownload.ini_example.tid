@@ -1,10 +1,10 @@
 created: 20151104154152397
-modified: 20151104161305718
+modified: 20160123150502326
 tags: [[File Examples]]
 title: appdownload.ini example
 type: text/vnd.tiddlywiki
 
-```
+```ini
 [core]
 store = ..\appstore
 

@@ -1,6 +1,6 @@
 caption: Installation
 created: 20160103143752860
-modified: 20160103165057612
+modified: 20160123151138439
 order: 1
 tags: MakeMKV
 title: MakeMKV Installation
@@ -18,7 +18,7 @@ The installer is based on the [[NSIS]] (Nullsoft Scriptable Install System) fram
 
 The user preferences include the license key, so a schedule task (i.e. when user log on) or an user action with the following script.
 
-```
+```bash
 reg add HKCU\Software\MakeMKV /v app_Key /t REG_SZ /d "<license key>" /f
 reg add HKCU\Software\MakeMKV /v app_ExpertMode /t REG_DWORD /d 00000001 /f
 reg add HKCU\Software\MakeMKV /v app_DestinationDir /t REG_SZ /d "U:\\Users\\Public\\Videos\\RIP" /f

@@ -1,6 +1,6 @@
 caption: Update Mechanism
 created: 20160103144445994
-modified: 20160103180147385
+modified: 20160123150828512
 order: 3
 tags: MakeMKV
 title: MakeMKV Update Mechanism
@@ -9,7 +9,7 @@ type: text/vnd.tiddlywiki
 In [[this post|http://www.makemkv.com/forum2/viewtopic.php?f=1&t=4363]], the MakeMKV author give a method to detect the up-to-date version. It based on a XML file matching the [[PAD 3.10 Specification|http://pad.asp-software.org/spec/spec_310.php]] at http://www.makemkv.com/makemkv.xml. 
 Consequently, the update checking mechanism of [[appdownload]] use this method.
 
-```
+```XML
 <?xml version="1.0" encoding="UTF-8"?>
 <XML_DIZ_INFO>
 <MASTER_PAD_VERSION_INFO>

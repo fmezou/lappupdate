@@ -1,5 +1,5 @@
 created: 20160103164755006
-modified: 20160103165041125
+modified: 20160123151039698
 tags: NSIS
 title: NSIS Installer Common Option
 type: text/vnd.tiddlywiki
@@ -12,7 +12,7 @@ Installers accept a few options on the command line. These options give the user
 
 __Examples__
 
-```
+```bash
 installer.exe /S
 installer.exe /NCRC /S /D=C:\Program Files\NSIS
 

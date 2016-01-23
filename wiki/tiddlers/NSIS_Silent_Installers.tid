@@ -1,5 +1,5 @@
 created: 20160103165709006
-modified: 20160103170144272
+modified: 20160123151042535
 tags: NSIS
 title: NSIS Silent Installers
 type: text/vnd.tiddlywiki
@@ -10,6 +10,6 @@ NSIS installers can be both silent and not silent. The more useful method to mak
 
 __Example__
 
-```
+```bash
 installer.exe /S
 ```
