@@ -1,30 +1,30 @@
 # History of lAppUpdate
 
 At the beginning, I searched a means to deploy application for my two personal
-pc from a home server (based on [freenas][1]). My searches led me to the
-following products:
+pc from a home server (based on [freenas](http://www.freenas.org/)). My
+searches led me to the following products:
 
-  * [OCS Inventory NG][2]: it's a good choice for IT professional who manages thousands of PC, and an agent must be deployed on every PC.
-  * Active Directory GPO: you can do this with a Windows Server or a server with [Samba configured in domain controller mode][3]. The main constraint is that GPO accept only MSI package.
+  * [OCS Inventory NG](http://www.ocsinventory-ng.org/en/): it's a good choice for IT professional who manages thousands of PC, and an agent must be deployed on every PC.
+  * Active Directory GPO: you can do this with a Windows Server or a server with [Samba configured in domain controller mode](https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO). The main constraint is that GPO accept only MSI package.
 
 So I choose to develop my own deployment system built around two main module :
-the first one, named [appdeploy][4], deploys application, the second one,
-named [appdownload][5], checks and downloads applications' updates if any (or
-the full installation package).
+the first one, named appdeploy, deploys application, the second one, named
+appdownload, checks and downloads applications' updates if any (or the full
+installation package).
 
 # Requirements
 
 The requirements for this project were:
 
-  * [appdeploy][4] must run on windows 7 without prerequisites (I.e. no agent must be prior installed). Theses implies that this modules must be written in [Command shell][6] or [Windows Script Host][7].
-  * [appdeploy][4] must run from a network share (aka from a UNC path) or a removable disk (CD or DVD, USB stick...).
-  * [appdeploy][4] must work with any type of installation package (MSI package, EXE package or a classic distribution with files and a setup.exe).
-  * [appdeploy][4] must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, VirtualBox Extension Pack, Tortoise Language Pack...)
+  * appdeploy must run on windows 7 without prerequisites (I.e. no agent must be prior installed). Theses implies that this modules must be written in [Command shell](https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR) or [Windows Script Host](https://msdn.microsoft.com/library/d1wf56tt.aspx).
+  * appdeploy must run from a network share (aka from a UNC path) or a removable disk (CD or DVD, USB stick...).
+  * appdeploy must work with any type of installation package (MSI package, EXE package or a classic distribution with files and a setup.exe).
+  * appdeploy must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, VirtualBox Extension Pack, Tortoise Language Pack...)
 
 # appdeploy
 
-This script is a [public script][8]. It launches the installer package of the
-standard application. See [Usage description syntax][9] for details about used
+This script is a public script. It launches the installer package of the
+standard application. See Usage description syntax for details about used
 syntax.
 
 ## Usage
@@ -36,7 +36,7 @@ syntax.
 `set`
 
 is the set name, the script use a file named _applist-[set].txt_ which
-matching [applist file format][10]. `all` is the default value.
+matching applist file format. `all` is the default value.
 
 ## Exit code
 
@@ -53,87 +53,62 @@ invalid argument. An argument of the command line is not valid (see Usage)
 
 The following environment variables affect the execution of `appdeploy`:
 
-[APP_STORE_DIR][11]
+APP_STORE_DIR
 
-Contain the path for installation package and the [applist][10] files.
+Contain the path for installation package and the applist files.
 
-[TO_MAIL_ADDR][12]
+TO_MAIL_ADDR
 
 Contain the mail address of the mail recipient (typically a system
 administrator)
 
-[FROM_MAIL_ADDR][13]
+FROM_MAIL_ADDR
 
 Contain the mail address of the mail sender (typically machine mail address)
 
-[SMTP_SERVER][14]
+SMTP_SERVER
 
 Contain the fully qualified name of the SMTP server to use
 
-[SMTP_SERVER_PORT][15]
+SMTP_SERVER_PORT
 
 Contain the SMTP server’s port number to use
 
-[UPDATE_LOGFILE][16]
+UPDATE_LOGFILE
 
 Contain the full path name of the current log file. All log entries for the
 current update transaction are write in this file.
 
-[WARNING_LOGFILE][17]
+WARNING_LOGFILE
 
 Contain the full path name of the current warning log file. All warning
 messages for the current update transaction are write in this file.
 
-[SUMMARY_LOGFILE][18]
+SUMMARY_LOGFILE
 
 Contain the full path name of the current summary log file. All summary
 messages for the current update transaction are write in this file.
 
-[ARCHIVE_LOGFILE][19]
+ARCHIVE_LOGFILE
 
 Contain the full path name of the persistent log file. All messages for the
 current update transaction are write in this file.
 
-[SILENT][20]
+SILENT
 
 Specify the scripts logging mode.
 
-[LOGMAIL][21]
+LOGMAIL
 
 Specify if a mail containing the current appdeploy log messages will be sent
-(see [_log2mail][22] script).
+(see _log2mail script).
 
-[LOGLEVEL][23]
+LOGLEVEL
 
 Specify the maximum level of log entries written in log files (see
-[UPDATE_LOGFILE][16] and [WARNING_LOGFILE][17]).
+UPDATE_LOGFILE and WARNING_LOGFILE).
 
 * * *
 
-This file was automatically generated by [TiddlyWiki][24].
-
-   [1]: http://www.freenas.org/
-   [2]: http://www.ocsinventory-ng.org/en/
-   [3]: https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO
-   [4]: #appdeploy
-   [5]: #appdownload
-   [6]: https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR
-   [7]: https://msdn.microsoft.com/library/d1wf56tt.aspx
-   [8]: #Public%20script
-   [9]: #Usage%20description%20syntax
-   [10]: #applist
-   [11]: #APP_STORE_DIR
-   [12]: #TO_MAIL_ADDR
-   [13]: #FROM_MAIL_ADDR
-   [14]: #SMTP_SERVER
-   [15]: #SMTP_SERVER_PORT
-   [16]: #UPDATE_LOGFILE
-   [17]: #WARNING_LOGFILE
-   [18]: #SUMMARY_LOGFILE
-   [19]: #ARCHIVE_LOGFILE
-   [20]: #SILENT
-   [21]: #LOGMAIL
-   [22]: #_log2mail
-   [23]: #LOGLEVEL
-   [24]: http://tiddlywiki.com/
+This file was automatically generated by [TiddlyWiki](http://tiddlywiki.com/).
 
