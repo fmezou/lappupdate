@@ -24,19 +24,22 @@ userset = pc1, pc2
 #   a flag specifying if the application section have been taking into account.
 [applications]
 dummy = on
+dummy2 = on
 ignored = off
 
 # Application section contains configuration items for a specific application
 #   (e.g. python module name which manage this application)
 # Warning: name section must be lowercase, since the section name is a key in
 #   applications section.
-# module (mandatory): is the name of the Python module used to check if a new
+# module (optional): is the name of the Python module used to check if a new
 #   version is available and eventually download it.
+#   The default value is 'cots.<section name>'.
 # path (optional): is the path name where to store the installer package.
-#   The default value is ‘${core:store}\<section name>’.
-# set (mandatory): is the name of the set associated with the application
+#   The default value is '${core:store}\<section name>'.
+# set (optional): is the name of the set associated with the application
 #   (see sets section)
-[dummy]
+#   The default value is '__all__'.
+[dummy2]
 module = cots.dummy
 path = ${core:store}\dummy
 set = userset

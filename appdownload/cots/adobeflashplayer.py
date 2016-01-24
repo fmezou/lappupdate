@@ -1,4 +1,4 @@
-"""Implementation of Product class for Adobe Flash Player
+"""Implementation of Product class for Adobe Flash Player.
 
 Classes
     Product : base class for a product
@@ -53,11 +53,11 @@ class Product(core.BaseProduct):
         self._dict = []
 
     def check_update(self, version=None, modified=None):
-        """checks if a new version is available
+        """Checks if a new version is available.
 
         Parameters
-            version: version of the currently deployed product.
-            modified: release date of the currently deployed product.
+            :param version: version of the currently deployed product.
+            :param modified: release date of the currently deployed product.
         """
         local_filename, headers = \
             urllib.request.urlretrieve(self._catalog_location)
@@ -66,8 +66,6 @@ class Product(core.BaseProduct):
                         " -f:" + self._catalog_name + " " + fname)
         # parse the file
         tree = Et.parse(fname)
-        qname=Et.QName("http://schemas.microsoft.com/sms/2005/04/"
-                       "CorporatePublishing/SystemsManagementCatalog.xsd")
         Et.register_namespace("smc",
                               "http://schemas.microsoft.com/sms/2005/04/"
                               "CorporatePublishing/"
