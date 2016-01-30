@@ -1,11 +1,16 @@
-"""COTS core module.
+"""
+COTS core module.
 
 Classes
-    Product : base class for a product
+    BaseProduct: common base class for all products
 
 Exception
 
 Function
+    retrieve_file: retrieve a URL into a url on disk
+    retrieve_tempfile: retrieve a URL into a temporary url on disk
+    get_summary_header: return the header summary.
+    get_summary_tail: return the tail of the summary.
 
 Constant
 
@@ -14,7 +19,6 @@ Constant
 import logging
 import tempfile
 import os
-import io
 import urllib.request
 import contextlib
 import hashlib
@@ -29,6 +33,11 @@ PROD_TARGET_X86 = "x86"
 PROD_TARGET_X64 = "x64"
 PROD_TARGET_UNIFIED = "unified"
 
+SUMMARY_HEADER = os.path.join(os.path.dirname(__file__), "summary_header.html")
+SUMMARY_TAIL = os.path.join(os.path.dirname(__file__), "summary_tail.html")
+SUMMARY_BODY = os.path.join(os.path.dirname(__file__), "summary_body.html")
+SUMMARY_TOC_ENTRY = os.path.join(os.path.dirname(__file__),
+                                 "summary_toc_entry.html")
 
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
@@ -37,8 +46,86 @@ _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
 
+class Error(Exception):
+    """Base class for COTS Core exceptions."""
+    def __init__(self, message=""):
+        """Constructor.
+
+        Parameters
+            :param message: is the message explaining the reason of the
+            exception raise.
+        """
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class UnexpectedContentLengthError(Error):
+    """Raised when content length don't match."""
+    def __init__(self, url, expected, received):
+        """Constructor.
+
+        Parameters
+            :param url: is a string specifying the URL.
+            :param expected: is a positive integer specifying the expected
+            content length.
+            :param received: is a positive integer specifying the received
+            content length.
+        """
+        msg = "Unexpected content length: {0} received bytes vs. {1} " \
+              "waited. \nUrl '{2}'."
+        Error.__init__(self, msg.format(received, expected, url))
+        self.expected = expected
+        self.received = received
+        self.url = url
+
+
+class UnexpectedContentError(Error):
+    """Raised when content secure hash don't match."""
+    def __init__(self, url, algorithm, expected, computed):
+        """Constructor.
+
+        Parameters
+            :param url: is a string specifying the URL.
+            :param algorithm: is a string specifying the name of the secure hash
+            algorithm.
+            :param expected: is a string specifying the expected secure hash
+            value in hexadecimal notation.
+            :param computed: is a string specifying the computed secure hash
+            value in hexadecimal notation.
+        """
+        msg = "Unexpected content secure hash: {0} computed bytes vs. {1} " \
+              "waited. \nUrl '{2}'."
+        Error.__init__(self, msg.format(computed, expected, url))
+        self.algorithm = algorithm
+        self.expected = expected
+        self.computed = computed
+        self.url = url
+
+
+class UnexpectedContentTypeError(Error):
+    """Raised when content-type don't match."""
+
+    def __init__(self, url, expected, received):
+        """Constructor.
+
+        Parameters
+            :param url: is a string specifying the URL.
+            :param expected: is a string specifying the expected content-type.
+            :param received: is a string specifying the received content-type.
+        """
+        msg = "Unexpected content type: '{0}' received vs. '{1}' waited. \n" \
+              "Url '{2}'."
+        Error.__init__(self, msg.format(received, expected, url))
+        self.expected = expected
+        self.received = received
+        self.url = url
+
+
 class BaseProduct:
-    """Common base class for all products.
+    """
+    Common base class for all products.
 
     Public instance variables
         name: is the name of the product (used in report mail and log file)
@@ -69,18 +156,39 @@ class BaseProduct:
         silent_inst_args: arguments to use for a silent installation.
 
     Public methods
-        load: load a product class.
-        dump: dump a product class.
+        load: load a product class
+        dump: dump a product class
+        get_origin: get product information from the remote repository
+        fetch : download the product installer
+        is_update: return if this instance is an update of product
+
 
     Subclass API variables (i.e. may be use by subclass)
         _catalog_url: url of the product catalog.
 
     Subclass API Methods (i.e. must be overwritten by subclass)
-        check_update: checks if a new version is available
-        fetch_update: downloads the latest version of the installer
+        _parse_catalog: parse the catalog
+        _get_name: extract the name of the product
+        _get_display_name: extract the name of the product as it appears in
+         the 'Programs and Features' control panel.
+        _get_version: extract the current version of the product
+        _get_published: Extract the date of the installer’s publication
+        _get_description: extract the short description of the product
+        _get_editor: extract the name of the editor of the product
+        _get_url: Extract the url of the current version of the installer
+        _get_file_size: extract the size of the product installer
+        _get_hash: extract the secure_hash value of the product installer
+        _get_icon: Extract the name of the icon file
+        _get_target: Extract the target architecture type
+        _get_release_note: extract the release note’s URL
+        _get_std_inst_args: extract the arguments to use for a standard
+         installation
+        _get_silent_inst_args: extract the arguments to use for a silent
+         installation.
     """
     def __init__(self):
-        """Constructor.
+        """
+        Constructor.
 
         Parameters
             None
@@ -107,7 +215,8 @@ class BaseProduct:
         _logger.debug(msg.format(self.__class__))
 
     def load(self, attributes=None):
-        """Load a product class.
+        """
+        Load a product class.
 
         Parameters
             :param attributes: is a dictionary object containing the instance
@@ -136,7 +245,8 @@ class BaseProduct:
                     _logger.debug(msg.format(k, v, attr))
 
     def dump(self):
-        """Dump a product class.
+        """
+        Dump a product class.
 
         Parameters
             None
@@ -155,7 +265,8 @@ class BaseProduct:
         return attributes
 
     def get_origin(self, version=None):
-        """Get product information from the remote repository.
+        """
+        Get product information from the remote repository.
 
         The latest catalog of the product is downloaded and parsed.
 
@@ -201,7 +312,8 @@ class BaseProduct:
         os.unlink(local_filename)
 
     def fetch(self, path):
-        """Downloads the product installer.
+        """
+        Download the product installer.
 
         Parameters
             :param path: is the path name where to store the installer package.
@@ -214,15 +326,15 @@ class BaseProduct:
 
         # Update the update object
         local_filename = retrieve_file(self.url, path,
-                                       content_type=None,
-                                       content_length = self.file_size,
-                                       content_hash = self.secure_hash)
+                                       content_length=self.file_size,
+                                       content_hash=self.secure_hash)
         self._rename_installer(local_filename)
         msg = "Update downloaded in '{}'".format(self.installer)
         _logger.debug(msg)
 
     def is_update(self, product):
-        """ Return if this instance is an update of product
+        """
+        Return if this instance is an update of product
 
         This method compare the version of the two product, and return the
         comparison result. The version numbers used by the editor are compliant
@@ -237,8 +349,54 @@ class BaseProduct:
         """
         raise NotImplementedError
 
+    def get_summary(self, template=SUMMARY):
+        """
+        Return a summary of the product.
+
+        This method return a formatted summary which can be used for activity
+        reporting. An HTML report is provided by default.
+
+        :param template: is a the filename of the summary template. It uses
+        named keyword argument as described in [string module].
+        (https://docs.python.org/3/library/string.html#format-string-syntax).
+        Each public attribute of this class are identified by its name.
+        :return: is the formatted summary
+        """
+        # check parameters type
+        if not isinstance(template, str):
+            msg = "format_string argument must be a class 'str'. not {0}"
+            msg = msg.format(template.__class__)
+            raise TypeError(msg)
+
+        with open(template) as file:
+            format_string = file.read()
+
+        attributes = {}
+        for k, v in self.__dict__.items():
+            if k.startswith('_'):
+                continue  # non-public instance variables are ignored
+            else:
+                attributes[k] = v
+        return format_string.format(**attributes)
+
+    def get_toc_sentry(self, template=TOC_ENTRY):
+        """
+        Return an entry for the table of content.
+
+        This method return a formatted summary which can be used for activity
+        reporting. An HTML TOC entry is provided by default.
+
+        :param template: is a the filename of the summary template. It uses
+        named keyword argument as described in [string module].
+        (https://docs.python.org/3/library/string.html#format-string-syntax).
+        Each public attribute of this class are identified by its name.
+        :return: is the formatted TOC entry
+        """
+        return self.get_summary(template)
+
     def _rename_installer(self, filename):
-        """Rename the installer executable.
+        """
+        Rename the installer executable.
 
         Installer name match the following format:
         <name>_<version>.<extension>
@@ -271,7 +429,8 @@ class BaseProduct:
         os.replace(filename, self.installer)
 
     def _parse_catalog(self, filename):
-        """ Parse the catalog.
+        """
+        Parse the catalog.
 
         This method parses the downloaded product catalog to prepare
         `_get_...` call.
@@ -283,7 +442,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_name(self):
-        """Extract the name of the product (used in report mail and log file).
+        """
+        Extract the name of the product (used in report mail and log file).
 
         This method fixes the `name` attribute with a hardcoded value or an
         extracted value from the remote product catalog.
@@ -291,7 +451,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_display_name(self):
-        """Extract the name of the product as it appears in the 'Programs and
+        """
+        Extract the name of the product as it appears in the 'Programs and
         Features' control panel.
 
         This method fixes the `display_name` attribute with a hardcoded value
@@ -300,7 +461,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_version(self):
-        """Extract the current version of the product.
+        """
+        Extract the current version of the product.
 
         This method fixes the `version` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -308,7 +470,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_published(self):
-        """Extract the date of the installer’s publication (ISO 8601 format).
+        """
+        Extract the date of the installer’s publication (ISO 8601 format).
 
         This method fixes the `published` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -316,7 +479,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_description(self):
-        """Extract the short description of the product (~250 characters).
+        """
+        Extract the short description of the product (~250 characters).
 
         This method fixes the `description` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -324,7 +488,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_editor(self):
-        """Extract the name of the editor of the product.
+        """
+        Extract the name of the editor of the product.
 
         This method fixes the `editor` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -332,7 +497,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_url(self):
-        """Extract the url of the current version of the installer
+        """
+        Extract the url of the current version of the installer
 
         This method fixes the `url` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -340,7 +506,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_file_size(self):
-        """Extract the size of the product installer expressed in bytes
+        """
+        Extract the size of the product installer expressed in bytes
 
         This method fixes the `file_size` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -348,7 +515,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_hash(self):
-        """Extract the secure_hash value of the product installer (tupple).
+        """
+        Extract the secure_hash value of the product installer (tupple).
 
         This method fixes the `secure_hash` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -356,7 +524,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_icon(self):
-        """Extract the name of the icon file.
+        """
+        Extract the name of the icon file.
 
         This method fixes the `secure_hash` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -364,7 +533,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_target(self):
-        """Extract the target architecture type (the Windows’ one).
+        """
+        Extract the target architecture type (the Windows’ one).
 
         This method fixes the `target` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -372,7 +542,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_release_note(self):
-        """Extract the release note’s URL.
+        """
+        Extract the release note’s URL.
 
         This method fixes the `release_note` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -380,7 +551,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_std_inst_args(self):
-        """Extract the arguments to use for a standard installation.
+        """
+        Extract the arguments to use for a standard installation.
 
         This method fixes the `std_inst_args` attribute with a hardcoded value
         or an extracted value from the remote product catalog.
@@ -388,7 +560,8 @@ class BaseProduct:
         raise NotImplementedError
 
     def _get_silent_inst_args(self):
-        """Extract the arguments to use for a silent installation.
+        """
+        Extract the arguments to use for a silent installation.
 
         This method fixes the `silent_inst_args` attribute with a hardcoded
         value or an extracted value from the remote product catalog.
@@ -396,89 +569,12 @@ class BaseProduct:
         raise NotImplementedError
 
 
-class Error(Exception):
-    """Base class for COTS Core exceptions."""
-
-    def __init__(self, message=""):
-        """Constructor.
-
-        Parameters
-            :param message: is the message explaining the reason of the
-            exception raise.
-        """
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
-
-class UnexpectedContentLengthError(Error):
-    """Raised when content length don't match.
-    """
-    def __init__(self, url, expected, received):
-        """Constructor.
-
-        Parameters
-            :param url: is a string specifying the URL.
-            :param expected: is a positive integer specifying the expected
-            content length. 
-            :param received: is a positive integer specifying the received 
-            content length.  
-        """
-        msg = "Unexpected content length: {0} received bytes vs. {1} " \
-              "waited. \nUrl '{2}'."
-        Error.__init__(self, msg.format(received, expected, url))
-        self.expected = expected
-        self.received = received
-        self.url = url
-
-
-class UnexpectedContentError(Error):
-    """Raised when content secure hash don't match.
-    """
-    def __init__(self, url, algorithm, expected, computed):
-        """Constructor.
-
-        Parameters
-            :param url: is a string specifying the URL.
-            :param algorithm: is a string specifying the name of the secure hash
-            algorithm.
-            :param expected: is a string specifying the expected secure hash 
-            value in hexadecimal notation. 
-            :param computed: is a string specifying the computed secure hash 
-            value in hexadecimal notation. 
-        """
-        msg = "Unexpected content secure hash: {0} computed bytes vs. {1} " \
-              "waited. \nUrl '{2}'."
-        Error.__init__(self, msg.format(computed, expected, url))
-        self.algorithm = algorithm
-        self.expected = expected
-        self.computed = computed
-        self.url = url
-
-
-class UnexpectedContentTypeError(Error):
-    """Raised when content-type don't match."""
-
-    def __init__(self, url, expected, received):
-        """Constructor.
-
-        Parameters
-            :param url: is a string specifying the URL.
-            :param expected: is a string specifying the expected content-type. 
-            :param received: is a string specifying the received content-type. 
-        """
-        msg = "Unexpected content type: '{0}' received vs. '{1}' waited. \n" \
-              "Url '{2}'."
-        Error.__init__(self, msg.format(received, expected, url))
-        self.expected = expected
-        self.received = received
-        self.url = url
 
 
 def retrieve_tempfile(url,
                       content_type=None, content_length=-1, content_hash=None):
-    """Retrieve a URL into a temporary url on disk.
+    """
+    Retrieve a URL into a temporary url on disk.
 
     Parameters
         :param url: is a string specifying the URL.
@@ -523,7 +619,8 @@ def retrieve_tempfile(url,
 
 def retrieve_file(url, dir_name,
                   content_type=None, content_length=-1, content_hash=None):
-    """Retrieve a URL into a url on disk.
+    """
+    Retrieve a URL into a url on disk.
 
     The filename is the same as the name of the retrieved resource.
 
@@ -581,7 +678,8 @@ def retrieve_file(url, dir_name,
 
 def _retrieve_file(url, file,
                    content_type=None, content_length=-1, content_hash=None):
-    """Retrieve a URL into a url on disk.
+    """
+    Retrieve a URL into a url on disk.
 
     Parameters  The catalog is
         :param url: is a string specifying the URL of the catalog.
@@ -690,3 +788,53 @@ def _retrieve_file(url, file,
                                          content_hash[0],
                                          content_hash[1],
                                          secure_hash.hexdigest())
+
+
+def get_summary_header(template=SUMMARY_HEADER, **kwargs):
+    """
+    Return the header summary.
+
+    This method return a formatted summary which can be used for activity
+    reporting. An HTML report is provided by default.
+
+    :param template: is a the filename of the summary template. It uses
+    named keyword argument as described in [string module].
+    (https://docs.python.org/3/library/string.html#format-string-syntax).
+    Each public attribute of this class are identified by its name.
+    :return: is the formatted summary
+    """
+    # check parameters type
+    if not isinstance(template, str):
+        msg = "format_string argument must be a class 'str'. not {0}"
+        msg = msg.format(template.__class__)
+        raise TypeError(msg)
+
+    with open(template) as file:
+        format_string = file.read()
+
+    return format_string.format(**kwargs)
+
+
+def get_summary_tail(template=SUMMARY_TAIL, **kwargs):
+    """
+    Return the tail of the summary.
+
+    This method return a formatted summary which can be used for activity
+    reporting. An HTML report is provided by default.
+
+    :param template: is a the filename of the summary template. It uses
+    named keyword argument as described in [string module].
+    (https://docs.python.org/3/library/string.html#format-string-syntax).
+    Each public attribute of this class are identified by its name.
+    :return: is the formatted summary
+    """
+    # check parameters type
+    if not isinstance(template, str):
+        msg = "format_string argument must be a class 'str'. not {0}"
+        msg = msg.format(template.__class__)
+        raise TypeError(msg)
+
+    with open(template) as file:
+        format_string = file.read()
+
+    return format_string.format(**kwargs)

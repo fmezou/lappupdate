@@ -1,4 +1,5 @@
-"""Lightweight PAD (Portable Application Description) support.
+"""
+Lightweight PAD (Portable Application Description) support.
 
 The parser is based on xml.etree.ElementTree module, and match the PAD 4.0
 Specification (http://pad.asp-software.org/spec/spec.php).
@@ -35,7 +36,6 @@ _logger.addHandler(logging.NullHandler())
 
 class Error(Exception):
     """Base class for PADParser exceptions."""
-
     def __init__(self, message=""):
         """Constructor.
 
@@ -51,9 +51,9 @@ class Error(Exception):
 
 class SpecSyntaxError(Error):
     """Raised when spec file is erroneous."""
-
     def __init__(self, name):
-        """Constructor.
+        """
+        Constructor.
 
         Parameters
             :param name: name of the missing tag.
@@ -65,9 +65,9 @@ class SpecSyntaxError(Error):
 
 class PADSyntaxError(Error):
     """Raised when a tag in a PAD file don't matched the PAD Specs."""
-
     def __init__(self, name, value):
-        """constructor.
+        """
+        Constructor.
 
         Parameters
             :param name: is the name of the erroneous tag.
@@ -81,7 +81,8 @@ class PADSyntaxError(Error):
 
 
 class PadParser(xml.etree.ElementTree.ElementTree):
-    """A PAD element hierarchy.
+    """
+    A PAD element hierarchy.
 
     Public instance variables
 
@@ -113,7 +114,8 @@ class PadParser(xml.etree.ElementTree.ElementTree):
         _logger.debug(msg.format(self.__class__))
 
     def parse(self, source, parser=None):
-        """Load external PAD file into element tree.
+        """
+        Load external PAD file into element tree.
 
         The PAD compliance is done at this time.
 

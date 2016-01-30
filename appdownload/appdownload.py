@@ -1,4 +1,5 @@
-"""Check and download applications' updates if any.
+"""
+Check and download applications' updates if any.
 
 Usage
 appdownload.py [-h] [-c | -d | -t] [--version]
@@ -45,6 +46,8 @@ import importlib
 import logging
 import logging.config
 import json
+
+from cots import core
 
 
 __author__ = "Frederic MEZOU"
@@ -100,9 +103,9 @@ _logger.addHandler(logging.NullHandler())
 
 class Error(Exception):
     """Base class for AppDownload exceptions."""
-
     def __init__(self, message=""):
-        """Constructor.
+        """
+        Constructor.
 
         Parameters
             :param message: is the message explaining the reason of the
@@ -116,9 +119,9 @@ class Error(Exception):
 
 class MissingMandatorySectionError(Error):
     """Raised when a mandatory section is missing."""
-
     def __init__(self, section_name):
-        """constructor.
+        """
+        Constructor.
 
         Parameters
             :param section_name: is the name of the missing section.
@@ -129,10 +132,10 @@ class MissingMandatorySectionError(Error):
 
 
 class MissingAppSectionError(Error):
-    """ Raised when an application description section is missing."""
-
+    """Raised when an application description section is missing."""
     def __init__(self, section_name):
-        """constructor.
+        """
+        Constructor.
 
         Parameters
             :param section_name: is the name of the missing section.
@@ -144,9 +147,9 @@ class MissingAppSectionError(Error):
 
 class MissingKeyError(Error):
     """ Raised when a key section is missing in a section."""
-
     def __init__(self, section_name, keyname):
-        """constructor.
+        """
+        Constructor.
 
         Parameters
             :param section_name: is the name of the section containing the
@@ -160,10 +163,10 @@ class MissingKeyError(Error):
 
 
 class NotDeclaredSetError(Error):
-    """ Raised when a set not declared in the `sets` section."""
-
+    """Raised when a set not declared in the `sets` section."""
     def __init__(self, app_name, set_name):
-        """constructor.
+        """
+        Constructor.
 
         Parameters
             :param app_name: is the name of the application
@@ -178,7 +181,8 @@ class NotDeclaredSetError(Error):
 
 
 class AppDownload:
-    """Application class.
+    """
+    Application class.
 
     Public instance variables
         None
@@ -194,7 +198,8 @@ class AppDownload:
     """
 
     def __init__(self, config_file):
-        """constructor.
+        """
+        Constructor.
 
         Parameters
             :param config_file: is the name of the configuration file. It may
@@ -218,11 +223,15 @@ class AppDownload:
         self._catalog = {}
         self._app_set_file = {}
 
+        # report
+        self._report = ""
+
         msg = "Instance of {} created <- {}"
         _logger.debug(msg.format(self.__class__, config_file))
 
     def run(self):
-        """run the AppDownload application.
+        """
+        Run the AppDownload application.
 
         Parameters
             None
@@ -237,8 +246,9 @@ class AppDownload:
         _logger.info("Appdownload (%s) completed.", __version__)
 
     def check(self):
-        """check and report if applications' updates are available without
-         download it.
+        """
+        Check and report if applications' updates are available without
+        download it.
 
         Parameters
             None
@@ -252,7 +262,8 @@ class AppDownload:
         _logger.info("Appdownload (%s) completed.", __version__)
 
     def download(self):
-        """download applications' updates based on the last build catalog.
+        """
+        Download applications' updates based on the last build catalog.
 
         Parameters
             None
@@ -267,7 +278,8 @@ class AppDownload:
         _logger.info("Appdownload (%s) completed.", __version__)
 
     def make(self):
-        """make applist files based on the last build catalog
+        """
+        Make applist files based on the last build catalog
 
         Parameters
             None
@@ -280,7 +292,8 @@ class AppDownload:
         _logger.info("Appdownload (%s) completed.", __version__)
 
     def test_config(self):
-        """check the configuration file for internal correctness.
+        """
+        Check the configuration file for internal correctness.
 
         Parameters
             None
@@ -298,7 +311,8 @@ class AppDownload:
         print("Appdownload ({0}) completed.".format(__version__))
 
     def _check_update(self):
-        """check and report if applications' updates are available without
+        """
+        Check and report if applications' updates are available without
          download it.
 
 
@@ -309,6 +323,11 @@ class AppDownload:
 
         _logger.info("Checking and report if applications' updates are "
                      "available.")
+        self._report = core.get_summary_header(title="Update checking",
+                                               about="The below product have been updated")
+        self._report_toc
+        self._report_body
+
         for app_id in self._config[_APPS_LIST_SECTNAME]:
             if self._config[_APPS_LIST_SECTNAME].getboolean(app_id):
                 _logger.debug(
@@ -330,6 +349,9 @@ class AppDownload:
                             _logger.info(msg.format(app_id,
                                                     origin_app.version,
                                                     origin_app.published))
+                            self._report_toc.join( origin_app.get_toc_sentry())
+                            self._report_body.join( origin_app.get_summary())
+
                             app_entry[_CAT_ORIGIN_KEYNAME] = origin_app.dump()
                     else:
                         msg = "The product '{0}' isn't deployed.".format(app_id)
@@ -368,7 +390,8 @@ class AppDownload:
                 _logger.info("'{0}' ignored.".format(app_id))
 
     def _fetch_update(self):
-        """download applications' updates based on the last build catalog.
+        """
+        Download applications' updates based on the last build catalog.
 
         Parameters
             None
@@ -410,7 +433,8 @@ class AppDownload:
                 _logger.info("'{0}' ignored.".format(app_id))
 
     def _load_config(self):
-        """load the configuration details from the configuration file.
+        """
+        Load the configuration details from the configuration file.
 
         Parameters
             None
@@ -497,7 +521,8 @@ class AppDownload:
         self._config_file = None
 
     def _read_catalog(self):
-        """load the product's catalog.
+        """
+        Load the product's catalog.
 
         Parameters
             None
@@ -520,7 +545,8 @@ class AppDownload:
             _logger.info(msg)
 
     def _write_catalog(self):
-        """write the catalog product file.
+        """
+        Write the catalog product file.
 
         Parameters
             None
@@ -537,7 +563,8 @@ class AppDownload:
         _logger.info(msg)
 
     def _write_applist(self):
-        """Write the applist files from the catalog.
+        """
+        Write the applist files from the catalog.
 
         Parameters
             None
