@@ -34,9 +34,32 @@ Environment variables
 The following environment variables affect the execution of this script:
 TODO
 """
-# TODO add a field in the applist which to contain a regex string for the
+# TODO add a regex field in applist
+# add a field in the applist which to contain a regex string for the
 # searching of installed application. The display name wil be used only in log.
 # add this field as a property of BaseProduct Class (see cots.core)
+
+# TODO add a step to validate the deployment
+# a product may be in Pulled or Remote (an update is available), Fetched (update
+#  was downloaded and ready to deployed), Deployed.
+# add a method to validate the update (at this time, the method validate
+# all products)
+# maybe an interactive session with ok or not from the user (optional) like
+# a quiet option....
+#   -q, --quiet disable confirmation in the deployment validation step
+#   -d, --deploy validate each product update to be deployed. By default, the
+#                user manually validate each product in interactive mode in the
+#                console, execpt if the quiet option is selected (see -q)
+# change -c (resp. -d) to -p for pull (resp. -f for fetch)
+
+# TODO use exception catching instead of test
+# review exception
+#  - use TypeError for type mismatch
+#  - use KeyError or Value Error for bas value
+#  - catch exception instead of testing value before reading a dict value
+#  (a['unknown']
+#  because the test is done inside the method.
+
 import io
 import os.path
 import datetime
@@ -223,7 +246,7 @@ class AppDownload:
         self._catalog = {}
         self._app_set_file = {}
 
-        # report
+        # a_report
         self._report = ""
 
         msg = "Instance of {} created <- {}"
@@ -247,14 +270,14 @@ class AppDownload:
 
     def check(self):
         """
-        Check and report if applications' updates are available without
+        Check and a_report if applications' updates are available without
         download it.
 
         Parameters
             None
         """
         self._load_config()
-        _logger.info("Starting Appdownload (%s), check and report if "
+        _logger.info("Starting Appdownload (%s), check and a_report if "
                      "applications' updates are available.", __version__)
         self._read_catalog()
         self._check_update()
@@ -312,7 +335,7 @@ class AppDownload:
 
     def _check_update(self):
         """
-        Check and report if applications' updates are available without
+        Check and a_report if applications' updates are available without
          download it.
 
 
@@ -321,7 +344,7 @@ class AppDownload:
         """
         assert self._checked_config is True
 
-        _logger.info("Checking and report if applications' updates are "
+        _logger.info("Checking and a_report if applications' updates are "
                      "available.")
         self._report = core.get_summary_header(title="Update checking",
                                                about="The below product have been updated")
@@ -630,7 +653,7 @@ if __name__ == "__main__":
         description="Check and download applications\' updates if any.")
     general = parser.add_mutually_exclusive_group()
     general.add_argument("-c", "--checkonly", action="store_true",
-                         help="check and report if applications' updates are "
+                         help="check and a_report if applications' updates are "
                               "available without download it")
     general.add_argument("-d", "--download", action="store_true",
                          help="download applications' updates based on the "
