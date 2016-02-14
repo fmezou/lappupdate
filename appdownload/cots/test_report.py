@@ -2,9 +2,8 @@
 # This module is used as a script only for test.
 
 import logging
-import os
 
-import core
+import report
 import dummy
 
 
@@ -15,52 +14,53 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     checked = True
 
-    report = core.Report()
-    handler = core.MailHandler("smtp.free.fr",
-                               "frederic.mezou@free.fr",
-                               "lappupdate.mezou@free.fr"
-                               )
-    report.add_handler(handler)
+    a_report = report.Report()
+    a_handler = report.MailHandler("smtp.free.fr",
+                                   "frederic.mezou@free.fr",
+                                   "lappupdate.mezou@free.fr"
+                                   )
+    a_report.add_handler(a_handler)
     prod = dummy.Product()
     attr = prod.dump()
-    report.add_section(attr)
+    a_report.add_section(attr)
     for i in range(2):
         prod.name = "Dummy {}".format(i)
         attr = prod.dump()
-        report.add_section(attr)
+        a_report.add_section(attr)
 
-    attr["about"] = "The below product have been updated. Mise à jour de produit lénaïg"
+    attr["about"] = "The below product have been updated. " \
+                    "Mise à jour de produit lénaïg"
     attr["title"] = "Product update - Mise à jour de produit"
-    report.publish(attr)
+    a_report.publish(attr)
 
-    report = core.Report()
-    handler = core.FileHandler("_report.html")
-    report.add_handler(handler)
+    a_report = report.Report()
+    a_handler = report.FileHandler("_report.html")
+    a_report.add_handler(a_handler)
     prod = dummy.Product()
     attr = prod.dump()
-    report.add_section(attr)
+    a_report.add_section(attr)
     for i in range(2):
         prod.name = "Dummy {}".format(i)
         attr = prod.dump()
-        report.add_section(attr)
+        a_report.add_section(attr)
 
     attr["about"] = "The below product have been updated."
     attr["title"] = "Product update"
-    report.publish(attr)
+    a_report.publish(attr)
 
-    report = core.Report(template="summary_tmpl.txt")
-    handler = core.FileHandler("_report.txt")
-    report.add_handler(handler)
-    handler = core.StreamHandler()
-    report.add_handler(handler)
+    a_report = report.Report(template="summary_tmpl.txt")
+    a_handler = report.FileHandler("_report.txt")
+    a_report.add_handler(a_handler)
+    a_handler = report.StreamHandler()
+    a_report.add_handler(a_handler)
     prod = dummy.Product()
     attr = prod.dump()
-    report.add_section(attr)
+    a_report.add_section(attr)
     for i in range(2):
         prod.name = "Dummy {}".format(i)
         attr = prod.dump()
-        report.add_section(attr)
+        a_report.add_section(attr)
 
     attr["about"] = "The below product have been updated."
     attr["title"] = "Product update"
-    report.publish(attr)
+    a_report.publish(attr)

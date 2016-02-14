@@ -117,7 +117,7 @@ class Product(core.BaseProduct):
 
     def _get_name(self):
         """
-        Extract the name of the product (used in report mail and log file).
+        Extract the name of the product (used in a_report mail and log file).
 
         Parameters
             None.
