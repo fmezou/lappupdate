@@ -19,7 +19,8 @@ optional arguments:
   --configfile CONFIGFILE
                         The file specified contains the configuration details.
                         The information in this file includes application
-                        catalog. See appdownload.ini for more information.
+                        catalog. See appdownload.example.ini for more
+                        information.
                         The default configuration file name is 'appdownload.ini'
                         located in the current working directory.
   --version             show program's version number and exit
