@@ -15,9 +15,9 @@ Constant
 
 import datetime
 import logging
-import semver
 
 from cots import core
+from cots import semver
 
 
 # To make the module as versatile as possible, an nullHandler is added.

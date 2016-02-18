@@ -2,9 +2,7 @@
 <!-- $lau:Title$ -->
 <!-- $lau:HeaderEnd$ -->
 <!-- $lau:BodyStart$ -->
-{title}
-
-{about}
+On {date}, products below have available updates.
 <!-- $lau:TOCStart$ -->
 --------------------------------------------------------------------------------
 <!-- $lau:TOCEntry$ -->
