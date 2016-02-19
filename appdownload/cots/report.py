@@ -214,7 +214,7 @@ class Report:
         msg = "Template is set to '{}'."
         _logger.debug(msg.format(template))
 
-    def set_attributes(self, attributes={}):
+    def set_attributes(self, attributes=None):
         """
         Set the attributes of the report.
 
@@ -225,13 +225,15 @@ class Report:
         :param attributes: is a dictionary containing the attributes.
         """
         # check parameters type
-        if not isinstance(attributes, dict):
+        if attributes is not None and not isinstance(attributes, dict):
             msg = "attributes argument must be a class 'dict'. not {0}"
             msg = msg.format(attributes.__class__)
             raise TypeError(msg)
 
         # make a copy of the attributes because a date attribute is added
-        self._attributes = attributes.copy()
+        self._attributes = {}
+        if attributes:
+            self._attributes = attributes.copy()
         dt = datetime.date.today()
         self._attributes["date"] = dt.isoformat()
 

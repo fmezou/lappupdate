@@ -149,7 +149,7 @@ if __name__ == "__main__":
         "file_size": 12345689
     }
     report_attributes = {
-        "Title": "Title of the report"  # not used
+        "title": "title of the report"  # not used
     }
 
     for test in test_set:
