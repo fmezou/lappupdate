@@ -74,6 +74,7 @@ import logging.config
 import json
 
 from cots import core
+from cots import report
 
 
 __author__ = "Frederic MEZOU"
@@ -205,9 +206,9 @@ class AppDownload:
             interpolation=configparser.ExtendedInterpolation())
         self._checked_config = False
         self._config_file = config_file
-        self._pulling_report_filename = ""
-        self._fetching_report_filename = ""
-        self._deploying_report_filename = ""
+        self._pulling_report = None
+        self._fetching_report = None
+        self._deploying_report = None
 
         # initialise the application catalog.
         self._catalog_filename = ""
@@ -340,10 +341,8 @@ class AppDownload:
                             _logger.info(msg.format(app_id,
                                                     origin_app.version,
                                                     origin_app.published))
-                            # self._report_toc.join( origin_app.get_toc_sentry())
-                            # self._report_body.join( origin_app.get_summary())
-
                             app_entry[_CAT_ORIGIN_KNAME] = origin_app.dump()
+                            self._pulling_report.add_section(origin_app.dump())
                     else:
                         msg = "The product '{0}' isn't deployed.".format(app_id)
                         _logger.info(msg.format(app_id))
@@ -372,6 +371,7 @@ class AppDownload:
                                             origin_app.version,
                                             origin_app.published))
                     app_entry[_CAT_ORIGIN_KNAME] = origin_app.dump()
+                    self._pulling_report.add_section(origin_app.dump())
 
                 del app
                 del origin_app
@@ -379,6 +379,8 @@ class AppDownload:
                 _logger.debug("'{0}' checked.".format(app_id))
             else:
                 _logger.info("'{0}' ignored.".format(app_id))
+
+        self._pulling_report.publish()
 
     def _fetch_update(self):
         """
@@ -411,6 +413,7 @@ class AppDownload:
                         # replace the deployed product by the newest.
                         app_entry[_CAT_DEPLOYED_KNAME] = app.dump()
                         app_entry[_CAT_ORIGIN_KNAME] = {}
+                        self._fetching_report.add_section(app.dump())
                     else:
                         msg = "No update for product '{0}'."
                         _logger.info(msg.format(app_id))
@@ -422,6 +425,8 @@ class AppDownload:
                 del app_mod
             else:
                 _logger.info("'{0}' ignored.".format(app_id))
+
+        self._fetching_report.publish()
 
     def _load_config(self):
         """
@@ -473,7 +478,9 @@ class AppDownload:
             if _PULL_REPORT_KNAME in section:
                 filename = self._config[_CORE_SNAME][_PULL_REPORT_KNAME]
                 if os.path.isfile(filename):
-                    self._pulling_report_filename = filename
+                    self._pulling_report = report.Report()
+                    config = _load_config(filename)
+                    self._pulling_report.load_config(config, False)
                 else:
                     msg = "configuration file specified in '{}' key doesn't" \
                           "exist (see section '{}')."
@@ -484,7 +491,9 @@ class AppDownload:
             if _FETCH_REPORT_KNAME in section:
                 filename = self._config[_CORE_SNAME][_FETCH_REPORT_KNAME]
                 if os.path.isfile(filename):
-                    self._fetching_report_filename = filename
+                    self._fetching_report = report.Report()
+                    config = _load_config(filename)
+                    self._fetching_report.load_config(config, False)
                 else:
                     msg = "configuration file specified in '{}' key doesn't" \
                           "exist (see section '{}')."
@@ -495,7 +504,9 @@ class AppDownload:
             if _DEPLOY_REPORT_KNAME in section:
                 filename = self._config[_CORE_SNAME][_DEPLOY_REPORT_KNAME]
                 if os.path.isfile(filename):
-                    self._deploying_report_filename = filename
+                    self._deploying_report = report.Report()
+                    config = _load_config(filename)
+                    self._deploying_report.load_config(config, False)
                 else:
                     msg = "configuration file specified in '{}' key doesn't" \
                           "exist (see section '{}')."
@@ -663,6 +674,29 @@ class AppDownload:
         for comp_name, file in self._app_set_file.items():
             file.close()
 
+
+def _load_config(filename):
+    """
+    Load the configuration from a configuration file (see [`config.parser`]
+    (https://docs.python.org/3/library/configparser.html#module-configparser)
+
+    The configuration is stored in a dictionary with the same structure as the
+    configuration file.
+
+    :param filename: is the full path name of the configuration file.
+    :return: a dictionary containing the configuration.
+    """
+    config = configparser.ConfigParser()
+    with open(filename) as file:
+        config.read_file(file)
+
+    config_dict = {}
+    for section in config.sections():
+        config_dict[section] = {}
+        for option in config.options(section):
+            config_dict[section][option] = config.get(section, option)
+
+    return config_dict
 
 if __name__ == "__main__":
     # Entry point

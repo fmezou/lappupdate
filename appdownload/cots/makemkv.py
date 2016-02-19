@@ -307,15 +307,15 @@ class Product(core.BaseProduct):
             None.
         """
         self.file_size = None
-        path = "Program_Info/File_Info/File_Size_Bytes"
-        item = self._parser.find(path)
-        if item is not None:
-            self.file_size = int(item.text)
-            msg = "File size :'{0}'"
-            _logger.debug(msg.format(self.file_size))
-        else:
-            msg = "Unknown File size"
-            _logger.warning(msg)
+        # path = "Program_Info/File_Info/File_Size_Bytes"
+        # item = self._parser.find(path)
+        # if item is not None:
+        #     self.file_size = int(item.text)
+        #     msg = "File size :'{0}'"
+        #     _logger.debug(msg.format(self.file_size))
+        # else:
+        #     msg = "Unknown File size"
+        #     _logger.warning(msg)
 
     def _get_hash(self):
         """
