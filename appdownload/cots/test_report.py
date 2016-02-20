@@ -8,6 +8,14 @@ import os
 
 import report
 
+# Basic configuration of the logging facility.
+logging.basicConfig(
+    filename=os.path.splitext(__file__)[0]+".log",
+    filemode="w",
+    format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
+    level=logging.DEBUG)
+_logger = logging.getLogger(__name__)
+
 
 def test_api_default():
     """
@@ -32,6 +40,8 @@ def test_api_default():
 
     a_report.add_section(content_attributes)
     a_report.publish()
+
+    return True
 
 
 def test_api_custom():
@@ -65,6 +75,8 @@ def test_api_custom():
     a_report.add_section(content_attributes)
     a_report.publish()
 
+    return True
+
 
 def test_ini_default():
     """
@@ -78,6 +90,8 @@ def test_ini_default():
     a_report.add_section(content_attributes)
     a_report.publish()
 
+    return True
+
 
 def test_ini_custom():
     """
@@ -90,12 +104,15 @@ def test_ini_custom():
     a_report.add_section(content_attributes)
     a_report.publish()
 
+    return True
+
 
 def final():
     """
     Test campaign completed
     """
-    pass
+    _logger.info("Test campaign completed")
+    return True
 
 
 def _load_config(filename):
@@ -126,15 +143,11 @@ test_set = [
     [test_api_default, False],
     [test_api_custom, False],
     [test_ini_default, False],
-    [test_ini_custom, True],
+    [test_ini_custom, False],
     [final, True]
 ]
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
-        level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
     checked = True
 
     content_attributes = {
@@ -155,10 +168,13 @@ if __name__ == "__main__":
     for test in test_set:
         if test[1]:
             print("###########################################################")
+            print("test id :", test[0].__name__)
             doc = test[0].__doc__.splitlines()
             for line in doc:
                 line = line.strip()
                 if len(line):
                     print(line)
             print("-----------------------------------------------------------")
-            test[0]()
+            checked = test[0]()
+            if not checked:
+                break
