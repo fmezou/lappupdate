@@ -67,3 +67,4 @@ __*__.cmd
 /appdownload/.idea
 /appdownload/appdownload.ini
 /appdownload/tempstore
+/appdownload/mailstore

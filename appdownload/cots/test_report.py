@@ -5,8 +5,11 @@ import logging
 import sys
 import configparser
 import os
+import smtplib
+import socket
+import traceback
 
-import report
+from cots import report
 
 # Basic configuration of the logging facility.
 logging.basicConfig(
@@ -107,6 +110,234 @@ def test_ini_custom():
     return True
 
 
+def test_api_host_connect_error():
+    """
+    Use a non SMTP server (example.com)
+    """
+    result = True
+    a_report = report.Report()
+    a_report.set_template()
+    a_report.set_attributes(report_attributes)
+
+    a_handler = report.MailHandler()
+    a_handler.set_host("example.com")
+    a_handler.set_to_addresses("frederic.mezou@free.fr")
+    a_report.add_handler(a_handler)
+    a_report.add_section(content_attributes)
+
+    try:
+        a_report.publish()
+    except smtplib.SMTPConnectError as err:
+        print("Expected error", err)
+    except:
+        result = False
+        print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+        traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+    else:
+        result = False
+
+    return result
+
+
+def test_api_host_error():
+    """
+    Use a unknown hostname
+    """
+    result = True
+    a_report = report.Report()
+    a_report.set_template()
+    a_report.set_attributes(report_attributes)
+
+    a_handler = report.MailHandler()
+    a_handler.set_host("smtp.example.invalid")
+    a_handler.set_to_addresses("frederic.mezou@free.fr")
+    a_report.add_handler(a_handler)
+    a_report.add_section(content_attributes)
+
+    try:
+        a_report.publish()
+    except socket.gaierror as err:
+        print("Expected error", err)
+    except:
+        result = False
+        print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+        traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+    else:
+        result = False
+
+    return result
+
+
+def test_api_to_addr_error():
+    """
+    Use recipients invalid mail addresses
+    """
+    result = True
+    a_report = report.Report()
+    a_report.set_template()
+    a_report.set_attributes(report_attributes)
+
+    a_handler = report.MailHandler()
+    a_handler.set_host("smtp.free.fr")
+    a_handler.set_from_address("frederic.mezou@free.fr")
+    a_handler.set_to_addresses("noreply@domain.invalid")
+    a_report.add_handler(a_handler)
+    a_report.add_section(content_attributes)
+
+    try:
+        a_report.publish()
+    except smtplib.SMTPRecipientsRefused as err:
+        print("Expected error", err)
+    except:
+        result = False
+        print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+        traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+    else:
+        result = False
+
+    return result
+
+
+def test_api_from_addr_error():
+    """
+    Use a sender unknown mail address
+    """
+    result = True
+    a_report = report.Report()
+    a_report.set_template()
+    a_report.set_attributes(report_attributes)
+
+    a_handler = report.MailHandler()
+    a_handler.set_host("smtp.free.fr")
+    a_handler.set_from_address("noreply@domain.invalid")
+    a_handler.set_to_addresses("frederic.mezou@free.fr")
+    a_report.add_handler(a_handler)
+    a_report.add_section(content_attributes)
+
+    try:
+        a_report.publish()
+    except smtplib.SMTPSenderRefused as err:
+        print("Expected error", err)
+    except:
+        result = False
+        print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+        traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+    else:
+        result = False
+
+    return result
+
+
+def test_api_mail_folder_error():
+    """
+    Use a inaccessible path as a mail folder
+    """
+    result = True
+    a_report = report.Report()
+    a_report.set_template()
+    a_report.set_attributes(report_attributes)
+
+    a_handler = report.MailHandler()
+    a_handler.set_host("smtp.free.fr")
+    a_handler.set_to_addresses("frederic.mezou@free.fr")
+    a_report.add_handler(a_handler)
+    a_report.add_section(content_attributes)
+
+    try:
+        a_handler.set_mail_sent_folder("W:/Program Files/mailstore/sent")
+        a_report.publish()
+    except FileNotFoundError as err:
+        print("Expected error", err)
+    except:
+        result = False
+        print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+        traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+    else:
+        result = False
+
+    if result:
+        try:
+            a_handler.set_mail_sent_folder("C:/Program Files/mailstore")
+            a_report.publish()
+        except PermissionError as err:
+            print("Expected error", err)
+        except:
+            result = False
+            print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+            traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+        else:
+            result = False
+
+    if result:
+        try:
+            a_handler.set_pending_mail_folder("W:/Program Files/mailstore")
+            a_report.publish()
+        except FileNotFoundError as err:
+            print("Expected error", err)
+        except:
+            result = False
+            print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+            traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+        else:
+            result = False
+
+    if result:
+        try:
+            a_handler.set_pending_mail_folder("C:/Program Files/mailstore")
+            a_report.publish()
+        except PermissionError as err:
+            print("Expected error", err)
+        except:
+            result = False
+            print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+            traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+        else:
+            result = False
+
+    return result
+
+
+def test_api_file_folder_error():
+    """
+    Use a inaccessible path for the file report
+    """
+    result = True
+    a_report = report.Report()
+    a_report.set_template()
+    a_report.set_attributes(report_attributes)
+
+    a_handler = report.FileHandler()
+    a_handler.set_mode("a")
+    a_report.add_handler(a_handler)
+
+    try:
+        a_handler.set_filename("W:/Program Files/report.html")
+        a_report.publish()
+    except FileNotFoundError as err:
+        print("Expected error", err)
+    except:
+        result = False
+        print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+        traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+    else:
+        result = False
+
+    if result:
+        try:
+            a_handler.set_filename("C:/Program Files/report.html")
+            a_report.publish()
+        except PermissionError as err:
+            print("Expected error", err)
+        except:
+            result = False
+            print("Unexpected error : ", sys.exc_info()[0], sys.exc_info()[1])
+            traceback.print_tb(sys.exc_info()[2], file=sys.stdout)
+        else:
+            result = False
+
+    return result
+
+
 def final():
     """
     Test campaign completed
@@ -140,10 +371,16 @@ def _load_config(filename):
 
 
 test_set = [
-    [test_api_default, False],
-    [test_api_custom, False],
-    [test_ini_default, False],
-    [test_ini_custom, False],
+    [test_api_default, True],
+    [test_api_custom, True],
+    [test_ini_default, True],
+    [test_ini_custom, True],
+    [test_api_host_connect_error, True],
+    [test_api_host_error, True],
+    [test_api_to_addr_error, True],
+    [test_api_from_addr_error, True],
+    [test_api_mail_folder_error, True],
+    [test_api_file_folder_error, True],
     [final, True]
 ]
 
@@ -174,7 +411,10 @@ if __name__ == "__main__":
                 line = line.strip()
                 if len(line):
                     print(line)
-            print("-----------------------------------------------------------")
+            print("-- Log and result -----------------------------------------")
             checked = test[0]()
             if not checked:
+                print("Test '{}' failed.".format (test[0].__name__))
                 break
+            else:
+                print("Test '{}' succeeded.".format (test[0].__name__))
