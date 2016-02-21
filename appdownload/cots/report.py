@@ -50,7 +50,7 @@ class Report:
     Main class to make and publish report with the registered handler.
 
     The report is based on a template using named keyword argument and composed
-    of named sections. The module use the `summary_tmpl.html` by default. The
+    of named sections. The module use the `report_template.html` by default. The
     use of the named keyword argument is based on the [string module]
     (https://docs.python.org/3/library/string.html#format-string-syntax).
 
@@ -109,7 +109,7 @@ class Report:
     # module to improve the efficiency of the `Report` class method.
     _re = re.compile("^\s*<!--\s+\$lau:(?P<name>[0-9A-Za-z-]+)\$\s+-->$",
                      flags=0)
-    _SUMMARY = os.path.join(os.path.dirname(__file__), "summary_tmpl.html")
+    _SUMMARY = os.path.join(os.path.dirname(__file__), "report_template.html")
 
     def __init__(self):
         """
@@ -193,7 +193,7 @@ class Report:
         Parameters
         :param template: is the full path name of the template file. The format
         of the template file is described in the Report class introduction. The
-        template named 'summary_tmpl.html' is used by default.
+        template named 'report_template.html' is used by default.
         :param separator: is the separator added at the end of each added
         section in the report.
         """
