@@ -1,0 +1,56 @@
+created: 20160221172623703
+creator: fmezou
+modified: 20160221185931465
+modifier: fmezou
+tags: [[File Formats]]
+title: report.ini
+type: text/vnd.tiddlywiki
+
+This file contains the activity report configuration of [[appdownload]] script. It use a structure similar to what’s found in Microsoft Windows INI files, and parsing with the [[configparser|https://docs.python.org/3/library/configparser.html#module-configparser]] module of the Python standard library. See the [[Configuration file format|https://docs.python.org/3/library/logging.config.html#configuration-file-format]] to have details about the file format.
+
+ Only one report and its ways of publication have to define in this file. If  you need of several report, you must define several configurations file and
+ call `Report.load_config()` method for each of them.
+
+The following topics details each section and each associated options.
+
+!!Core section
+
+`core` section contains contains configuration items for the report processor.
+
+|^`handlers` (mandatory) |^is the list of handlers to publish the report. Each handler has to have a corresponding section for its own configuration. |
+|^`template` (optional) |^is the full path name of the template file. The [[Report Template]] describes the format of the template file. The default value is [[report_template.html|report_template.html example]]'. |
+
+
+!! Attributes section
+
+`attributes` section contains named keyword used in the template report (see `template` item in the above section). Theses attributes are used in the header and tail sections of the report (see `Title`, `BodyStart`, `BodyEnd`, `Tail` sections in the [[Report Template]]). The `report_template.html` doesn't use any additional attribute, so this section is empty if you use the default templates.
+
+!! Handlers
+Handlers section contains configuration details for handlers declared in the `core`section (see `handlers` item). The following sections give an example for each handler supported by the `report` module (send a mail, write in a file, write in a stream). Each handler section has to define a `class` item.
+
+Warning: name section must be lowercase, since the section name is a key in core section.
+
+!!! Mail handler.
+|^`class` (optional) |^indicates the handler’s class (as determined in the report module). By default, the name of the section is used as the class name. |
+|^`host` (mandatory) |^is a string containing the full qualified name of the SMTP server host, or a 2-tuple containing the full qualified name of the SMTP server and the port number to use. |
+|^`credentials` (optional) |^is a 2-tuple containing the username and the password to connect to the SMTP server. |
+|^`from_address` (optional) |^is a string containing the mail addresses of the sender. If not specified, the address is set to the local host name. (see [[smtplib.SMTP()|https://docs.python.org/3/library/smtplib.html#smtplib.SMTP]]) |
+|^`mail_sent` (optional) |^is the full path name of the folder where a copy of the mail will be written. An empty string does nothing. |
+|^`pending_mail` (optional) |^is the full path name of the folder where a copy of the mail will be written until it is sent. It avoid to lost mail if the mail server configuration is erroneous or if the mail server doesn't answer. An empty string does nothing. |
+|^`to_addresses` (mandatory) |^is a string or a list containing the mail addresses of the recipient. |
+|^`subject` (optional) |^is a string containing the mail subject. An empty string does nothing. |
+
+
+!!!File handler.
+|^`class` (optional) |^indicates the handler’s class (as determined in the report module). By default, the name of the section is used as the class name. |
+|^`filename` (mandatory) |^is a string containing the full path name of the destination file. |
+|^`mode` (optional) |^is a string specifying the mode in which the file is opened. (see [[`open()`|https://docs.python.org/3/library/functions.html#open]]) |
+
+
+!!!Stream handler.
+|^`class` (optional) |^indicates the handler’s class (as determined in the report module). By default, the name of the section is used as the class name. |
+|^`stream` (optional) |^is a string specifying the [[standard stream|https://docs.python.org/3/library/sys.html#sys.stdout]] on which report will be written. By default, `sys.stdout` will be used. |
+
+!!example
+
+{{report.ini example}}

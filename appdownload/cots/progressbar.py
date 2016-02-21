@@ -1,4 +1,5 @@
-"""Progress Bar module.
+"""
+Progress Bar module.
 
 This module offers some progress bar in text mode for the console.
 
@@ -28,7 +29,8 @@ _logger.addHandler(logging.NullHandler())
 
 
 def isu_format_prefix(value, unit):
-    """ return a string using standard prefix for unit.
+    """
+    Return a string using standard prefix for unit.
 
     The returned string represent the value in a compliant International
     System of Units format, which means with a prefix for unit.
@@ -73,7 +75,8 @@ def isu_format_prefix(value, unit):
 
 
 def isu_format_thousand(value):
-    """Return a string using standard ISU thousand separator.
+    """
+    Return a string using standard ISU thousand separator.
 
     The returned string represent the value in a compliant International
     System of Units format, which means with a space for thousand separator.
@@ -99,7 +102,8 @@ def isu_format_thousand(value):
 
 
 class TextProgressBar:
-    """Progress bar for console output.
+    """
+    Progress bar for console output.
 
     Public instance variables
         None
@@ -117,7 +121,8 @@ class TextProgressBar:
     """
 
     def __init__(self, max_len=-1):
-        """Constructor.
+        """
+        Constructor.
 
         Parameters
             :param max_len: is a positive integer specifying the content length
@@ -136,7 +141,8 @@ class TextProgressBar:
         self._t1 = 0.0
 
     def compute(self, length, content_length=-1):
-        """Compute the progress bar and print it.
+        """
+        Compute the progress bar and print it.
 
         The printed string match the following format:
         aaa% [==============================] lll,lll,lll,lll - rrrr XB/s - eta nn:nn:nn
@@ -208,7 +214,8 @@ class TextProgressBar:
             print("\r" + progress, end="")
 
     def finish(self):
-        """ Compute the completion progress bar and return the computed string.
+        """
+        Compute the completion progress bar and return the computed string.
 
         The returned string match the following format:
         llll XB received - rrrr XB/s in nn:nn:nn

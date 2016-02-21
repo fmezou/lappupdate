@@ -1,4 +1,5 @@
-"""semantic versioning support (aka SemVer).
+"""
+Semantic versioning support (aka SemVer).
 
 The parser match the semantic versioning specification 2.0.0
 (http://semver.org/spec/v2.0.0.html).
@@ -43,7 +44,8 @@ _sem_re = re.compile("^(?P<major>(?:0|[1-9][0-9]*))"
 
 
 class SemVer:
-    """SemVer parser class.
+    """
+    SemVer parser class.
 
     Public instance variables
         None
@@ -89,7 +91,8 @@ class SemVer:
 
     @property
     def major(self):
-        """Get the major version number.
+        """
+        Get the major version number.
 
         Parameters
             None
@@ -101,7 +104,8 @@ class SemVer:
 
     @property
     def minor(self):
-        """Get the minor version number.
+        """
+        Get the minor version number.
 
         Parameters
             None
@@ -114,7 +118,8 @@ class SemVer:
 
     @property
     def patch(self):
-        """Get the patch version number.
+        """
+        Get the patch version number.
 
         Parameters
             None
@@ -129,7 +134,8 @@ class SemVer:
 
     @property
     def unstable(self):
-        """Indicate if the version is unstable.
+        """
+        Indicate if the version is unstable.
 
         Parameters
             None.
@@ -143,7 +149,8 @@ class SemVer:
         return self._unstable
 
     def __repr__(self):
-        """Compute the string representation of the SemVer object.
+        """
+        Compute the string representation of the SemVer object.
 
         Returns
             :return: is a string containing the version string which can be used
@@ -227,7 +234,8 @@ class SemVer:
         return result
 
     def _parse(self, version_string):
-        """Parse the version string.
+        """
+        Parse the version string.
 
         Parameters
             :param version_string: is a string containing the version string
@@ -275,8 +283,8 @@ class SemVer:
 
 
 def _comp_version(version1, version2):
-    """Compare two version identifiers limited to the major, minor and patch
-     identifiers.
+    """
+    Compare two version identifiers limited to the major, minor and patch fields.
 
     The rule #11 specify the precedence rules for comparing version identifiers.
     Example
@@ -319,7 +327,8 @@ def _comp_version(version1, version2):
 
 
 def _comp_prerelease(prerelease1, prerelease2):
-    """Compare two pre-release version identifiers.
+    """
+    Compare two pre-release version identifiers.
 
     The rule #11 specify the precedence rules for comparing pre-release version
     identifiers.
@@ -375,7 +384,8 @@ def _comp_prerelease(prerelease1, prerelease2):
 
 
 def _compstr(string1, string2):
-    """Compare two string either numerically or lexically.
+    """
+    Compare two string either numerically or lexically.
 
     If the two string are constituted of only digits, there are compared
     numerically and strings with letters or hyphens are compared lexically

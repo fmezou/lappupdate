@@ -1,4 +1,5 @@
-"""Implementation of the MakeMKV product class
+"""
+Implementation of the MakeMKV product class
 
 Classes
     Product : MakeMKV product class
@@ -28,7 +29,8 @@ _logger.addHandler(logging.NullHandler())
 
 
 class Product(core.BaseProduct):
-    """MakeMKV product class.
+    """
+    MakeMKV product class.
 
     Public instance variables
         Same as `core.BaseProduct`.
@@ -61,7 +63,8 @@ class Product(core.BaseProduct):
         self._parser = pad.PadParser()
 
     def is_update(self, product):
-        """ Return if this instance is an update of product
+        """
+        Return if this instance is an update of product
 
         This method compare the version of the two product, and return the
         comparison result. The version numbers used by the editor are compliant
@@ -96,7 +99,8 @@ class Product(core.BaseProduct):
         return result
 
     def _parse_catalog(self, filename):
-        """ Parse the catalog.
+        """
+        Parse the catalog.
 
         This method parses the downloaded product catalog to prepare
         `_get_...` call.
@@ -112,7 +116,8 @@ class Product(core.BaseProduct):
         self._parser.parse(filename)
 
     def _get_name(self):
-        """Extract the name of the product (used in report mail and log file).
+        """
+        Extract the name of the product (used in a_report mail and log file).
 
         Parameters
             None.
@@ -135,7 +140,8 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_display_name(self):
-        """Extract the name of the product as it appears in the 'Programs and
+        """
+        Extract the name of the product as it appears in the 'Programs and
         Features' control panel.
 
         This name is built from the name and the version attribute, thus this
@@ -154,7 +160,8 @@ class Product(core.BaseProduct):
         self.display_name = name.format(self.name, self.version)
 
     def _get_version(self):
-        """Extract the current version of the product from the PAD File.
+        """
+        Extract the current version of the product from the PAD File.
 
         Parameters
             None.
@@ -177,7 +184,8 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_published(self):
-        """Extract the date of the installer’s publication from the PAD file.
+        """
+        Extract the date of the installer’s publication from the PAD file.
 
         Parameters
             None.
@@ -214,7 +222,8 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_description(self):
-        """Extract the short description of the product (~250 characters).
+        """
+        Extract the short description of the product (~250 characters).
 
         Parameters
             None.
@@ -237,7 +246,8 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_editor(self):
-        """Extract the name of the editor of the product.
+        """
+        Extract the name of the editor of the product.
 
         Parameters
             None.
@@ -260,7 +270,8 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_url(self):
-        """Extract the url of the current version of the installer
+        """
+        Extract the url of the current version of the installer
 
         Parameters
             None.
@@ -283,7 +294,8 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_file_size(self):
-        """Extract the size of the product installer expressed in bytes
+        """
+        Extract the size of the product installer expressed in bytes
 
         Parameters
             None.
@@ -295,18 +307,19 @@ class Product(core.BaseProduct):
             None.
         """
         self.file_size = None
-        path = "Program_Info/File_Info/File_Size_Bytes"
-        item = self._parser.find(path)
-        if item is not None:
-            self.file_size = int(item.text)
-            msg = "File size :'{0}'"
-            _logger.debug(msg.format(self.file_size))
-        else:
-            msg = "Unknown File size"
-            _logger.warning(msg)
+        # path = "Program_Info/File_Info/File_Size_Bytes"
+        # item = self._parser.find(path)
+        # if item is not None:
+        #     self.file_size = int(item.text)
+        #     msg = "File size :'{0}'"
+        #     _logger.debug(msg.format(self.file_size))
+        # else:
+        #     msg = "Unknown File size"
+        #     _logger.warning(msg)
 
     def _get_hash(self):
-        """Extract the secure_hash value of the product installer (tuple).
+        """
+        Extract the secure_hash value of the product installer (tuple).
 
         The PAD file doesn't specify a secure_hash for the installer product.
 
@@ -322,7 +335,8 @@ class Product(core.BaseProduct):
         self.secure_hash = None
 
     def _get_icon(self):
-        """Extract the name of the icon file.
+        """
+        Extract the name of the icon file.
 
         Parameters
             None.
@@ -345,7 +359,8 @@ class Product(core.BaseProduct):
             _logger.warning(msg)
 
     def _get_target(self):
-        """Extract the target architecture type (the Windows’ one).
+        """
+        Extract the target architecture type (the Windows’ one).
 
         Parameters
             None.
@@ -361,7 +376,8 @@ class Product(core.BaseProduct):
         _logger.debug(msg.format(self.icon))
 
     def _get_release_note(self):
-        """Extract the release note’s URL from the PAD File.
+        """
+        Extract the release note’s URL from the PAD File.
         Parameters
             None.
 
@@ -376,7 +392,8 @@ class Product(core.BaseProduct):
         _logger.debug(msg.format(self.release_note))
 
     def _get_std_inst_args(self):
-        """Extract the arguments to use for a standard installation.
+        """
+        Extract the arguments to use for a standard installation.
 
         Parameters
             None.
@@ -392,7 +409,8 @@ class Product(core.BaseProduct):
         _logger.debug(msg.format(self.std_inst_args))
 
     def _get_silent_inst_args(self):
-        """Extract the arguments to use for a silent installation.
+        """
+        Extract the arguments to use for a silent installation.
 
         Parameters
             None.

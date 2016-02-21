@@ -1,4 +1,5 @@
-"""Implementation of a dummy product class.
+"""
+Implementation of a dummy product class.
 
 Classes
     Product : dummy product class
@@ -14,9 +15,9 @@ Constant
 
 import datetime
 import logging
-import semver
 
 from cots import core
+from cots import semver
 
 
 # To make the module as versatile as possible, an nullHandler is added.
@@ -27,7 +28,8 @@ _logger.addHandler(logging.NullHandler())
 
 
 class Product(core.BaseProduct):
-    """Dummy product class.
+    """
+    Dummy product class.
 
     Public instance variables
         Same as `core.BaseProduct`.
@@ -42,7 +44,8 @@ class Product(core.BaseProduct):
         None
     """
     def __init__(self):
-        """Constructor
+        """
+        Constructor
 
         Parameters
             None
@@ -59,7 +62,8 @@ class Product(core.BaseProduct):
         self._catalog_url = "http://www.example.com/index.html"
 
     def is_update(self, product):
-        """ Return if this instance is an update of product
+        """
+        Return if this instance is an update of product
 
         This method compare the version of the two product, and return the
         comparison result. The version numbers used by the editor are compliant
@@ -94,11 +98,8 @@ class Product(core.BaseProduct):
         return result
 
     def _parse_catalog(self, filename):
-        """ Parse the catalog.
-
-        This method parses the downloaded product catalog to prepare
-        `_get_...` call.
-        This catalog is a PAD File (see `pad` module).
+        """
+        Parse the catalog.
 
         Parameters
             :param filename: is a string specifying the local name of the
@@ -107,13 +108,12 @@ class Product(core.BaseProduct):
         _logger.debug(filename)
 
     def _get_name(self):
-        """
-        Extract the name of the product (used in report mail and log file).
-        """
+        """Extract the name of the product."""
         self.name = "Dummy Product"
 
     def _get_display_name(self):
-        """Extract the name of the product as it appears in the 'Programs and
+        """
+        Extract the name of the product as it appears in the 'Programs and
         Features' control panel.
 
         This name is built from the name and the version attribute, thus this
@@ -123,63 +123,51 @@ class Product(core.BaseProduct):
         self.display_name = name.format(self.name, self.version)
 
     def _get_version(self):
-        """Extract the current version of the product from the PAD File.
-        """
+        """Extract the current version of the product from the PAD File."""
         self.version = "1.0.1"
 
     def _get_published(self):
-        """Extract the date of the installer’s publication from the PAD file.
-        """
+        """Extract the date of the installer’s publication from the PAD file."""
         dt = (datetime.datetime.now()).replace(microsecond=0)
         self.published = dt.isoformat()
 
     def _get_description(self):
-        """Extract the short description of the product (~250 characters).
-        """
+        """Extract the short description of the product (~250 characters)."""
         self.description = "This dummy module is a trivial example of a " \
                            "Product class implementation. "
 
     def _get_editor(self):
-        """Extract the name of the editor of the product.
-        """
+        """Extract the name of the editor of the product."""
         self.editor = "Example. inc"
 
     def _get_url(self):
-        """Extract the url of the current version of the installer
-        """
+        """Extract the url of the current version of the installer."""
         self.url = "http://www.example.com/index.html"
 
     def _get_file_size(self):
-        """Extract the size of the product installer expressed in bytes
-        """
+        """Extract the size of the product installer expressed in bytes."""
         self.file_size = -1
 
     def _get_hash(self):
-        """Extract the secure_hash value of the product installer (tuple).
-        """
+        """Extract the secure_hash value of the product installer (tuple)."""
         self.secure_hash = None
 
     def _get_icon(self):
-        """Extract the name of the icon file.
-        """
+        """Extract the name of the icon file."""
         self.icon = None
 
     def _get_target(self):
-        """Extract the target architecture type (the Windows’ one).
-        """
+        """Extract the target architecture type (the Windows’ one)."""
         self.target = core.PROD_TARGET_UNIFIED
 
     def _get_release_note(self):
-        """Extract the release note’s URL.
-        """
+        """Extract the release note’s URL."""
         self.release_note = "http://www.example.com/release_note.txt"
 
     def _get_std_inst_args(self):
-        """Extract the arguments to use for a standard installation.
-        """
+        """Extract the arguments to use for a standard installation."""
         self.std_inst_args = ""
 
     def _get_silent_inst_args(self):
-        """Extract the arguments to use for a silent installation.
-        """
+        """Extract the arguments to use for a silent installation."""
         self.silent_inst_args = "/silent"
