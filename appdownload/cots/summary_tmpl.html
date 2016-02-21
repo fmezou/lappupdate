@@ -1,4 +1,4 @@
-<html>
+<html lang=en-GB>
 <!-- $lau:HeaderStart$ -->
 <head>
     <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
@@ -95,45 +95,45 @@
 <!-- $lau:HeaderEnd$ -->
 </head>
 <!-- $lau:BodyStart$ -->
-<body lang=FR link=blue vlink=purple>
+<body link=blue vlink=purple>
 <div class=WordSection1>
-    <p class=body><span lang=EN-GB>On {date}, products below have available updates.</span></p>
+    <p class=body>On {date}, the following products have available updates.</p>
 <!-- $lau:TOCStart$ -->
     <ul>
 <!-- $lau:TOCEntry$ -->
-        <li class=list_body><a href="#{id}"><span lang=EN-GB>{name} {version} released on {published}</span></a>
-        </li>
+        <li class=list_body><a href="#{id}">{name} ({version})</a></li>
 <!-- $lau:TOCEnd$ -->
     </ul>
-    <p class=body><span lang=EN-GB></span></p>
+    <p class=body></p>
 <!-- $lau:SummaryStart$ -->
 <!-- $lau:SummaryEntry$ -->
     <div style='border:solid #4F81BD 3.0pt;padding:0cm 0cm 0cm 0cm;background:#4F81BD'>
-        <h1 style='margin-top:0cm;line-height:normal;background:#4F81BD'><a
-                name="{id}"><span lang=EN-GB>{name}</span></a><span
-                lang=EN-GB>{version} released on {published}</span></h1>
+        <h1 style='margin-top:0cm;line-height:normal;background:#4F81BD'>
+            <a name="{id}">{name}</a></h1>
     </div>
-    <p class=body><span lang=EN-GB>url: {url}</span></p>
-    <p class=body><span lang=EN-GB>Installer: {installer}</span></p>
-    <p class=body><span lang=EN-GB>file size: {file_size}</span></p>
-    <div style='border:solid #DBE5F1 3.0pt;padding:0cm 0cm 0cm 0cm;background:#DBE5F1'>
-        <h2 style='margin-top:0cm;line-height:normal;background:#DBE5F1'><span
-                lang=EN-GB>Release note since ...</span></h2>
-    </div>
-    <p class=body><em>See the </em><a href="{release_note}">detailed change
-        history</a></p>
-    <p class=body><span lang=EN-GB>{release_note}</span></p>
-    <div style='border:solid #DBE5F1 3.0pt;padding:0cm 0cm 0cm 0cm;background:#DBE5F1'>
-        <h2 style='margin-top:0cm;line-height:normal;background:#DBE5F1'><span
-                lang=EN-GB>Product information</span></h2>
-    </div>
-    <p class=body
-       style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal'>
-        <span lang=EN-GB>Published by {editor}, {description}</span>
+    <p class=body>
+        <a href="{url}">{name} ({version})</a> has been released on {published}. It will be
+        fetched on the next step.
     </p>
-    <p class=body
-       style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal'>
-        <span lang=EN-GB></span>
+    <p class=body>
+        file size: {file_size}<br>
+        hash: {secure_hash}
+    </p>
+    <div style='border:solid #DBE5F1 3.0pt;padding:0cm 0cm 0cm 0cm;background:#DBE5F1'>
+        <h2 style='margin-top:0cm;line-height:normal;background:#DBE5F1'>
+            Release note
+        </h2>
+    </div>
+    <p class=body>See the <a href="{release_note}">detailed change history</a>.</p>
+    <div style='border:solid #DBE5F1 3.0pt;padding:0cm 0cm 0cm 0cm;background:#DBE5F1'>
+        <h2 style='margin-top:0cm;line-height:normal;background:#DBE5F1'>
+            Product information
+        </h2>
+    </div>
+    <p class=body style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal'>
+        Published by {editor}, {description}
+    </p>
+    <p class=body style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal'>
     </p>
 <!-- $lau:SummaryEnd$ -->
 <!-- $lau:BodyEnd$ -->
