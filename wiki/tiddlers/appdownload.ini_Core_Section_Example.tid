@@ -1,0 +1,14 @@
+created: 20160227112453410
+modified: 20160227155144664
+name: core
+title: appdownload.ini Core Section Example
+type: text/vnd.tiddlywiki
+
+```ini
+[core]
+store = ..\appstore
+logger = .\logger.ini
+pulling_report = .\pulling_report.ini
+fetching_report = .\fetching_report.ini
+deploying_report = .\deploying_report.ini
+```

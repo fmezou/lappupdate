@@ -1,29 +1,10 @@
 created: 20151104154152397
-modified: 20160221172437331
+modified: 20160227160628769
 tags: [[File Examples]]
-title: appdownload.ini example
+title: appdownload.ini Example
 type: text/vnd.tiddlywiki
 
-```ini
-[core]
-store = ..\appstore
-logger = .\logger.ini
-pulling_report = .\pulling_report.ini
-fetching_report = .\fetching_report.ini
-deploying_report = .\deploying_report.ini
-
-[sets]
-__manual__ = manual
-__thirdparty__ = # may be empty, in this case, any file will be generated
-__all__ = all
-userset = pc1, pc2
-
-[applications]
-dummy = on
-ignored = off
-
-[dummy]
-module = cots.dummy
-path = ${core:store}\dummy
-set = userset
-```
+{{appdownload.ini Core Section Example}}
+{{appdownload.ini Sets Section Example}}
+{{appdownload.ini Applications Section Example}}
+{{appdownload.ini Application Section Example}}
