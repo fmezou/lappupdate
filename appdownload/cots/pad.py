@@ -1,5 +1,6 @@
 """
-Lightweight PAD (Portable Application Description) support.
+This module defines functions and classes for a lightweight PAD (Portable
+Application Description) support.
 
 The parser is based on xml.etree.ElementTree module, and match the PAD 4.0
 Specification (http://pad.asp-software.org/spec/spec.php).
@@ -9,16 +10,15 @@ loading a file). When building or modifying an PAD File, any control is done.
 Classes
     PadParser : A PAD element hierarchy
 
-Exception
+Exceptions
     SpecSyntaxError: Raised when spec file is erroneous.
     PADSyntaxError: Raised when a tag in a PAD file don't matched the PAD Specs
 
-Function
+Functions
     None
 
-Constant
+Constants
     None
-
 """
 
 import os
@@ -27,6 +27,14 @@ import re
 import xml.etree.ElementTree
 
 
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+__all__ = [
+    "PadParser",
+    "SpecSyntaxError",
+    "PADSyntaxError"
+]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
 # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library

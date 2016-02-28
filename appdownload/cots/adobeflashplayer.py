@@ -3,11 +3,11 @@
 Classes
     Product : base class for a product
 
-Exception
+Exceptions
 
-Function
+Functions
 
-Constant
+Constants
 
 """
 
@@ -21,6 +21,11 @@ import urllib.request
 
 
 from cots import core
+
+
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0-dev"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
 class Product(core.BaseProduct):

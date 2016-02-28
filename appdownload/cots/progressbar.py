@@ -1,19 +1,20 @@
 """
-Progress Bar module.
-
-This module offers some progress bar in text mode for the console.
+This module defines functions and classes to offer some progress bar in text
+mode for the console.
 
 Classes
-    `TextProgressBar`: Progress bar for console output.
+    TextProgressBar: Progress bar for console output.
     
-Exception
+Exceptions
+    None
 
-Function
-    `isu_format_prefix`: return a string using standard prefix for unit.
-    `isu_format_thousand`: return a string using standard ISU thousand 
+Functions
+    isu_format_prefix: return a string using standard prefix for unit.
+    isu_format_thousand: return a string using standard ISU thousand
     separator.
 
-Constant
+Constants
+    None
 
 """
 
@@ -21,6 +22,14 @@ import logging
 import time
 
 
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+__all__ = [
+    "TextProgressBar",
+    "isu_format_prefix",
+    "isu_format_thousand"
+]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
 # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library

@@ -9,11 +9,14 @@ Classes
     FileHandler: write the report in a file.
     StreamHandler: write the report in a stream.
 
-Exception
+Exceptions
+    None
 
-Function
+Functions
+    None
 
-Constant
+Constants
+    None
 
 """
 
@@ -32,12 +35,14 @@ import sys
 import urllib.parse
 import time
 
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
     "Report",
     "BaseHandler",
     "MailHandler", "FileHandler", "StreamHandler"
 ]
-
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
 # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library

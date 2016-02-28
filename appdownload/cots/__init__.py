@@ -1,18 +1,14 @@
-"""Initialise COTS package
-
-The docstring for a package (i.e., the docstring of the package's
-__init__.py module) should also list the modules and subpackages exported by
-the package.
-see __all__
+"""
+This package defines modules which implements the product handler used to check
+if a new version of the product is available and eventually download it.
+system for applications and libraries.
 """
 
 
 __author__ = "Frederic MEZOU"
-__version__ = "0.3.0-dev"
+__version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
-
-
 __all__ = [
     "core",
-    "adobeflashplayer"
+    "makemkv"
 ]

@@ -1,9 +1,15 @@
-# Reserved for test
-# This module is used as a script only for test.
+"""
+This module defines a test suite for testing the semver module.
+"""
 
 import logging
 
 import semver
+
+
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
 if __name__ == "__main__":

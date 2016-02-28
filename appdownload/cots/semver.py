@@ -1,5 +1,6 @@
 """
-Semantic versioning support (aka SemVer).
+This module defines functions and classes for a semantic versioning (aka SemVer)
+support.
 
 The parser match the semantic versioning specification 2.0.0
 (http://semver.org/spec/v2.0.0.html).
@@ -8,17 +9,17 @@ On GitHub: https://github.com/mojombo/semver/releases/tag/v2.0.0
 Classes
     SemVer: is the class object to manipulate version string
 
-Exception
+Exceptions
     TypeError: raised when an operation or function is applied to an object of
     inappropriate type. The associated value is a string giving details about
     the type mismatch (i.e. comparison between a SemVer object and a integer)
     ValueError: raised when the version string doesn't match the semantic
     versioning specification
 
-Function
+Functions
     None
 
-Constant
+Constants
     None
 """
 
@@ -26,6 +27,12 @@ import logging
 import re
 
 
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+__all__ = [
+    "SemVer"
+]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
 # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library

@@ -1,5 +1,6 @@
-# Reserved for test
-# This module is used as a script only for testing the report module.
+"""
+This module defines a test suite for testing the report module.
+"""
 
 import logging
 import sys
@@ -10,6 +11,10 @@ import socket
 import traceback
 
 from cots import report
+
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 # Basic configuration of the logging facility.
 logging.basicConfig(
@@ -369,8 +374,15 @@ def _load_config(filename):
 
     return config_dict
 
+# Declare the python module will be tested
+# Each entry details the name and the expected version of the modul.
+modules = [
+    [report, "0.1.0"]
+]
 
-test_set = [
+# Declare the unitary function test to execute
+# The False value specifies that the function test will be ignored.
+tests = [
     [test_api_default, True],
     [test_api_custom, True],
     [test_ini_default, True],
@@ -402,7 +414,11 @@ if __name__ == "__main__":
         "title": "title of the report"  # not used
     }
 
-    for test in test_set:
+    for module in modules:
+        pass
+
+
+    for test in tests:
         if test[1]:
             print("###########################################################")
             print("test id :", test[0].__name__)

@@ -1,19 +1,21 @@
 """
-COTS core module.
+This module defines core functions and classes for module which implement
+the product handler.
 
 Classes
     BaseProduct: common base class for all products
 
-Exception
+Exceptions
+    UnexpectedContentLengthError: raised when content length don't match.
+    UnexpectedContentError: raised when content secure hash don't match.
+    UnexpectedContentTypeError: raised when content-type don't match.
 
-Function
+Functions
     retrieve_file: retrieve a URL into a url on disk
     retrieve_tempfile: retrieve a URL into a temporary url on disk
-    get_summary_header: return the header summary.
-    get_summary_tail: return the tail of the summary.
 
-Constant
-
+Constants
+    None
 """
 
 import contextlib
@@ -25,14 +27,17 @@ import urllib.request
 
 from cots import progressbar
 
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0-dev"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
-    "BaseProduct"
+    "BaseProduct",
+    "retrieve_file",
+    "retrieve_tempfile",
+    "UnexpectedContentLengthError",
+    "UnexpectedContentError",
+    "UnexpectedContentTypeError"
 ]
-
-PROD_TARGET_X86 = "x86"
-PROD_TARGET_X64 = "x64"
-PROD_TARGET_UNIFIED = "unified"
-
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
 # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library

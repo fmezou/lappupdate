@@ -1,15 +1,17 @@
 """
-Implementation of a dummy product class.
+This module defines functions and classes for a dummy product handler.
 
 Classes
     Product : dummy product class
 
-Exception
+Exceptions
+    None
 
-Function
+Functions
+    None
 
-Constant
-
+Constants
+    None
 """
 
 
@@ -20,6 +22,12 @@ from cots import core
 from cots import semver
 
 
+__author__ = "Frederic MEZOU"
+__version__ = "0.1.0-dev"
+__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+__all__ = [
+    "Product"
+]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
 # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
