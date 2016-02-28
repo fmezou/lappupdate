@@ -375,7 +375,7 @@ def _load_config(filename):
     return config_dict
 
 # Declare the python module will be tested
-# Each entry details the name and the expected version of the modul.
+# Each entry details the name and the expected version of the module.
 modules = [
     [report, "0.1.0"]
 ]
@@ -415,8 +415,11 @@ if __name__ == "__main__":
     }
 
     for module in modules:
-        pass
-
+        if module[0].__version__ != module[1]:
+            msg = "Unexpected version module (expected {}, readed {}) for {}"
+            print(msg.format(module[1], module[0].__version__, module[0]),
+                  file=sys.stderr)
+            sys.exit(1)
 
     for test in tests:
         if test[1]:
