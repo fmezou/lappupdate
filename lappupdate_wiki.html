@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="application-name" content="TiddlyWiki" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.10" />
+<meta name="tiddlywiki-version" content="5.1.11" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -43,7 +43,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 " />
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
-<title>lAppUpdate Wiki — the wiki projects</title>
+<title>lAppUpdate Wiki — the wiki project</title>
 <!--~~ This is a Tiddlywiki file. The points of interest in the file are marked with this pattern ~~--><!--~~ Raw markup ~~-->
 
 </head>
@@ -141,6 +141,8 @@ Error message and password prompt
 
 <li>$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/delete</li>
 
+<li>$:/config/WikiParserRules/Inline/wikilink</li>
+
 <li>$:/core</li>
 
 <li>$:/DefaultTiddlers</li>
@@ -179,7 +181,31 @@ Error message and password prompt
 
 <li>appdownload.ini</li>
 
-<li>appdownload.ini example</li>
+<li>appdownload.ini Application Section</li>
+
+<li>appdownload.ini Application Section Example</li>
+
+<li>appdownload.ini Application Section Options</li>
+
+<li>appdownload.ini Applications Section</li>
+
+<li>appdownload.ini Applications Section Example</li>
+
+<li>appdownload.ini Applications Section Options</li>
+
+<li>appdownload.ini Core Section</li>
+
+<li>appdownload.ini Core Section Example</li>
+
+<li>appdownload.ini Core Section Options</li>
+
+<li>appdownload.ini Example</li>
+
+<li>appdownload.ini Sets Section</li>
+
+<li>appdownload.ini Sets Section Example</li>
+
+<li>appdownload.ini Sets Section Options</li>
 
 <li>applist</li>
 
@@ -198,6 +224,8 @@ Error message and password prompt
 <li>Concepts</li>
 
 <li>Environment Variables</li>
+
+<li>File Examples</li>
 
 <li>File format template</li>
 
@@ -224,6 +252,10 @@ Error message and password prompt
 <li>How-to</li>
 
 <li>lAppUpdate Versioning</li>
+
+<li>logger.ini</li>
+
+<li>logger.ini example</li>
 
 <li>LOGLEVEL</li>
 
@@ -266,6 +298,44 @@ Error message and password prompt
 <li>Releases</li>
 
 <li>ReleaseTemplate</li>
+
+<li>Report Template</li>
+
+<li>report_template.html example</li>
+
+<li>report.ini</li>
+
+<li>report.ini Attributes Section</li>
+
+<li>report.ini Attributes Section Example</li>
+
+<li>report.ini Attributes Section Options</li>
+
+<li>report.ini Core Section</li>
+
+<li>report.ini Core Section Example</li>
+
+<li>report.ini Core Section Options</li>
+
+<li>report.ini Example</li>
+
+<li>report.ini File Handler Section</li>
+
+<li>report.ini File Handler Section Example</li>
+
+<li>report.ini File Handler Section Options</li>
+
+<li>report.ini Mail Handler Section</li>
+
+<li>report.ini Mail Handler Section Example</li>
+
+<li>report.ini Mail Handler Section Options</li>
+
+<li>report.ini Stream Handler Section</li>
+
+<li>report.ini Stream Handler Section Example</li>
+
+<li>report.ini Stream Handler Section Options</li>
 
 <li>Requirements</li>
 
@@ -462,7 +532,10 @@ This script use [[Microsoft Collaboration Data Objects for Windows 2000|https://
 <div created="20160123143108711" modified="20160123143109799" title="$:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/delete" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>show</pre>
 </div>
-<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="TiddlyWiki5 core" list="readme" plugin-priority="0" plugin-type="plugin" title="$:/core" type="application/json" version="5.1.10" revision="0" bag="default">
+<div created="20160228092554330" modified="20160228092555382" title="$:/config/WikiParserRules/Inline/wikilink" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>disable</pre>
+</div>
+<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="TiddlyWiki5 core" list="readme" plugin-priority="0" plugin-type="plugin" title="$:/core" type="application/json" version="5.1.11" revision="0" bag="default">
 <pre>{
     &quot;tiddlers&quot;: {
         &quot;$:/Acknowledgements&quot;: {
@@ -6135,7 +6208,7 @@ This script use [[Microsoft Collaboration Data Objects for Windows 2000|https://
         &quot;$:/config/OfficialPluginLibrary&quot;: {
             &quot;title&quot;: &quot;$:/config/OfficialPluginLibrary&quot;,
             &quot;tags&quot;: &quot;$:/tags/PluginLibrary&quot;,
-            &quot;url&quot;: &quot;http://tiddlywiki.com/library/v5.1.9/index.html&quot;,
+            &quot;url&quot;: &quot;http://tiddlywiki.com/library/v5.1.11/index.html&quot;,
             &quot;caption&quot;: &quot;{{$:/language/OfficialPluginLibrary}}&quot;,
             &quot;text&quot;: &quot;{{$:/language/OfficialPluginLibrary/Hint}}\n&quot;
         },
@@ -6521,7 +6594,7 @@ Releases
 <div title="$:/isEncrypted" revision="0" bag="default">
 <pre>no</pre>
 </div>
-<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="Local filesystem syncadaptor" list="readme" plugin-type="plugin" title="$:/plugins/tiddlywiki/filesystem" type="application/json" version="5.1.10" revision="0" bag="default">
+<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="Local filesystem syncadaptor" list="readme" plugin-type="plugin" title="$:/plugins/tiddlywiki/filesystem" type="application/json" version="5.1.11" revision="0" bag="default">
 <pre>{
     &quot;tiddlers&quot;: {
         &quot;$:/plugins/tiddlywiki/filesystem/filesystemadaptor.js&quot;: {
@@ -6537,7 +6610,7 @@ Releases
     }
 }</pre>
 </div>
-<div author="JoaoBolila" core-version="&gt;=5.0.0" dependents="" description="Highlight.js: syntax highlighting" list="readme usage license" plugin-type="plugin" title="$:/plugins/tiddlywiki/highlight" type="application/json" version="5.1.10" revision="0" bag="default">
+<div author="JoaoBolila" core-version="&gt;=5.0.0" dependents="" description="Highlight.js: syntax highlighting" list="readme usage license" plugin-type="plugin" title="$:/plugins/tiddlywiki/highlight" type="application/json" version="5.1.11" revision="0" bag="default">
 <pre>{
     &quot;tiddlers&quot;: {
         &quot;$:/plugins/tiddlywiki/highlight/highlight.js&quot;: {
@@ -6614,7 +6687,7 @@ Releases
     }
 }</pre>
 </div>
-<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="TiddlyWeb and TiddlySpace components" list="readme" plugin-type="plugin" title="$:/plugins/tiddlywiki/tiddlyweb" type="application/json" version="5.1.10" revision="0" bag="default">
+<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="TiddlyWeb and TiddlySpace components" list="readme" plugin-type="plugin" title="$:/plugins/tiddlywiki/tiddlyweb" type="application/json" version="5.1.11" revision="0" bag="default">
 <pre>{
     &quot;tiddlers&quot;: {
         &quot;GettingStarted&quot;: {
@@ -6665,8 +6738,8 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 &lt;table&gt;&lt;tbody&gt;&lt;tr class=&quot;evenRow&quot;&gt;&lt;td align=&quot;left&quot; valign=&quot;top&quot;&gt;&lt;em&gt;&lt;strong&gt;Note&lt;/strong&gt;: $_$&lt;/em&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;
 \end</pre>
 </div>
-<div created="20150503134835049" modified="20150503134928216" title="$:/SiteSubtitle" revision="0" bag="default">
-<pre>the wiki projects</pre>
+<div created="20150503134835049" modified="20160228092412435" title="$:/SiteSubtitle" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>the wiki project</pre>
 </div>
 <div created="20150503134759456" modified="20150503134908088" title="$:/SiteTitle" revision="0" bag="default">
 <pre>lAppUpdate Wiki</pre>
@@ -6688,7 +6761,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     }
 }</pre>
 </div>
-<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.10" revision="0" bag="default">
+<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="$:/themes/tiddlywiki/vanilla" description="Emphasises individual tiddlers" name="Snow White" plugin-type="theme" title="$:/themes/tiddlywiki/snowwhite" type="application/json" version="5.1.11" revision="0" bag="default">
 <pre>{
     &quot;tiddlers&quot;: {
         &quot;$:/themes/tiddlywiki/snowwhite/base&quot;: {
@@ -6699,7 +6772,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
     }
 }</pre>
 </div>
-<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="Basic theme" name="Vanilla" plugin-type="theme" title="$:/themes/tiddlywiki/vanilla" type="application/json" version="5.1.10" revision="0" bag="default">
+<div author="JeremyRuston" core-version="&gt;=5.0.0" dependents="" description="Basic theme" name="Vanilla" plugin-type="theme" title="$:/themes/tiddlywiki/vanilla" type="application/json" version="5.1.11" revision="0" bag="default">
 <pre>{
     &quot;tiddlers&quot;: {
         &quot;$:/themes/tiddlywiki/vanilla/base&quot;: {
@@ -6870,107 +6943,112 @@ The following environment variables affect the execution of this script:
 
 //__Will be later completed__//</pre>
 </div>
-<div created="20151104154050913" modified="20151104161943052" tags="[[File Formats]]" title="appdownload.ini" type="text/vnd.tiddlywiki" revision="0" bag="default">
-<pre>!!Core section
-`core` section contains general parameters.
+<div created="20160227152306103" list="[[appdownload.ini Core Section]] [[appdownload.ini Sets Section]] [[appdownload.ini Applications Section]] [[appdownload.ini Application Section]]" modified="20160227181042642" tags="[[File Formats]]" title="appdownload.ini" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>This file contains the configuration of [[appdownload]] script. It use a structure similar to what’s found in Microsoft Windows INI files, and parsing with the [[configparser|https://docs.python.org/3/library/configparser.html#module-configparser]] module of the Python standard library. See the [[Configuration file format|https://docs.python.org/3/library/logging.config.html#configuration-file-format]] to have details about the file format.
 
-|^`store` |^mandatory |^contains the path where installation package and [[applist]] files are stored |
+The following items details each sections and the associated options, and give an example. The [[appdownload.ini Example]] topic give a whole example.
 
-!!Sets section
+&lt;&lt;tabs &quot;[tag[appdownload.ini]]&quot; &quot;[[appdownload.ini Core Section]]&quot; &quot;&quot; &quot;&quot;&gt;&gt; </pre>
+</div>
+<div caption="[{{appdownload.ini Application Section Options!!name}}]" created="20160227144515776" modified="20160227160338836" tags="appdownload.ini" title="appdownload.ini Application Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{appdownload.ini Application Section Options!!name}}] section {{appdownload.ini Application Section Options!!abstract}}.
 
-`sets` section contains the list of named sets used to deploy applications.
-
-|^`&lt;name&gt;`|^ |^is the name of the set and contains a set of computer names or any organisational units according with the appdeploy script call. |
-|~|~|^`__manual__`: is a special set to specify that the installer must be manually launched (an user interaction is necessary) |
-|~|~|^`__thirdparty__`: is a special set to specify that the installer is going to be launched from an other installer (extension or language pack for exemple) |
-|~|~|^`__all__`: is a special set to specify that the installer is going to be launched on all computer. |
-
-!!Applications section
-
-`applications` section contains the list of applications to maintains.
-
-|^`&lt;name&gt;`|^ |^is the name of the application section (see below) and contains a flag specifying if the application section have been taking into account. |
-
-!!Application section
-this section (one per application) contains configuration items for a specific application (e.g. python module name which manage this application).
-
-&lt;&lt;note &quot;name section must be lowercase, since the section name is a key in applications section.&quot;&gt;&gt;
-
-|^`module`|^mandatory |^is the name of the Python module used to check if a new version is available and eventually download it. |
-|^`path` |^optional |is the path name where to store the installer package. The default value is `${core:store}\&lt;section name&gt;`. |
-|^`set` |^mandatory |^is the name of the set associated with the application (see sets section) |
-
-!! Logging configuration section
-Logging configuration section contains configuration items used by the logging module. See the [[Configuration file format|https://docs.python.org/3/library/logging.config.html#configuration-file-format]] to have details about the file format.
+{{appdownload.ini Application Section Options}}
 
 !!example
 
-{{appdownload.ini example}}</pre>
+{{appdownload.ini Application Section Example}}
+</pre>
 </div>
-<div created="20151104154152397" modified="20160123150502326" tags="[[File Examples]]" title="appdownload.ini example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<div created="20160227112156080" modified="20160227160217007" title="appdownload.ini Application Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[dummy]
+module = cots.dummy
+path = ${core:store}\dummy
+set = userset
+```</pre>
+</div>
+<div abstract="contains configuration items for a specific application" created="20160227143139971" modified="20160227160410966" name="application" tags="" title="appdownload.ini Application Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>&lt;&lt;note &quot;name section must be lowercase, since the section name is a key in [[applications section|appdownload.ini Applications Section]].&quot;&gt;&gt;
+
+|^`module` (mandatory) |^is the name of the Python module used to check if a new version is available and eventually download it. |
+|^`path` (optional) |^is the path name where to store the installer package. The default value is `${core:store}\&lt;section name&gt;`. |
+|^`set` (mandatory) |^is the name of the set associated with the application (see [[sets section]]) |</pre>
+</div>
+<div caption="[{{appdownload.ini Applications Section Options!!name}}]" created="20160227144503016" modified="20160227160121822" tags="appdownload.ini" title="appdownload.ini Applications Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{appdownload.ini Applications Section Options!!name}}] section {{appdownload.ini Applications Section Options!!abstract}}.
+
+{{appdownload.ini Applications Section Options}}
+
+!!example
+
+{{appdownload.ini Applications Section Example}}</pre>
+</div>
+<div created="20160227112249338" modified="20160227155758310" title="appdownload.ini Applications Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[applications]
+dummy = on
+ignored = off
+```</pre>
+</div>
+<div abstract="contains the list of applications to maintains" created="20160227143236382" modified="20160227160106797" name="applications" tags="" title="appdownload.ini Applications Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>|^`&lt;name&gt;`|^is the name of the [[application section|appdownload.ini Application Section]] and contains a flag specifying if the application have been taking into account. |</pre>
+</div>
+<div caption="[{{appdownload.ini Core Section Options!!name}}]" created="20160227153300717" modified="20160227160943937" tags="appdownload.ini" title="appdownload.ini Core Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{appdownload.ini Core Section Options!!name}}] section {{appdownload.ini Core Section Options!!abstract}}.
+
+{{appdownload.ini Core Section Options}}
+
+!!example
+
+{{appdownload.ini Core Section Example}}</pre>
+</div>
+<div created="20160227112453410" modified="20160227155144664" name="core" title="appdownload.ini Core Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
 <pre>```ini
 [core]
 store = ..\appstore
+logger = .\logger.ini
+pulling_report = .\pulling_report.ini
+fetching_report = .\fetching_report.ini
+deploying_report = .\deploying_report.ini
+```</pre>
+</div>
+<div abstract="contains general parameters" created="20160227150137910" modified="20160227155059841" name="core" tags="" title="appdownload.ini Core Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>|^`store` (mandatory) |^contains the path where installation package and [[applist]] files are stored |
+|^`logger` (optional) |^contains the path name of the configuration file of the logging system based on [[logging|https://docs.python.org/3/library/logging.html]] module. |
+|^`pulling_report` (optional) |^contains the path name of the configuration file of the pulling activity report  (see [[cots.report]] for detailed informations) |
+|^`fetching_report` (optional) |^contains the path name of the configuration file of the fetching activity report (see [[cots.report]] for detailed informations) |
+|^`deploying_report` (optional) |^contains the path name of the configuration file of the deploying activity report (see [[cots.report]] for detailed informations) |</pre>
+</div>
+<div created="20151104154152397" modified="20160227160628769" tags="[[File Examples]]" title="appdownload.ini Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>{{appdownload.ini Core Section Example}}
+{{appdownload.ini Sets Section Example}}
+{{appdownload.ini Applications Section Example}}
+{{appdownload.ini Application Section Example}}</pre>
+</div>
+<div caption="[{{appdownload.ini Sets Section Options!!name}}]" created="20160227144450289" modified="20160227155702907" tags="appdownload.ini" title="appdownload.ini Sets Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{appdownload.ini Sets Section Options!!name}}] section {{appdownload.ini Sets Section Options!!abstract}}.
 
+{{appdownload.ini Sets Section Options}}
+
+!!example
+
+{{appdownload.ini Sets Section Example}}</pre>
+</div>
+<div created="20160227112358597" modified="20160227155543567" title="appdownload.ini Sets Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
 [sets]
 __manual__ = manual
 __thirdparty__ = # may be empty, in this case, any file will be generated
 __all__ = all
 userset = pc1, pc2
-
-[applications]
-dummy = on
-ignored = off
-
-[dummy]
-module = cots.dummy
-path = ${core:store}\dummy
-set = userset
-
-# Logging configuration section
-[loggers]
-keys=root,main,dummy
-
-[handlers]
-keys=consoleHandler,logfileHandler
-
-[formatters]
-keys=standardFormatter,debugFormatter
-
-[logger_root]
-level=NOTSET
-handlers=consoleHandler
-
-[logger_main]
-qualname=__main__
-level=DEBUG
-handlers=consoleHandler
-propagate=0
-
-[logger_dummy]
-qualname=cots.dummy
-level=DEBUG
-handlers=consoleHandler,logfileHandler
-propagate=0
-
-[handler_consoleHandler]
-class=StreamHandler
-level=INFO
-formatter=standardFormatter
-args=(sys.stdout,)
-
-[handler_logfileHandler]
-class=FileHandler
-level=DEBUG
-formatter=debugFormatter
-args=('${core:store}\\appdownload.log', 'w')
-
-[formatter_standardFormatter]
-format=%(asctime)s - %(levelname)s - %(name)s - %(message)s
-
-[formatter_debugFormatter]
-format=%(asctime)s - %(levelname)s - %(name)s [%(funcName)s] - %(message)s
 ```</pre>
+</div>
+<div abstract="contains the list of named sets used to deploy applications" created="20160227143308904" modified="20160227155531424" name="sets" tags="" title="appdownload.ini Sets Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>|^`&lt;name&gt;`|^is the name of the set and contains a set of computer names or any organisational units according with the appdeploy script call. |
+|~|^`__manual__`: is a special set to specify that the installer must be manually launched (an user interaction is necessary) |
+|~|^`__thirdparty__`: is a special set to specify that the installer is going to be launched from an other installer (extension or language pack for exemple) |
+|~|^`__all__`: is a special set to specify that the installer is going to be launched on all computer. |</pre>
 </div>
 <div created="20150503173655790" creator="fmezou" modified="20150602210606800" modifier="fmezou" tags="[[File Formats]]" title="applist" revision="0" bag="default">
 <pre>applist files describes a list of application packages which will be deployed on a workstation or a server. 
@@ -7079,6 +7157,11 @@ following properties using JSON (~JavaScript Object Notation), specified by [[RF
 &lt;&lt;list-links &quot;[tag[Environment Variables]`sort[]]&quot;&gt;&gt;
 </pre>
 </div>
+<div created="20160221174701869" modified="20160221174838335" tags="Reference" title="File Examples" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The following topics give example of files used by lAppUpdate scripts.
+
+&lt;&lt;list-links &quot;[tag[File Examples]]&quot;&gt;&gt;</pre>
+</div>
 <div created="20150523141002991" creator="fmezou" modified="20150523141307871" modifier="fmezou" tags="Templates" title="File format template" revision="0" bag="default">
 <pre>File format template files describes ....
 
@@ -7108,15 +7191,16 @@ Blank lines and comments introduced by a '#' sign are ignored.
 
 Default value: &lt;code&gt;{{!!default-value}}&lt;/code&gt;</pre>
 </div>
-<div created="20150503135230327" creator="fmezou" modified="20150522075011014" modifier="fmezou" tags="About" title="History of lAppUpdate" revision="0" bag="default">
-<pre>At the beginning, I searched a means to deploy application for my two personal pc from a home server (based on [[freenas|http://www.freenas.org/]]). My searches led me to the following products:
+<div created="20150503135230327" creator="fmezou" modified="20160228115709782" modifier="fmezou" tags="About" title="History of lAppUpdate" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>At the beginning, I searched a way to deploy application for my two personal pc from a home server (based on [[freenas|http://www.freenas.org/]]). My searches led me to the following products:
 
 * [[OCS Inventory NG|http://www.ocsinventory-ng.org/en/]]: it's a good choice for IT professional who manages thousands of PC, and an agent must be deployed on every PC.
 
-* Active Directory GPO:  you can do this with a Windows Server or a server with [[Samba configured in domain controller mode|https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO]]. The main constraint is that GPO accept only MSI package.
+* Active Directory GPO:  you can do this with a Windows Server or a server with [[Samba configured in domain controller mode|https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO]]. The main constraint is that GPO only accepts MSI package.
 
+* updaters family ([[Avast Software Updater|https://www.avast.com/f-software-updater]], [[FileHippo App Manager|http://filehippo.com/download_app_manager]] (formerly FileHippo Update Checker)...): theses tools are well designed for home PC connected to internet, but they mix the two  following functions (checking the availability of updates from the editor web site, checking installed local applications). In my point of view, theses function must be separated to consider the case where target PC are not connected or the need to centralise custom software updates.
 
-So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications' updates if any (or the full installation package).</pre>
+So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications updates if any (or the full installation package).</pre>
 </div>
 <div created="20150602203612887" creator="fmezou" modified="20150602204935213" modifier="fmezou" tags="Concepts" title="Hook script" revision="0" bag="default">
 <pre>Hook scripts are only call from lAppUpdate scripts and have a public interface (see above). These scripts are designed for doing third parties tasks (e.g. tuning the environment) at specific time (i.e before starting the script). 
@@ -7308,6 +7392,60 @@ Each new alpha or beta release will bump the `PATCH` version number. This breaks
 !! Interim versions
 
 During development when a new release is being prepared, the pre-release label is set to `prerelease`.</pre>
+</div>
+<div created="20160221172630056" creator="fmezou" modified="20160221173645210" modifier="fmezou" tags="[[File Formats]]" title="logger.ini" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>This file contains the logging facility configuration of [[appdownload]] script. It use a structure similar to what’s found in Microsoft Windows INI files, and parsing with the [[configparser|https://docs.python.org/3/library/configparser.html#module-configparser]] module of the Python standard library. See the [[Configuration file format|https://docs.python.org/3/library/logging.config.html#configuration-file-format]] to have details about the file format.
+
+!!example
+
+{{logger.ini example}}</pre>
+</div>
+<div created="20160221170900511" modified="20160221172518590" tags="[[File Examples]]" title="logger.ini example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[loggers]
+keys=root,main,dummy
+
+[handlers]
+keys=consoleHandler,logfileHandler
+
+[formatters]
+keys=standardFormatter,debugFormatter
+
+[logger_root]
+level=NOTSET
+handlers=consoleHandler
+
+[logger_main]
+qualname=__main__
+level=DEBUG
+handlers=consoleHandler
+propagate=0
+
+[logger_dummy]
+qualname=cots.dummy
+level=DEBUG
+handlers=consoleHandler,logfileHandler
+propagate=0
+
+[handler_consoleHandler]
+class=StreamHandler
+level=INFO
+formatter=standardFormatter
+args=(sys.stdout,)
+
+[handler_logfileHandler]
+class=FileHandler
+level=DEBUG
+formatter=debugFormatter
+args=('${core:store}\\appdownload.log', 'w')
+
+[formatter_standardFormatter]
+format=%(asctime)s - %(levelname)s - %(name)s - %(message)s
+
+[formatter_debugFormatter]
+format=%(asctime)s - %(levelname)s - %(name)s [%(funcName)s] - %(message)s
+
+```</pre>
 </div>
 <div contents="Specify the maximum level of log entries written in log files (see [[UPDATE_LOGFILE]] and [[WARNING_LOGFILE]])." created="20150523105018660" creator="fmezou" default-value="INFO" modified="20150523135453427" modifier="fmezou" tags="[[Environment Variables]]" title="LOGLEVEL" revision="0" bag="default">
 <pre>{{!!contents}}
@@ -7531,6 +7669,303 @@ This release is a {initial development|maintenance|minor|major} one. &lt;short d
 ^^Released &lt;$view tiddler=&lt;&lt;currentTab&gt;&gt; field=&quot;released&quot; format=&quot;date&quot; template=&quot;DDth MMM YYYY at 0hh:0mm&quot;&gt;TBA&lt;/$view&gt;^^
 
 &lt;$transclude tiddler=&lt;&lt;currentTab&gt;&gt; /&gt;
+</pre>
+</div>
+<div created="20160221172616168" creator="fmezou" modified="20160221185410437" modifier="fmezou" tags="[[File Formats]]" title="Report Template" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>A report is based on a template using named keyword argument and composed of named sections. The module use the `report_template.html` by default. The use of the named keyword argument is based on the [[string module|https://docs.python.org/3/library/string.html#format-string-syntax]].
+
+Each section starts with a HTML comment and it ends with the start of next section or the end of the file. The comment match the following format and must be on one line:
+
+```html
+&lt;!-- $lau:&lt;name&gt;$ --&gt;
+```
+
+`name` is the name of the section. It MUST comprise only ASCII alphanumerics and hyphen [0-9A-Za-z-] and MUST NOT be empty. If a named section is not declared in `Report.names`, its contents is added to the current section (i.e. no section is created).
+
+!!example
+
+{{report_template.html example}}</pre>
+</div>
+<div created="20160221172304915" modified="20160221185856706" tags="[[File Examples]]" title="report_template.html example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```html
+&lt;html lang=en-GB&gt;
+&lt;!-- $lau:HeaderStart$ --&gt;
+&lt;head&gt;
+    &lt;meta http-equiv=Content-Type content=&quot;text/html; charset=UTF-8&quot;&gt;
+    &lt;style&gt;
+        &lt;!--
+        /* Font Definitions */
+        @font-face
+            {font-family:Wingdings;
+            panose-1:5 0 0 0 0 0 0 0 0 0;}
+        @font-face
+            {font-family:Wingdings;
+            panose-1:5 0 0 0 0 0 0 0 0 0;}
+        @font-face
+            {font-family:Calibri;
+            panose-1:2 15 5 2 2 2 4 3 2 4;}
+         /* Style Definitions */
+        p.body, li.body, div.body
+            {margin-top:10.0pt;
+            margin-right:0cm;
+            margin-bottom:10.0pt;
+            margin-left:0cm;
+            line-height:115%;
+            font-size:11.0pt;
+            font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;}
+        h1
+            {margin-top:10.0pt;
+            margin-right:0cm;
+            margin-bottom:0cm;
+            margin-left:0cm;
+            margin-bottom:.0001pt;
+            line-height:115%;
+            background:#4F81BD;
+            border:none;
+            padding:0cm;
+            font-size:12.0pt;
+            font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;
+            color:white;
+            text-transform:uppercase;
+            letter-spacing:.75pt;
+            font-weight:bold;}
+        h2
+            {margin-top:10.0pt;
+            margin-right:0cm;
+            margin-bottom:0cm;
+            margin-left:0cm;
+            margin-bottom:.0001pt;
+            line-height:115%;
+            background:#DBE5F1;
+            border:none;
+            padding:0cm;
+            font-size:10.0pt;
+            font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;
+            text-transform:uppercase;
+            letter-spacing:.75pt;
+            font-weight:normal;}
+        a:link, span.link
+            {color:blue;
+            text-decoration:underline;}
+        a:visited, span.visited
+            {color:purple;
+            text-decoration:underline;}
+        em
+            {color:#243F60;
+            text-transform:uppercase;
+            letter-spacing:.25pt;
+            font-style:normal;}
+        p
+            {margin-right:0cm;
+            margin-left:0cm;
+            font-size:12.0pt;
+            font-family:&quot;Times New Roman&quot;,&quot;serif&quot;;}
+        p.list_body, li.list_body, div.list_body
+            {margin-top:3.0pt;
+            margin-right:0cm;
+            margin-bottom:3.0pt;
+            margin-left:0cm;
+            line-height:100%;
+            font-size:11.0pt;
+            font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;}
+        @page WordSection1
+            {size:595.3pt 841.9pt;
+            margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+        div.WordSection1
+            {page:WordSection1;}
+        /* List Definitions */
+        ol
+            {margin-bottom:0cm;}
+        ul
+            {margin-bottom:0cm;}
+        --&gt;
+    &lt;/style&gt;
+&lt;!-- $lau:Title$ --&gt;
+    &lt;!-- reserved for &lt;title&gt;&lt;/title&gt; tag in a HTML document published on a web server --&gt;
+&lt;!-- $lau:HeaderEnd$ --&gt;
+&lt;/head&gt;
+&lt;!-- $lau:BodyStart$ --&gt;
+&lt;body link=blue vlink=purple&gt;
+&lt;div class=WordSection1&gt;
+    &lt;p class=body&gt;On {date}, the following products have available updates.&lt;/p&gt;
+&lt;!-- $lau:TOCStart$ --&gt;
+    &lt;ul&gt;
+&lt;!-- $lau:TOCEntry$ --&gt;
+        &lt;li class=list_body&gt;&lt;a href=&quot;#{id}&quot;&gt;{name} ({version})&lt;/a&gt;&lt;/li&gt;
+&lt;!-- $lau:TOCEnd$ --&gt;
+    &lt;/ul&gt;
+    &lt;p class=body&gt;&lt;/p&gt;
+&lt;!-- $lau:SummaryStart$ --&gt;
+&lt;!-- $lau:SummaryEntry$ --&gt;
+    &lt;div style='border:solid #4F81BD 3.0pt;padding:0cm 0cm 0cm 0cm;background:#4F81BD'&gt;
+        &lt;h1 style='margin-top:0cm;line-height:normal;background:#4F81BD'&gt;
+            &lt;a name=&quot;{id}&quot;&gt;{name}&lt;/a&gt;&lt;/h1&gt;
+    &lt;/div&gt;
+    &lt;p class=body&gt;
+        &lt;a href=&quot;{url}&quot;&gt;{name} ({version})&lt;/a&gt; has been released on {published}. It will be
+        fetched on the next step.
+    &lt;/p&gt;
+    &lt;p class=body&gt;
+        file size: {file_size} bytes&lt;br&gt;
+        hash: {secure_hash}
+    &lt;/p&gt;
+    &lt;div style='border:solid #DBE5F1 3.0pt;padding:0cm 0cm 0cm 0cm;background:#DBE5F1'&gt;
+        &lt;h2 style='margin-top:0cm;line-height:normal;background:#DBE5F1'&gt;
+            Release note
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;p class=body&gt;See the &lt;a href=&quot;{release_note}&quot;&gt;detailed change history&lt;/a&gt;.
+    &lt;/p&gt;
+    &lt;div style='border:solid #DBE5F1 3.0pt;padding:0cm 0cm 0cm 0cm;background:#DBE5F1'&gt;
+        &lt;h2 style='margin-top:0cm;line-height:normal;background:#DBE5F1'&gt;
+            Product information
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;p class=body style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal'&gt;
+        Published by {editor}, {description}
+    &lt;/p&gt;
+    &lt;p class=body style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:normal'&gt;
+    &lt;/p&gt;
+&lt;!-- $lau:SummaryEnd$ --&gt;
+&lt;!-- $lau:BodyEnd$ --&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;!-- $lau:Tail$ --&gt;
+&lt;/html&gt;
+```</pre>
+</div>
+<div created="20160221172623703" creator="fmezou" list="[[report.ini Core Section]] [[report.ini Attributes Section]] [[report.ini Mail Handler Section]] [[report.ini File Handler Section]] [[report.ini Stream Handler Section]]" modified="20160227183705624" modifier="fmezou" tags="[[File Formats]]" title="report.ini" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>This file contains the configuration of [[appdownload]] script. It use a structure similar to what’s found in Microsoft Windows INI files, and parsing with the [[configparser|https://docs.python.org/3/library/configparser.html#module-configparser]] module of the Python standard library. See the [[Configuration file format|https://docs.python.org/3/library/logging.config.html#configuration-file-format]] to have details about the file format.
+
+Only one report and its ways of publication have to define in this file. If  you need of several report, you must define several configurations file and call `Report.load_config()` method for each of them.
+
+The following items details each sections and the associated options, and give an example. The [[report.ini Example]] topic give a whole example.
+
+Handlers section contains configuration details for handlers declared in `handlers` option of the [[core section|report.ini Core Section]]. The following items give an example for each handler supported by the `report` module (send a mail, write in a file, write in a stream). Each handler section has to define a `class` item.
+
+&lt;&lt;tabs &quot;[tag[report.ini]]&quot; &quot;[[report.ini Core Section]]&quot; &quot;&quot; &quot;&quot;&gt;&gt; 
+</pre>
+</div>
+<div caption="[{{report.ini Attributes Section Options!!name}}]" created="20160227175417999" modified="20160227181801196" tags="report.ini" title="report.ini Attributes Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{report.ini Attributes Section Options!!name}}] section {{report.ini Attributes Section Options!!abstract}}.
+
+{{report.ini Attributes Section Options}}
+
+!!example
+
+{{report.ini Attributes Section Example}}</pre>
+</div>
+<div created="20160227162057495" modified="20160227181808543" tags="" title="report.ini Attributes Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[attributes]
+about = &quot;Short text to summarize the report content&quot;
+```</pre>
+</div>
+<div abstract="contains named keyword used in the template report (see `template` item in the [[core section|report.ini Core Section]])" created="20160227161344045" modified="20160227182443131" name="attributes" tags="" title="report.ini Attributes Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>Theses attributes are used in the header and tail sections of the report (see `Title`, `BodyStart`, `BodyEnd`, `Tail` sections in the [[Report Template]]). The `report_template.html` doesn't use any additional attribute, so this section is empty if you use the default templates.</pre>
+</div>
+<div caption="[{{report.ini Core Section Options!!name}}]" created="20160227175054395" modified="20160227182022495" tags="report.ini" title="report.ini Core Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{report.ini Core Section Options!!name}}] section {{report.ini Core Section Options!!abstract}}.
+
+{{report.ini Core Section Options}}
+
+!!example
+
+{{report.ini Core Section Example}}</pre>
+</div>
+<div created="20160227162007957" modified="20160227182030669" tags="" title="report.ini Core Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[core]
+handlers = mailhandler, filehandler
+;template = report_template.html
+```</pre>
+</div>
+<div abstract="contains contains configuration items for the report processor" created="20160227161207127" modified="20160227182043508" name="core" tags="" title="report.ini Core Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>|^`handlers` (mandatory) |^is the list of handlers to publish the report. Each handler has to have a corresponding section for its own configuration. |
+|^`template` (optional) |^is the full path name of the template file. The [[Report Template]] describes the format of the template file. The default value is [[report_template.html|report_template.html example]]. |</pre>
+</div>
+<div created="20160221172109349" modified="20160227181211992" tags="[[File Examples]]" title="report.ini Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>{{report.ini Core Section Example}}
+{{report.ini Attributes Section Example}}
+{{report.ini Mail Handler Section Example}}
+{{report.ini File Handler Section Example}}
+{{report.ini Stream Handler Section Example}}</pre>
+</div>
+<div caption="[{{report.ini File Handler Section Options!!name}}]" created="20160227175528390" modified="20160227182100621" tags="report.ini" title="report.ini File Handler Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{report.ini File Handler Section Options!!name}}] section {{report.ini File Handler Section Options!!abstract}}.
+
+{{report.ini File Handler Section Options}}
+
+!!example
+
+{{report.ini File Handler Section Example}}</pre>
+</div>
+<div created="20160227162313240" modified="20160227182110432" tags="" title="report.ini File Handler Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[filehandler]
+class = FileHandler
+filename = ./tempstore/report.html
+;mode = w
+```</pre>
+</div>
+<div abstract="contains contains configuration items to write the activity report in a file" created="20160227182121303" modified="20160227184018719" name="filehandler" tags="" title="report.ini File Handler Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>|^`class` (optional) |^indicates the handler’s class (as determined in the report module). By default, the name of the section is used as the class name. |
+|^`filename` (mandatory) |^is a string containing the full path name of the destination file. |
+|^`mode` (optional) |^is a string specifying the mode in which the file is opened. (see [[open()|https://docs.python.org/3/library/functions.html#open]]) |</pre>
+</div>
+<div caption="[{{report.ini Mail Handler Section Options!!name}}]" created="20160227175648716" modified="20160227182138637" tags="report.ini" title="report.ini Mail Handler Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{report.ini Mail Handler Section Options!!name}}] section {{report.ini Mail Handler Section Options!!abstract}}.
+
+{{report.ini Mail Handler Section Options}}
+
+!!example
+
+{{report.ini Mail Handler Section Example}}</pre>
+</div>
+<div created="20160227162206429" modified="20160227182152630" tags="" title="report.ini Mail Handler Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[mailhandler]
+class = MailHandler
+host = smtp.example.com
+;host = smtp.example.com, 25
+;credentials= username, password
+;from_address = lappupdate@example.com
+;mail_sent = ./mailstore/sent
+;pending_mail = ./mailstore/pending
+to_addresses = sysadmin@example.com
+;to_addresses = sysadmin@example.com, helpdesk@example.com
+;subject = &quot;lAppUpdate: New Update(s) Alert&quot;
+```</pre>
+</div>
+<div abstract="contains contains configuration items to send the activity report in a mail" created="20160227161533282" modified="20160227183426814" name="mailhandler" tags="" title="report.ini Mail Handler Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>|^`class` (optional) |^indicates the handler’s class (as determined in the report module). By default, the name of the section is used as the class name. |
+|^`host` (mandatory) |^is a string containing the full qualified name of the SMTP server host, or a 2-tuple containing the full qualified name of the SMTP server and the port number to use. |
+|^`credentials` (optional) |^is a 2-tuple containing the username and the password to connect to the SMTP server. |
+|^`from_address` (optional) |^is a string containing the mail addresses of the sender. If not specified, the address is set to the local host name. (see [[smtplib.SMTP()|https://docs.python.org/3/library/smtplib.html#smtplib.SMTP]]) |
+|^`mail_sent` (optional) |^is the full path name of the folder where a copy of the mail will be written. An empty string does nothing. |
+|^`pending_mail` (optional) |^is the full path name of the folder where a copy of the mail will be written until it is sent. It avoid to lost mail if the mail server configuration is erroneous or if the mail server doesn't answer. An empty string does nothing. |
+|^`to_addresses` (mandatory) |^is a string or a list containing the mail addresses of the recipient. |
+|^`subject` (optional) |^is a string containing the mail subject. An empty string does nothing. |</pre>
+</div>
+<div caption="[{{report.ini Stream Handler Section Options!!name}}]" created="20160227175724562" modified="20160227182217440" tags="report.ini" title="report.ini Stream Handler Section" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>The [{{report.ini Stream Handler Section Options!!name}}] section {{report.ini Stream Handler Section Options!!abstract}}.
+
+{{report.ini Stream Handler Section Options}}
+
+!!example
+
+{{report.ini Stream Handler Section Example}}</pre>
+</div>
+<div created="20160227162348362" modified="20160227182212511" tags="" title="report.ini Stream Handler Section Example" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>```ini
+[streamhandler]
+class = StreamHandler
+;stream = sys.stderr
+```</pre>
+</div>
+<div abstract="contains contains configuration items to write the activity report in a stream" created="20160227161748383" modified="20160227183453568" name="streamhandler" tags="" title="report.ini Stream Handler Section Options" type="text/vnd.tiddlywiki" revision="0" bag="default">
+<pre>|^`class` (optional) |^indicates the handler’s class (as determined in the report module). By default, the name of the section is used as the class name. |
+|^`stream` (optional) |^is a string specifying the [[standard stream|https://docs.python.org/3/library/sys.html#sys.stdout]] on which report will be written. By default, `sys.stdout` will be used. |
 </pre>
 </div>
 <div created="20150503150320388" creator="fmezou" modified="20150602200642790" modifier="fmezou" tags="About" title="Requirements" type="" revision="0" bag="default">
