@@ -69,3 +69,4 @@ __*__.cmd
 /appdownload/tempstore
 /appdownload/mailstore
 /wiki/tiddlers/$__StoryList.tid
+/_build
