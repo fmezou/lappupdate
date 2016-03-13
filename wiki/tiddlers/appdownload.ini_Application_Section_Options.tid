@@ -1,6 +1,6 @@
 abstract: contains configuration items for a specific application
 created: 20160227143139971
-modified: 20160227160410966
+modified: 20160228150629766
 name: application
 tags: 
 title: appdownload.ini Application Section Options
@@ -8,6 +8,6 @@ type: text/vnd.tiddlywiki
 
 <<note "name section must be lowercase, since the section name is a key in [[applications section|appdownload.ini Applications Section]].">>
 
-|^`module` (mandatory) |^is the name of the Python module used to check if a new version is available and eventually download it. |
+|^`qualname` (mandatory) |^is the qualified name of the application handler. |
 |^`path` (optional) |^is the path name where to store the installer package. The default value is `${core:store}\<section name>`. |
 |^`set` (mandatory) |^is the name of the set associated with the application (see [[sets section]]) |

@@ -608,7 +608,6 @@ class MailHandler(BaseHandler):
 
         path = path.strip()
         if len(path) != 0:
-            # TODO : treat the exception for os.makedirs
             os.makedirs(path, exist_ok=True)
             self._mail_sent_folder = path
 
@@ -632,7 +631,6 @@ class MailHandler(BaseHandler):
 
         path = path.strip()
         if len(path) != 0:
-            # TODO : treat the exception for os.makedirs
             os.makedirs(path, exist_ok=True)
             self._pending_mail_folder = path
 
@@ -863,7 +861,6 @@ class FileHandler(BaseHandler):
 
         filename = filename.strip()
         if len(filename) != 0:
-            # TODO : treat the exception for os.makedirs
             path = os.path.dirname(filename)
             os.makedirs(path, exist_ok=True)
             self._filename = filename

@@ -1,5 +1,5 @@
 created: 20160227112453410
-modified: 20160227155144664
+modified: 20160228160422119
 name: core
 title: appdownload.ini Core Section Example
 type: text/vnd.tiddlywiki
@@ -10,5 +10,5 @@ store = ..\appstore
 logger = .\logger.ini
 pulling_report = .\pulling_report.ini
 fetching_report = .\fetching_report.ini
-deploying_report = .\deploying_report.ini
+approving_report = .\approving_report.ini
 ```

@@ -44,6 +44,9 @@ __all__ = [
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
+PROD_TARGET_X86 = "x86"
+PROD_TARGET_X64 = "x64"
+PROD_TARGET_UNIFIED = "unified"
 
 class Error(Exception):
     """Base class for COTS Core exceptions."""
@@ -619,7 +622,6 @@ def retrieve_file(url, dir_name,
     # default value
     filename = ""
 
-    # TODO : treat the exception for os.makedirs
     os.makedirs(dir_name, exist_ok=True)
     basename = os.path.basename(urllib.request.url2pathname(url))
     filename = os.path.join(dir_name, basename)
