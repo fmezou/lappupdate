@@ -33,13 +33,12 @@ information sources to determine if an update is published and fetch it.
 ``-t``  ``--testconf``          check the configuration file for internal
                                 correctness
 ``-y``  ``--yes``               force applications approval (see ``--approve``)
-``.``   ``--configfile FILE``   The file specified contains the configuration
-                                details. Information in this file include
-                                application catalog, the file :file:`appdownload
-                                .example.ini` details configuration topics. The
-                                default configuration file name is
-                                :file:`appdownload.ini` located in the current
-                                working directory.
+``-c``  ``--configfile FILE``   specifies the configuration file. It includes
+                                the list of handled applications, the file
+                                :file:`appdownload.example.ini` details
+                                configuration topics. The default configuration
+                                file name is 'appdownload.ini' located
+                                in the current working directory.
 ``-v``  ``--version``           show program's version number and exit
 ======  =====================   ================================================
 
@@ -50,7 +49,7 @@ Exit code
 ==  ============================================================================
 0   no error
 1   an error occurred (error messages are print on stderr stream console
-    and write in a log file.
+    and write in a log file).
 2   invalid argument. An argument of the command line isn't valid (see Usage).
 ==  ============================================================================
 
@@ -64,6 +63,10 @@ following properties, for each application, using the JavaScript Object Notation
 (JSON), specified by :rfc:`7159` and by `ECMA-404 <http://www.ecma-international
 .org/publications/standards/Ecma-404.htm>`_. The ``appdownload.py`` script uses
 this database to build the applist files used by the appdeploy script.
+
+The constant :py:const:`_CATALOG_FNAME` specifies the file name of the catalog
+(``catalog.json``) and it located in the `store` folder (see item ``store`` in
+the configuration file).
 
 The catalog contains several level of nested objects. The root level contains
 the metadata of the database and the main object.
@@ -103,19 +106,19 @@ name                is the name of the product (used in a_report mail and log
 display_name        is the name of the product as it appears in the 'Programs
                     and Features' control panel (see `Uninstall Registry Key
                     <https://msdn.microsoft.com/en-us/library/aa372105%28v=vs.85
-                    %29.aspx>`_
+                    %29.aspx>`_)
 version             is the current version of the product.
 published           is the date of the installer’s publication (in `ISO 8601
                     <https://en.wikipedia.org/wiki/ISO_8601>`_ format, see also
-                    :rfc:`3339`.
+                    :rfc:`3339`).
 description         is a short description of the product (~250 characters)
 editor              is the name of the editor of the product
 url                 is the url of the current version of the installer
 file_size           is the size of the product installer expressed in bytes
-secure_hash         is the secure_hash value of the product installer. It's a
-                    tuple containing, in this order, the name of secure_hash
+secure_hash         is the secure hash value of the product installer. It's a
+                    tuple containing, in this order, the name of secure hash
                     algorithm (see :py:data:`hashlib.algorithms_guaranteed`)
-                    and the secure_hash value in hexadecimal notation.
+                    and the secure hash value in hexadecimal notation.
 icon                is the name of the icon file located in the same directory
                     than the installer.
 target              is the target architecture type (the Windows’ one) for the
@@ -179,20 +182,6 @@ example
         }
     }
 """
-# TODO add a regex field in applist
-# add a field in the applist which to contain a regex string for the
-# searching of installed application. The display name wil be used only in log.
-# add this field as a property of BaseProduct Class (see cots.core)
-# TODO use exception catching instead of test
-# review exception
-#  - use TypeError for type mismatch
-#  - use KeyError or Value Error for bas value
-#  - catch exception instead of testing value before reading a dict value
-#  (a['unknown']
-#  because the test is done inside the method.
-
-# TODO use shutil.get_terminal_size() for the progress bar
-
 import io
 import os.path
 import datetime
@@ -626,7 +615,6 @@ class AppDownload:
             # 'store' key is mandatory
             if _STORE_KNAME in section:
                 # Set the catalog filename (absolute path).
-                # TODO : treat the exception for os.makedirs
                 os.makedirs(
                     self._config[_CORE_SNAME][_STORE_KNAME],
                     exist_ok=True
@@ -796,11 +784,6 @@ class AppDownload:
         """
         Write the applist files from the catalog.
         """
-        # FIXME: any file is generated if any application approved.
-        # at least, the all must be generated
-        # to prevent the admin to ask question, create the file based on sets
-        # at least the spécial one __
-
         _logger.info("Write the applist files from the catalog.")
         app_set_file = {}
 
@@ -914,7 +897,7 @@ if __name__ == "__main__":
                               "internal correctness")
     parser.add_argument("-y", "--yes", action="store_true",
                         help="force applications approval (see --approve)")
-    parser.add_argument("--configfile", default="appdownload.ini",
+    parser.add_argument("-c", "--configfile", default="appdownload.ini",
                         type=argparse.FileType(mode='r'),
                         help="The file specified contains the configuration "
                              "details. Information in this file includes "

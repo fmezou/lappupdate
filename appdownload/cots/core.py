@@ -622,7 +622,6 @@ def retrieve_file(url, dir_name,
     # default value
     filename = ""
 
-    # TODO : treat the exception for os.makedirs
     os.makedirs(dir_name, exist_ok=True)
     basename = os.path.basename(urllib.request.url2pathname(url))
     filename = os.path.join(dir_name, basename)
