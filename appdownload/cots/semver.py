@@ -2,25 +2,18 @@
 This module defines functions and classes for a semantic versioning (aka SemVer)
 support.
 
-The parser match the semantic versioning specification 2.0.0
-(http://semver.org/spec/v2.0.0.html).
-On GitHub: https://github.com/mojombo/semver/releases/tag/v2.0.0
+The parser match the `semantic versioning specification`_ 2.0.0.
 
-Classes
-    SemVer: is the class object to manipulate version string
+Public Classes
+==============
+This module has only one public class.
 
-Exceptions
-    TypeError: raised when an operation or function is applied to an object of
-    inappropriate type. The associated value is a string giving details about
-    the type mismatch (i.e. comparison between a SemVer object and a integer)
-    ValueError: raised when the version string doesn't match the semantic
-    versioning specification
+===================================  ===================================
+`SemVer`                             ..
+===================================  ===================================
 
-Functions
-    None
 
-Constants
-    None
+.. _semantic versioning specification: http://semver.org/spec/v2.0.0.html
 """
 
 import logging
@@ -54,36 +47,52 @@ class SemVer:
     """
     SemVer parser class.
 
-    Public instance variables
-        None
+    Args:
+        version_string (str): The version string matching the `semantic
+            versioning specification`_. Otherwise a ValueError exception is
+            raised (see `semver.SemVer._parse`).
 
-    Public methods
+
+    Attributes:
         major (property): get the major version number.
         minor (property): get the minor version number.
         patch (property): get the patch version number.
         unstable (property): indicate if the version is unstable.
 
-    Special methods
-        __repr__ : Compute the string representation of the SemVer object
-        __eq__: Rich comparison” method, return self == other.
-        __ne__: Rich comparison” method, return self != other.
-        __lt__: Rich comparison” method, return self < other.
-        __gt__: Rich comparison” method, return self < other.
+    **Special Methods**
+        This class has a number of special methods, listed below in alphabetical
+        order, to make the version comparison.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None
+        ===================================  ===================================
+        `__eq__`                             `__ne__`
+        `__gt__`                             `__repr__`
+        `__lt__`
+        ===================================  ===================================
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+    **Using SemVer...**
+        The main purpose of this class is to compute comparison between version
+        identifier as described in `semantic versioning specification`_.
+        So the using is limited to create class instance with the version
+        identifier string and use the comparison operator as shown in the below
+        example.
+
+        >>> import appdownload.cots.semver as semver
+        >>> v1 = semver.SemVer("1.0.0")
+        >>> v2 = semver.SemVer("2.0.0")
+        >>> v1 < v2
+        True
+        >>> v1 = semver.SemVer("1.0.0-alpha")
+        >>> v2 = semver.SemVer("1.0.0-beta")
+        >>> v1 > v2
+        False
+        >>> v1 = semver.SemVer("1.0.0")
+        >>> v2 = semver.SemVer("1.0.0")
+        >>> v1 < v2
+        False
+        >>> v1 == v2
+        True
     """
     def __init__(self, version_string):
-        """Constructor
-
-        Parameters
-            :param version_string: is a string containing the version string
-            matching the semantic versioning specification specification.
-            Otherwise a ValueError exception is raised (see `SemVer._parse`).
-        """
         # Default values
         self._version = []
         self._pre_release = []
@@ -101,11 +110,8 @@ class SemVer:
         """
         Get the major version number.
 
-        Parameters
-            None
-
-        Returns
-            :return: is a string containing only the major version number.
+        Return:
+            str: The version number with only the major number.
         """
         return str(self._version[0])
 
@@ -114,12 +120,8 @@ class SemVer:
         """
         Get the minor version number.
 
-        Parameters
-            None
-
-        Returns
-            :return: is a string containing the version number with the major
-            and the minor number .
+        Return:
+            str: The version number with the major and the minor number .
         """
         return str("{}.{}".format(self._version[0], self._version[1]))
 
@@ -128,12 +130,9 @@ class SemVer:
         """
         Get the patch version number.
 
-        Parameters
-            None
-
-        Returns
-            :return: is a string containing the version number with the major,
-            the minor and the patch number .
+        Return:
+            str: The version number with the major, the minor and the patch
+                number.
         """
         return str("{}.{}.{}".format(self._version[0],
                                      self._version[1],
@@ -144,14 +143,8 @@ class SemVer:
         """
         Indicate if the version is unstable.
 
-        Parameters
-            None.
-
-        Exception
-            None.
-
-        Returns
-            :return: True if the version is unstable.
+        Return:
+            bool: True if the version is unstable.
         """
         return self._unstable
 
@@ -159,9 +152,9 @@ class SemVer:
         """
         Compute the string representation of the SemVer object.
 
-        Returns
-            :return: is a string containing the version string which can be used
-            to recreate the SemVer object.
+        Return:
+            str: the version string which can be used to recreate the
+                SemVer object.
         """
         msg = "'{}.{}.{}".format(self._version[0],
                                  self._version[1],
@@ -244,10 +237,10 @@ class SemVer:
         """
         Parse the version string.
 
-        Parameters
-            :param version_string: is a string containing the version string
-            matching the semantic versioning specification specification.
-            Otherwise a ValueError exception is raised.
+        Args:
+            version_string (str): The version string matching the `semantic
+                versioning specification`_. Otherwise a ValueError exception is
+                raised.
         """
         # check parameters type
         if not isinstance(version_string, str):
@@ -293,21 +286,21 @@ def _comp_version(version1, version2):
     """
     Compare two version identifiers limited to the major, minor and patch fields.
 
-    The rule #11 specify the precedence rules for comparing version identifiers.
-    Example
-    1.0.0 < 2.0.0 < 2.1.0 < 2.1.1
+    The rule #11 specify the precedence rules for comparing version identifiers
+    (i.e. ``1.0.0 < 2.0.0 < 2.1.0 < 2.1.1``).
 
-    Parameters
-        :param version1: is the list of fields from the version string,
-        constituted by only ASCII digits [0-9], as that order: major, minor,
-        patch.
-    :param version2: same as version1 (see above)
+    Args:
+        version1 (list): The list of fields from the version string,
+            constituted by only ASCII digits [0-9], as that order: major, minor,
+            patch.
+        version2 (list): same as ``version1``.
 
-    Return
-        :return: -1, 0 or 1 as below
-            -1: version1 is lower than version2
-            0: version1 is equal to version2
-            1: version1 is greater than version2
+    Return:
+        int: -1, 0 or 1 as below
+
+            * -1: ``version1`` is lower than ``version2``
+            * 0: ``version1`` is equal to ``version2``
+            * 1: ``version1`` is greater than ``version2``
     """
     # check parameters type
     if not isinstance(version1, list):
@@ -338,23 +331,21 @@ def _comp_prerelease(prerelease1, prerelease2):
     Compare two pre-release version identifiers.
 
     The rule #11 specify the precedence rules for comparing pre-release version
-    identifiers.
-    Example
-    1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 
-    < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0
+    identifiers (i.e. 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2
+    < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0).
 
-    Parameters
-        :param prerelease1: is the list of fields from the pre-release
-        identifier, constituted by only ASCII alphanumerics and
-        hyphen [0-9A-Za-z-].
-        The list may be empty.
-        :param prerelease2: same as prerelease1 (see above)
+    Args:
+        prerelease1 (list): The list of fields from the pre-release
+            identifier, constituted by only ASCII alphanumerics and
+            hyphen [0-9A-Za-z-]. The list may be empty.
+        prerelease2 (list): Same as ``prerelease1``.
 
-    Return
-        :return: -1, 0 or 1 as below
-            -1: prerelease1 is lower than prerelease2
-            0: prerelease1 is equal to prerelease2
-            1: prerelease1 is greater than prerelease2
+    Return:
+        int: -1, 0 or 1 as below
+
+            * -1: ``prerelease1`` is lower than ``prerelease2``
+            * 0: ``prerelease1`` is equal to ``prerelease2``
+            * 1: ``prerelease1`` is greater than ``prerelease2``
     """
     # check parameters type
     if not isinstance(prerelease1, list):
@@ -398,21 +389,23 @@ def _compstr(string1, string2):
     numerically and strings with letters or hyphens are compared lexically
     in ASCII sort order. So numeric string always have lower precedence than
     non-numeric string.
-    Example
-      '2' < '11'
-      'ab' < 'abc', 'ab' < 'ac', 'AC' < 'ac'
-      '12' < 'abc'
 
-    Parameters
-        :param string1: is a string constituted by only ASCII alphanumerics and
-        hyphen [0-9A-Za-z-].
-        :param string2: same as string1 (see above)
+    Example:
+        | '2' < '11'``
+        | 'ab' < 'abc', 'ab' < 'ac', 'AC' < 'ac'
+        | '12' < 'abc'
 
-    Return
-        :return: -1, 0 or 1 as below
-            -1: string1 is lower than string2
-            0: string1 is equal to string 2
-            1: string1 is greater than string2
+    Args:
+        string1 (str): A string constituted by only ASCII alphanumerics and
+            hyphen [0-9A-Za-z-].
+        string2 (str): Same as ``string1``
+
+    Return:
+        int: -1, 0 or 1 as below
+
+            * -1: ``string1`` is lower than ``string2``
+            * 0: ``string1`` is equal to ``string2``
+            * 1: ``string1`` is greater than ``string1``
     """
     # check parameters type
     if not isinstance(string1, str):

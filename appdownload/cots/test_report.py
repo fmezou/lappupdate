@@ -64,7 +64,7 @@ def test_api_custom():
     a_handler = report.MailHandler()
     a_handler.set_host("smtp.free.fr", 25)
     a_handler.set_from_address("lappupdate.mezou@free.fr")
-    a_handler.set_mail_sent_folder("./mailstore/sent")
+    a_handler.set_sent_mail_folder("./mailstore/sent")
     a_handler.set_pending_mail_folder("./mailstore/pending")
     a_handler.set_to_addresses(["frederic.mezou@free.fr",
                                 "maskeudennou@free.fr"])
@@ -249,7 +249,7 @@ def test_api_mail_folder_error():
     a_report.add_section(content_attributes)
 
     try:
-        a_handler.set_mail_sent_folder("W:/Program Files/mailstore/sent")
+        a_handler.set_sent_mail_folder("W:/Program Files/mailstore/sent")
         a_report.publish()
     except FileNotFoundError as err:
         print("Expected error", err)
@@ -262,7 +262,7 @@ def test_api_mail_folder_error():
 
     if result:
         try:
-            a_handler.set_mail_sent_folder("C:/Program Files/mailstore")
+            a_handler.set_sent_mail_folder("C:/Program Files/mailstore")
             a_report.publish()
         except PermissionError as err:
             print("Expected error", err)

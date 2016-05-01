@@ -1,17 +1,18 @@
 """
-This module defines functions and classes for the MakeMKV's handler.
+This module is the product handler of `MakeMKV <http://www.makemkv.com/>`_ from
+GuinpinSoft inc. The `user manual`_ details information about it.
 
-Classes
-    Product : MakeMKV product class.
 
-Exceptions
-    None
+Public Classes
+==============
+This module has only one public class.
 
-Functions
-    None
+===================================  ===================================
+:class:`Product`                     ..
+===================================  ===================================
 
-Constants
-    None
+
+.. _user manual: http://fmezou.github.io/lappupdate/lappupdate_wiki.html#MakeMKV
 """
 
 
@@ -38,29 +39,29 @@ _logger.addHandler(logging.NullHandler())
 
 class Product(core.BaseProduct):
     """
-    MakeMKV product class.
+    MakeMKV product handler.
 
-    Public instance variables
-        Same as `core.BaseProduct`.
+    This concrete class implements the tracking mechanism for the MakeMKV
+    product. So most of information are in the :mod:`core` and more particularly
+    in the `BaseProduct` class documentation. The information blow focuses on
+    the added value of this class.
 
-    Public methods
-        Same as `core.BaseProduct`.
+    **Overridden Methods**
+        This class is a concrete class, so the overridden methods are listed
+        below in alphabetical order.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None
-
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+        ===================================  ===================================
+        `_get_description`                   `_get_release_note`
+        `_get_display_name`                  `_get_silent_inst_args`
+        `_get_editor`                        `_get_std_inst_args`
+        `_get_file_size`                     `_get_target`
+        `_get_hash`                          `_get_url`
+        `_get_icon`                          `_get_version`
+        `_get_name`                          `_parse_catalog`
+        `_get_published`                     ..
+        ===================================  ===================================
     """
     def __init__(self):
-        """Constructor
-
-        Parameters
-            None
-
-        Exception
-            None
-        """
         super().__init__()
 
         # At this point, only name and catalog url are known.
@@ -72,26 +73,26 @@ class Product(core.BaseProduct):
 
     def is_update(self, product):
         """
-        Return if this instance is an update of product
+        Return if this instance is an update of product.
 
         This method compare the version of the two product, and return the
         comparison result. The version numbers used by the editor are compliant
-        with the semantic versioning specification 2.0.0 (see `semver`module)
+        with the semantic versioning specification 2.0.0 (see `cots.semver`
+        module)
 
-        Parameters
-            :param product: is the reference product (i.e. the deployed product)
+        Args:
+            product (BaseProduct): The reference product (i.e. the deployed one)
 
-        Exceptions
-            `semver` module exception raised by the rich comparison method of
-            SemVer class.
+        Returns:
+            bool: True if this instance is an update of the product specified
+                by the `product` parameter.
 
-        Returns
-            :return: true if this instance is an update of the product specified
-            by the `product` parameter.
+        Raises:
+            TypeError: Parameters type mismatch.
         """
         # check parameters type
         if not isinstance(product, Product):
-            msg = "product argument must be a class 'makemv.product'. not {0}"
+            msg = "product argument must be a class 'makemv.Product'. not {0}"
             msg = msg.format(product.__class__)
             raise TypeError(msg)
 
@@ -111,30 +112,21 @@ class Product(core.BaseProduct):
         Parse the catalog.
 
         This method parses the downloaded product catalog to prepare
-        `_get_...` call.
-        This catalog is a PAD File (see `pad` module).
+        ``_get_...`` methods call. This catalog is a PAD File (see
+        `cots.pad` module).
 
         Parameters
-            :param filename: is a string specifying the local name of the
-            downloaded product catalog.
+            filename (str): The local name of the downloaded product catalog.
 
         Exceptions
-            pad module exception raised by the `parse` method.
+            pad.SpecSyntaxError: PAD spec file is erroneous.
+            pad.PADSyntaxError: A tag in a PAD file don't match the PAD Specs.
          """
         self._parser.parse(filename)
 
     def _get_name(self):
         """
         Extract the name of the product (used in a_report mail and log file).
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.name = None
         path = "Program_Info/Program_Name"
@@ -154,15 +146,6 @@ class Product(core.BaseProduct):
 
         This name is built from the name and the version attribute, thus this
         method must be called after `_get_name` and `_get_version`.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         name = "{} v{}"
         self.display_name = name.format(self.name, self.version)
@@ -170,15 +153,6 @@ class Product(core.BaseProduct):
     def _get_version(self):
         """
         Extract the current version of the product from the PAD File.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.version = None
         path = "Program_Info/Program_Version"
@@ -194,15 +168,7 @@ class Product(core.BaseProduct):
     def _get_published(self):
         """
         Extract the date of the installer’s publication from the PAD file.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.        """
+        """
         self.published = None
         path = "Program_Info/Program_Release_Year"
         item = self._parser.find(path)
@@ -232,15 +198,6 @@ class Product(core.BaseProduct):
     def _get_description(self):
         """
         Extract the short description of the product (~250 characters).
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.description = None
         path = "Program_Descriptions/English/Char_Desc_250"
@@ -256,15 +213,6 @@ class Product(core.BaseProduct):
     def _get_editor(self):
         """
         Extract the name of the editor of the product.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.editor = None
         path = "Company_Info/Company_Name"
@@ -280,15 +228,6 @@ class Product(core.BaseProduct):
     def _get_url(self):
         """
         Extract the url of the current version of the installer
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.url = None
         path = "Web_Info/Download_URLs/Primary_Download_URL"
@@ -304,15 +243,6 @@ class Product(core.BaseProduct):
     def _get_file_size(self):
         """
         Extract the size of the product installer expressed in bytes
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.file_size = None
         # path = "Program_Info/File_Info/File_Size_Bytes"
@@ -330,30 +260,12 @@ class Product(core.BaseProduct):
         Extract the secure_hash value of the product installer (tuple).
 
         The PAD file doesn't specify a secure_hash for the installer product.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.secure_hash = None
 
     def _get_icon(self):
         """
         Extract the name of the icon file.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.icon = None
         path = "Web_Info/Application_URLs/Application_Icon_URL"
@@ -369,15 +281,6 @@ class Product(core.BaseProduct):
     def _get_target(self):
         """
         Extract the target architecture type (the Windows’ one).
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.target = core.PROD_TARGET_UNIFIED
         msg = "Target :'{0}'"
@@ -386,14 +289,6 @@ class Product(core.BaseProduct):
     def _get_release_note(self):
         """
         Extract the release note’s URL from the PAD File.
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.release_note = "http://www.makemkv.com/download/history.html"
         msg = "Release note :'{0}'"
@@ -402,15 +297,6 @@ class Product(core.BaseProduct):
     def _get_std_inst_args(self):
         """
         Extract the arguments to use for a standard installation.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.std_inst_args = ""
         msg = "Standard installation options :'{0}'"
@@ -419,15 +305,6 @@ class Product(core.BaseProduct):
     def _get_silent_inst_args(self):
         """
         Extract the arguments to use for a silent installation.
-
-        Parameters
-            None.
-
-        Exceptions
-            None.
-
-        Return
-            None.
         """
         self.silent_inst_args = "/S"
         msg = "Silent installation option :'{0}'"

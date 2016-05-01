@@ -70,3 +70,7 @@ __*__.cmd
 /appdownload/mailstore
 /wiki/tiddlers/$__StoryList.tid
 /_build
+/appdownload/approving_report.ini
+/appdownload/fetching_report.ini
+/appdownload/logger.ini
+/appdownload/pulling_report.ini

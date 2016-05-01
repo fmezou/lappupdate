@@ -1,24 +1,34 @@
 """
-This module defines functions and classes for a lightweight PAD (Portable
-Application Description) support.
+This module defines functions and classes for a lightweight Portable
+Application Description (PAD) support.
 
-The parser is based on xml.etree.ElementTree module, and match the PAD 4.0
-Specification (http://pad.asp-software.org/spec/spec.php).
-Warning: the values control is done only when a file is parsed (i.e. when
-loading a file). When building or modifying an PAD File, any control is done.
+The parser uses `xml.etree.ElementTree` module, and checks the `PAD 4.0`_
+Specification compliance.
 
-Classes
-    PadParser : A PAD element hierarchy
+Warning:
+    the values checking is done only when a file is parsed (i.e. when
+    loading a file). When building or modifying a PAD File, no control is done.
 
-Exceptions
-    SpecSyntaxError: Raised when spec file is erroneous.
-    PADSyntaxError: Raised when a tag in a PAD file don't matched the PAD Specs
 
-Functions
-    None
+Public Classes
+==============
+This module has only one public class.
 
-Constants
-    None
+===================================  ===================================
+`PadParser`                          ..
+===================================  ===================================
+
+
+Public Exceptions
+=================
+This module has has a number of exceptions listed below in alphabetical order.
+
+===================================  ===================================
+`PADSyntaxError`                     `SpecSyntaxError`
+===================================  ===================================
+
+
+.. _PAD 4.0: http://pad.asp-software.org/spec/spec.php
 """
 
 import os
@@ -43,14 +53,16 @@ _logger.addHandler(logging.NullHandler())
 
 
 class Error(Exception):
-    """Base class for PADParser exceptions."""
-    def __init__(self, message=""):
-        """Constructor.
+    """
+    Base class for PADParser exceptions.
 
-        Parameters
-            :param message: is the message explaining the reason of the
-            exception raise.
-        """
+    Args:
+        message (str, optional): Human readable string describing the exception.
+
+    Attributes:
+        message (str): Human readable string describing the exception.
+    """
+    def __init__(self, message=""):
         self.message = message
 
     def __str__(self):
@@ -58,29 +70,34 @@ class Error(Exception):
 
 
 class SpecSyntaxError(Error):
-    """Raised when spec file is erroneous."""
-    def __init__(self, name):
-        """
-        Constructor.
+    """
+    Raised when spec file is erroneous.
 
-        Parameters
-            :param name: name of the missing tag.
-        """
+    Args:
+        name (str): The name of the missing tag.
+
+    Attributes:
+        name (str): The name of the missing tag.
+    """
+    def __init__(self, name):
         msg = "PAD Specification file is erroneous. Tag '{0}' is missing."
         Error.__init__(self, msg.format(name))
         self.name = name
 
 
 class PADSyntaxError(Error):
-    """Raised when a tag in a PAD file don't matched the PAD Specs."""
-    def __init__(self, name, value):
-        """
-        Constructor.
+    """
+    Raised when a tag in a PAD file don't match the PAD Specs.
 
-        Parameters
-            :param name: is the name of the erroneous tag.
-            :param value: is the value of the erroneous tag
-        """
+    Args:
+        name (str): The URL of the fetched file.
+        value (int): The value of the erroneous tag.
+
+    Attributes:
+        name (str): The URL of the fetched file.
+        value (int): The value of the erroneous tag.
+    """
+    def __init__(self, name, value):
         msg = "PAD file is erroneous. The value ('{1}') of '{0}' tag " \
               "don't match the PAD Specs."
         Error.__init__(self, msg.format(name, value))
@@ -92,25 +109,28 @@ class PadParser(xml.etree.ElementTree.ElementTree):
     """
     A PAD element hierarchy.
 
-    Public instance variables
+    Args:
+        element (xml.etree.ElementTree.ElementTree, optional): Root element node
+        file (str, optional): A file handle or file name of an XML file whose
+            contents will be used to initialize the tree with.
 
-    Public methods
-        parse : load external PAD file into element tree.
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
 
-    Subclass API variables (i.e. may be use by subclass)
+        ===================================  ===================================
+        `parse`                              ..
+        ===================================  ===================================
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
+    **Using PadParser...**
+        This class is a derived class from `xml.etree.ElementTree.ElementTree`,
+        and have the same using. Only the
+        `xml.etree.ElementTree.ElementTree.parse` has been extended to support
+        the PAD specification.
     """
     _PADSPECS_FILENAME = "padspec40.xml"
 
     def __init__(self, element=None, file=None):
-        """Constructor
-
-        Parameters
-            :param element: is an optional root element node,
-            :param file: is an optional file handle or file name of an XML
-            file whose contents will be used to initialize the tree with.
-        """
         super().__init__(element, file)
 
         filename = os.path.join(os.path.dirname(__file__),
@@ -127,17 +147,18 @@ class PadParser(xml.etree.ElementTree.ElementTree):
 
         The PAD compliance is done at this time.
 
-        Parameters
-            :param source: is a file name or file object.
-            :param parser: is an optional parser instance that defaults
-            to XMLParser.
+        Args:
+            source (object): A file name or file object.
+            parser (object, optional): An optional parser instance that defaults
+                to XMLParser.
 
-        Exception
-            :exception ParseError: is raised if the parser fails to parse the
-            document.
+        Raises:
+            SpecSyntaxError: Spec file is erroneous.
+            PADSyntaxError: A tag in a PAD file don't match the PAD Specs
 
-        Returns
-            :return: the root element of the given source document.
+        Return:
+            xml.etree.ElementTree.ElementTree: the root element of the
+                given source document.
         """
         super().parse(source, parser)
 

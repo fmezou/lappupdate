@@ -1,23 +1,99 @@
 """
 This module defines functions and classes which implement a flexible reporting
-system for applications and libraries.
+manager for applications and libraries.
 
-Classes
-    Report: main class to make and publish report.
-    BaseHandler: base class for report publishing.
-    MailHandler: send the report by mail.
-    FileHandler: write the report in a file.
-    StreamHandler: write the report in a stream.
+Public Classes
+==============
+This module is built around two main parts: the first one is the **reporting
+manager**; the second one is a collection of **handlers** which manages the way
+by which the report is going to be published.
 
-Exceptions
-    None
+The **reporting manager** has only on public class.
 
-Functions
-    None
+===================================  ===================================
+`Report`                             ..
+===================================  ===================================
 
-Constants
-    None
+To date, the module includes a number of **handlers** listed below in
+alphabetical order. A handler is a derived class from the `BaseHandler`
+class.
 
+===================================  ===================================
+`FileHandler`                        `StreamHandler`
+`MailHandler`
+===================================  ===================================
+
+Using the module
+================
+The first step is to create a report and at least a handler, then you fill
+the report with some sections and then publish it. The creating step may done
+either in programmatic way or using a configuration file.
+
+Using the module with its API
+-----------------------------
+
+Creating a report needs at least the following steps.
+
+#. Create a `Report` class instance.
+#. Set the template report with the `Report.set_template` method.
+#. Create at least a **handler** class instance (see `FileHandler` for a file
+   handler).
+#. Set the handler options (see `FileHandler.set_filename` for the file
+   handler).
+#. Add the created handler to the report with the `Report.add_handler` method.
+
+A report mainly consist in four parts: a *header*, a *table of contents*, a list
+of *sections* and a *tail*. The *header* and the *tail* may have some optional
+variables which has set with the `Report.set_attributes` method. The
+*table of contents* is automatically generated from the list of *sections*.
+Theses are added to the report with the `Report.add_section` method.
+
+Then, the report is ready to be published by calling the `Report.publish` which
+is going to use the registered handlers.
+
+Examples
+    .. code-block:: python
+
+        content_attributes = {
+            "name": "Dummy Product",
+            "editor": "Dummy Company, SA",
+            "description": "Dummy product is a amazing tool to do nothing",
+            "version": "0.1.0+dummy",
+            "url": "http://dummy.exemple.com/installer.exe",
+            "installer": "./store/installer_0.1.0+dummy.exe",
+            "release_note": "http://dummy.exemple.com/release_note.html",
+            "published": "2016-02-18",
+            "file_size": 12345689
+        }
+
+        a_report = report.Report()
+        a_report.set_template()
+        a_report.set_attributes(report_attributes)
+
+        a_handler = report.FileHandler()
+        a_handler.set_filename("report.html")
+        a_report.add_handler(a_handler)
+
+        a_report.add_section(content_attributes)
+        a_report.publish()
+
+Using the module with a configuration file
+------------------------------------------
+The creation step may be described in a configuration file (see
+`report.example.ini` for an example) which is going to load by the
+`Report.load_config` method.
+
+.. code-block:: python
+
+    a_report = report.Report()
+    filename = os.path.join(os.path.dirname(__file__), "report.example.ini")
+    a_report.load_config(_load_config(filename), False)
+    a_report.set_attributes(report_attributes)
+    a_report.add_section(content_attributes)
+    a_report.publish()
+
+
+.. _IANA: http://www.iana.org/assignments/media-types/media-types.xhtml#text
 """
 
 import datetime
@@ -52,46 +128,49 @@ _logger.addHandler(logging.NullHandler())
 
 class Report:
     """
-    Main class to make and publish report with the registered handler.
+    Make and publish report with the registered handlers.
 
     The report is based on a template using named keyword argument and composed
-    of named sections. The module use the `report_template.html` by default. The
-    use of the named keyword argument is based on the [string module]
-    (https://docs.python.org/3/library/string.html#format-string-syntax).
+    of named sections. The module use the `report_template.html` by default.
+    The use of the named keyword argument is based on the `format string
+    syntax`_ of the `string` module.
 
-    Each section starts with a HTML comment and it ends with the start of
-    next section or the end of the file. The comment match the following format
-    and must be on one line:
+    Each section starts with a HTML comment and it ends with the start of next
+    section or with the end of the file. The comment must have the following
+    format and must be on one line::
+
     <!-- $lau:<name>$ -->
-    `name` MUST comprise only ASCII alphanumerics and hyphen [0-9A-Za-z-] and
-    MUST NOT be empty.
+
+    where ``name`` MUST comprise only ASCII alphanumerics and hyphen
+    [0-9A-Za-z-] and MUST NOT be empty.
 
     If a named section is not declared in `Report.names`, its contents is added
     to the current section (i.e. no section is created).
 
-    Public class variables
-       names: is the list of the well-known named sections in a report template.
+    Attributes:
+        names (list): The well-known named sections in a report template.
 
-    Public instance variables
-       None
+    **Configuration**
+        `report.example.ini` details the configuration options the
+        `Report`.
 
-    Public methods
-        load_config: configure the report module from a dictionary.
-        set_template: set the report template.
-        set_attributes: set the attributes of the report.
-        add_handler: add a handler to publish the report.
-        add_section: add a section to the report.
-        publish: publish the report with the registered handlers
-        (see `add_handler`).
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None
+        ===================================  ===================================
+        `add_handler`                        `publish`
+        `add_section`                        `set_attributes`
+        `load_config`                        `set_template`
+        ===================================  ===================================
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+    **Using Report...**
+        The section "`Using the module`_" provides a simple use case of the
+        class.
 
-    Configuration
-        The configuration is detailed in the `report.example.ini` file.
+
+    .. _format string syntax: https://docs.python.org/3/library/string.html#
+        format-string-syntax
     """
     names = [
         "Head",
@@ -117,12 +196,6 @@ class Report:
     _SUMMARY = os.path.join(os.path.dirname(__file__), "report_template.html")
 
     def __init__(self):
-        """
-        Constructor
-
-        Parameters
-        None
-        """
         self._attributes = {}
         self._sections = []
         self._template = {}
@@ -138,10 +211,14 @@ class Report:
         """
         Configure the report module from a dictionary.
 
-        :param config: is a dictionary containing the configuration as described
-        in the `report.example.ini` file.
-        :param append: is a boolean specifying if the current configuration
-        will be overwritten by that specified by the `config` parameter.
+        Args:
+            config (dict): The configuration as described in the
+            `report.example.ini`.
+            append (bool, optional): False to indicate if the configuration
+                specified by the ``config`` parameter will overwrite the current
+                configuration. True to indicate if the configuration
+                specified by the ``config`` parameter will append to the current
+                configuration.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -195,12 +272,13 @@ class Report:
         """
         Set the report template.
 
-        Parameters
-        :param template: is the full path name of the template file. The format
-        of the template file is described in the Report class introduction. The
-        template named 'report_template.html' is used by default.
-        :param separator: is the separator added at the end of each added
-        section in the report.
+        Args:
+            template (str, optional): is the full path name of the template
+                file. The format of the template file is described in the Report
+                class introduction. The `report_template.html` is used by
+                default.
+            separator (str, optional): The separator added at the end of each
+                added section in the report.
         """
         # check parameters type
         if not isinstance(template, str):
@@ -224,10 +302,11 @@ class Report:
         Set the attributes of the report.
 
         Theses attributes are used in the header and tail sections of the
-        report (see `Title`, `BodyStart`, `BodyEnd`, `Tail` sections in the
-        template)
+        report (see ``Title``, ``BodyStart``, ``BodyEnd``, ``Tail`` sections
+        in the template)
 
-        :param attributes: is a dictionary containing the attributes.
+        Args:
+            attributes (dict): The attributes.
         """
         # check parameters type
         if attributes is not None and not isinstance(attributes, dict):
@@ -249,8 +328,9 @@ class Report:
         """
         Add a handler to publish the report.
 
-        :param handler: is a class instance derived from the `BaseHandler` base
-        class.
+        Args:
+            handler (BaseHandler): The handler to add, It's a class instance
+                derived from the `BaseHandler` base class.
         """
         # check parameters type
         if not isinstance(handler, BaseHandler):
@@ -266,9 +346,9 @@ class Report:
         """
         Add a section to the report.
 
-        Parameters
-        :param attributes: is a dictionary containing the product attributes
-        (typically the one returned by the `dump` method).
+        Args:
+            attributes (dict): The product attributes (typically the one
+                returned by the `cots.core.BaseProduct.dump` method).
         """
         # check parameters type
         if not isinstance(attributes, dict):
@@ -287,9 +367,6 @@ class Report:
     def publish(self):
         """
         Publish the report with the registered handler
-
-        Parameters
-        None
         """
         # Generate the report as a string
         report = ""
@@ -327,7 +404,8 @@ class Report:
         """
         Parse the template to extract the report sections.
 
-        :param template: is the full path name of the template file.
+        Args:
+            template (str): The full path name of the template file.
         """
         # Guess the content type based on the template file's extension.
         # If the content type cannot be guessed, the template is considered as
@@ -372,31 +450,33 @@ class Report:
 
 class BaseHandler:
     """
-    Base class for publish a report.
+    Base class for all publishing handlers.
 
-    Public instance variables
-        None
 
-    Public methods
-        load_config: configure the handler from a dictionary.
-        publish: publish the report.
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None.
+        ===================================  ===================================
+        `load_config`                        `publish`
+        ===================================  ===================================
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
 
-    Configuration
-        None.
+    **Methods to Override**
+        This class is a abstract class, so all the methods must be
+        overridden. They are listed below in alphabetical order.
+
+        ===================================  ===================================
+        `_load_default`                      `load_config`
+        ..                                   `publish`
+        ===================================  ===================================
+
+
+    **Using BaseHandler...**
+        This class is the abstract class for publishing handler used by
+        `Report` and this one only use the public methods.
     """
     def __init__(self):
-        """
-        Constructor
-
-        Parameters
-            None, the real __init__ signature is unknown for a base class.
-        """
         msg = "Instance of {} created."
         _logger.debug(msg.format(self.__class__))
 
@@ -404,8 +484,9 @@ class BaseHandler:
         """
         Configure the handler from a dictionary.
 
-        :param config: is a dictionary containing the configuration as described
-        in the `report.example.ini` file.
+        Args:
+            config (dict): The configuration as described in
+                `report.example.ini`.
         """
         raise NotImplementedError
 
@@ -419,51 +500,72 @@ class BaseHandler:
         """
         Publish the report
 
-        Parameters
-        :param report: is a string containing the report.
-        :param subtype: is a string specifying the subtype of the content report
-        as defined by the [IANA](http://www.iana.org/assignments/media-types/
-        media-types.xhtml#text).
-        :param charset: is a string specifying the charset used in the report.
-        If a "charset" parameter is specified in the report, this parameter
-        should not used according to the [RFC 6838](http://tools.ietf.org/html
-        /rfc6838#page-9).
+        Args:
+            report (str): The report.
+            subtype (str): The subtype of the content report as defined by the
+                `IANA`_.
+            charset (str): The charset used in the report. If a "charset"
+                parameter is specified in the report, this parameter should not
+                used according to the :rfc:`6838`.
         """
         raise NotImplementedError
 
 
 class MailHandler(BaseHandler):
     """
-    Send the report by mail.
+    Mail publishing handler.
 
-    Public methods
-        load_config: configure the handler from a dictionary.
-        set_host: set the SMTP host.
-        set_credentials: set the recipients mail addresses.
-        set_from_address: set the sender mail address.
-        set_mail_sent_folder: set the mail sent special folder.
-        set_pending_mail_folder: set the pending mail special folder.
-        set_to_addresses; set the recipients mail addresses.
-        publish: publish the report.
+    This concrete class implements the publishing mechanism by sending the
+    report by mail. So most of information are in the `BaseHandler` class
+    documentation. The information below focuses on the added value of this
+    class.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None.
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
 
-    Configuration
-        The configuration is detailed in the `report.example.ini` file.
+        ===================================  ===================================
+        `load_config`                        `set_sent_mail_folder`
+        `publish`                            `set_pending_mail_folder`
+        `set_credentials`                    `set_subject`
+        `set_from_address`                   `set_to_addresses`
+        `set_host`                           ..
+        ===================================  ===================================
+
+
+    **Overridden Methods**
+        This class is a concrete class, so the overridden methods are listed
+        below in alphabetical order.
+
+        ===================================  ===================================
+        `_load_default`                      `load_config`
+        ..                                   `publish`
+        ===================================  ===================================
+
+
+    **Using MailHandler...**
+        The "`Using the module`_" section provides a simple use case of a
+        publishing handler concrete class (a file handler in the example). The
+        handler classes differ by the options to set.
+
+        For this handler, only the mail host and the mail recipient must be set
+        with the `set_host` and `set_to_addresses` methods as shown in the
+        following example. All other options have default values.
+
+        Examples
+            .. code-block:: python
+
+                a_handler = report.MailHandler()
+                a_handler.set_host("smtp.example.com")
+                a_handler.set_to_addresses("sysadmin@example.com")
+
+        The above steps, except the first one, may be described in a dictionary
+        which is going to load by the `MailHandler.load_config` method. The
+        `Report.load_config` method use this one to set options for each
+        declared handler (see "`Configuration file`_" section).
     """
     def __init__(self):
-        """Constructor
-
-        Parameters
-            None
-
-        Exception
-            None
-        """
         # Initial values
         super().__init__()
         self._hostname = ""
@@ -481,8 +583,9 @@ class MailHandler(BaseHandler):
         """
         Configure the handler from a dictionary.
 
-        :param config: is a dictionary containing the configuration as described
-        in the `report.example.ini` file.
+        Args:
+            config (dict): The configuration as described in
+                `report.example.ini`.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -508,7 +611,7 @@ class MailHandler(BaseHandler):
         if "from_address" in config:
             self.set_from_address(config["from_address"])
         if "mail_sent" in config:
-            self.set_mail_sent_folder(config["mail_sent"])
+            self.set_sent_mail_folder(config["mail_sent"])
         if "pending_mail" in config:
             self.set_pending_mail_folder(config["pending_mail"])
 
@@ -529,10 +632,10 @@ class MailHandler(BaseHandler):
         """
         Set the SMTP host.
 
-        :param hostname: is a string containing the full qualified name of the
-        SMTP server host.
-        :param port_number: is a integer specifying the port number to use. By
-        default, the standard SMTP port number is used.
+        Args:
+            hostname (str): The full qualified name of the SMTP server host.
+            port_number (int, optional): The port number to use. By default,
+                the standard SMTP port number is used.
         """
         # check parameters type
         if not isinstance(hostname, str):
@@ -558,8 +661,9 @@ class MailHandler(BaseHandler):
         """
         Set the recipients mail addresses.
 
-        :param credentials: is a list containing containing the username and the
-        password to connect to the SMTP server.
+        Args:
+            credentials (list): The username and the password to connect to the
+                SMTP server.
         """
         # check parameters type
         if not isinstance(credentials, list):
@@ -577,9 +681,10 @@ class MailHandler(BaseHandler):
         """
         Set the sender mail address.
 
-        :param address: is a string containing the mail addresses of the
-        sender. If not specified, the address is set to the local hostname.
-        (see smtplib.SMTP())
+        Args:
+            address (str, optional): The mail addresses of the sender. If not
+                specified, the address is set to the local hostname. (see
+                `smtplib.SMTP`)
         """
         # check parameters type
         if address is not None and not isinstance(address, str):
@@ -592,13 +697,14 @@ class MailHandler(BaseHandler):
         msg = "Sender addresses are set to '{}'"
         _logger.debug(msg.format(self._from_address))
 
-    def set_mail_sent_folder(self, path):
+    def set_sent_mail_folder(self, path):
         """
         Set the mail sent special folder.
 
-        :param path: is the full path name of the folder where a copy of the
-        mail will be written. If the folder doesn't exit, it will be create.
-        An empty string does nothing.
+        Args:
+            path (str): The full path name of the folder where a copy of the
+                mail will be written. If the folder doesn't exit, it will be
+                create. An empty string does nothing.
         """
         # check parameters type
         if path is not None and not isinstance(path, str):
@@ -618,10 +724,11 @@ class MailHandler(BaseHandler):
         """
         Set the pending mail special folder.
 
-        :param path: is the full path name of the folder where a copy of the
-        mail will be written until it is sent. It avoid to lost mail if the mail
-        server configuration is erroneous or if the mail server doesn't answer.
-        An empty string does nothing.
+        Args:
+            path (str, optional): The full path name of the folder where a copy
+                of the mail will be written until it is sent. It avoid to lost
+                mail if the mail server configuration is erroneous or if the
+                mail server doesn't answer. An empty string does nothing.
         """
         # check parameters type
         if path is not None and not isinstance(path, str):
@@ -641,9 +748,10 @@ class MailHandler(BaseHandler):
         """
         Set the recipients mail addresses.
 
-        :param addresses: is a string or a list containing the mail addresses
-        of the recipient. An empty item of the list, an empty list or an empty
-        string (or only composed of space) raised a ValueError exception.
+        Args:
+            addresses (str or list): The mail addresses of the recipient. An
+                empty item of the list, an empty list or an empty string (or
+                only composed of space) raised a ValueError exception.
         """
         # check parameters type
         if not isinstance(addresses, (str, list)):
@@ -674,8 +782,8 @@ class MailHandler(BaseHandler):
         """
         Set the subject mail.
 
-        :param subject: is a string containing the subject mail. An empty
-        string does nothing.
+        Args:
+            subject (str): The subject mail. An empty string does nothing.
         """
         # check parameters type
         if not isinstance(subject, str):
@@ -693,15 +801,13 @@ class MailHandler(BaseHandler):
         """
         Publish the report
 
-        Parameters
-        :param report: is a string containing the report.
-        :param subtype: is a string specifying the subtype of the content report
-        as defined by the [IANA](http://www.iana.org/assignments/media-types/
-        media-types.xhtml#text). By default, the report is an HTML encoded one.
-        :param charset: is a string specifying the charset used in the report.
-        If a "charset" parameter is specified in the report, this parameter
-        should not used according to the [RFC 6838](http://tools.ietf.org/html
-        /rfc6838#page-9).
+        Args:
+            report (str): The report.
+            subtype (str): The subtype of the content report as defined by the
+                `IANA`_.
+            charset (str): The charset used in the report. If a "charset"
+                parameter is specified in the report, this parameter should not
+                used according to the :rfc:`6838`.
         """
         # check parameters type
         if not isinstance(report, str):
@@ -753,14 +859,14 @@ class MailHandler(BaseHandler):
         Convert a mail subject in a file name.
 
         The method replace special characters in string using the %xx escape
-        using the `urllib.parse.quote()` function (see 'https://docs.python.org/
-        3/library/urllib.parse.html#urllib.parse.quote' for details.
+        using the `urllib.parse.quote` function.
 
         The method use only the first 20 characters of the subject to avoid long
         file name. The file name has a suffix based on current date time to
         guarantee to have a unique value.
 
-        :return: a unique string for a filename.
+        Return:
+            str: unique string for the filename.
         """
         name = urllib.parse.quote(self._subject.lower()[:14], safe="")
         timestamp = str(time.time())
@@ -771,32 +877,59 @@ class MailHandler(BaseHandler):
 
 class FileHandler(BaseHandler):
     """
-    Write the report in a file.
+    File publishing handler.
 
-    Public methods
-        load_config: configure the handler from a dictionary.
-        set_mode: set the mode in which the file is opened.
-        set_filename: set the full path name of the destination file.
-        publish: publish the report.
+    This concrete class implements the publishing mechanism by writing the
+    report in a regular file. So most of information are in the `BaseHandler`
+    class documentation. The information below focuses on the added value of
+    this class.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None.
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
 
-    Configuration
-        The configuration is detailed in the `report.example.ini` file.
+        ===================================  ===================================
+        `load_config`                        `set_filename`
+        `publish`                            `set_mode`
+        ===================================  ===================================
+
+
+    **Overridden Methods**
+        This class is a concrete class, so the overridden methods are listed
+        below in alphabetical order.
+
+        ===================================  ===================================
+        `_load_default`                      `load_config`
+        ..                                   `publish`
+        ===================================  ===================================
+
+
+    **Using MailHandler...**
+        The "`Using the module`_" section provides a simple use case of a
+        publishing handler concrete class (precisely a file handler in the
+        example). The handler classes differ by the options to set.
+
+        For this handler, only filename must be set with the `set_filename` as
+        shown in the following example. All other options have default values.
+
+        With the default settings, the file is open in overwriting mode (i.e
+        ("w" `open` mode). The `set_mode` sets the opening mode of the file
+        (practically the "w" or "a" mode, the others mode aren't useful in this
+        context).
+
+        Examples
+            .. code-block:: python
+
+                a_handler = report.FileHandler()
+                a_handler.set_filename("report.html")
+
+        The above steps, except the first one, may be described in a dictionary
+        which is going to load by the `FileHandler.load_config` method. The
+        `Report.load_config` method use this one to set options for each
+        declared handler (see "`Configuration file`_" section).
     """
     def __init__(self):
-        """Constructor
-
-        Parameters
-            None
-
-        Exception
-            None
-        """
         super().__init__()
         self._filename = ""
         self._mode = "w"
@@ -805,8 +938,9 @@ class FileHandler(BaseHandler):
         """
         Configure the handler from a dictionary.
 
-        :param config: is a dictionary containing the configuration as described
-        in the `report.example.ini` file.
+        Args:
+            config (dict): The configuration as described in
+                `report.example.ini`.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -831,9 +965,8 @@ class FileHandler(BaseHandler):
         """
         Set the mode in which the file is opened.
 
-        :param mode: is a string specifying the mode in which the file is
-        opened.(see [`open()`](https://docs.python.org/3/library/
-        functions.html#open)
+        Args:
+            mode (str): The mode in which the file is opened.(see `open`)
         """
         # check parameters type
         if not isinstance(mode, str):
@@ -850,8 +983,8 @@ class FileHandler(BaseHandler):
         """
         Set the full path name of the destination file.
 
-        :param filename: is a string containing the full path name of the
-        destination file.
+        Args:
+            filename (str): The full path name of the destination file.
         """
         # check parameters type
         if not isinstance(filename, str):
@@ -872,15 +1005,13 @@ class FileHandler(BaseHandler):
         """
         Publish the report
 
-        Parameters
-        :param report: is a string containing the report.
-        :param subtype: is a string specifying the subtype of the content report
-        as defined by the [IANA](http://www.iana.org/assignments/media-types/
-        media-types.xhtml#text). By default, the report is an HTML encoded one.
-        :param charset: is a string specifying the charset used in the report.
-        If a "charset" parameter is specified in the report, this parameter
-        should not used according to the [RFC 6838](http://tools.ietf.org/html
-        /rfc6838#page-9).
+        Args:
+            report (str): The report.
+            subtype (str): The subtype of the content report as defined by the
+                `IANA`_.
+            charset (str): The charset used in the report. If a "charset"
+                parameter is specified in the report, this parameter should not
+                used according to the :rfc:`6838`.
         """
         # check parameters type
         if not isinstance(report, str):
@@ -902,21 +1033,52 @@ class FileHandler(BaseHandler):
 
 class StreamHandler(BaseHandler):
     """
-    Write the report in a stream (standard output).
+    Stream publishing handler.
 
-    Public methods
-        load_config: configure the handler from a dictionary.
-        set_stream: set the stream in which the report will be written.
-        publish: publish the report.
+    This concrete class implements the publishing mechanism by writing the
+    report in a stream. So most of information are in the `BaseHandler` class
+    documentation. The information below focuses on the added value of this
+    class.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None.
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
 
-    Configuration
-        The configuration is detailed in the `report.example.ini` file.
+        ===================================  ===================================
+        `load_config`                        `set_stream`
+        `publish`                            ..
+        ===================================  ===================================
+
+
+    **Overridden Methods**
+        This class is a concrete class, so the overridden methods are listed
+        below in alphabetical order.
+
+        ===================================  ===================================
+        `_load_default`                      `load_config`
+        ..                                   `publish`
+        ===================================  ===================================
+
+
+    **Using MailHandler...**
+        The "`Using the module`_" section provides a simple use case of a
+        publishing handler concrete class (a file handler in the example). The
+        handler classes differ by the options to set.
+
+        For this handler, there is no mandatory option to set, the only option
+        is the stream, and its default value is the standard output
+        (see `sys.stdout`).
+
+        Examples
+            .. code-block:: python
+
+                a_handler = report.StreamHandler()
+
+        The above steps, except the first one, may be described in a dictionary
+        which is going to load by the `StreamHandler.load_config` method. The
+        `Report.load_config` method use this one to set options for each
+        declared handler (see "`Configuration file`_" section).
     """
     _known_streams = {
         "sys.stdout": sys.stdout,
@@ -924,14 +1086,6 @@ class StreamHandler(BaseHandler):
     }
 
     def __init__(self):
-        """Constructor
-
-        Parameters
-            None
-
-        Exception
-            None
-        """
         super().__init__()
         self._stream = sys.stdout
 
@@ -939,8 +1093,9 @@ class StreamHandler(BaseHandler):
         """
         Configure the handler from a dictionary.
 
-        :param config: is a dictionary containing the configuration as described
-        in the `report.example.ini` file.
+        Args:
+            config (dict): The configuration as described in
+                `report.example.ini`.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -974,9 +1129,10 @@ class StreamHandler(BaseHandler):
         """
         Set the stream in which the report will be written.
 
-        :param stream: is a string specifying the standard stream on which
-        report will be written. If it is not present, sys.stdout will be used.
-        (see https://docs.python.org/3/library/sys.html#sys.stdin).
+        Args:
+            stream (io.TextIOWrapper): The standard stream on which report will
+                be written. If it is not present, `sys.stdout` is going to be
+                used.
         """
         # check parameters type
         if not isinstance(stream, io.TextIOWrapper):
@@ -993,15 +1149,13 @@ class StreamHandler(BaseHandler):
         """
         Publish the report
 
-        Parameters
-        :param report: is a string containing the report.
-        :param subtype: is a string specifying the subtype of the content report
-        as defined by the [IANA](http://www.iana.org/assignments/media-types/
-        media-types.xhtml#text). By default, the report is an HTML encoded one.
-        :param charset: is a string specifying the charset used in the report.
-        If a "charset" parameter is specified in the report, this parameter
-        should not used according to the [RFC 6838](http://tools.ietf.org/html
-        /rfc6838#page-9).
+        Args:
+            report (str): The report.
+            subtype (str): The subtype of the content report as defined by the
+                `IANA`_.
+            charset (str): The charset used in the report. If a "charset"
+                parameter is specified in the report, this parameter should not
+                used according to the :rfc:`6838`.
         """
         print(report, file=self._stream)
 

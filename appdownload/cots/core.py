@@ -1,21 +1,35 @@
 """
-This module defines core functions and classes for module which implement
-the product handler.
+This module defines core functions and classes for product handlers.
 
-Classes
-    BaseProduct: common base class for all products
+All product handlers are derived classes from `BaseProduct` class.
 
-Exceptions
-    UnexpectedContentLengthError: raised when content length don't match.
-    UnexpectedContentError: raised when content secure hash don't match.
-    UnexpectedContentTypeError: raised when content-type don't match.
 
-Functions
-    retrieve_file: retrieve a URL into a url on disk
-    retrieve_tempfile: retrieve a URL into a temporary url on disk
+Public Classes
+==============
+This module has only one public class.
 
-Constants
-    None
+===================================  ===================================
+`BaseProduct`                        ..
+===================================  ===================================
+
+
+Public Functions
+================
+This module has a number of functions listed below in alphabetical order.
+
+===================================  ===================================
+`retrieve_file`                      `retrieve_tempfile`
+===================================  ===================================
+
+
+Public Exceptions
+=================
+This module has has a number of exceptions listed below in alphabetical order.
+
+===================================  ===================================
+`UnexpectedContentError`             `UnexpectedContentLengthError`
+`UnexpectedContentTypeError`         ..
+===================================  ===================================
 """
 
 import contextlib
@@ -48,16 +62,18 @@ PROD_TARGET_X86 = "x86"
 PROD_TARGET_X64 = "x64"
 PROD_TARGET_UNIFIED = "unified"
 
-class Error(Exception):
-    """Base class for COTS Core exceptions."""
-    def __init__(self, message=""):
-        """
-        Constructor.
 
-        Parameters
-            :param message: is the message explaining the reason of the
-            exception raise.
-        """
+class Error(Exception):
+    """
+    Base class for COTS Core exceptions.
+
+    Args:
+        message (str, optional): Human readable string describing the exception.
+
+    Attributes:
+        message (str): Human readable string describing the exception.
+    """
+    def __init__(self, message=""):
         self.message = message
 
     def __str__(self):
@@ -65,18 +81,20 @@ class Error(Exception):
 
 
 class UnexpectedContentLengthError(Error):
-    """Raised when content length don't match."""
-    def __init__(self, url, expected, received):
-        """
-        Constructor.
+    """
+    Raised when the content length don't match.
 
-        Parameters
-            :param url: is a string specifying the URL.
-            :param expected: is a positive integer specifying the expected
-            content length.
-            :param received: is a positive integer specifying the received
-            content length.
-        """
+    Args:
+        url (str): The URL of the fetched file.
+        expected (int): The expected content length. Must be positive.
+        received (int): The received content length. Must be positive.
+
+    Attributes:
+        url (str): The URL of the fetched file.
+        expected (int): The expected content length. Must be positive.
+        received (int): The received content length. Must be positive.
+    """
+    def __init__(self, url, expected, received):
         msg = "Unexpected content length: {0} received bytes vs. {1} " \
               "waited. \nUrl '{2}'."
         Error.__init__(self, msg.format(received, expected, url))
@@ -86,20 +104,22 @@ class UnexpectedContentLengthError(Error):
 
 
 class UnexpectedContentError(Error):
-    """Raised when content secure hash don't match."""
-    def __init__(self, url, algorithm, expected, computed):
-        """
-        Constructor.
+    """
+    Raised when the content secure hash don't match.
 
-        Parameters
-            :param url: is a string specifying the URL.
-            :param algorithm: is a string specifying the name of the secure hash
-            algorithm.
-            :param expected: is a string specifying the expected secure hash
-            value in hexadecimal notation.
-            :param computed: is a string specifying the computed secure hash
-            value in hexadecimal notation.
-        """
+    Args:
+        url (str): The URL of the fetched file.
+        algorithm (str): The name of the secure hash algorithm.
+        expected (str): The expected secure hash value in hexadecimal notation.
+        computed (str): The computed secure hash value in hexadecimal notation.
+
+    Attributes:
+        url (str): The URL of the fetched file.
+        algorithm (str): The name of the secure hash algorithm.
+        expected (str): The expected secure hash value in hexadecimal notation.
+        computed (str): The computed secure hash value in hexadecimal notation.
+    """
+    def __init__(self, url, algorithm, expected, computed):
         msg = "Unexpected content secure hash: {0} computed bytes vs. {1} " \
               "waited. \nUrl '{2}'."
         Error.__init__(self, msg.format(computed, expected, url))
@@ -110,17 +130,21 @@ class UnexpectedContentError(Error):
 
 
 class UnexpectedContentTypeError(Error):
-    """Raised when content-type don't match."""
+    """
+    Raised when the content-type don't match.
+
+    Args:
+        url (str): The URL of the fetched file.
+        expected (str): The expected content type.
+        received (str): The received content length.
+
+    Attributes:
+        url (str): The URL of the fetched file.
+        expected (str): The expected content type.
+        received (str): The received content type.
+    """
 
     def __init__(self, url, expected, received):
-        """
-        Constructor.
-
-        Parameters
-            :param url: is a string specifying the URL.
-            :param expected: is a string specifying the expected content-type.
-            :param received: is a string specifying the received content-type.
-        """
         msg = "Unexpected content type: '{0}' received vs. '{1}' waited. \n" \
               "Url '{2}'."
         Error.__init__(self, msg.format(received, expected, url))
@@ -131,73 +155,86 @@ class UnexpectedContentTypeError(Error):
 
 class BaseProduct:
     """
-    Common base class for all products.
+    Common base class for all product handlers.
 
-    Public instance variables
-        name: is the name of the product (used in a_report mail and log file)
-        display_name: is the name of the product as it appears in the 'Programs
-        and Features' control panel
-        version: is the current version of the product (string)
-        published: is the date of the installer’s publication (ISO 8601 format)
-        description: is a short description of the product (~250 characters)
-        editor: is the name of the editor of the product
-        url: is the url of the current version of the installer
-        file_size: is the size of the product installer expressed in bytes
-        secure_hash : is the secure_hash value of the product installer. 
-        It's a tuple containing, in this order, the name of secure_hash 
-        algorithm (see `hashlib.algorithms_guaranteed`) and the secure_hash 
-        value in hexadecimal notation.
-        icon: is the name of the icon file (in the same directory the installer)
-        target: is the target architecture type (the Windows’ one) for the
-          product. This argument must be one of the following values:
-          'x86', 'x64' or 'unified'.
-          x86: the application works only on 32 bits architecture
-          x64: the application works only on 64 bits architecture
-          unified: the application or the installation program work on both
-           architectures
-        release_note: is the release note’s URL for the current version of the
-        product
-        installer: filename of the installer (local full path)
-        std_inst_args: arguments to use to for a standard installation.
-        silent_inst_args: arguments to use for a silent installation.
 
-    Public methods
-        load: load a product class
-        dump: dump a product class
-        get_origin: get product information from the remote repository
-        fetch : download the product installer
-        is_update: return if this instance is an update of product
+    Attributes:
+        name (str): The name of the product (used in a_report mail and log file)
+        display_name (str): The name of the product as it appears in the
+            'Programs and Features' control panel.
+        version (str): The current version of the product.
+        published (str): The date of the installer’s publication using the ISO
+            8601 format.
+        description (str): Short description of the product (~250 characters).
+        editor (str): The name of the editor of the product.
+        url (str): The url of the current version of the installer.
+        file_size (int): The size of the product installer expressed in bytes.
+        secure_hash (2-tuple): The secure_hash value of the product installer.
+            It's a 2-tuple containing, in this order, the name of secure_hash
+            algorithm (see `hashlib.algorithms_guaranteed`) and the secure_hash
+            value in hexadecimal notation.
+        icon (str): The name of the icon file (in the same directory than the
+            installer)
+        target (str): The target architecture type (the Windows’ one) for the
+            product. This argument must be one of the following values:
+            'x86', 'x64' or 'unified'.
 
-    Subclass API variables (i.e. may be use by subclass)
-        _catalog_url: url of the product catalog.
+            * x86: the application works only on 32 bits architecture.
+            * x64: the application works only on 64 bits architecture.
+            * unified: the application or the installation program work on both
+                architectures.
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        _parse_catalog: parse the catalog
-        _get_name: extract the name of the product
-        _get_display_name: extract the name of the product as it appears in
-         the 'Programs and Features' control panel.
-        _get_version: extract the current version of the product
-        _get_published: Extract the date of the installer’s publication
-        _get_description: extract the short description of the product
-        _get_editor: extract the name of the editor of the product
-        _get_url: Extract the url of the current version of the installer
-        _get_file_size: extract the size of the product installer
-        _get_hash: extract the secure_hash value of the product installer
-        _get_icon: Extract the name of the icon file
-        _get_target: Extract the target architecture type
-        _get_release_note: extract the release note’s URL
-        _get_std_inst_args: extract the arguments to use for a standard
-         installation
-        _get_silent_inst_args: extract the arguments to use for a silent
-         installation.
+        release_note (str): The release note’s URL for the current version of
+            the product.
+        installer (str): The filename of the installer (local full path).
+        std_inst_args (str): Arguments to use with the installer for a standard
+            installation.
+        silent_inst_args (str): Arguments to use with the installer for a silent
+            installation.
+
+
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
+
+        ===================================  ===================================
+        `dump`                               `get_origin`
+        `fetch`                              `load`
+        ===================================  ===================================
+
+
+    **Methods to Override**
+        This class is a base class, so a number of public methods must be
+        overridden. They are listed below in alphabetical order.
+
+        ===================================  ===================================
+        `_get_description`                   `_get_release_note`
+        `_get_display_name`                  `_get_silent_inst_args`
+        `_get_editor`                        `_get_std_inst_args`
+        `_get_file_size`                     `_get_target`
+        `_get_hash`                          `_get_url`
+        `_get_icon`                          `_get_version`
+        `_get_name`                          `_parse_catalog`
+        `_get_published`                     `is_update`
+        ===================================  ===================================
+
+
+    **Using BaseProduct...**
+        This class is the base class for product handler used by
+        `appdownload.AppDownload` and this one only use the public methods.
+
+        After created a class instance, the `get_origin` method populate the
+        attributes with the most up-to-date information from the editor's
+        site. An alternative way, is to call the `load` method to populate
+        attributes with a set of data previously saved on disk.
+
+        Then calling `fetch` method retrieves the current version (i.e. the one
+        described in the attributes) of the installer and store it on the local
+        disk.
+
+        Then you can save the updated instances by calling the `dump` method.
     """
     def __init__(self):
-        """
-        Constructor.
-
-        Parameters
-            None
-        """
         self.name = ""
         self.display_name = ""
         self.version = ""
@@ -223,17 +260,19 @@ class BaseProduct:
         """
         Load a product class.
 
-        Parameters
-            :param attributes: is a dictionary object containing the instance
-            variables values. If attributes is not present or have the None
-            value, instance variables keep to their default values.
-            Key value pairs which don't exist in the instance variables
-            dictionary are ignored.
+        Args:
+            attributes (dict): The instance variables values to set. Previous
+                value of the instance variables kept if this argument value is
+                None. The key value pairs which don't exist in the
+                instance variables dictionary are ignored.
+
+        Raises:
+            TypeError: Parameters type mismatch.
         """
         # check parameters type
         if attributes is not None:
             if not isinstance(attributes, dict):
-                msg = "props argument must be a class 'dict'. not {0}"
+                msg = "attributes argument must be a class 'dict'. not {0}"
                 msg = msg.format(attributes.__class__)
                 raise TypeError(msg)
 
@@ -253,12 +292,8 @@ class BaseProduct:
         """
         Dump a product class.
 
-        Parameters
-            None
-
-        Return
-            :return: a dictionary object containing a copy of the instance
-            variables values.
+        Returns:
+            dict: Contain a copy of the instance variables values.
         """
         attributes = {}
         _logger.info("Dump the product.")
@@ -275,13 +310,13 @@ class BaseProduct:
 
         The latest catalog of the product is downloaded and parsed.
 
-        Parameters
-            :param version: is the version of the reference product (i.e. the
-            deployed product). It'a string following the editor rule.
+        Args:
+            version (str): The version of the reference product (i.e. the
+                deployed product). It'a string following the editor versioning
+                rules.
 
-        Exceptions
-            exception raised by the `parse` method.
-            exception raised by the `retrieve_tempfile` function.
+        Raises:
+            TypeError: Parameters type mismatch.
         """
         # check parameters type
         if version is not None and not isinstance(version, str):
@@ -320,11 +355,14 @@ class BaseProduct:
         """
         Download the product installer.
 
-        Parameters
-            :param path: is the path name where to store the installer package.
+        Args:
+            path (str): The path name where to store the installer package.
 
-        Exceptions
-            exception raised by the `_file_retrieve` method.
+        Raises:
+            TypeError: Parameters type mismatch.
+            UnexpectedContentLengthError: The content length don't match.
+            UnexpectedContentError: The content secure hash don't match.
+            Same as `urllib.request.urlopen`.
         """
         msg = "Downloads the latest version of the installer."
         _logger.debug(msg)
@@ -342,15 +380,14 @@ class BaseProduct:
         Return if this instance is an update of product
 
         This method compare the version of the two product, and return the
-        comparison result. The version numbers used by the editor are compliant
-        with the semantic versioning specification 2.0.0 (see `semver`module)
+        comparison result.
 
-        Parameters
-            :param product: is the reference product (i.e. the deployed product)
+        Args:
+            product (BaseProduct): The reference product (i.e. the deployed one)
 
-        Returns
-            :return: true if this instance is an update of the product specified
-            by the `product` parameter.
+        Returns:
+            bool: True if this instance is an update of the product specified
+                by the `product` parameter.
         """
         raise NotImplementedError
 
@@ -359,25 +396,25 @@ class BaseProduct:
         Rename the installer executable.
 
         Installer name match the following format:
-        <name>_<version>.<extension>
-        name: is the name of the product
-        version: is the version of the product
-        extension: is the original extension of the download resource.
+        ``<name>_<version>.<extension>``
 
-        Parameters
-            :param filename: is a string specifying the local name of the
-            installer executable.
+        where
 
-        Exceptions
-            TypeError: Raised a parameter have an inappropriate type.
-            The others exception are the same as for `os.replace`.
+        * ``name``: is the name of the product
+        * ``version``: is the version of the product
+        * ``extension``: is the original extension of the download resource.
 
-        Return
-            None.
+
+        Args:
+            filename (str): The local name of the installer executable.
+
+        Raises:
+            TypeError: Parameters type mismatch.
+            The others exception are the same as `os.replace`.
         """
         # check parameters type
         if not isinstance(filename, str):
-            msg = "url argument must be a class 'str'. not {0}"
+            msg = "filename argument must be a class 'str'. not {0}"
             msg = msg.format(filename.__class__)
             raise TypeError(msg)
 
@@ -393,11 +430,10 @@ class BaseProduct:
         Parse the catalog.
 
         This method parses the downloaded product catalog to prepare
-        `_get_...` call.
+        ``_get_...`` methods call.
 
         Parameters
-            :param filename: is a string specifying the local name of the
-            downloaded product catalog.
+            filename (str): The local name of the downloaded product catalog.
          """
         raise NotImplementedError
 
@@ -534,30 +570,29 @@ def retrieve_tempfile(url,
     """
     Retrieve a URL into a temporary url on disk.
 
-    Parameters
-        :param url: is a string specifying the URL.
-        :param content_type: is a string specifying the mime type of the
-        retrieved catalog. If the received type is different, a
-        UnexpectedContentTypeError is raised.
-        :param content_length: is the expected length of the retrieved file
-        expressed in bytes. -1 means that the expected length is unknown.
-        :param content_hash : is the expected secure hash value of the
-        retrieved file.
-        It's a tuple containing, in this order, the name of secure hash
-        algorithm (see `hashlib.algorithms_guaranteed`) and the secure hash
-        value in hexadecimal notation. If the secure hash algorithm is not
-        supported, it will be ignored.
+    Args:
+        url (str): The URL of the file to retrieve.
+        content_type (str, optional): The mime type of the retrieved file. No
+            check will be done if the value is None.
+        content_length (int, optional): The expected length of the retrieved
+            file expressed in bytes. -1 means that the expected length is
+            unknown.
+        content_hash (2-tuple): The expected secure hash value of the
+            retrieved file. No check will be done if the value is None. It's a
+            tuple containing, in this order, the name of secure hash algorithm
+            (see `hashlib.algorithms_guaranteed`) and the secure hash value in
+            hexadecimal notation. If the secure hash algorithm is not supported,
+            it will be ignored.
 
-    Exceptions
-        TypeError: Raised a parameter have an inappropriate type.
-        UnexpectedContentTypeError: Raised when downloaded content-type
-        don't match.
-        UnexpectedContentLengthError: Raised when content length don't match.
-        UnexpectedContentError: raised when content secure hash don't match.
-        The others exception are the same as for `urllib.request.urlopen()`.
+    Returns:
+        str: a string specifying the local file name.
 
-    Return
-        :return: a string specifying the local file name.
+    Raises:
+        TypeError: Parameters type mismatch.
+        UnexpectedContentTypeError: The downloaded content-type don't match.
+        UnexpectedContentLengthError: The content length don't match.
+        UnexpectedContentError: the content secure hash don't match.
+        Same as `urllib.request.urlopen`.
     """
     # check parameters type
     if not isinstance(url, str):
@@ -578,36 +613,35 @@ def retrieve_tempfile(url,
 def retrieve_file(url, dir_name,
                   content_type=None, content_length=-1, content_hash=None):
     """
-    Retrieve a URL into a url on disk.
+    Retrieve a URL into a file on disk.
 
     The filename is the same as the name of the retrieved resource.
 
-    Parameters  The catalog is
-        :param url: is a string specifying the URL of the catalog.
-        :param dir_name: is a string specifying the directory url on
-          the disk where the retrieved is going to be written.
-        :param content_type: is a string specifying the mime type of the
-        retrieved catalog. If the received type is different, a
-        UnexpectedContentTypeError is raised.
-        :param content_length: is the expected length of the retrieved file
-        expressed in bytes. -1 means that the expected length is unknown.
-        :param content_hash : is the expected secure hash value of the
-        retrieved file.
-        It's a tuple containing, in this order, the name of secure hash
-        algorithm (see `hashlib.algorithms_guaranteed`) and the secure hash
-        value in hexadecimal notation. If the secure hash algorithm is not
-        supported, it will be ignored.
+    Args:
+        url (str): The URL of the file to retrieve.
+        dir_name (str): The pathname of the directory where the retrieved file
+            is going to be written.
+        content_type (str, optional): The mime type of the retrieved file. No
+            check will be done if the value is None.
+        content_length (int, optional): The expected length of the retrieved
+            file expressed in bytes. -1 means that the expected length is
+            unknown.
+        content_hash (2-tuple): The expected secure hash value of the
+            retrieved file. No check will be done if the value is None. It's a
+            tuple containing, in this order, the name of secure hash algorithm
+            (see `hashlib.algorithms_guaranteed`) and the secure hash value in
+            hexadecimal notation. If the secure hash algorithm is not supported,
+            it will be ignored.
 
-    Exceptions
-        TypeError: Raised a parameter have an inappropriate type.
-        UnexpectedContentTypeError: Raised when downloaded content-type
-        don't match.
-        UnexpectedContentLengthError: Raised when content length don't match.
-        UnexpectedContentError: raised when content secure hash don't match.
-        The others exception are the same as for `urllib.request.urlopen()`.
+    Returns:
+        str: a string specifying the local file name.
 
-    Return
-        :return: a string specifying the local file name.
+    Raises:
+        TypeError: Parameters type mismatch.
+        UnexpectedContentTypeError: The downloaded content-type don't match.
+        UnexpectedContentLengthError: The content length don't match.
+        UnexpectedContentError: The content secure hash don't match.
+        Same as `urllib.request.urlopen`.
     """
     # check parameters type
     if not isinstance(url, str):
@@ -639,8 +673,6 @@ def _retrieve_file(url, file,
     Retrieve a URL into a url on disk.
 
     Parameters  The catalog is
-        :param url: is a string specifying the URL of the catalog.
-        :param file: is a file-like object to use to store the retrieved data.
         :param content_type: is a string specifying the mime type of the
         retrieved catalog. If the received type is different, a
         UnexpectedContentTypeError is raised.
@@ -653,16 +685,28 @@ def _retrieve_file(url, file,
         value in hexadecimal notation. If the secure hash algorithm is not
         supported, it will be ignored.
 
-    Exceptions
-        TypeError: Raised a parameter have an inappropriate type.
-        UnexpectedContentTypeError: Raised when downloaded content-type
-        don't match.
-        UnexpectedContentLengthError: Raised when content length don't match.
-        UnexpectedContentError: raised when content secure hash don't match.
-        The others exception are the same as for `urllib.request.urlopen()`.
+    Args:
+        url (str): The URL of the file to retrieve.
+        file (file-like object): A file-like object to use to store the
+            retrieved data.
+        content_type (str, optional): The mime type of the retrieved file. No
+            check will be done if the value is None.
+        content_length (int, optional): The expected length of the retrieved
+            file expressed in bytes. -1 means that the expected length is
+            unknown.
+        content_hash (2-tuple): The expected secure hash value of the
+            retrieved file. No check will be done if the value is None. It's a
+            tuple containing, in this order, the name of secure hash algorithm
+            (see `hashlib.algorithms_guaranteed`) and the secure hash value in
+            hexadecimal notation. If the secure hash algorithm is not supported,
+             it will be ignored.
 
-    Return
-        None
+    Raises:
+        TypeError: Parameters type mismatch.
+        UnexpectedContentTypeError: The downloaded content-type don't match.
+        UnexpectedContentLengthError: The content length don't match.
+        UnexpectedContentError: The content secure hash don't match.
+        Same as `urllib.request.urlopen`.
     """
     # check parameters type
     if not isinstance(url, str):

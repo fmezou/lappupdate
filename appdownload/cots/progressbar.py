@@ -1,21 +1,30 @@
 """
-This module defines functions and classes to offer some progress bar in text
-mode for the console.
+This module defines functions and classes to offer progress bar widgets.
 
-Classes
-    TextProgressBar: Progress bar for console output.
-    
-Exceptions
-    None
+To date, the module provides text only widgets for the console.
 
-Functions
-    isu_format_prefix: return a string using standard prefix for unit.
-    isu_format_thousand: return a string using standard ISU thousand
-    separator.
 
-Constants
-    None
+Public Classes
+==============
+This module has only one public class.
 
+
+===================================  ===================================
+`TextProgressBar`                    ..
+===================================  ===================================
+
+
+Public Functions
+----------------
+This module has has a number of functions listed below in alphabetical order.
+
+===================================  ===================================
+`isu_format_prefix`                  `isu_format_thousand`
+===================================  ===================================
+
+
+.. _International System of Units: https://en.wikipedia.org/wiki/
+    International_System_of_Units
 """
 
 import logging
@@ -41,15 +50,18 @@ def isu_format_prefix(value, unit):
     """
     Return a string using standard prefix for unit.
 
-    The returned string represent the value in a compliant International
-    System of Units format, which means with a prefix for unit.
-    (see https://en.wikipedia.org/wiki/International_System_of_Units)
+    The returned string represent the value in a compliant `International
+    System of Units`_ format, which means with a prefix for unit.
 
-    Parameters
-        :param value: is the value to format (may be a float or an integer.
-        :param unit: is a string representing the unit of the value.
+    Args:
+        value (int or float): The value to format.
+        unit (str): The unit of the value.
 
-        :return: is a string representing value (5.75 MB for example).
+    Return:
+        str: a string representing the value ("5.75 MB" for example).
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
     # check parameters type
     if not (isinstance(value, int) or isinstance(value, float)):
@@ -87,14 +99,17 @@ def isu_format_thousand(value):
     """
     Return a string using standard ISU thousand separator.
 
-    The returned string represent the value in a compliant International
-    System of Units format, which means with a space for thousand separator.
-    (see https://en.wikipedia.org/wiki/International_System_of_Units)
+    The returned string represent the value in a compliant `International
+    System of Units`_ format, which means with a space for thousand separator.
 
-    Parameters
-        :param value: is the value to format (may be a float or an integer).
+    Args:
+        value (int or float): The value to format.
 
-        :return: is a string representing value (5 000 for example).
+    Return:
+        str: a string representing value ("5 000" for example).
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
     # check parameters type
     if not (isinstance(value, int) or isinstance(value, float)):
@@ -112,32 +127,54 @@ def isu_format_thousand(value):
 
 class TextProgressBar:
     """
-    Progress bar for console output.
+    Progress bar for a console output.
 
-    Public instance variables
-        None
 
-    Public methods
-        compute: compute the progress bar and print it.
-        finish: compute the completion progress bar and return the computed
-        string.
+    Args:
+        max_len (int): A positive integer specifying the content length
+            that the progress bar is going to represent. A negative number
+            specify that the content length is unknown.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
+
+        ===================================  ===================================
+        `finish`                             `compute`
+        ===================================  ===================================
+
+    **Using TextProgressBar...**
+        After created a class instance, you must call the `compute` method to
+        print the progress bar on the standard output (`sys.stdout`) upon every
+        change of the received length or the content length (typically after a
+        reading of a data block from a stream) as shown in the below example.
+        When the task completed, you must call the `finish` method which return
+        a string summarizing the amount of computed data.
+
+        Example of fetching a file
+            .. code-block:: python
+
+                import urllib.request
+                import progressbar
+
+                url  = "https://docs.python.org" \\
+                       "/3/archives/python-3.5.1-docs-text.zip"
+                with urllib.request.urlopen(url) as stream:
+                    content_length = int(stream.info()["Content-Length"])
+                    length = 0
+                    progress_bar = progressbar.TextProgressBar(content_length)
+                    progress_bar.compute(length, content_length)
+                    while True:
+                        data = stream.read(1024)
+                        if not data:
+                            break
+                        length += len(data)
+                        progress_bar.compute(length, content_length)
+                    progress_bar.finish()
     """
 
     def __init__(self, max_len=-1):
-        """
-        Constructor.
-
-        Parameters
-            :param max_len: is a positive integer specifying the content length
-            that the progress bar is going to represent. A negative number
-            specify that the content length is unknown.
-        """
         # check parameters type
         if not isinstance(max_len, int):
             msg = "max_len argument must be a class 'int'. not {0}"
@@ -153,24 +190,33 @@ class TextProgressBar:
         """
         Compute the progress bar and print it.
 
-        The printed string match the following format:
-        aaa% [==============================] lll,lll,lll,lll - rrrr XB/s - eta nn:nn:nn
-        aaa: is the percentage of progress
-        ===: is the bar graph of progress (step=1/30)
-        lll,lll,lll,lll: is the number of received bytes
-        rrrr: is the bytes rate where X represent a multiple of the unit bytes
-        per second (G, M or k).
-        nn:nn:nn: is the estimated time to achieve the download.
+        The printed string have the following content::
 
-        note : to prevent the display flicking, the refresh period is limited to
-        4 time per second.
+            aaa% [==============================] lll,lll,lll,lll - rrrr XB/s - eta nn:nn:nn
 
-        Parameters
-            :param length: is a positive integer specifying the length of
+        where
+            * ``aaa``: is the percentage of progress
+            * ``===``: is the bar graph of progress (step=1/30)
+            * ``lll,lll,lll,lll``: is the number of received bytes
+            * ``rrrr``: is the bytes rate where X represent a multiple of the
+              unit bytes per second (G, M or k).
+            * ``nn:nn:nn``: is the estimated time to achieve the download.
+
+        note:
+            to prevent the display flicking, the refresh period is limited to
+            4 times per second.
+
+
+        Args:
+            length (int): A positive integer specifying the length of
                 received data.
-            :param content_length: is a positive integer specifying the content
-            length that the progress bar is going to represent. A negative
-            number specify that the content length is unknown.
+            content_length (int): A positive integer specifying the content
+                length that the progress bar is going to represent. A negative
+                number specify that the content length is unknown.
+
+
+        Raises:
+            TypeError: Parameters type mismatch.
         """
         # check parameters type
         if not isinstance(length, int):
@@ -224,19 +270,22 @@ class TextProgressBar:
 
     def finish(self):
         """
-        Compute the completion progress bar and return the computed string.
+        Compute the progress bar completion and return the computed string.
 
-        The returned string match the following format:
-        llll XB received - rrrr XB/s in nn:nn:nn
-        lll XB: is the number of received bytes where X represent a multiple
-        of the unit byte(G, M or k).
-        rrrr: is the bytes rate where X represent a multiple of the unit bytes
-        per second (G, M or k).
-        nn:nn:nn: is the time of downloading.
+        The returned string have the following content::
 
-        Parameters
+            llll XB received - rrrr XB/s in nn:nn:nn
 
-            :return: is a string representing the progress information.
+        where
+            * ``lll XB``: is the number of received bytes where X represent a
+              multiple of the unit byte(G, M or k).
+            * ``rrrr``: is the bytes rate where X represent a multiple of the
+              unit bytes per second (G, M or k).
+            * ``nn:nn:nn``: is the time of downloading.
+
+
+        Return:
+            str: A string representing the progress information.
         """
         # compute the length of received data
         receive = isu_format_prefix(self._length, "B")

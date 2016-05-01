@@ -1,11 +1,12 @@
 created: 20150503173655790
 creator: fmezou
-modified: 20150602210606800
+modified: 20160326160345942
 modifier: fmezou
 tags: [[File Formats]]
 title: applist
+type: text/vnd.tiddlywiki
 
-applist files describes a list of application packages which will be deployed on a workstation or a server. 
+applist file describes a list of application packages which will be deployed on a workstation or a server. 
 
 <<note "These files are [[text file|http://en.wikipedia.org/wiki/Text_file]] complying with the [[Windows standard|http://en.wikipedia.org/wiki/Text_file#Standard_Windows_.txt_files]]. Since these files are used by scripts written in [[Command shell|https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR]] or [[Windows Script Host|https://msdn.microsoft.com/library/d1wf56tt.aspx]], so it must use [[ASCII printable characters|http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters]] (i.e. no national or accented characters).">>
 

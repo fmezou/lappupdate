@@ -1,20 +1,33 @@
 """
-appdownload - check and download applications' updates if any.
+This module is in charge of plug-in handling and operations scheduling.
+It may use as a module by a third party offering a new GUI for
+example, or as a script with the command line interface::
+
+    python -m appdownload
+
+The `user manual`_ details use cases and the configuration files.
 
 
 Synopsis
 ========
 
-:synopsis: appdownload.py [-h] [-p|-f|-a [-y]|-m|-t] [-v] [-c FILE]
+appdownload.py [-h] [-p | -f | -a [-y]| -m | -t] [-v] [-c FILE]
 
 
 Description
 ===========
 Pull update information from the editor information channel (web, rss..), fetch
-the update and store it on the local server and generate an applist file for
+the update, store it on the local server and generate an applist file for
 deploying the application with the ``appdeploy`` script. A plug-in handles
-information sources to determine if an update is published and fetch it.
+information sources to determine if an update has been published, and to fetch
+it.
 
+All information about a handled :term:`product` are stored in a :term:`catalog`
+file (see `catalog_format` section for a detailed description)
+
+
+Command line options
+--------------------
 
 ======  =====================   ================================================
 ``-h``  ``--help``              show this help message and exit
@@ -34,17 +47,17 @@ information sources to determine if an update is published and fetch it.
                                 correctness
 ``-y``  ``--yes``               force applications approval (see ``--approve``)
 ``-c``  ``--configfile FILE``   specifies the configuration file. It includes
-                                the list of handled applications, the file
-                                :file:`appdownload.example.ini` details
-                                configuration topics. The default configuration
-                                file name is 'appdownload.ini' located
-                                in the current working directory.
+                                the list of handled applications, the
+                                `appdownload.example.ini` details configuration
+                                topics. The default configuration file name is
+                                'appdownload.ini' located in the current working
+                                directory.
 ``-v``  ``--version``           show program's version number and exit
 ======  =====================   ================================================
 
 
 Exit code
-=========
+---------
 
 ==  ============================================================================
 0   no error
@@ -54,133 +67,39 @@ Exit code
 ==  ============================================================================
 
 
-Catalog format
+Public Classes
 ==============
+This module has only one public class.
 
-The catalog is a file which is automatically generated, and **must not be
-manually modified**. It contains the applications database and specifies the
-following properties, for each application, using the JavaScript Object Notation
-(JSON), specified by :rfc:`7159` and by `ECMA-404 <http://www.ecma-international
-.org/publications/standards/Ecma-404.htm>`_. The ``appdownload.py`` script uses
-this database to build the applist files used by the appdeploy script.
+===================================  ===================================
+`AppDownload`                        ..
+===================================  ===================================
 
-The constant :py:const:`_CATALOG_FNAME` specifies the file name of the catalog
-(``catalog.json``) and it located in the `store` folder (see item ``store`` in
-the configuration file).
 
-The catalog contains several level of nested objects. The root level contains
-the metadata of the database and the main object.
+Public data
+===========
+This module has a number of public global data, including both variables and
+values used as 'defined constants' listed below in alphabetical order.
 
-================    ============================================================
-__version__         is the version number of the catalog scheme.
-__warning__         is a warning message reminding that the content must be
-                    modified.
-modified            is the date of the latest modification in `ISO 8601
-                    <https://en.wikipedia.org/wiki/ISO_8601>`_ format.
-products            is an object specifying the list of handled application as
-                    described in the configuration file (see ``--configfile``).
-================    ============================================================
+===================================  ===================================
+`CATALOG_FNAME`                      `CAT_PULLED_KNAME`
+`CAT_APPROVED_KNAME`                 `CAT_VERSION_KNAME`
+`CAT_FETCHED_KNAME`                  `CAT_VERSION`
+`CAT_MODIFIED_KNAME`                 `CAT_WARNING_KNAME`
+`CAT_PRODUCTS_KNAME`                 ..
+===================================  ===================================
 
-Each item of the products list is a 3-tuple specifying the deployment state of
-the application.
 
-================    ============================================================
-pulled              indicate that the editor of the application has published an
-                    update or a new major version.
-fetched             indicate that an update or a new major version of the
-                    application has been fetched. At this step, the system
-                    administrator must approved the version before its
-                    deployment (see ``--approve``)
-approved            indicate that the system administrator approved the
-                    deployment of the update or the new version. This version
-                    will be added in the applist file (see ``--make``) to be
-                    deployed.
-================    ============================================================
+Public Exceptions
+=================
+This module has only one exception.
 
-Each item of the 3-tuple is an object containing the following attributes of the
-application.
+===================================  ===================================
+`ConfigurationError`                 ..
+===================================  ===================================
 
-================    ============================================================
-name                is the name of the product (used in a_report mail and log
-                    file)
-display_name        is the name of the product as it appears in the 'Programs
-                    and Features' control panel (see `Uninstall Registry Key
-                    <https://msdn.microsoft.com/en-us/library/aa372105%28v=vs.85
-                    %29.aspx>`_)
-version             is the current version of the product.
-published           is the date of the installer’s publication (in `ISO 8601
-                    <https://en.wikipedia.org/wiki/ISO_8601>`_ format, see also
-                    :rfc:`3339`).
-description         is a short description of the product (~250 characters)
-editor              is the name of the editor of the product
-url                 is the url of the current version of the installer
-file_size           is the size of the product installer expressed in bytes
-secure_hash         is the secure hash value of the product installer. It's a
-                    tuple containing, in this order, the name of secure hash
-                    algorithm (see :py:data:`hashlib.algorithms_guaranteed`)
-                    and the secure hash value in hexadecimal notation.
-icon                is the name of the icon file located in the same directory
-                    than the installer.
-target              is the target architecture type (the Windows’ one) for the
-                    application. This argument must be one of the following
-                    values: ``x86``, ``x64`` or ``unified``.
 
-                    * ``x86``: the application works only on 32 bits
-                      architecture
-                    * ``x64``: the application works only on 64 bits
-                      architecture
-                    * ``unified``: the application or the installation program
-                      work on both architectures
-
-release_note        is the release note’s URL for the current version of the
-                    application
-installer           is the path of the installer.
-std_inst_args       are the arguments of the installer command line to make an
-                    standard installation (i.e. an interactive installation).
-silent_inst_args    are the arguments of the installer command line to make
-                    an silent installation (i.e. without any user's interaction,
-                    typically while an automated deployment using ``appdeploy``
-                    script).
-================    ============================================================
-
-example
--------
-
-.. code-block:: json
-
-    {
-        "__version__": "0.2.0",
-        "__warning__": "This file is automatically generated, and must not be
-        manually modified. It contains the applications database and specifies
-        for each application its properties. Appdownload script uses this
-        database to build the applist files used by appdeploy script.",
-        "modified": "2016-02-28T19:30:00",
-        "products": {
-            "dummy": {
-                "approved": {
-                    "description": "This dummy module is a trivial example of a
-                    Product class implementation. ",
-                    "display_name": "Dummy Product (1.0.1)",
-                    "editor": "Example. inc",
-                    "file_size": -1,
-                    "icon": "",
-                    "installer": "tempstore\\dummy\\Dummy Product_1.0.1.html",
-                    "name": "Dummy Product",
-                    "published": "2016-02-28T19:04:43",
-                    "release_note": "http://www.example.com/release_note.txt",
-                    "secure_hash": null,
-                    "silent_inst_args": "/silent",
-                    "std_inst_args": "",
-                    "target": "unified",
-                    "url": "http://www.example.com/index.html",
-                    "version": "1.0.1"
-                },
-                "fetched": {},
-                "pulled": {}
-            },
-            ....
-        }
-    }
+.. _user manual: http://fmezou.github.io/lappupdate/lappupdate_wiki.html
 """
 import io
 import os.path
@@ -218,20 +137,41 @@ _SET_KNAME = "set"
 _SETS_SNAME = "sets"
 
 # Sections and keys names used in the catalog file (see catalog.json)
-_CATALOG_FNAME = "catalog.json"
-_CAT_WARNING_KNAME = "__warning__"
+CATALOG_FNAME = "catalog.json"
+"""Contain the file name of the catalog."""
+
+CAT_WARNING_KNAME = "__warning__"
+"""Contain the key name of the warning string of the catalog."""
+
 _CAT_WARNING = \
     "This file is automatically generated, and must not be manually modified. "\
     "It contains the applications database and specifies for each application "\
     "its properties. Appdownload script uses this database to build the "\
     "applist files used by appdeploy script."
-_CAT_VERSION_KNAME = "__version__"
-_CAT_VERSION = "0.2.0"
-_CAT_MODIFIED_KNAME = "modified"
-_CAT_PRODUCTS_KNAME = "products"
-_CAT_PULLED_KNAME = "pulled"
-_CAT_FETCHED_KNAME = "fetched"
-_CAT_APPROVED_KNAME = "approved"
+
+CAT_VERSION_KNAME = "__version__"
+"""Contain the key name of the version string of the catalog."""
+
+CAT_VERSION = "0.2.0"
+"""Specify the current version of the catalog scheme."""
+
+CAT_MODIFIED_KNAME = "modified"
+"""Contain the key name of the latest modification date of the catalog."""
+
+CAT_PRODUCTS_KNAME = "products"
+"""Contain the key name of the list of handled application."""
+
+CAT_PULLED_KNAME = "pulled"
+"""Contain the key name of the object indicating the latest version of the
+product available on the web site of the editor."""
+
+CAT_FETCHED_KNAME = "fetched"
+"""Contain the key name of the object indicating the latest fetched version of
+the product."""
+
+CAT_APPROVED_KNAME = "approved"
+"""Contain the key name of the object indicating the latest approved version of
+the product."""
 
 _PROD_NAME_KNAME = "name"
 _PROD_VERSION_KNAME = "version"
@@ -252,14 +192,16 @@ _logger.addHandler(logging.NullHandler())
 
 
 class Error(Exception):
-    """Base class for AppDownload exceptions."""
-    def __init__(self, message=""):
-        """
-        Constructor.
+    """
+    Base class for AppDownload exceptions.
 
-        :param message: is the message explaining the reason of the
-            exception raise.
-        """
+    Args:
+        message (str, optional): Human readable string describing the exception.
+
+    Attributes:
+        message (str): Human readable string describing the exception.
+    """
+    def __init__(self, message=""):
         self.message = message
 
     def __str__(self):
@@ -268,17 +210,23 @@ class Error(Exception):
 
 class ConfigurationError(Error):
     """
-    Raised when a key or a value is erroneous in a configuration file.
+    Raised when a key or a value is erroneous in the configuration file.
+
+    Args:
+        filename (str): The path name (full or partial) of the configuration
+            file.
+        message (str): Human readable string describing the exception.
+        solution (str, optional): Human readable string providing a
+            recommendation to solve the error.
+
+    Attributes:
+        filename (str): The path name (full or partial) of the configuration
+            file.
+        message (str): Human readable string describing the exception.
+        solution (str, optional): Human readable string providing a
+            recommendation to solve the error.
     """
     def __init__(self, filename, message, solution=""):
-        """
-        Constructor.
-
-        :param filename: is the path name (full or partial) of the configuration
-            file.
-        :param message: is a string detailing the error.
-        :param solution: is a recommendation to solve the error.
-        """
         msg = "Configuration error in '{}': {} {}"
         Error.__init__(self, msg.format(filename, message, solution))
         self.filename = filename
@@ -288,28 +236,42 @@ class ConfigurationError(Error):
 
 class AppDownload:
     """
-    Application class.
+    Schedule products updates retrieving operations.
 
-    Public instance variables
-        None
 
-    Public methods
-        None
+    Args:
+        config_file (str): The name of the configuration file. It may
+            be a partial or a full pathname.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None
 
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
+
+        ===================================  ===================================
+        `approve`                            `pull`
+        `fetch`                              `run`
+        `make`                               `test_config`
+        ===================================  ===================================
+
+
+    **Using AppDownload...**
+        This class is the scheduler and handles elementary operations to
+        complete the expected task.
+
+        The easiest way of using this class is to call the `run` method. This
+        all-in-one method retrieve information from the web site editor, fetch
+        possible updates, and generate the `applist` files without any user
+        action.
+
+        To have more control, you must call individually each method. A typical
+        use case is to fetch the possible update by calling the `pull` method
+        then the `fetch` method, and approve each update by calling the
+        `approve` method, and then generate the `applist` file with the `make`
+        method.
     """
 
     def __init__(self, config_file):
-        """
-        Constructor.
-
-        :param config_file: is the name of the configuration file. It may
-            be a partial or a full path.
-        """
         # check parameters type
         if not isinstance(config_file, io.TextIOBase):
             msg = "config_file argument must be a class 'io.TextIOBase'. " \
@@ -330,7 +292,6 @@ class AppDownload:
         self._catalog_filename = ""
         self._catalog = None
 
-        # a_report
         self._report = ""
 
         msg = "Instance of {} created <- {}"
@@ -345,6 +306,7 @@ class AppDownload:
         self._read_catalog()
         self._pull_update()
         self._fetch_update()
+        self._approve_update(True)
         self._write_catalog()
         self._write_applist()
         _logger.info("Appdownload (%s) completed.", __version__)
@@ -363,7 +325,7 @@ class AppDownload:
 
     def fetch(self):
         """
-        Fetch applications updates based on the last build catalog.
+        Fetch application updates based on the last build catalog.
         """
         self._load_config()
         _logger.info("Starting Appdownload (%s), Fetch applications updates "
@@ -377,8 +339,10 @@ class AppDownload:
         """
         Approve the deployment of applications.
 
-        :param force: is a boolean indicates if the user (sysadmin) must
-            approved each deployment in a interactive session.
+        Args:
+            force (bool, optional): False to indicates if the user must approved
+                each deployment in a interactive session. True to indicates that
+                updates are all approved without prompt.
         """
         self._load_config()
         _logger.info("Starting Appdownload (%s), approve applications updates "
@@ -391,7 +355,7 @@ class AppDownload:
 
     def make(self):
         """
-        Make applist files based on the last build catalog
+        Make `applist` files based on the last build catalog
         """
         self._load_config()
         _logger.info("Starting Appdownload (%s), make applist files based "
@@ -431,10 +395,10 @@ class AppDownload:
                 qualname = self._config[app_id][_QUALNAME_KNAME]
                 app_mod = importlib.import_module(qualname)
                 app = app_mod.Product()
-                if app_id in self._catalog[_CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[_CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[_CAT_APPROVED_KNAME]) != 0:
-                        app.load(app_entry[_CAT_APPROVED_KNAME])
+                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
+                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    if len(app_entry[CAT_APPROVED_KNAME]) != 0:
+                        app.load(app_entry[CAT_APPROVED_KNAME])
                         _logger.debug("Check if an update is available")
                         origin_app = app_mod.Product()
                         origin_app.get_origin(app.version)
@@ -444,7 +408,7 @@ class AppDownload:
                             _logger.info(msg.format(app_id,
                                                     origin_app.version,
                                                     origin_app.published))
-                            app_entry[_CAT_PULLED_KNAME] = origin_app.dump()
+                            app_entry[CAT_PULLED_KNAME] = origin_app.dump()
                             self._pulling_report.add_section(origin_app.dump())
                     else:
                         msg = "The product '{0}' isn't deployed.".format(app_id)
@@ -456,16 +420,16 @@ class AppDownload:
                         _logger.info(msg.format(app_id,
                                                 origin_app.version,
                                                 origin_app.published))
-                        app_entry[_CAT_PULLED_KNAME] = origin_app.dump()
+                        app_entry[CAT_PULLED_KNAME] = origin_app.dump()
                         self._pulling_report.add_section(origin_app.dump())
                 else:
                     msg = "The product '{0}' don't exist. A new one will " \
                           "be created.".format(app_id)
                     _logger.warning(msg)
-                    self._catalog[_CAT_PRODUCTS_KNAME][app_id] = {
-                        _CAT_PULLED_KNAME: {},
-                        _CAT_FETCHED_KNAME: {},
-                        _CAT_APPROVED_KNAME: {}
+                    self._catalog[CAT_PRODUCTS_KNAME][app_id] = {
+                        CAT_PULLED_KNAME: {},
+                        CAT_FETCHED_KNAME: {},
+                        CAT_APPROVED_KNAME: {}
                     }
                     _logger.debug("Check if an update is available")
                     origin_app = app_mod.Product()
@@ -475,8 +439,8 @@ class AppDownload:
                     _logger.info(msg.format(app_id,
                                             origin_app.version,
                                             origin_app.published))
-                    app_entry = self._catalog[_CAT_PRODUCTS_KNAME][app_id]
-                    app_entry[_CAT_PULLED_KNAME] = origin_app.dump()
+                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    app_entry[CAT_PULLED_KNAME] = origin_app.dump()
                     self._pulling_report.add_section(origin_app.dump())
 
                 del app
@@ -504,18 +468,18 @@ class AppDownload:
                 mod_name = self._config[app_id][_QUALNAME_KNAME]
                 app_mod = importlib.import_module(mod_name)
                 app = app_mod.Product()
-                if app_id in self._catalog[_CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[_CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[_CAT_PULLED_KNAME]) != 0:
-                        app.load(app_entry[_CAT_PULLED_KNAME])
+                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
+                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    if len(app_entry[CAT_PULLED_KNAME]) != 0:
+                        app.load(app_entry[CAT_PULLED_KNAME])
                         _logger.debug("Fetch the update.")
                         app.fetch(self._config[app_id][_PATH_KNAME])
                         msg = "New version of '{0}' fetched. saved as '{1}'."
                         _logger.info(msg.format(app_id, app.installer))
 
                         # replace the fetched product by the newest.
-                        app_entry[_CAT_FETCHED_KNAME] = app.dump()
-                        app_entry[_CAT_PULLED_KNAME] = {}
+                        app_entry[CAT_FETCHED_KNAME] = app.dump()
+                        app_entry[CAT_PULLED_KNAME] = {}
                         self._fetching_report.add_section(app.dump())
                     else:
                         msg = "No update for product '{0}'."
@@ -535,8 +499,10 @@ class AppDownload:
         """
         Approve the deployment of applications.
 
-        :param force: is a boolean indicates if the user (sysadmin) must
-            approved each deployment in a interactive session.
+        Args:
+            force (bool, optional): False to indicates if the user must approved
+                each deployment in a interactive session. True to indicates
+                that updates are all approved without prompt.
         """
         # check parameters type
         if not isinstance(force, bool):
@@ -559,10 +525,10 @@ class AppDownload:
         _logger.info("Approve the deployment of applications.")
         for app_id in self._config[_APPS_SNAME]:
             if self._config[_APPS_SNAME].getboolean(app_id):
-                if app_id in self._catalog[_CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[_CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[_CAT_FETCHED_KNAME]) != 0:
-                        app = app_entry[_CAT_FETCHED_KNAME]
+                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
+                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    if len(app_entry[CAT_FETCHED_KNAME]) != 0:
+                        app = app_entry[CAT_FETCHED_KNAME]
                         approved = False
                         if not force:
                             prompt = "Approve {} ({}) (y/n) [n]:".format(
@@ -582,9 +548,9 @@ class AppDownload:
 
                         if approved:
                             # replace the approved product by the newest.
-                            app = app_entry[_CAT_FETCHED_KNAME]
-                            app_entry[_CAT_APPROVED_KNAME] = app
-                            app_entry[_CAT_FETCHED_KNAME] = {}
+                            app = app_entry[CAT_FETCHED_KNAME]
+                            app_entry[CAT_APPROVED_KNAME] = app
+                            app_entry[CAT_FETCHED_KNAME] = {}
                             self._approving_report.add_section(app)
                             msg = "The product '{0}' approved."
                             _logger.info(msg.format(app_id))
@@ -621,7 +587,7 @@ class AppDownload:
                 )
                 self._catalog_filename = os.path.join(
                     self._config[_CORE_SNAME][_STORE_KNAME],
-                    _CATALOG_FNAME
+                    CATALOG_FNAME
                 )
                 self._catalog_filename = os.path.abspath(self._catalog_filename)
             else:
@@ -750,16 +716,16 @@ class AppDownload:
                 self._catalog = json.load(file)
                 # force the version number.
                 # at time, there is non need to have a update function
-                self._catalog[_CAT_VERSION_KNAME] = _CAT_VERSION
+                self._catalog[CAT_VERSION_KNAME] = CAT_VERSION
         except FileNotFoundError:
             # the catalog may be not exist
             _logger.warning("The product's catalog don't exist. A new one "
                             "will be created.")
             self._catalog = {
-                _CAT_WARNING_KNAME: _CAT_WARNING,
-                _CAT_VERSION_KNAME: _CAT_VERSION,
-                _CAT_MODIFIED_KNAME: None,
-                _CAT_PRODUCTS_KNAME: {}
+                CAT_WARNING_KNAME: _CAT_WARNING,
+                CAT_VERSION_KNAME: CAT_VERSION,
+                CAT_MODIFIED_KNAME: None,
+                CAT_PRODUCTS_KNAME: {}
             }
         else:
             msg = "Products' catalog loaded."
@@ -767,7 +733,7 @@ class AppDownload:
 
     def _write_catalog(self):
         """
-        Write the catalog product file.
+        Write the catalog products file.
         """
         msg = "Write the products' catalog ({0})."
         _logger.info(msg.format(self._catalog_filename))
@@ -775,14 +741,14 @@ class AppDownload:
         with open(self._catalog_filename, "w+t") as file:
             # write the warning header with a naive time representation.
             dt = (datetime.datetime.now()).replace(microsecond=0)
-            self._catalog[_CAT_MODIFIED_KNAME] = dt.isoformat()
+            self._catalog[CAT_MODIFIED_KNAME] = dt.isoformat()
             json.dump(self._catalog, file, indent=4, sort_keys=True)
         msg = "Products' catalog saved"
         _logger.info(msg)
 
     def _write_applist(self):
         """
-        Write the applist files from the catalog.
+        Write the `applist` files from the catalog.
         """
         _logger.info("Write the applist files from the catalog.")
         app_set_file = {}
@@ -800,10 +766,10 @@ class AppDownload:
 
         for app_id in self._config[_APPS_SNAME]:
             if self._config[_APPS_SNAME].getboolean(app_id):
-                if app_id in self._catalog[_CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[_CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[_CAT_APPROVED_KNAME]) != 0:
-                        app = app_entry[_CAT_APPROVED_KNAME]
+                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
+                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    if len(app_entry[CAT_APPROVED_KNAME]) != 0:
+                        app = app_entry[CAT_APPROVED_KNAME]
                         # build the catalog line
                         app_line = \
                             app[_PROD_TARGET_KNAME] + _APPLIST_SEP + \
@@ -818,18 +784,20 @@ class AppDownload:
                         comp_set = comps.split(",")
                         for comp_name in comp_set:
                             comp_name = comp_name.strip()
-                            filename = _APPLIST_PREFIX + comp_name + _APPLIST_EXT
+                            filename = _APPLIST_PREFIX + comp_name + \
+                                       _APPLIST_EXT
                             filename = os.path.join(store_path, filename)
                             if comp_name not in app_set_file:
                                 file = open(filename, "w+t")
                                 app_set_file[comp_name] = file
                                 _logger.info(
-                                    "'{0}' applist file created -> '{1}'.".format(
-                                        comp_name, filename
-                                    )
+                                    "'{0}' applist file created -> '{1}'."
+                                        .format(comp_name, filename)
                                 )
-                                dt = (datetime.datetime.now()).replace(microsecond=0)
-                                file.write(header.format(dt.isoformat(), comp_name))
+                                dt = (datetime.datetime.now())\
+                                    .replace(microsecond=0)
+                                file.write(header.format(dt.isoformat(),
+                                                         comp_name))
                             else:
                                 file = app_set_file[comp_name]
                             file.write(app_line + "\n")
@@ -849,14 +817,16 @@ class AppDownload:
 
 def _load_config(filename):
     """
-    Load the configuration from a configuration file (see [`config.parser`]
-    (https://docs.python.org/3/library/configparser.html#module-configparser)
+    Load the configuration from a configuration file. (see `config.parser`)
 
     The configuration is stored in a dictionary with the same structure as the
     configuration file.
 
-    :param filename: is the full path name of the configuration file.
-    :return: a dictionary containing the configuration.
+    Args:
+        filename (str): The full path name of the configuration file.
+
+    Returns:
+        dict: Contains the configuration.
     """
     config = configparser.ConfigParser()
     with open(filename) as file:

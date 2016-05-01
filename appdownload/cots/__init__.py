@@ -1,9 +1,8 @@
 """
-This package defines modules which implements the product handler used to check
-if a new version of the product is available and eventually download it.
-system for applications and libraries.
+This package is the place where the product handler are defined. A product
+handler tracks a :term:`product` based on the editor's information sources and
+fetches the update installer.
 """
-
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"

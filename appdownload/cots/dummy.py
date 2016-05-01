@@ -1,17 +1,15 @@
 """
-This module defines functions and classes for a dummy product handler.
+This module is a dummy product handler. It provides as an example of
+implementation.
 
-Classes
-    Product : dummy product class
 
-Exceptions
-    None
+Public Classes
+==============
+This module has only one public class.
 
-Functions
-    None
-
-Constants
-    None
+===================================  ===================================
+:class:`Product`                     ..
+===================================  ===================================
 """
 
 
@@ -37,30 +35,29 @@ _logger.addHandler(logging.NullHandler())
 
 class Product(core.BaseProduct):
     """
-    Dummy product class.
+    Dummy product handler.
 
-    Public instance variables
-        Same as `core.BaseProduct`.
+    This concrete class implements the tracking mechanism for a dummy
+    product. So most of information are in the :mod:`core` and more particularly
+    in the `BaseProduct` class documentation. The information blow focuses on
+    the added value of this class.
 
-    Public methods
-        Same as `core.BaseProduct`.
+    **Overridden Methods**
+        This class is a concrete class, so the overridden methods are listed
+        below in alphabetical order.
 
-    Subclass API variables (i.e. may be use by subclass)
-        None
-
-    Subclass API Methods (i.e. must be overwritten by subclass)
-        None
+        ===================================  ===================================
+        `_get_description`                   `_get_release_note`
+        `_get_display_name`                  `_get_silent_inst_args`
+        `_get_editor`                        `_get_std_inst_args`
+        `_get_file_size`                     `_get_target`
+        `_get_hash`                          `_get_url`
+        `_get_icon`                          `_get_version`
+        `_get_name`                          `_parse_catalog`
+        `_get_published`                     ..
+        ===================================  ===================================
     """
     def __init__(self):
-        """
-        Constructor
-
-        Parameters
-            None
-
-        Exception
-            None
-        """
         super().__init__()
 
         # At this point, only name and catalog url are known.
@@ -71,22 +68,22 @@ class Product(core.BaseProduct):
 
     def is_update(self, product):
         """
-        Return if this instance is an update of product
+        Return if this instance is an update of product.
 
         This method compare the version of the two product, and return the
         comparison result. The version numbers used by the editor are compliant
-        with the semantic versioning specification 2.0.0 (see `semver`module)
+        with the semantic versioning specification 2.0.0 (see `cots.semver`
+        module)
 
-        Parameters
-            :param product: is the reference product (i.e. the deployed product)
+        Args:
+            product (BaseProduct): The reference product (i.e. the deployed one)
 
-        Exceptions
-            `semver` module exception raised by the rich comparison method of
-            SemVer class.
+        Returns:
+            bool: True if this instance is an update of the product specified
+                by the `product` parameter.
 
-        Returns
-            :return: true if this instance is an update of the product specified
-            by the `product` parameter.
+        Raises:
+            TypeError: Parameters type mismatch.
         """
         # check parameters type
         if not isinstance(product, Product):
@@ -109,9 +106,11 @@ class Product(core.BaseProduct):
         """
         Parse the catalog.
 
+        This method parses the downloaded product catalog to prepare
+        ``_get_...`` methods call.
+
         Parameters
-            :param filename: is a string specifying the local name of the
-            downloaded product catalog.
+            filename (str): The local name of the downloaded product catalog.
          """
         _logger.debug(filename)
 
