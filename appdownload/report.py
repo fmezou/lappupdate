@@ -203,6 +203,7 @@ class Report:
         self._charset = "utf-8"
         self._handlers = []
         self._separator = ""
+        self._clear_template()
 
         msg = "Instance of {} created."
         _logger.debug(msg.format(self.__class__))
@@ -426,8 +427,8 @@ class Report:
                   "text/plain."
             _logger.warning(msg.format(os.path.basename(template)))
 
+        self._clear_template()  # clean up the template before replacing
         name = self.names[0]
-        self._template[name] = ""
         with open(template) as file:
             for line in file:
                 match = self._re.match(line)
@@ -446,6 +447,16 @@ class Report:
                         # its content is simply added to the current section
                         msg = "'{}' is not a well-know section. Line ignored"
                         _logger.warning(msg.format(name))
+
+    def _clear_template(self):
+        """
+        Clear the template.
+        """
+        self._subtype = "plain"
+        self._charset = "utf-8"
+        self._template.clear()
+        for name in self.names:
+            self._template[name] = ""
 
 
 class BaseHandler:
