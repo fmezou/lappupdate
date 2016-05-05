@@ -3,9 +3,9 @@
 .. default-role:: any
 
 
-`cots.report` -- Reporting Manager
+:mod:`report` -- Reporting Manager
 ==================================
-.. automodule:: cots.report
+.. automodule:: report
     :platform: all
     :synopsis: Reporting Manager
 
