@@ -11,7 +11,7 @@ and the product handlers grouped in the `cots` package.
 .. toctree::
     :maxdepth: 1
 
-    cots/report
+    report
     cots/pad
     cots/progressbar
     cots/semver

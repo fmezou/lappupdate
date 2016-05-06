@@ -1,13 +1,5 @@
-<!-- $lau:HeaderStart$ -->
-<!-- $lau:Title$ -->
-<!-- $lau:HeaderEnd$ -->
 <!-- $lau:BodyStart$ -->
 On {date}, products below have available updates.
-<!-- $lau:TOCStart$ -->
---------------------------------------------------------------------------------
-<!-- $lau:TOCEntry$ -->
- - {name} {version} released on {published}
-<!-- $lau:TOCEnd$ -->
 --------------------------------------------------------------------------------
 <!-- $lau:SummaryStart$ -->
 <!-- $lau:SummaryEntry$ -->
@@ -28,4 +20,3 @@ Product information
 Published by {editor}, {description}
 <!-- $lau:SummaryEnd$ -->
 <!-- $lau:BodyEnd$ -->
-<!-- $lau:Tail$ -->

@@ -10,7 +10,7 @@ import smtplib
 import socket
 import traceback
 
-from cots import report
+import report
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0"
@@ -48,6 +48,30 @@ def test_api_default():
 
     a_report.add_section(content_attributes)
     a_report.publish()
+
+    return True
+
+
+def test_multiple_report():
+    """
+    Make reports using multiple templates based on default values and write
+    it in files.
+    """
+    a_report = report.Report()
+    a_report.set_template()
+    a_report.set_attributes(report_attributes)
+
+    a_handler = report.FileHandler()
+    a_handler.set_filename("./tempstore/report.html")
+    a_report.add_handler(a_handler)
+
+    a_report.add_section(content_attributes)
+    a_report.publish()
+
+    a_report.set_template("report_template.txt")
+    a_handler.set_filename("./tempstore/report.txt")
+    a_report.publish()
+
 
     return True
 
@@ -383,16 +407,17 @@ modules = [
 # Declare the unitary function test to execute
 # The False value specifies that the function test will be ignored.
 tests = [
-    [test_api_default, True],
-    [test_api_custom, True],
-    [test_ini_default, True],
-    [test_ini_custom, True],
-    [test_api_host_connect_error, True],
-    [test_api_host_error, True],
-    [test_api_to_addr_error, True],
-    [test_api_from_addr_error, True],
-    [test_api_mail_folder_error, True],
-    [test_api_file_folder_error, True],
+    [test_api_default, False],
+    [test_multiple_report, True],
+    [test_api_custom, False],
+    [test_ini_default, False],
+    [test_ini_custom, False],
+    [test_api_host_connect_error, False],
+    [test_api_host_error, False],
+    [test_api_to_addr_error, False],
+    [test_api_from_addr_error, False],
+    [test_api_mail_folder_error, False],
+    [test_api_file_folder_error, False],
     [final, True]
 ]
 
@@ -401,14 +426,20 @@ if __name__ == "__main__":
 
     content_attributes = {
         "name": "Dummy Product",
-        "editor": "Dummy Company, SA",
+        "editor": "Example. inc",
         "description": "Dummy product is a amazing tool to do nothing",
         "version": "0.1.0+dummy",
+        "display_name": "Dummy Product (1.0.1)",
         "url": "http://download.exemple.com/dummy/installer.exe",
         "installer": "./store/installer_0.1.0+dummy.exe",
         "release_note": "http://download.exemple.com/dummy/release_note.html",
         "published": "2016-02-18",
-        "file_size": 12345689
+        "file_size": 12345689,
+        "icon": "",
+        "secure_hash": ("sha256", "4a404b0d09dfd3952107e314ab63262293b2fb0a4dc6837b57fb7274bd016865"),
+        "silent_inst_args": "/silent",
+        "std_inst_args": "",
+        "target": "unified",
     }
     report_attributes = {
         "title": "title of the report"  # not used
