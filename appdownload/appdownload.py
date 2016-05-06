@@ -111,7 +111,7 @@ import logging
 import logging.config
 import json
 
-from cots import report
+import report
 
 
 __author__ = "Frederic MEZOU"
