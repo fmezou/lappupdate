@@ -62,7 +62,7 @@ author = "Frederic MEZOU"
 # built documents.
 #
 # The short X.Y version.
-version = "0.1.0-dev"
+version = "0.1"
 # The full version, including alpha/beta/rc tags.
 release = "0.1.0-dev"
 
@@ -121,7 +121,7 @@ html_theme = "alabaster"
 # Theme options, see the documentation.
 #  https://pypi.python.org/pypi/alabaster
 html_theme_options = {
-    "description": "Lightweight application update",
+    "description": "Lightweight application update<br>{}".format(release),
     "github_button": True,
     "github_user": "fmezou",
     "github_repo": "lappupdate",
