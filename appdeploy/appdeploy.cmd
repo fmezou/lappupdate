@@ -220,7 +220,10 @@ call :WriteInfoLog Building the application list...
 set APPLIST_PREFIX=applist-
 set APPLIST=%TEMP%\applist.txt
 if exist "%APPLIST%" del "%APPLIST%"
-copy /Y "%APP_STORE_DIR%\%APPLIST_PREFIX%all.txt" "%APPLIST%" >nul
+echo.>> "%APPLIST%"
+if exist "%APP_STORE_DIR%\%APPLIST_PREFIX%all.txt" (
+    copy /Y "%APP_STORE_DIR%\%APPLIST_PREFIX%all.txt" "%APPLIST%" >nul
+)
 if "%SETNAME%"=="" goto :SkipSet
 if exist "%APP_STORE_DIR%\%APPLIST_PREFIX%%SETNAME%.txt" (
     echo.>> "%APPLIST%"
