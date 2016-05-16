@@ -765,15 +765,39 @@ class AppDownload:
             "-----------------\n"
 
         # Clean up the obsolete applist files
-        for entry in os.scandir(self._config[_CORE_SNAME][_STORE_KNAME]):
+        store_path = self._config[_CORE_SNAME][_STORE_KNAME]
+        for entry in os.scandir(store_path):
             if entry.name.startswith(_APPLIST_PREFIX) \
                     and entry.name.endswith(_APPLIST_EXT) \
                     and entry.is_file():
-                _logger.debug(
-                    "Deleting obsolete applist file : '{}'.".format(entry.name)
-                )
+                msg = "Deleting obsolete applist file : '{}'."
+                _logger.debug(msg.format(entry.name))
                 os.unlink(entry.path)
         _logger.info("Applist files cleaned up.")
+
+        # Create the new applist files based on the 'sets' section of the
+        # configuration file. All the applist files is going to be created
+        # and should be empty.
+        for named_set in self._config[_SETS_SNAME]:
+            comps = self._config[_SETS_SNAME][named_set]
+            for comp_name in comps.split(","):
+                comp_name = comp_name.strip()
+                if comp_name:
+                    filename = _APPLIST_PREFIX + comp_name + _APPLIST_EXT
+                    filename = os.path.join(store_path, filename)
+                    if comp_name not in app_set_file:
+                        file = open(filename, "w+t")
+                        app_set_file[comp_name] = file
+                        msg = "'{0}' applist file created -> '{1}'."
+                        _logger.debug(msg.format(comp_name, filename))
+                        dt = (datetime.datetime.now()).replace(microsecond=0)
+                        file.write(header.format(dt.isoformat(), comp_name))
+                    else:
+                        msg = "'{}' applist file already exist."
+                        _logger.debug(msg.format(comp_name))
+                else:
+                    msg = "Set '{}' contains no names or an empty one."
+                    _logger.warning(msg.format(named_set))
 
         for app_id in self._config[_APPS_SNAME]:
             if self._config[_APPS_SNAME].getboolean(app_id):
@@ -789,29 +813,11 @@ class AppDownload:
                             app[_PROD_INSTALLER_KNAME] + _APPLIST_SEP + \
                             app[_PROD_SILENT_INSTALL_ARGS_KNAME]
 
-                        store_path = self._config[_CORE_SNAME][_STORE_KNAME]
                         app_set_name = self._config[app_id][_SET_KNAME]
                         comps = self._config[_SETS_SNAME][app_set_name]
-                        comp_set = comps.split(",")
-                        for comp_name in comp_set:
+                        for comp_name in comps.split(","):
                             comp_name = comp_name.strip()
-                            filename = _APPLIST_PREFIX + comp_name + \
-                                       _APPLIST_EXT
-                            filename = os.path.join(store_path, filename)
-                            if comp_name not in app_set_file:
-                                file = open(filename, "w+t")
-                                app_set_file[comp_name] = file
-                                _logger.info(
-                                    "'{0}' applist file created -> '{1}'."
-                                        .format(comp_name, filename)
-                                )
-                                dt = (datetime.datetime.now())\
-                                    .replace(microsecond=0)
-                                file.write(header.format(dt.isoformat(),
-                                                         comp_name))
-                            else:
-                                file = app_set_file[comp_name]
-                            file.write(app_line + "\n")
+                            app_set_file[comp_name].write(app_line + "\n")
                     else:
                         msg = "The product '{0}' is not approved."
                         _logger.info(msg.format(app_id))
