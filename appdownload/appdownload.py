@@ -764,6 +764,17 @@ class AppDownload:
             "# -------------------------------------------------------------" \
             "-----------------\n"
 
+        # Clean up the obsolete applist files
+        for entry in os.scandir(self._config[_CORE_SNAME][_STORE_KNAME]):
+            if entry.name.startswith(_APPLIST_PREFIX) \
+                    and entry.name.endswith(_APPLIST_EXT) \
+                    and entry.is_file():
+                _logger.debug(
+                    "Deleting obsolete applist file : '{}'.".format(entry.name)
+                )
+                os.unlink(entry.path)
+        _logger.info("Applist files cleaned up.")
+
         for app_id in self._config[_APPS_SNAME]:
             if self._config[_APPS_SNAME].getboolean(app_id):
                 if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
