@@ -1,13 +1,14 @@
 created: 20150531151544121
 creator: fmezou
-modified: 20150603204343312
+modified: 20160516140903536
 modifier: fmezou
 tags: How-to
 title: How to build the application list
+type: text/vnd.tiddlywiki
 
-The [[appdeploy]] script uses two [[applist]] files to verify which applications were installed and if it needs to be updated: the first one is named <<file applist-all.txt>> and ''must be exist'' even if it is empty; the second is named  <<file applist-&lt;set&gt;.txt>> where `<set>` is the argument passed to appdeploy on the command line (e.g. `.\appdeploy dummy`).
+The [[appdeploy]] script uses two [[applist]] files to verify which applications were installed and if it needs to be updated: the first one is named <<file applist-all.txt>>; the second is named  <<file applist-&lt;set&gt;.txt>> where `<set>` is the argument passed to appdeploy on the command line (e.g. `.\appdeploy dummy`).
 
-<<note "applist file may be empty including applist-all.txt.">>
+<<note "applist files may be empty including applist-all.txt.">>
 
 These files are [[text file|http://en.wikipedia.org/wiki/Text_file]] complying with the [[Windows standard|http://en.wikipedia.org/wiki/Text_file#Standard_Windows_.txt_files]]. So you can use any text editor (e.g. notepad, notepad++, vim...) to edit them. 
 

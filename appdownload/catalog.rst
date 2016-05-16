@@ -122,8 +122,7 @@ Example
                 },
                 "fetched": {},
                 "pulled": {}
-            },
-            ....
+            }
         }
     }
 
