@@ -17,3 +17,8 @@ This section details the objects defined in this module.
     :members:
     :private-members:
     :show-inheritance:
+
+.. autoclass:: ReleaseNotesParser
+    :members:
+    :private-members:
+    :show-inheritance:

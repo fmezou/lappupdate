@@ -295,12 +295,13 @@ class Product(core.BaseProduct):
         """
         self.release_note = "http://www.makemkv.com/download/history.html"
 
+        # TODO: remove reading from a file
         # url="http://www.makemkv.com/download/history.html"
         # local_filename = core.retrieve_tempfile(url)
         local_filename = r".\MakeMKV - Revision history.html"
         # print("History downloaded: '{0}'".format(local_filename))
 
-        parser = MyHTMLParser()
+        parser = ReleaseNotesParser()
 
         with open(local_filename) as file:
             parser.feed(file.read())
@@ -335,45 +336,24 @@ _title_re = re.compile("^MakeMKV v(?P<version>(([0-9]+\.)+([0-9]+)))"
                        "|(\s+build\s+(?P<build>[0-9]+))?)$")
 
 
-class MyHTMLParser(HTMLParser):
+class ReleaseNotesParser(HTMLParser):
     """
-    Null
-     |
-     | <div id="content">
-     v
-    Content --------------------
-     |                         |
-     | <ul class="bullets">    | </div>
-     v                         v
-    Title -------              Null
-     |          |
-     | <li>     | </ul>
-     |          v
-     v          Content
-    Release ---------
-     |              |
-     | _title_re    | !title_re
-     v              v
-    Notes          Ignore
-     |              |
-     |              | <ul class="bullets2">
-     |              v
-                    NotRecording ----------------------------------------
-                     |                     |                          |
-                     | </ul> and _ul=0     | <ul>                     | </ul> and _ul!=0
-                     v                     v                          v
-                     Title              NotRecording _ul+=1           NotRecording _ul-=1
-     |
-     |
-     |
-     |
-     | <ul class="bullets2">
-     v
-    Recording ----------------------------------------
-     |                     |                          |
-     | </ul> and _ul=0     | <ul>                     | </ul> and _ul!=0
-     v                     v                          v
-     Title              Recording _ul+=1             Recording _ul-=1
+
+    The figure below is the state graph of the parser.
+
+    .. digraph:: parsing
+
+         NULL -> CONTENT [label = <div id=content>];
+         CONTENT -> RELEASES_LIST [label = _is_releases_list_beginning];
+         CONTENT -> NULL [label = _is_content_ending];
+         RELEASES_LIST -> CONTENT [label = _is_releases_list_ending];
+         RELEASES_LIST -> RELEASE_ID [label = _is_release_id_beginning];
+         RELEASE_ID -> RELEASE_NOTES [label = _is_expected_release];
+         RELEASE_ID -> IGNORE [label = _is_unknown_release];
+         RELEASE_NOTES -> FETCHING [label = _is_release_notes_beginning];
+         FETCHING -> RELEASES_LIST [label = _is_release_notes_ending];
+         IGNORE -> IGNORE [label = _is_release_notes_beginning];
+         IGNORE -> RELEASES_LIST [label = _is_release_notes_ending];
     """
     # Scheduler's state
     _STATE_NULL = 0
@@ -497,13 +477,13 @@ class MyHTMLParser(HTMLParser):
             data (str): The tag identifier (i.e. ul) or the text.
             attributes (dict):  The attributes of the tag.
             first (boolean, optional): Indicate if it's the first call of the
-            actuating function (i.e. just after a state change (see
-            `_set_state`) including if it's the same state). False is the
-            default.
+                actuating function (i.e. just after a state change (see
+                `_set_state`) including if it's the same state). False is the
+                default.
             last (boolean, optional): Indicate if it's the last call of the
-            actuating function (i.e. just before a state change (see
-            `_set_state`) including if it's the same state). False is the
-            default.
+                actuating function (i.e. just before a state change (see
+                `_set_state`) including if it's the same state). False is the
+                default.
         """
         pass
 
@@ -617,13 +597,13 @@ class MyHTMLParser(HTMLParser):
             data (str): The tag identifier (i.e. ul) or the text.
             attributes (dict):  The attributes of the tag.
             first (boolean, optional): Indicate if it's the first call of the
-            actuating function (i.e. just after a state change (see
-            `_set_state`) including if it's the same state). False is the
-            default.
+                actuating function (i.e. just after a state change (see
+                `_set_state`) including if it's the same state). False is the
+                default.
             last (boolean, optional): Indicate if it's the last call of the
-            actuating function (i.e. just before a state change (see
-            `_set_state`) including if it's the same state). False is the
-            default.
+                actuating function (i.e. just before a state change (see
+                `_set_state`) including if it's the same state). False is the
+                default.
         """
         if first:
             self._release = ""
@@ -724,13 +704,13 @@ class MyHTMLParser(HTMLParser):
             data (str): The tag identifier (i.e. ul) or the text.
             attributes (dict):  The attributes of the tag.
             first (boolean, optional): Indicate if it's the first call of the
-            actuating function (i.e. just after a state change (see
-            `_set_state`) including if it's the same state). False is the
-            default.
+                actuating function (i.e. just after a state change (see
+                `_set_state`) including if it's the same state). False is the
+                default.
             last (boolean, optional): Indicate if it's the last call of the
-            actuating function (i.e. just before a state change (see
-            `_set_state`) including if it's the same state). False is the
-            default.
+                actuating function (i.e. just before a state change (see
+                `_set_state`) including if it's the same state). False is the
+                default.
         """
         if first:
             self._release_notes = ""
