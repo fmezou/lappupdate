@@ -7,7 +7,7 @@ if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
 )
 if "%SPHINXOPTS%" == "" (
-	set SPHINXOPTS=-D graphviz_dot="C:\Program Files (x86)\Graphviz\bin\dot.exe"
+	set SPHINXOPTS=-D graphviz_dot="C:\Program Files (x86)\Graphviz2.38\bin\dot.exe"
 )
 set BUILDDIR=_build
 set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% .
