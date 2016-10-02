@@ -457,7 +457,7 @@ class ReleaseNotesParser(HTMLParser):
         if version is not None:
             self._deployed = semver.SemVer(version)
         else:
-            self._deployed = None
+            self._deployed = semver.SemVer("0.0.0")
         self.changelog = []
 
     def _process_event(self, event, data, attributes):
