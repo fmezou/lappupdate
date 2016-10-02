@@ -5,10 +5,10 @@ GuinpinSoft inc. The `user manual`_ details information about it.
 
 Public Classes
 ==============
-This module has only one public class.
+This module has several public class listed below in alphabetical order.
 
 ===================================  ===================================
-:class:`Product`                     ..
+:class:`Product`                     `ReleaseNotesParser`
 ===================================  ===================================
 
 
@@ -289,9 +289,14 @@ class Product(core.BaseProduct):
         msg = "Target :'{0}'"
         _logger.debug(msg.format(self.icon))
 
-    def _get_release_note(self):
+    def _get_release_note(self, version=None):
         """
         Extract the release note’s URL from the PAD File.
+
+        Args:
+            version (str): The version of the reference product (i.e. the
+                deployed product). It'a string following the editor versioning
+                rules.
         """
         self.release_note = "http://www.makemkv.com/download/history.html"
 
@@ -301,11 +306,13 @@ class Product(core.BaseProduct):
         local_filename = r".\MakeMKV - Revision history.html"
         # print("History downloaded: '{0}'".format(local_filename))
 
-        parser = ReleaseNotesParser()
+        parser = ReleaseNotesParser(version)
 
         with open(local_filename) as file:
             parser.feed(file.read())
-
+        # TODO: use the result of the persin
+        print(parser.changelog)
+        # mettre dans des attibut une table avec version, date, notes
         # os.unlink(local_filename)
 
 
@@ -338,6 +345,15 @@ _title_re = re.compile("^MakeMKV v(?P<version>(([0-9]+\.)+([0-9]+)))"
 
 class ReleaseNotesParser(HTMLParser):
     """
+    MakeMKV release notes parser.
+
+    This concrete class parses release notes and extracts notes from the
+    deployed version (see `version` argument) to the current version.
+
+    Args:
+        version (str): The version of the reference product (i.e. the
+            deployed product). It'a string following the editor versioning
+            rules.
 
     The figure below is the state graph of the parser.
 
@@ -348,8 +364,8 @@ class ReleaseNotesParser(HTMLParser):
          CONTENT -> NULL [label = _is_content_ending];
          RELEASES_LIST -> CONTENT [label = _is_releases_list_ending];
          RELEASES_LIST -> RELEASE_ID [label = _is_release_id_beginning];
-         RELEASE_ID -> RELEASE_NOTES [label = _is_expected_release];
-         RELEASE_ID -> IGNORE [label = _is_unknown_release];
+         RELEASE_ID -> RELEASE_NOTES [label = _is_new_release];
+         RELEASE_ID -> IGNORE [label = _is_old_or_unknown_release];
          RELEASE_NOTES -> FETCHING [label = _is_release_notes_beginning];
          FETCHING -> RELEASES_LIST [label = _is_release_notes_ending];
          IGNORE -> IGNORE [label = _is_release_notes_beginning];
@@ -372,7 +388,13 @@ class ReleaseNotesParser(HTMLParser):
 
     # todo : make the automate graph considering the approved version (capture delta)
 
-    def __init__(self):
+    def __init__(self, version=None):
+        # check parameters type
+        if version is not None and not isinstance(version, str):
+            msg = "version argument must be a class 'str' or None. not {0}"
+            msg = msg.format(version.__class__)
+            raise TypeError(msg)
+
         super().__init__()
 
         self._state = self._STATE_NULL
@@ -400,8 +422,8 @@ class ReleaseNotesParser(HTMLParser):
             ],
             self._STATE_RELEASE_ID: [
                 self._release_id_fetching, [
-                    (self._is_expected_release, self._STATE_RELEASE_NOTES),
-                    (self._is_unknown_release, self._STATE_IGNORE)
+                    (self._is_new_release, self._STATE_RELEASE_NOTES),
+                    (self._is_old_or_unknown_release, self._STATE_IGNORE),
                 ]
             ],
             self._STATE_RELEASE_NOTES: [
@@ -430,6 +452,13 @@ class ReleaseNotesParser(HTMLParser):
         self._tag_depth = 0
         self._depth_map = {}
         self._release_id = None
+        self._version = None
+        self._published = ""
+        if version is not None:
+            self._deployed = semver.SemVer(version)
+        else:
+            self._deployed = None
+        self.changelog = []
 
     def _process_event(self, event, data, attributes):
         """
@@ -462,7 +491,7 @@ class ReleaseNotesParser(HTMLParser):
         Args:
             state (int): The state identifier.
         """
-        print("State {} -> {}".format(self._state, state))
+        # print("State {} -> {}".format(self._state, state))
         self._actuating = self._sched_map[state][0]
         self._transitions = self._sched_map[state][1]
         self._state = state
@@ -611,27 +640,7 @@ class ReleaseNotesParser(HTMLParser):
         if event == self._DATA_EVT:
             self._release += data
 
-        if last:
-            if self._release_id:
-                if self._release_id.group("date"):
-                    pubdate = self._release_id.group("date").split(".")
-                    dt = datetime.date(int(pubdate[2]), int(pubdate[1]),
-                                       int(pubdate[0]))
-                else:
-                    dt = None
-                ver_id = self._release_id.group("version").split(".")
-                ver = "{}.{}.0".format(int(ver_id[0]), int(ver_id[1]))
-                if len(ver_id) == 3:
-                    ver = "{}.{}.{}".format(int(ver_id[0]), int(ver_id[1]),
-                                            int(ver_id[2]))
-                if self._release_id.group("build"):
-                    ver += "+{}".format(self._release_id.group("build"))
-                version = semver.SemVer(ver)
-                print("MakeMKV", version, dt)
-            else:
-                print("ERROR Unknown MakeMKV")
-
-    def _is_expected_release(self, event, data, attributes):
+    def _is_new_release(self, event, data, attributes):
         """
 
         Args:
@@ -646,13 +655,14 @@ class ReleaseNotesParser(HTMLParser):
 
         if event == self._END_TAG_EVT and data == "li":
             if self._depth_map["release_id"] == self._tag_depth:
-                self._release_id = _title_re.match(self._release)
+                self._release_id_computing()
                 if self._release_id:
-                    verified = True
+                    if self._version > self._deployed:
+                        verified = True
 
         return verified
 
-    def _is_unknown_release(self, event, data, attributes):
+    def _is_old_or_unknown_release(self, event, data, attributes):
         """
 
         Args:
@@ -667,11 +677,37 @@ class ReleaseNotesParser(HTMLParser):
 
         if event == self._END_TAG_EVT and data == "li":
             if self._depth_map["release_id"] == self._tag_depth:
-                self._release_id = _title_re.match(self._release)
+                self._release_id_computing()
                 if not self._release_id:
                     verified = True
+                else:
+                    if not (self._version > self._deployed):
+                        verified = True
 
         return verified
+
+    def _release_id_computing(self):
+        """
+        Release id computing.
+
+        """
+        self._release_id = _title_re.match(self._release)
+        if self._release_id:
+            if self._release_id.group("date"):
+                pubdate = self._release_id.group("date").split(".")
+                self._published = datetime.date(int(pubdate[2]),
+                                                int(pubdate[1]),
+                                                int(pubdate[0]))
+            else:
+                self._published = None
+            ver_id = self._release_id.group("version").split(".")
+            ver = "{}.{}.0".format(int(ver_id[0]), int(ver_id[1]))
+            if len(ver_id) == 3:
+                ver = "{}.{}.{}".format(int(ver_id[0]), int(ver_id[1]),
+                                        int(ver_id[2]))
+            if self._release_id.group("build"):
+                ver += "+{}".format(self._release_id.group("build"))
+            self._version = semver.SemVer(ver)
 
     def _is_release_notes_beginning(self, event, data, attributes):
         """
@@ -723,7 +759,9 @@ class ReleaseNotesParser(HTMLParser):
             self._release_notes += "</{}>".format(data)
 
         if last:
-            print(self._release_notes)
+            self.changelog.append((self._version,
+                                   self._published,
+                                   self._release_notes))
 
     def _is_release_notes_ending(self, event, data, attributes):
         """
