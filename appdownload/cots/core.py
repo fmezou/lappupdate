@@ -725,7 +725,11 @@ def _retrieve_file(url, file,
     msg = "Retrieve '{}'"
     _logger.debug(msg.format(url))
 
-    with contextlib.closing(urllib.request.urlopen(url)) as stream:
+    # some web servers refuse to deliver pages when the user-agent is set to
+    # 'Python-urllib'. So the user-agent is set to the name of the project.
+    headers = {"User-Agent": "lAppUpdate/0.1"}
+    request = urllib.request.Request(url, headers=headers)
+    with contextlib.closing(urllib.request.urlopen(request)) as stream:
         headers = stream.info()
         # Check the expected content
         if "Content-Type" in headers and content_type is not None:
