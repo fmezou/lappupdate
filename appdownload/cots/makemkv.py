@@ -303,7 +303,7 @@ class Product(core.BaseProduct):
         # TODO: remove reading from a file
         # url="http://www.makemkv.com/download/history.html"
         # local_filename = core.retrieve_tempfile(url)
-        local_filename = r".\MakeMKV - Revision history.html"
+        local_filename = r".\history.html"
         # print("History downloaded: '{0}'".format(local_filename))
 
         parser = ReleaseNotesParser(version)
@@ -347,46 +347,79 @@ class ReleaseNotesParser(HTMLParser):
     """
     MakeMKV release notes parser.
 
-    This concrete class parses release notes and extracts notes from the
-    deployed version (see `version` argument) to the current version.
+    This concrete class parses release notes and extracts notes since the
+    deployed version.
 
     Args:
-        version (str): The version of the reference product (i.e. the
-            deployed product). It'a string following the editor versioning
-            rules.
+        version (str): The version of the deployed product. It's a string
+            following the editor versioning rules.
 
-    The figure below is the state graph of the parser.
 
-    .. digraph:: parsing
+    Attributes:
+        changelog (list): The changelog of the product since the deployed
+            product (see ``version`` argument). It is a list of 3-tuple
+            containing, in this order, the version (as a `SemVer` object), the
+            date of the installer’s publication (as a `datetime.date` object)
+            and the release note (as a string) using a simple HTML syntax
+            (nested unordered list) as shown below.
 
-         NULL -> CONTENT [label = <div id=content>];
-         CONTENT -> RELEASES_LIST [label = _is_releases_list_beginning];
-         CONTENT -> NULL [label = _is_content_ending];
-         RELEASES_LIST -> CONTENT [label = _is_releases_list_ending];
-         RELEASES_LIST -> RELEASE_ID [label = _is_release_id_beginning];
-         RELEASE_ID -> RELEASE_NOTES [label = _is_new_release];
-         RELEASE_ID -> IGNORE [label = _is_old_or_unknown_release];
-         RELEASE_NOTES -> FETCHING [label = _is_release_notes_beginning];
-         FETCHING -> RELEASES_LIST [label = _is_release_notes_ending];
-         IGNORE -> IGNORE [label = _is_release_notes_beginning];
-         IGNORE -> RELEASES_LIST [label = _is_release_notes_ending];
+            .. code-block:: html
+
+                <ul>
+                <li>Added support for AACS v60</li>
+                <li>Small miscellaneous improvements and bugfixes</li>
+                </ul>
+
+
+    **Using ReleaseNotesParser...**
+        The main purpose of this class is to parse the `revision history
+        <http://www.makemkv.com/download/history.html>`_ and fulfills the
+        `changelog` attribute. So the using is limited to create class instance
+        and call the :meth:`.feed` method with the content of the revision
+        history file.
+
+        Examples
+            .. code-block:: python
+
+                from cots.makemkv import ReleaseNotesParser
+                parser = ReleaseNotesParser("1.9.8")
+                with open(r".\history.html") as file:
+                    parser.feed(file.read())
+                print(parser.changelog)
+
+
+    **Inside ReleaseNotesParser...**
+        This class is a derived class from `html.parser.HTMLParser` by adding a
+        scheduler to parse the HTML content. The figure below is the parser's
+        state graph.
+
+        .. digraph:: parsing
+
+             NULL -> CONTENT [label = <div id=content>];
+             CONTENT -> RELEASES_LIST [label = _is_releases_list_beginning];
+             CONTENT -> NULL [label = _is_content_ending];
+             RELEASES_LIST -> CONTENT [label = _is_releases_list_ending];
+             RELEASES_LIST -> RELEASE_ID [label = _is_release_id_beginning];
+             RELEASE_ID -> RELEASE_NOTES [label = _is_new_release];
+             RELEASE_ID -> IGNORE [label = _is_old_or_unknown_release];
+             RELEASE_NOTES -> FETCHING [label = _is_release_notes_beginning];
+             FETCHING -> RELEASES_LIST [label = _is_release_notes_ending];
+             IGNORE -> IGNORE [label = _is_release_notes_beginning];
+             IGNORE -> RELEASES_LIST [label = _is_release_notes_ending];
     """
     # Scheduler's state
-    _STATE_NULL = 0
-    _STATE_CONTENT = 1
-    _STATE_RELEASES_LIST = 2
-    _STATE_RELEASE_ID = 3
-    _STATE_RELEASE_NOTES = 4
-    _STATE_FETCHING = 5
-    _STATE_IGNORE =6
-    _STATE_NOT_RECORDING = 7
+    _STATE_NULL = "NULL"
+    _STATE_CONTENT = "CONTENT"
+    _STATE_RELEASES_LIST = "RELEASES_LIST"
+    _STATE_RELEASE_ID = "RELEASE_ID"
+    _STATE_RELEASE_NOTES = "RELEASE_NOTES"
+    _STATE_FETCHING = "FETCHING"
+    _STATE_IGNORE = "IGNORE"
 
     # Events
     _START_TAG_EVT = 0
     _END_TAG_EVT = 1
     _DATA_EVT = 2
-
-    # todo : make the automate graph considering the approved version (capture delta)
 
     def __init__(self, version=None):
         # check parameters type
@@ -396,12 +429,10 @@ class ReleaseNotesParser(HTMLParser):
             raise TypeError(msg)
 
         super().__init__()
+        self.changelog = []
 
         self._state = self._STATE_NULL
         self._ul_count = 0
-
-        self.note = ""
-
         self._sched_map = {
             self._STATE_NULL: [
                 self._null_actuating, [
@@ -458,7 +489,9 @@ class ReleaseNotesParser(HTMLParser):
             self._deployed = semver.SemVer(version)
         else:
             self._deployed = semver.SemVer("0.0.0")
-        self.changelog = []
+
+        msg = "Instance of {} created."
+        _logger.debug(msg.format(self.__class__))
 
     def _process_event(self, event, data, attributes):
         """
@@ -489,9 +522,11 @@ class ReleaseNotesParser(HTMLParser):
         Set the state
 
         Args:
-            state (int): The state identifier.
+            state (str): The state identifier.
         """
-        # print("State {} -> {}".format(self._state, state))
+        msg = "State {} -> {}"
+        _logger.debug(msg.format(self._state, state))
+
         self._actuating = self._sched_map[state][0]
         self._transitions = self._sched_map[state][1]
         self._state = state
@@ -783,9 +818,6 @@ class ReleaseNotesParser(HTMLParser):
         return verified
 
     def handle_starttag(self, tag, attrs):
-        """
-        https://docs.python.org/3/library/html.parser.html#html.parser.HTMLParser.handle_starttag
-        """
         attributes = {}
         for attr in attrs:
             attributes[attr[0]] = attr[1]
@@ -796,21 +828,3 @@ class ReleaseNotesParser(HTMLParser):
 
     def handle_data(self, data):
         self._process_event(self._DATA_EVT, data, None)
-
-    # def handle_comment(self, data):
-    #     print("Comment  :", data)
-    #
-    # def handle_entityref(self, name):
-    #     c = chr(name2codepoint[name])
-    #     print("Named ent:", c)
-    #
-    # def handle_charref(self, name):
-    #     if name.startswith('x'):
-    #         c = chr(int(name[1:], 16))
-    #     else:
-    #         c = chr(int(name))
-    #     print("Num ent  :", c)
-    #
-    # def handle_decl(self, data):
-    #     print("Decl     :", data)
-
