@@ -672,18 +672,6 @@ def _retrieve_file(url, file,
     """
     Retrieve a URL into a url on disk.
 
-    Parameters  The catalog is
-        :param content_type: is a string specifying the mime type of the
-        retrieved catalog. If the received type is different, a
-        UnexpectedContentTypeError is raised.
-        :param content_length: is the expected length of the retrieved file
-        expressed in bytes. -1 means that the expected length is unknown.
-        :param content_hash : is the expected secure hash value of the
-        retrieved file.
-        It's a tuple containing, in this order, the name of secure hash
-        algorithm (see `hashlib.algorithms_guaranteed`) and the secure hash
-        value in hexadecimal notation. If the secure hash algorithm is not
-        supported, it will be ignored.
 
     Args:
         url (str): The URL of the file to retrieve.
