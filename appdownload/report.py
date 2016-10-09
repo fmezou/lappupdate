@@ -408,6 +408,8 @@ class Report:
         Args:
             template (str): The full path name of the template file.
         """
+        self._clear_template()  # clean up the template before replacing
+
         # Guess the content type based on the template file's extension.
         # If the content type cannot be guessed, the template is considered as
         # text plain. A plain text template is considered as using the utf-8
@@ -427,7 +429,6 @@ class Report:
                   "text/plain."
             _logger.warning(msg.format(os.path.basename(template)))
 
-        self._clear_template()  # clean up the template before replacing
         name = self.names[0]
         with open(template) as file:
             for line in file:
