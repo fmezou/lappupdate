@@ -1,3 +1,4 @@
+.. _makemkv-background:
 
 ******************
 MakeMKV Background

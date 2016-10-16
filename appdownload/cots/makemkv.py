@@ -1,6 +1,6 @@
 """
 This module is the product handler of `MakeMKV <http://www.makemkv.com/>`_ from
-GuinpinSoft inc. The `MakeMKV Background` details information about it.
+GuinpinSoft inc. The `makemkv-background` details information about it.
 
 
 Public Classes
