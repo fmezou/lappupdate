@@ -4,9 +4,9 @@
 MakeMKV Background
 ******************
 
-Published by GuinpinSoft inc, ~MakeMKV is your one-click solution to convert
+Published by GuinpinSoft inc, MakeMKV is your one-click solution to convert
 video that you own into free and patents-unencumbered format that can be played
-everywhere. ~MakeMKV is a format converter, otherwise called "transcoder".
+everywhere. MakeMKV is a format converter, otherwise called "transcoder".
 
 Product web site: http://www.makemkv.com/
 
