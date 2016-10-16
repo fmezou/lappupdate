@@ -72,7 +72,6 @@ def test_multiple_report():
     a_handler.set_filename("./tempstore/report.txt")
     a_report.publish()
 
-
     return True
 
 
@@ -426,20 +425,25 @@ if __name__ == "__main__":
 
     content_attributes = {
         "name": "Dummy Product",
-        "editor": "Example. inc",
-        "description": "Dummy product is a amazing tool to do nothing",
         "version": "0.1.0+dummy",
         "display_name": "Dummy Product (1.0.1)",
-        "url": "http://download.exemple.com/dummy/installer.exe",
-        "installer": "./store/installer_0.1.0+dummy.exe",
-        "release_note": "http://download.exemple.com/dummy/release_note.html",
         "published": "2016-02-18",
-        "file_size": 12345689,
-        "icon": "",
-        "secure_hash": ("sha256", "4a404b0d09dfd3952107e314ab63262293b2fb0a4dc6837b57fb7274bd016865"),
-        "silent_inst_args": "/silent",
-        "std_inst_args": "",
         "target": "unified",
+        "description": "Dummy product is a amazing tool to do nothing",
+        "editor": "Example. inc",
+        "web_site_location": "http://www.exemple.com",
+        "icon": "",
+        "announce_location": "http://www.example.com/news.txt",
+        "feed_location": "http://www.example.com/feed.rss",
+        "release_note": "http://download.exemple.com/dummy/release_note.html",
+        "location": "http://download.exemple.com/dummy/installer.exe",
+        "change_summary": "<ul><li>version 1.0.0 published on 2016-02-02</li><ul><li>a dummy feature</li><li>Small miscellaneous improvements and bugfixes</li></ul><li>version 0.1.0 published on 2015-02-02</li><ul><li>initial commit</li></ul></ul>",
+        "installer": "./store/installer_0.1.0+dummy.exe",
+        "file_size": 12345689,
+        "secure_hash": ("sha256",
+                        "4a404b0d09dfd3952107e314ab63262293b2fb0a4dc6837b57fb7274bd016865"),
+        "silent_inst_args": "/silent",
+        "std_inst_args": ""
     }
     report_attributes = {
         "title": "title of the report"  # not used
@@ -464,7 +468,7 @@ if __name__ == "__main__":
             print("-- Log and result -----------------------------------------")
             checked = test[0]()
             if not checked:
-                print("Test '{}' failed.".format (test[0].__name__))
+                print("Test '{}' failed.".format(test[0].__name__))
                 break
             else:
-                print("Test '{}' succeeded.".format (test[0].__name__))
+                print("Test '{}' succeeded.".format(test[0].__name__))

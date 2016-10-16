@@ -12,13 +12,11 @@ This module has only one public class.
 ===================================  ===================================
 """
 
-
 import datetime
 import logging
 
 from cots import core
 from cots import semver
-
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -47,24 +45,16 @@ class Product(core.BaseProduct):
         below in alphabetical order.
 
         ===================================  ===================================
-        `_get_description`                   `_get_release_note`
-        `_get_display_name`                  `_get_silent_inst_args`
-        `_get_editor`                        `_get_std_inst_args`
-        `_get_file_size`                     `_get_target`
-        `_get_hash`                          `_get_url`
-        `_get_icon`                          `_get_version`
-        `_get_name`                          `_parse_catalog`
-        `_get_published`                     ..
+        `get_origin`                         `is_update`
         ===================================  ===================================
     """
     def __init__(self):
         super().__init__()
 
-        # At this point, only name and catalog url are known.
+        # At this point, only name and catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "Dummy Product"
-        self._catalog_url = "http://www.example.com/index.html"
 
     def is_update(self, product):
         """
@@ -102,79 +92,54 @@ class Product(core.BaseProduct):
             _logger.debug(msg)
         return result
 
-    def _parse_catalog(self, filename):
+    def get_origin(self, version=None):
         """
-        Parse the catalog.
+        Get product information from the remote repository.
 
-        This method parses the downloaded product catalog to prepare
-        ``_get_...`` methods call.
+        Args:
+            version (str): The version of the reference product (i.e. the
+                deployed product). It'a string following the editor versioning
+                rules.
 
-        Parameters
-            filename (str): The local name of the downloaded product catalog.
-         """
-        _logger.debug(filename)
+        Raises:
+            TypeError: Parameters type mismatch.
+        """
+        # check parameters type
+        if version is not None and not isinstance(version, str):
+            msg = "version argument must be a class 'str' or None. not {0}"
+            msg = msg.format(version.__class__)
+            raise TypeError(msg)
 
-    def _get_name(self):
-        """Extract the name of the product."""
+        msg = "Get the latest product information. Current version is '{0}'"
+        _logger.debug(msg.format(self.version))
+
         self.name = "Dummy Product"
-
-    def _get_display_name(self):
-        """
-        Extract the name of the product as it appears in the 'Programs and
-        Features' control panel.
-
-        This name is built from the name and the version attribute, thus this
-        method must be called after `_get_name` and `_get_version`.
-        """
-        name = "{} ({})"
-        self.display_name = name.format(self.name, self.version)
-
-    def _get_version(self):
-        """Extract the current version of the product from the PAD File."""
         self.version = "1.0.1"
-
-    def _get_published(self):
-        """Extract the date of the installer’s publication from the PAD file."""
+        self.display_name = "{} v{}".format(self.name, self.version)
         dt = (datetime.datetime.now()).replace(microsecond=0)
         self.published = dt.isoformat()
-
-    def _get_description(self):
-        """Extract the short description of the product (~250 characters)."""
+        self.target = core.TARGET_UNIFIED
         self.description = "This dummy module is a trivial example of a " \
                            "Product class implementation. "
-
-    def _get_editor(self):
-        """Extract the name of the editor of the product."""
         self.editor = "Example. inc"
-
-    def _get_url(self):
-        """Extract the url of the current version of the installer."""
-        self.url = "http://www.example.com/index.html"
-
-    def _get_file_size(self):
-        """Extract the size of the product installer expressed in bytes."""
-        self.file_size = -1
-
-    def _get_hash(self):
-        """Extract the secure_hash value of the product installer (tuple)."""
-        self.secure_hash = None
-
-    def _get_icon(self):
-        """Extract the name of the icon file."""
+        self.location = "http://www.example.com/index.html"
         self.icon = None
-
-    def _get_target(self):
-        """Extract the target architecture type (the Windows’ one)."""
-        self.target = core.PROD_TARGET_UNIFIED
-
-    def _get_release_note(self):
-        """Extract the release note’s URL."""
-        self.release_note = "http://www.example.com/release_note.txt"
-
-    def _get_std_inst_args(self):
-        """Extract the arguments to use for a standard installation."""
+        self.announce_location = "http://www.example.com/news.txt"
+        self.feed_location = "http://www.example.com/feed.rss"
+        self.release_note_location = "http://www.example.com/release_note.txt"
+        self.change_summary = \
+            "<ul>" \
+            "<li>version 1.0.0 published on 2016-02-02</li>" \
+            "<ul>" \
+            "<li>a dummy feature</li>" \
+            "<li>Small miscellaneous improvements and bugfixes</li>" \
+            "</ul>" \
+            "<li>version 0.1.0 published on 2015-02-02</li>" \
+            "<ul>" \
+            "<li>initial commit</li>" \
+            "</ul>" \
+            "</ul>"
+        self.file_size = -1
+        self.secure_hash = None
         self.std_inst_args = ""
-
-    def _get_silent_inst_args(self):
-        """Extract the arguments to use for a silent installation."""
         self.silent_inst_args = "/silent"

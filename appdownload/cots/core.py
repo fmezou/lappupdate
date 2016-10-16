@@ -30,6 +30,9 @@ This module has has a number of exceptions listed below in alphabetical order.
 `UnexpectedContentError`             `UnexpectedContentLengthError`
 `UnexpectedContentTypeError`         ..
 ===================================  ===================================
+
+.. _Uninstall Registry Key: https://msdn.microsoft.com/library/windows/desktop/
+    aa372105%28v=vs.85%29.aspx
 """
 
 import contextlib
@@ -52,15 +55,23 @@ __all__ = [
     "UnexpectedContentError",
     "UnexpectedContentTypeError"
 ]
+
+# Target architecture supported (see `BaseProduct.target` attribute)
+TARGET_X86 = "x86"
+"""The application works only on 32 bits architecture."""
+
+TARGET_X64 = "x64"
+"""The application works only on 64 bits architecture."""
+
+TARGET_UNIFIED = "unified"
+"""The application or the installation program work on both architectures."""
+
+
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
 # docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
-
-PROD_TARGET_X86 = "x86"
-PROD_TARGET_X64 = "x64"
-PROD_TARGET_UNIFIED = "unified"
 
 
 class Error(Exception):
@@ -159,38 +170,43 @@ class BaseProduct:
 
 
     Attributes:
-        name (str): The name of the product (used in a_report mail and log file)
+        name (str): The name of the product (used in a_report mail and log
+            file).
         display_name (str): The name of the product as it appears in the
-            'Programs and Features' control panel.
-        version (str): The current version of the product.
-        published (str): The date of the installer’s publication using the ISO
-            8601 format.
+            'Programs and Features' control panel (see
+            `Uninstall Registry Key`_).
+        version (str): The current version of the product using the editor
+            versioning rules.
+        published (str): The date of the installer’s publication expressed in
+            the :rfc:`3339` format.
+        target (str): The target architecture type (the Windows’ one) for the
+            product. This argument must be one of the following values:
+            `TARGET_X86`, `TARGET_X64` or `TARGET_UNIFIED`.
         description (str): Short description of the product (~250 characters).
         editor (str): The name of the editor of the product.
-        url (str): The url of the current version of the installer.
+        web_site_location (str): The location of the editor ou product web site.
+        location (str): The location of the current version of the installer.
+        icon (str): The name of the icon file (in the same directory than the
+            installer)
+        announce_location (str): The location of the page announcing the product
+            releases.
+        feed_location (str): The location of the RSS feed announcing the product
+            releases.
+        release_note_location (str): The location of the release note for the
+            detailed history change of the product.
+        change_summary (str): The changelog of the product since the deployed
+            product.
+        installer (str): The filename of the installer (local full path).
         file_size (int): The size of the product installer expressed in bytes.
         secure_hash (2-tuple): The secure_hash value of the product installer.
             It's a 2-tuple containing, in this order, the name of secure_hash
             algorithm (see `hashlib.algorithms_guaranteed`) and the secure_hash
             value in hexadecimal notation.
-        icon (str): The name of the icon file (in the same directory than the
-            installer)
-        target (str): The target architecture type (the Windows’ one) for the
-            product. This argument must be one of the following values:
-            'x86', 'x64' or 'unified'.
-
-            * x86: the application works only on 32 bits architecture.
-            * x64: the application works only on 64 bits architecture.
-            * unified: the application or the installation program work on both
-                architectures.
-
-        release_note (str): The release note’s URL for the current version of
-            the product.
-        installer (str): The filename of the installer (local full path).
         std_inst_args (str): Arguments to use with the installer for a standard
             installation.
         silent_inst_args (str): Arguments to use with the installer for a silent
-            installation.
+            installation (i.e. without any user's interaction, typically while
+            an automated deployment using ``appdeploy`` script).
 
 
     **Public Methods**
@@ -199,7 +215,8 @@ class BaseProduct:
 
         ===================================  ===================================
         `dump`                               `get_origin`
-        `fetch`                              `load`
+        `fetch`                              `is_update`
+        `load`                               ..
         ===================================  ===================================
 
 
@@ -208,14 +225,7 @@ class BaseProduct:
         overridden. They are listed below in alphabetical order.
 
         ===================================  ===================================
-        `_get_description`                   `_get_release_note`
-        `_get_display_name`                  `_get_silent_inst_args`
-        `_get_editor`                        `_get_std_inst_args`
-        `_get_file_size`                     `_get_target`
-        `_get_hash`                          `_get_url`
-        `_get_icon`                          `_get_version`
-        `_get_name`                          `_parse_catalog`
-        `_get_published`                     `is_update`
+        `get_origin`                         `is_update`
         ===================================  ===================================
 
 
@@ -239,15 +249,19 @@ class BaseProduct:
         self.display_name = ""
         self.version = ""
         self.published = ""
+        self.target = TARGET_UNIFIED
         self.description = ""
         self.editor = ""
-        self.url = ""
+        self.web_site_location = ""
+        self.location = ""
+        self.icon = ""
+        self.announce_location = ""
+        self.feed_location = ""
+        self.release_note_location = ""
+        self.change_summary = ""
+        self.installer = ""
         self.file_size = -1
         self.secure_hash = None
-        self.icon = ""
-        self.target = ""
-        self.release_note = ""
-        self.installer = ""
         self.std_inst_args = ""
         self.silent_inst_args = ""
 
@@ -282,11 +296,10 @@ class BaseProduct:
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
             else:
-                attr = attributes.get(k)
-                if attr is not None:
-                    self.__dict__[k] = attributes.get(k)
+                if attributes[k] is not None:
+                    self.__dict__[k] = attributes[k]
                     msg = "Instance variables '{0}' : '{1}' -> '{2}'"
-                    _logger.debug(msg.format(k, v, attr))
+                    _logger.debug(msg.format(k, v, attributes[k]))
 
     def dump(self):
         """
@@ -318,38 +331,7 @@ class BaseProduct:
         Raises:
             TypeError: Parameters type mismatch.
         """
-        # check parameters type
-        if version is not None and not isinstance(version, str):
-            msg = "version argument must be a class 'str' or None. not {0}"
-            msg = msg.format(version.__class__)
-            raise TypeError(msg)
-
-        msg = "Get the latest product information. Current version is '{0}'"
-        _logger.debug(msg.format(self.version))
-
-        local_filename = retrieve_tempfile(self._catalog_url)
-        msg = "Catalog downloaded: '{0}'".format(local_filename)
-        _logger.debug(msg)
-
-        # Parse the catalog and retrieve information
-        self._parse_catalog(local_filename)
-        self._get_name()
-        self._get_version()
-        self._get_display_name()
-        self._get_published()
-        self._get_description()
-        self._get_editor()
-        self._get_url()
-        self._get_file_size()
-        self._get_hash()
-        self._get_icon()
-        self._get_target()
-        self._get_release_note()
-        self._get_std_inst_args()
-        self._get_silent_inst_args()
-
-        # clean up the temporary files
-        os.unlink(local_filename)
+        raise NotImplementedError
 
     def fetch(self, path):
         """
@@ -368,7 +350,7 @@ class BaseProduct:
         _logger.debug(msg)
 
         # Update the update object
-        local_filename = retrieve_file(self.url, path,
+        local_filename = retrieve_file(self.location, path,
                                        content_length=self.file_size,
                                        content_hash=self.secure_hash)
         self._rename_installer(local_filename)
@@ -424,145 +406,6 @@ class BaseProduct:
         dest = "{}_{}{}".format(self.name, self.version, ext)
         self.installer = os.path.normpath(os.path.join(basename, dest))
         os.replace(filename, self.installer)
-
-    def _parse_catalog(self, filename):
-        """
-        Parse the catalog.
-
-        This method parses the downloaded product catalog to prepare
-        ``_get_...`` methods call.
-
-        Parameters
-            filename (str): The local name of the downloaded product catalog.
-         """
-        raise NotImplementedError
-
-    def _get_name(self):
-        """
-        Extract the name of the product (used in a_report mail and log file).
-
-        This method fixes the `name` attribute with a hardcoded value or an
-        extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_display_name(self):
-        """
-        Extract the name of the product as it appears in the 'Programs and
-        Features' control panel.
-
-        This method fixes the `display_name` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_version(self):
-        """
-        Extract the current version of the product.
-
-        This method fixes the `version` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_published(self):
-        """
-        Extract the date of the installer’s publication (ISO 8601 format).
-
-        This method fixes the `published` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_description(self):
-        """
-        Extract the short description of the product (~250 characters).
-
-        This method fixes the `description` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_editor(self):
-        """
-        Extract the name of the editor of the product.
-
-        This method fixes the `editor` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_url(self):
-        """
-        Extract the url of the current version of the installer
-
-        This method fixes the `url` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_file_size(self):
-        """
-        Extract the size of the product installer expressed in bytes
-
-        This method fixes the `file_size` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_hash(self):
-        """
-        Extract the secure_hash value of the product installer (tuple).
-
-        This method fixes the `secure_hash` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_icon(self):
-        """
-        Extract the name of the icon file.
-
-        This method fixes the `secure_hash` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_target(self):
-        """
-        Extract the target architecture type (the Windows’ one).
-
-        This method fixes the `target` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_release_note(self):
-        """
-        Extract the release note’s URL.
-
-        This method fixes the `release_note` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_std_inst_args(self):
-        """
-        Extract the arguments to use for a standard installation.
-
-        This method fixes the `std_inst_args` attribute with a hardcoded value
-        or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
-
-    def _get_silent_inst_args(self):
-        """
-        Extract the arguments to use for a silent installation.
-
-        This method fixes the `silent_inst_args` attribute with a hardcoded
-        value or an extracted value from the remote product catalog.
-        """
-        raise NotImplementedError
 
 
 def retrieve_tempfile(url,
@@ -769,7 +612,7 @@ def _retrieve_file(url, file,
             progress_bar.compute(length, content_length)
 
         msg = "'{}' retrieved - ".format(url)
-        msg = msg + progress_bar.finish()
+        msg += progress_bar.finish()
         _logger.debug(msg)
 
         # Content checking

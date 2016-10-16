@@ -1,6 +1,6 @@
 """
 This module is the product handler of `MakeMKV <http://www.makemkv.com/>`_ from
-GuinpinSoft inc. The `user manual`_ details information about it.
+GuinpinSoft inc. The `MakeMKV Background` details information about it.
 
 
 Public Classes
@@ -19,6 +19,7 @@ This module has several public class listed below in alphabetical order.
 import datetime
 import logging
 import re
+import os
 from html.parser import HTMLParser
 
 
@@ -54,25 +55,85 @@ class Product(core.BaseProduct):
         below in alphabetical order.
 
         ===================================  ===================================
-        `_get_description`                   `_get_release_note`
-        `_get_display_name`                  `_get_silent_inst_args`
-        `_get_editor`                        `_get_std_inst_args`
-        `_get_file_size`                     `_get_target`
-        `_get_hash`                          `_get_url`
-        `_get_icon`                          `_get_version`
-        `_get_name`                          `_parse_catalog`
-        `_get_published`                     ..
+        `get_origin`                         `is_update`
         ===================================  ===================================
     """
     def __init__(self):
         super().__init__()
 
-        # At this point, only name and catalog url are known.
+        # At this point, only the name and the catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "MakeMKV"
+        self.target = core.TARGET_UNIFIED
+
+        self.web_site_location = "http://www.makemkv.com/"
+        self.announce_location = ""
+        self.feed_location = ""
+        self.release_note_location = \
+            "http://www.makemkv.com/download/history.html"
+
+        self.std_inst_args = ""
+        self.silent_inst_args = "/S"
+
         self._catalog_url = "http://www.makemkv.com/makemkv.xml"
         self._parser = pad.PadParser()
+
+    def get_origin(self, version=None):
+        """
+        Get product information from the remote repository.
+
+        Args:
+            version (str): The version of the reference product (i.e. the
+                deployed product). It'a string following the editor versioning
+                rules.
+
+        Raises:
+            `TypeError`: Parameters type mismatch.
+            `pad.SpecSyntaxError`: PAD spec file is erroneous.
+            `pad.PADSyntaxError`: A tag in a PAD file don't match the PAD Specs.
+       """
+        # check parameters type
+        if version is not None and not isinstance(version, str):
+            msg = "version argument must be a class 'str' or None. not {0}"
+            msg = msg.format(version.__class__)
+            raise TypeError(msg)
+
+        msg = "Get the latest product information. Current version is '{0}'"
+        _logger.debug(msg.format(self.version))
+
+        local_filename = core.retrieve_tempfile(self._catalog_url)
+        msg = "Catalog downloaded: '{0}'".format(local_filename)
+        _logger.debug(msg)
+
+        # Parse the catalog and retrieve information
+        self._parser.parse(local_filename)
+
+        self.name = self._get_field("Program_Info/Program_Name")
+        self.version = self._get_field("Program_Info/Program_Version")
+        self.display_name = "{} v{}".format(self.name, self.version)
+        self._get_published()
+        self.description = self._get_field(
+            "Program_Descriptions/English/Char_Desc_250")
+        self.editor = self._get_field("Company_Info/Company_Name")
+        self.location = self._get_field(
+            "Web_Info/Download_URLs/Primary_Download_URL")
+        self.icon = self._get_field(
+            "Web_Info/Application_URLs/Application_Icon_URL")
+        self._get_change_summary(version)
+
+        # FIXME: incorrect file size in the PAD File.
+        # The PAD file specifies a file size which do not match with the real
+        # file size. So -1 (unknown file size) is used.
+        # size = self._get_field("Program_Info/File_Info/File_Size_Bytes")
+        # if size is not None:
+        #     self.file_size = int(size)
+        # else:
+        #     self.file_size = -1
+        self.file_size = -1
+
+        # clean up the temporary files
+        os.unlink(local_filename)
 
     def is_update(self, product):
         """
@@ -110,186 +171,21 @@ class Product(core.BaseProduct):
             _logger.debug(msg)
         return result
 
-    def _parse_catalog(self, filename):
-        """
-        Parse the catalog.
-
-        This method parses the downloaded product catalog to prepare
-        ``_get_...`` methods call. This catalog is a PAD File (see
-        `cots.pad` module).
-
-        Parameters
-            filename (str): The local name of the downloaded product catalog.
-
-        Exceptions
-            pad.SpecSyntaxError: PAD spec file is erroneous.
-            pad.PADSyntaxError: A tag in a PAD file don't match the PAD Specs.
-         """
-        self._parser.parse(filename)
-
-    def _get_name(self):
-        """
-        Extract the name of the product (used in a_report mail and log file).
-        """
-        self.name = None
-        path = "Program_Info/Program_Name"
-        item = self._parser.find(path)
-        if item is not None:
-            self.name = item.text
-            msg = "Product name :'{0}'"
-            _logger.debug(msg.format(self.name))
-        else:
-            msg = "Unknown product name"
-            _logger.warning(msg)
-
-    def _get_display_name(self):
-        """
-        Extract the name of the product as it appears in the 'Programs and
-        Features' control panel.
-
-        This name is built from the name and the version attribute, thus this
-        method must be called after `_get_name` and `_get_version`.
-        """
-        name = "{} v{}"
-        self.display_name = name.format(self.name, self.version)
-
-    def _get_version(self):
-        """
-        Extract the current version of the product from the PAD File.
-        """
-        self.version = None
-        path = "Program_Info/Program_Version"
-        item = self._parser.find(path)
-        if item is not None:
-            self.version = item.text
-            msg = "Product version :'{0}'"
-            _logger.debug(msg.format(self.version))
-        else:
-            msg = "Unknown product version"
-            _logger.warning(msg)
-
     def _get_published(self):
         """
         Extract the date of the installer’s publication from the PAD file.
         """
         self.published = None
-        path = "Program_Info/Program_Release_Year"
-        item = self._parser.find(path)
-        if item is not None:
-            year = int(item.text)
-            path = "Program_Info/Program_Release_Month"
-            item = self._parser.find(path)
-            if item is not None:
-                month = int(item.text)
-                path = "Program_Info/Program_Release_Day"
-                item = self._parser.find(path)
-                if item is not None:
-                    day = int(item.text)
-                    self.published = datetime.date(year, month, day).isoformat()
-                    msg = "Release date :'{0}'"
-                    _logger.debug(msg.format(self.published))
-                else:
-                    msg = "Unknown release day"
-                    _logger.warning(msg)
-            else:
-                msg = "Unknown release month"
-                _logger.warning(msg)
-        else:
-            msg = "Unknown release year"
-            _logger.warning(msg)
+        year = self._get_field("Program_Info/Program_Release_Year")
+        month = self._get_field("Program_Info/Program_Release_Month")
+        day = self._get_field("Program_Info/Program_Release_Day")
+        if year is not None and month is not None and day is not None:
+            self.published = \
+                datetime.date(int(year), int(month), int(day)).isoformat()
+            msg = "Release date :'{0}'"
+            _logger.debug(msg.format(self.published))
 
-    def _get_description(self):
-        """
-        Extract the short description of the product (~250 characters).
-        """
-        self.description = None
-        path = "Program_Descriptions/English/Char_Desc_250"
-        item = self._parser.find(path)
-        if item is not None:
-            self.description = item.text
-            msg = "Product description :'{0}'"
-            _logger.debug(msg.format(self.description))
-        else:
-            msg = "Unknown product description"
-            _logger.warning(msg)
-
-    def _get_editor(self):
-        """
-        Extract the name of the editor of the product.
-        """
-        self.editor = None
-        path = "Company_Info/Company_Name"
-        item = self._parser.find(path)
-        if item is not None:
-            self.editor = item.text
-            msg = "Product editor :'{0}'"
-            _logger.debug(msg.format(self.editor))
-        else:
-            msg = "Unknown product editor"
-            _logger.warning(msg)
-
-    def _get_url(self):
-        """
-        Extract the url of the current version of the installer
-        """
-        self.url = None
-        path = "Web_Info/Download_URLs/Primary_Download_URL"
-        item = self._parser.find(path)
-        if item is not None:
-            self.url = item.text
-            msg = "Download url (for windows version) :'{0}'"
-            _logger.debug(msg.format(self.url))
-        else:
-            msg = "Unknown Download url"
-            _logger.warning(msg)
-
-    def _get_file_size(self):
-        """
-        Extract the size of the product installer expressed in bytes
-        """
-        self.file_size = None
-        # path = "Program_Info/File_Info/File_Size_Bytes"
-        # item = self._parser.find(path)
-        # if item is not None:
-        #     self.file_size = int(item.text)
-        #     msg = "File size :'{0}'"
-        #     _logger.debug(msg.format(self.file_size))
-        # else:
-        #     msg = "Unknown File size"
-        #     _logger.warning(msg)
-
-    def _get_hash(self):
-        """
-        Extract the secure_hash value of the product installer (tuple).
-
-        The PAD file doesn't specify a secure_hash for the installer product.
-        """
-        self.secure_hash = None
-
-    def _get_icon(self):
-        """
-        Extract the name of the icon file.
-        """
-        self.icon = None
-        path = "Web_Info/Application_URLs/Application_Icon_URL"
-        item = self._parser.find(path)
-        if item is not None:
-            self.icon = item.text
-            msg = "Icon file :'{0}'"
-            _logger.debug(msg.format(self.icon))
-        else:
-            msg = "Unknown icon"
-            _logger.warning(msg)
-
-    def _get_target(self):
-        """
-        Extract the target architecture type (the Windows’ one).
-        """
-        self.target = core.PROD_TARGET_UNIFIED
-        msg = "Target :'{0}'"
-        _logger.debug(msg.format(self.icon))
-
-    def _get_release_note(self, version=None):
+    def _get_change_summary(self, version=None):
         """
         Extract the release note’s URL from the PAD File.
 
@@ -298,49 +194,44 @@ class Product(core.BaseProduct):
                 deployed product). It'a string following the editor versioning
                 rules.
         """
-        self.release_note = "http://www.makemkv.com/download/history.html"
-
-        # TODO: remove reading from a file
-        # url="http://www.makemkv.com/download/history.html"
-        # local_filename = core.retrieve_tempfile(url)
-        local_filename = r".\history.html"
-        # print("History downloaded: '{0}'".format(local_filename))
+        local_filename = core.retrieve_tempfile(self.release_note_location)
+        print("History downloaded: '{0}'".format(local_filename))
 
         parser = ReleaseNotesParser(version)
-
         with open(local_filename) as file:
             parser.feed(file.read())
-        # TODO: use the result of the persin
-        print(parser.changelog)
-        # mettre dans des attibut une table avec version, date, notes
-        # os.unlink(local_filename)
 
+        self.change_summary = "<ul>"
+        template = "<li>version {} published on {}</li>{}"
+        for i in parser.changelog:
+            self.change_summary += template.format(i[0], i[1], i[2])
+        self.change_summary += "</ul>"
+        os.unlink(local_filename)
 
-        msg = "Release note :'{0}'"
-        _logger.debug(msg.format(self.release_note))
+        msg = "Change summary :{0}"
+        _logger.debug(msg.format(repr(self.change_summary)))
 
-    def _get_std_inst_args(self):
+    def _get_field(self, path):
         """
-        Extract the arguments to use for a standard installation.
-        """
-        self.std_inst_args = ""
-        msg = "Standard installation options :'{0}'"
-        _logger.debug(msg.format(self.std_inst_args))
+        Get the value from a field in a PAD File.
 
-    def _get_silent_inst_args(self):
-        """
-        Extract the arguments to use for a silent installation.
-        """
-        self.silent_inst_args = "/S"
-        msg = "Silent installation option :'{0}'"
-        _logger.debug(msg.format(self.silent_inst_args))
+        Args:
+            path (str): The field's path in the PAD file.
 
+        Returns:
+            str: Contain the value of the field
+        """
+        text = None
+        item = self._parser.find(path)
+        if item is not None:
+            text = item.text
+            msg = "{} : {}"
+            _logger.debug(msg.format(repr(path), repr(text)))
+        else:
+            msg = "Unknown path ({})"
+            _logger.warning(msg.format(repr(path)))
 
-# ex: MakeMKV v1.9.7 ( 5.10.2015 )
-# MakeMKV v1.01 build 646
-_title_re = re.compile("^MakeMKV v(?P<version>(([0-9]+\.)+([0-9]+)))"
-                       "((\s+\(\s*(?P<date>(([0-9]+\.)+([0-9]+)))\s*\))?"
-                       "|(\s+build\s+(?P<build>[0-9]+))?)$")
+        return text
 
 
 class ReleaseNotesParser(HTMLParser):
@@ -358,10 +249,10 @@ class ReleaseNotesParser(HTMLParser):
     Attributes:
         changelog (list): The changelog of the product since the deployed
             product (see ``version`` argument). It is a list of 3-tuple
-            containing, in this order, the version (as a `SemVer` object), the
-            date of the installer’s publication (as a `datetime.date` object)
-            and the release note (as a string) using a simple HTML syntax
-            (nested unordered list) as shown below.
+            containing, in this order, the version (as a string using the editor
+            versioning rules), the date of the installer’s publication (as a
+            string using the ISO 8601 format) and the release note (as a string)
+            using a simple HTML syntax (nested unordered list) as shown below.
 
             .. code-block:: html
 
@@ -420,6 +311,13 @@ class ReleaseNotesParser(HTMLParser):
     _START_TAG_EVT = 0
     _END_TAG_EVT = 1
     _DATA_EVT = 2
+
+    # Regular expression to parse the release identifier.
+    # ex: MakeMKV v1.9.7 ( 5.10.2015 )
+    # MakeMKV v1.01 build 646
+    _title_re = re.compile("^MakeMKV v(?P<version>(([0-9]+\.)+([0-9]+)))"
+                           "((\s+\(\s*(?P<date>(([0-9]+\.)+([0-9]+)))\s*\))?"
+                           "|(\s+build\s+(?P<build>[0-9]+))?)$")
 
     def __init__(self, version=None):
         # check parameters type
@@ -726,7 +624,7 @@ class ReleaseNotesParser(HTMLParser):
         Release id computing.
 
         """
-        self._release_id = _title_re.match(self._release)
+        self._release_id = self._title_re.match(self._release)
         if self._release_id:
             if self._release_id.group("date"):
                 pubdate = self._release_id.group("date").split(".")
@@ -794,9 +692,14 @@ class ReleaseNotesParser(HTMLParser):
             self._release_notes += "</{}>".format(data)
 
         if last:
-            self.changelog.append((self._version,
-                                   self._published,
-                                   self._release_notes))
+            if self._published is not None:
+                self.changelog.append(("{}".format(self._version),
+                                       self._published.isoformat(),
+                                       self._release_notes))
+            else:
+                self.changelog.append(("{}".format(self._version),
+                                       "unknown",
+                                       self._release_notes))
 
     def _is_release_notes_ending(self, event, data, attributes):
         """
@@ -824,7 +727,7 @@ class ReleaseNotesParser(HTMLParser):
         self._process_event(self._START_TAG_EVT, tag, attributes)
 
     def handle_endtag(self, tag):
-        self._process_event(self._END_TAG_EVT, tag, None)
+        self._process_event(self._END_TAG_EVT, tag, {})
 
     def handle_data(self, data):
-        self._process_event(self._DATA_EVT, data, None)
+        self._process_event(self._DATA_EVT, data, {})

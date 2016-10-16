@@ -12,8 +12,9 @@ standalone computers running under Microsoft Windows.
     about
 
     appdownload/scripts
-    appdownload/cots/package
+    appdownload/cots/index
     appdownload/supporting_functions
+    appdownload/background_paper/index
 
     glossary
 
