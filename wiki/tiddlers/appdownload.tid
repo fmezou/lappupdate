@@ -7,7 +7,7 @@ type: text/vnd.tiddlywiki
 This script is a [[public script|Public script]]. It checks and downloads applications' updates if any. See [[Usage description syntax]] for details about used syntax. 
 
 This script is a [[Python script|https://www.python.org/]] one. Thus, it must be launched with [[python interpreter|https://docs.python.org/3/tutorial/interpreter.html#invoking-the-interpreter]].
-(e.g. `python -m appdowload.py --help`) 
+(e.g. `python -m appdownload.py --help`)
 
 !!Usage 
 
