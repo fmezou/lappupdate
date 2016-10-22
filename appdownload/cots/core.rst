@@ -25,6 +25,15 @@ This section details the specific functions used in this module.
 .. autofunction:: retrieve_file
 .. autofunction:: retrieve_tempfile
 
+Data reference
+--------------
+This section details global data, including both variables and values used
+as 'defined constants'.
+
+.. autodata:: TARGET_X86
+.. autodata:: TARGET_X64
+.. autodata:: TARGET_UNIFIED
+
 Exceptions reference
 --------------------
 This section details the specific exception used in this module.

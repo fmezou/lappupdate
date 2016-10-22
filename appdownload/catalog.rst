@@ -46,48 +46,8 @@ approved            indicate that the system administrator approved the
                     deployed.
 ================    ============================================================
 
-Each item of the 3-tuple is an object containing the following attributes of the
-application.
-
-================    ============================================================
-name                is the name of the product (used in a_report mail and log
-                    file)
-display_name        is the name of the product as it appears in the 'Programs
-                    and Features' control panel (see `Uninstall Registry Key`_)
-version             is the current version of the product.
-published           is the date of the installer’s publication expressed in the
-                    :rfc:`3339` format.
-description         is a short description of the product (~250 characters)
-editor              is the name of the editor of the product
-url                 is the url of the current version of the installer
-file_size           is the size of the product installer expressed in bytes
-secure_hash         is the secure hash value of the product installer. It's a
-                    2-tuple containing, in this order, the name of secure hash
-                    algorithm (see `hashlib.algorithms_guaranteed`)
-                    and the secure hash value in hexadecimal notation.
-icon                is the name of the icon file located in the same directory
-                    than the installer.
-target              is the target architecture type (the Windows’ one) for the
-                    application. This argument must be one of the following
-                    values: ``x86``, ``x64`` or ``unified``.
-
-                    * ``x86``: the application works only on 32 bits
-                      architecture
-                    * ``x64``: the application works only on 64 bits
-                      architecture
-                    * ``unified``: the application or the installation program
-                      work on both architectures
-
-release_note        is the release note’s URL for the current version of the
-                    application
-installer           is the path of the installer.
-std_inst_args       are the arguments of the installer command line to make an
-                    standard installation (i.e. an interactive installation).
-silent_inst_args    are the arguments of the installer command line to make
-                    an silent installation (i.e. without any user's interaction,
-                    typically while an automated deployment using ``appdeploy``
-                    script).
-================    ============================================================
+Each item of the 3-tuple is an object containing the attributes of the
+application as described in :class:`~cots.core.BaseProduct`.
 
 Example
 
@@ -126,7 +86,5 @@ Example
         }
     }
 
-.. _Uninstall Registry Key: https://msdn.microsoft.com/library/windows/desktop/
-    aa372105%28v=vs.85%29.aspx
 .. _store: http://fmezou.github.io/lappupdate/lappupdate_wiki.html#appdownload.
     ini%20Core%20Section

@@ -10,6 +10,17 @@ standalone computers running under Microsoft Windows.
     :maxdepth: 2
 
     about
+
     appdownload/scripts
-    appdownload/cots/package
+    appdownload/cots/index
     appdownload/supporting_functions
+    appdownload/background_paper/index
+
+    glossary
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

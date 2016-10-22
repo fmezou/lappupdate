@@ -26,18 +26,6 @@ sys.path.insert(0, os.path.abspath("./appdownload"))
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = "1.0"
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named "sphinx.ext.*") or your custom
-# ones.
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.doctest",
-    "sphinx.ext.intersphinx",
-    "sphinx.ext.todo",
-    "sphinx.ext.coverage",
-]
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -125,7 +113,8 @@ html_theme_options = {
     "github_button": True,
     "github_user": "fmezou",
     "github_repo": "lappupdate",
-    "github_banner": False
+    "github_banner": False,
+    "fixed_sidebar": True
 }
 
 # Sidebar options, see the documentation.
@@ -173,6 +162,7 @@ html_static_path = ["_static"]
 # If not "", a "Last updated on:" timestamp is inserted at every page bottom,
 # using the given strftime format.
 #html_last_updated_fmt = "%b %d, %Y"
+html_last_updated_fmt = "%b %d, %Y"
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -192,7 +182,7 @@ html_static_path = ["_static"]
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-html_show_sourcelink = False
+html_show_sourcelink = True
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True
@@ -307,9 +297,44 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 
-# Configuration for intersphinx: refer to the Python standard library.
+# -- Options for Sphinx extensions ---------------------------------------------
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named "sphinx.ext.*") or your custom
+# ones.
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.doctest",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.todo",
+    "sphinx.ext.coverage",
+    "sphinx.ext.graphviz"
+]
+
+# Options for sphinx.ext.intersphinx
+# Locations and names of other projects that should be linked to in this
+# documentation.
+# Add links to modules and objects in the Python standard library documentation.
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
-# Napoleon settings
+# Options for sphinx.ext.napoleon
+# Enable support for Google style docstrings.
 napoleon_google_docstring = True
+# Disable support for NumPy style docstrings.
 napoleon_numpy_docstring = False
+
+# Options for sphinx.ext.graphviz
+# The command name with which to invoke dot is specified on the sphinx-build
+# command line via the -D option
+# graphviz_dot=
+
+# Additional command-line arguments to give to dot, as a list.
+# This is the right place to set global graph, node or edge attributes via
+# dot’s -G, -N and -E options.
+# graphviz_dot_args =
+
+# The output format for Graphviz when building HTML files. This must be either
+#  'png' or 'svg'; the default is 'png'.
+graphviz_output_format = "png"
+
+

@@ -1,9 +1,13 @@
-@ECHO OFF
+@echo off
+setlocal
 
 REM Command file for Sphinx documentation
 
 if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=sphinx-build
+)
+if "%SPHINXOPTS%" == "" (
+	set SPHINXOPTS=-D graphviz_dot="C:\Program Files (x86)\Graphviz2.38\bin\dot.exe"
 )
 set BUILDDIR=_build
 set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% .
@@ -261,3 +265,4 @@ if "%1" == "pseudoxml" (
 )
 
 :end
+endlocal
