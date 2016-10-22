@@ -2,8 +2,9 @@
 .. default-domain:: py
 .. default-role:: any
 
+***********
 Main Script
-===========
+***********
 
 The main component is the :mod:`appdownload` module which offers a command line
 interface and is in charge of plug-in handling and operations scheduling.
@@ -14,7 +15,7 @@ editor, store theses information in a :term:`catalog` and makes the input files
 used by the ``appdeploy`` script.
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
 
-   appdownload
-   catalog
+    appdownload
+    catalog

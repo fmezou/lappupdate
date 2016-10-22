@@ -11,19 +11,20 @@
     ],
     "build": {
 		"lappupdate": [
-            "--output",".",
+            "--output","./_build",
             "--rendertiddler","$:/core/save/all","lappupdate_wiki.html","text/plain"
         ],
 		"readme": [
-            "--output",".",
+            "--output","./_build",
             "--rendertiddler","Read-me","README.html"
         ],
 		"howto": [
-            "--output",".",
+            "--output","./_build",
             "--rendertiddler","How to","HOWTO.html"
         ],
         "static": [
-            "--rendertiddlers", "[!is[system]]", "$:/core/templates/static.tiddler.html", "static", "text/plain", 
+            "--output","./_build/wiki",
+            "--rendertiddlers", "[!is[system]]", "$:/core/templates/static.tiddler.html", "static", "text/plain",
             "--rendertiddler", "$:/core/templates/static.template.html", "static.html", "text/plain", 
             "--rendertiddler", "$:/core/templates/static.template.css", "static/static.css", "text/plain"
         ]        

@@ -1,7 +1,8 @@
 .. _glossary:
 
+********
 Glossary
-========
+********
 
 .. glossary::
    Applist

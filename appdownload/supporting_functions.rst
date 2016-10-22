@@ -2,8 +2,9 @@
 .. default-domain:: py
 .. default-role:: any
 
+*********************
 Suppporting Functions
-=====================
+*********************
 
 The modules described in this chapter provide support for the :mod:`appdownload`
 and the product handlers grouped in the `cots` package.

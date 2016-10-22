@@ -1,1 +1,1 @@
-tiddlywiki ..\wiki --server
+tiddlywiki ..\_doc\wiki --server

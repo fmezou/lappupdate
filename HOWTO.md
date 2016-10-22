@@ -48,11 +48,10 @@ script. in to have examples.
 
 The appdeploy script uses two applist files to verify which applications were
 installed and if it needs to be updated: the first one is named _applist-
-all.txt_ and **must be exist** even if it is empty; the second is named
-_applist-<set>.txt_ where `<set>` is the argument passed to appdeploy on the
-command line (e.g. `.\appdeploy dummy`).
+all.txt_; the second is named _applist-<set>.txt_ where `<set>` is the
+argument passed to appdeploy on the command line (e.g. `.\appdeploy dummy`).
 
-_**Note**: applist file may be empty including applist-all.txt._
+_**Note**: applist files may be empty including applist-all.txt._
 
 These files are [text file](http://en.wikipedia.org/wiki/Text_file) complying
 with the [Windows

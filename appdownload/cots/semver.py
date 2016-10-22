@@ -5,7 +5,7 @@ support.
 The parser match the `semantic versioning specification`_ 2.0.0.
 
 Public Classes
-==============
+--------------
 This module has only one public class.
 
 ===================================  ===================================

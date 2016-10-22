@@ -9,13 +9,13 @@ The `user manual`_ details use cases and the configuration files.
 
 
 Synopsis
-========
+--------
 
 appdownload.py [-h] [-p | -f | -a [-y]| -m | -t] [-v] [-c FILE]
 
 
 Description
-===========
+-----------
 Pull update information from the editor information channel (web, rss..), fetch
 the update, store it on the local server and generate an applist file for
 deploying the application with the ``appdeploy`` script. A plug-in handles
@@ -27,7 +27,7 @@ file (see `catalog_format` section for a detailed description)
 
 
 Command line options
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 ======  =====================   ================================================
 ``-h``  ``--help``              show this help message and exit
@@ -57,7 +57,7 @@ Command line options
 
 
 Exit code
----------
+^^^^^^^^^
 
 ==  ============================================================================
 0   no error
@@ -68,7 +68,7 @@ Exit code
 
 
 Public Classes
-==============
+--------------
 This module has only one public class.
 
 ===================================  ===================================
@@ -77,7 +77,7 @@ This module has only one public class.
 
 
 Public data
-===========
+-----------
 This module has a number of public global data, including both variables and
 values used as 'defined constants' listed below in alphabetical order.
 
@@ -91,7 +91,7 @@ values used as 'defined constants' listed below in alphabetical order.
 
 
 Public Exceptions
-=================
+-----------------
 This module has only one exception.
 
 ===================================  ===================================

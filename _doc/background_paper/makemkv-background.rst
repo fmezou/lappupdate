@@ -1,8 +1,7 @@
 .. _makemkv-background:
 
-******************
 MakeMKV Background
-******************
+==================
 
 Published by GuinpinSoft inc, MakeMKV is your one-click solution to convert
 video that you own into free and patents-unencumbered format that can be played
@@ -15,19 +14,27 @@ the update mechanism.
 
 
 MakeMKV Installation
-====================
+--------------------
 
 The installer is based on the `NSIS <https://sourceforge.net/projects/nsis/>`_
 (Nullsoft Scriptable Install System) framework and delivered as a single
 executable.
 
+
 Installer common option
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: nsis_installer_common_option.txt
 
+
+Silent Installation
+^^^^^^^^^^^^^^^^^^^
+
+.. include:: nsis_silent_installers.txt
+
+
 Deployment Tips
----------------
+^^^^^^^^^^^^^^^
 
 MakeMKV are free while program is in beta, so you may use the `temporary beta
 key <http://www.makemkv.com/forum2/viewtopic.php?f=5&t=1053&sid=9bdbec1cd06e7a61
@@ -46,13 +53,9 @@ Example
     reg add HKCU\Software\MakeMKV /v app_PreferredLanguage /t REG_SZ /d "fre" /f
     exit /b 0
 
-MakeMKV Silent Installation
-===========================
-
-.. include:: nsis_silent_installers.txt
 
 MakeMKV Update Mechanism
-========================
+------------------------
 
 In `this post <http://www.makemkv.com/forum2/viewtopic.php?f=1&t=4363>`_, the
 MakeMKV author give a method to detect the up-to-date version. It based on a XML

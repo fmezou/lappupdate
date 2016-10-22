@@ -5,7 +5,7 @@ To date, the module provides text only widgets for the console.
 
 
 Public Classes
-==============
+--------------
 This module has only one public class.
 
 

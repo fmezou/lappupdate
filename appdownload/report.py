@@ -3,7 +3,7 @@ This module defines functions and classes which implement a flexible reporting
 manager for applications and libraries.
 
 Public Classes
-==============
+--------------
 This module is built around two main parts: the first one is the **reporting
 manager**; the second one is a collection of **handlers** which manages the way
 by which the report is going to be published.
@@ -24,13 +24,13 @@ class.
 ===================================  ===================================
 
 Using the module
-================
+----------------
 The first step is to create a report and at least a handler, then you fill
 the report with some sections and then publish it. The creating step may done
 either in programmatic way or using a configuration file.
 
 Using the module with its API
------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Creating a report needs at least the following steps.
 
@@ -78,7 +78,7 @@ Examples
         a_report.publish()
 
 Using the module with a configuration file
-------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The creation step may be described in a configuration file (see
 `report.example.ini` for an example) which is going to load by the
 `Report.load_config` method.

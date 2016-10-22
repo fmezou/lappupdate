@@ -4,7 +4,7 @@ GuinpinSoft inc. The `makemkv-background` details information about it.
 
 
 Public Classes
-==============
+--------------
 This module has several public class listed below in alphabetical order.
 
 ===================================  ===================================

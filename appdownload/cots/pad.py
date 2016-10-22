@@ -11,7 +11,7 @@ Warning:
 
 
 Public Classes
-==============
+--------------
 This module has only one public class.
 
 ===================================  ===================================
@@ -20,7 +20,7 @@ This module has only one public class.
 
 
 Public Exceptions
-=================
+-----------------
 This module has has a number of exceptions listed below in alphabetical order.
 
 ===================================  ===================================

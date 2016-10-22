@@ -4,7 +4,7 @@ implementation.
 
 
 Public Classes
-==============
+--------------
 This module has only one public class.
 
 ===================================  ===================================

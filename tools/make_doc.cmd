@@ -1,8 +1,6 @@
 pushd ..
-node %APPDATA%\npm\node_modules\tiddlywiki\tiddlywiki.js .\wiki --build
-python .\tools\html2text.py .\README.html>.\README.md
-python .\tools\html2text.py .\HOWTO.html>.\HOWTO.md
-del .\README.html
-del .\HOWTO.html
+node %APPDATA%\npm\node_modules\tiddlywiki\tiddlywiki.js _doc\wiki --build
+python .\tools\html2text.py .\_build\README.html>.\README.md
+python .\tools\html2text.py .\_build\HOWTO.html>.\HOWTO.md
 popd
 pause

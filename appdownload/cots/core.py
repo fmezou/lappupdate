@@ -5,7 +5,7 @@ All product handlers are derived classes from `BaseProduct` class.
 
 
 Public Classes
-==============
+--------------
 This module has only one public class.
 
 ===================================  ===================================
@@ -14,7 +14,7 @@ This module has only one public class.
 
 
 Public Functions
-================
+----------------
 This module has a number of functions listed below in alphabetical order.
 
 ===================================  ===================================
@@ -23,7 +23,7 @@ This module has a number of functions listed below in alphabetical order.
 
 
 Public Exceptions
-=================
+-----------------
 This module has has a number of exceptions listed below in alphabetical order.
 
 ===================================  ===================================
