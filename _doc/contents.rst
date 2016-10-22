@@ -10,4 +10,8 @@ lAppUpdate Documentation contents
     user-guide/index
     dev-guide/index
     background_paper/index
+
+.. toctree::
+    :hidden:
+
     glossary
