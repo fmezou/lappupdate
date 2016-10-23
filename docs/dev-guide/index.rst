@@ -32,4 +32,4 @@ on the editor's information sources and fetches the updates.
     ../../appdownload/scripts
     ../../appdownload/cots/index
     ../../appdownload/supporting_functions
-    ../../further-modules
+    ../../appdownload/further-modules

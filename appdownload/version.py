@@ -18,13 +18,21 @@ The easiest way to use is to import the module as below.
 .. _Python Packaging User Guide: https://packaging.python.org/
 """
 
-__author__ = "Frederic MEZOU"
+__project__ = "lAppDownload"
 __version__ = "0.1.0-dev.0"
+__author__ = "Frederic MEZOU"
+__author_email__= "frederic.mezou@example.com"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+__copyright__ = "2016, Frederic MEZOU"
+__description__ = "Tracks and downloads application installers or its update."
 
 __all__ = [
-    "__author__",
+    "__project__",
     "__version__",
-    "__license__"
+    "__author__",
+    "__author_email__",
+    "__license__",
+    "__copyright__",
+    "__description__"
 ]
 
