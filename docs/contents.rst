@@ -9,7 +9,7 @@ lAppUpdate Documentation contents
     about/about
     user-guide/index
     dev-guide/index
-    background_paper/index
+    background-papers/index
 
 .. toctree::
     :hidden:

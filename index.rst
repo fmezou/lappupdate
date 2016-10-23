@@ -15,12 +15,12 @@ Parts
 
 +--------------------------------------+--------------------------------------+
 | | :ref:`user-guide`                  | | :ref:`dev-guide`                   |
-| | :sub:`details use cases and the    | | :sub:`describes data, classes and  |
+| | :sub:`detail use cases and the     | | :sub:`describe data, classes and   |
 |   configuration files`               |   scripts`                           |
 +--------------------------------------+--------------------------------------+
-| | :ref:`background-paper`            |                                      |
-| | :sub:`background paper for         |                                      |
-|   supported COTS`                    |                                      |
+| | :ref:`background-papers`           |                                      |
+| | :sub:`detail the supported         |                                      |
+|   COST and internal format`          |                                      |
 +--------------------------------------+--------------------------------------+
 
 
@@ -32,7 +32,7 @@ Indices and tables
 | | :sub:`quick access to all modules`       | | :sub:`search this documentation`         |
 +--------------------------------------------+--------------------------------------------+
 | | :ref:`genindex`                          | | :ref:`Complete Table Of Contents <toc>`  |
-| | :sub:`all functions, classes, terms`     | | :sub:`lists all sections and subsections`|
+| | :sub:`all functions, classes, terms`     | | :sub:`list all sections and subsections` |
 +--------------------------------------------+--------------------------------------------+
 | | :ref:`glossary`                          |                                            |
 | | :sub:`the most important terms           |                                            |

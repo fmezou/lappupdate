@@ -2,13 +2,11 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _background-paper:
+******************
+Supported Products
+******************
 
-========================
-Product Background Paper
-========================
-
-The following topics provide the background paper for all the products that
+The following topics provide background papers for all the products that
 `appdownload` currently supports.
 
 .. toctree::

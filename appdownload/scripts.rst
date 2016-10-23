@@ -18,4 +18,3 @@ used by the ``appdeploy`` script.
     :maxdepth: 1
 
     appdownload
-    catalog
