@@ -144,3 +144,5 @@ __*__.cmd
 /appdownload/logger.ini
 /appdownload/pulling_report.ini
 /docs/wiki/tiddlers/$__StoryList.tid
+/_delivery
+/~store

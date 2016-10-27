@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _background-papers:
+.. _background_papers:
 
 #################
 Background Papers
@@ -18,4 +18,4 @@ structure [#f1]_ and the supported :term:`COST`.
     supported-products
 
 .. [#f1] should not be confused with configuration files which are detailed in
-    the :ref:`user-guide`.
+    the user guide.

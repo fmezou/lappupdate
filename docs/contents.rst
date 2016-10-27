@@ -7,9 +7,11 @@ lAppUpdate Documentation contents
 .. toctree::
 
     about/about
-    user-guide/index
-    dev-guide/index
-    background-papers/index
+    lapptrack_user_guide/index
+    lappdeploy_user_guide/index
+    lapptrack_dev_guide/index
+    lappdeploy_dev_guide/index
+    background_papers/index
 
 .. toctree::
     :hidden:

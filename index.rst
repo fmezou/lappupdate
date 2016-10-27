@@ -14,13 +14,20 @@ Parts
 %%%%%
 
 +--------------------------------------+--------------------------------------+
-| | :ref:`user-guide`                  | | :ref:`dev-guide`                   |
+| | :ref:`about`                       |                                      |
+| | :sub:`what's new`                  |                                      |
++--------------------------------------+--------------------------------------+
+| | :ref:`lapptrack_user_guide`        | | :ref:`lapptrack_dev_guide`         |
 | | :sub:`detail use cases and the     | | :sub:`describe data, classes and   |
 |   configuration files`               |   scripts`                           |
 +--------------------------------------+--------------------------------------+
-| | :ref:`background-papers`           |                                      |
-| | :sub:`detail the supported         |                                      |
-|   COST and internal format`          |                                      |
+| | :ref:`lappdeploy_user_guide`       | | :ref:`lappdeploy_dev_guide`        |
+| | :sub:`detail use cases and the     | | :sub:`describe data, and  scripts` |
+|   configuration files`               |                                      |
++--------------------------------------+--------------------------------------+
+|                                      | | :ref:`background_papers`           |
+|                                      | | :sub:`detail the supported         |
+|                                      |     COST and internal format`        |
 +--------------------------------------+--------------------------------------+
 
 

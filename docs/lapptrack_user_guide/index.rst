@@ -1,8 +1,8 @@
-.. _user-guide:
+.. _lapptrack_user_guide:
 
-#####################
-lAppUpdate User Guide
-#####################
+####################
+lAppTrack User Guide
+####################
 
 The `user manual`_ is designed for a *end-user audience* and details use
 cases and the configuration files. This manual is available as a single file
