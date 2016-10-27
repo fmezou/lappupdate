@@ -5,8 +5,8 @@ On {date}, products below have available updates.
 <!-- $lau:SummaryEntry$ -->
 {name} {version} released on {published}
 ================================================================================
-url: {url}
-Installer: {installer}
+location: {location}
+installer: {installer}
 file size: {file_size}
 
 Release note since ...
