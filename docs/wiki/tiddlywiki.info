@@ -11,7 +11,7 @@
     ],
     "build": {
 		"lappupdate": [
-            "--output","./_build",
+            "--output","./_delivery",
             "--rendertiddler","$:/core/save/all","lappupdate_wiki.html","text/plain"
         ],
 		"readme": [
@@ -23,7 +23,7 @@
             "--rendertiddler","How to","HOWTO.html"
         ],
         "static": [
-            "--output","./_build/wiki",
+            "--output","./_delivery/static_wiki",
             "--rendertiddlers", "[!is[system]]", "$:/core/templates/static.tiddler.html", "static", "text/plain",
             "--rendertiddler", "$:/core/templates/static.template.html", "static.html", "text/plain", 
             "--rendertiddler", "$:/core/templates/static.template.css", "static/static.css", "text/plain"
