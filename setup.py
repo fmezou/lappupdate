@@ -34,29 +34,18 @@ setup(
         "Programming Language :: Python :: 3.5",
     ],
     keywords="Distribution Software Administrator",
-    # py_modules=[
-    #     'appdownload',
-    #     'report',
-    #     'cots.core',
-    #     'cots.pad',
-    #     'cots.progressbar',
-    #     'cots.semver',
-    #     'cots.makemkv'
-    # ],
-    #packages=['', 'cots', 'tests'],
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     install_requires=[""],
     package_data={
-        "": ["*.example.ini", "*.tmpl.html"],
-        "cots": ["padspec40.xml"]
+        "appdownload": ["*.example.ini", "*.tmpl.html"],
+        "appdownload.cots": ["padspec40.xml"]
     },
     data_files=[
-        ('docs', ['../_build/html/index.html']),
-        ('man', glob.glob('../_build/html/**', recursive=True))
-    ]
-    # entry_points={
-    #     'console_scripts': [
-    #         "appdownload=appdownload:main",
-    #     ],
-    # },
+        ("man", glob.glob("_build/html/**/*.*", recursive=True))
+    ],
+    entry_points={
+         "console_scripts": [
+             "appdownload=appdownload.appdownload:main",
+         ],
+     },
 )
