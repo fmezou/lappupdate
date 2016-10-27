@@ -110,6 +110,7 @@ import importlib
 import logging
 import logging.config
 import json
+import sys
 
 import report
 
@@ -857,7 +858,14 @@ def _load_config(filename):
 
     return config_dict
 
-if __name__ == "__main__":
+
+def main():
+    """
+    Entry point
+
+    Returns:
+
+    """
     # Entry point
     # Build the command line parser
     parser = argparse.ArgumentParser(
@@ -911,3 +919,7 @@ if __name__ == "__main__":
         main_task.test_config()
     else:
         main_task.run()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

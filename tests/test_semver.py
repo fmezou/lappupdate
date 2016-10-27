@@ -4,7 +4,7 @@ This module defines a test suite for testing the semver module.
 
 import logging
 
-import semver
+from appdownload.cots import semver
 
 
 __author__ = "Frederic MEZOU"

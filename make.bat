@@ -9,6 +9,7 @@ if "%SPHINXBUILD%" == "" (
 if "%SPHINXOPTS%" == "" (
 	set SPHINXOPTS=-D graphviz_dot="C:\Program Files (x86)\Graphviz2.38\bin\dot.exe"
 )
+set DELIVERYDIR=_delivery\docs
 set BUILDDIR=_build
 set ALLSPHINXOPTS=-d %BUILDDIR%/doctrees %SPHINXOPTS% .
 set I18NSPHINXOPTS=%SPHINXOPTS% .
@@ -46,6 +47,8 @@ if "%1" == "help" (
 )
 
 if "%1" == "clean" (
+	for /d %%i in (%DELIVERYDIR%\*) do rmdir /q /s %%i
+	del /q /s %DELIVERYDIR%\*
 	for /d %%i in (%BUILDDIR%\*) do rmdir /q /s %%i
 	del /q /s %BUILDDIR%\*
 	goto end
@@ -77,31 +80,31 @@ if errorlevel 9009 (
 
 
 if "%1" == "html" (
-	%SPHINXBUILD% -b html %ALLSPHINXOPTS% %BUILDDIR%/html
+	%SPHINXBUILD% -b html %ALLSPHINXOPTS% %DELIVERYDIR%/html
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The HTML pages are in %BUILDDIR%/html.
+	echo.Build finished. The HTML pages are in %DELIVERYDIR%/html.
 	goto end
 )
 
 if "%1" == "dirhtml" (
-	%SPHINXBUILD% -b dirhtml %ALLSPHINXOPTS% %BUILDDIR%/dirhtml
+	%SPHINXBUILD% -b dirhtml %ALLSPHINXOPTS% %DELIVERYDIR%/dirhtml
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The HTML pages are in %BUILDDIR%/dirhtml.
+	echo.Build finished. The HTML pages are in %DELIVERYDIR%/dirhtml.
 	goto end
 )
 
 if "%1" == "singlehtml" (
-	%SPHINXBUILD% -b singlehtml %ALLSPHINXOPTS% %BUILDDIR%/singlehtml
+	%SPHINXBUILD% -b singlehtml %ALLSPHINXOPTS% %DELIVERYDIR%/singlehtml
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The HTML pages are in %BUILDDIR%/singlehtml.
+	echo.Build finished. The HTML pages are in %DELIVERYDIR%/singlehtml.
 	goto end
 )
 
 if "%1" == "pickle" (
-	%SPHINXBUILD% -b pickle %ALLSPHINXOPTS% %BUILDDIR%/pickle
+	%SPHINXBUILD% -b pickle %ALLSPHINXOPTS% %DELIVERYDIR%/pickle
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Build finished; now you can process the pickle files.
@@ -109,7 +112,7 @@ if "%1" == "pickle" (
 )
 
 if "%1" == "json" (
-	%SPHINXBUILD% -b json %ALLSPHINXOPTS% %BUILDDIR%/json
+	%SPHINXBUILD% -b json %ALLSPHINXOPTS% %DELIVERYDIR%/json
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Build finished; now you can process the JSON files.
@@ -117,28 +120,28 @@ if "%1" == "json" (
 )
 
 if "%1" == "htmlhelp" (
-	%SPHINXBUILD% -b htmlhelp %ALLSPHINXOPTS% %BUILDDIR%/htmlhelp
+	%SPHINXBUILD% -b htmlhelp %ALLSPHINXOPTS% %DELIVERYDIR%/htmlhelp
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Build finished; now you can run HTML Help Workshop with the ^
-.hhp project file in %BUILDDIR%/htmlhelp.
+.hhp project file in %DELIVERYDIR%/htmlhelp.
 	goto end
 )
 
 if "%1" == "qthelp" (
-	%SPHINXBUILD% -b qthelp %ALLSPHINXOPTS% %BUILDDIR%/qthelp
+	%SPHINXBUILD% -b qthelp %ALLSPHINXOPTS% %DELIVERYDIR%/qthelp
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Build finished; now you can run "qcollectiongenerator" with the ^
-.qhcp project file in %BUILDDIR%/qthelp, like this:
-	echo.^> qcollectiongenerator %BUILDDIR%\qthelp\lAppUpdate.qhcp
+.qhcp project file in %DELIVERYDIR%/qthelp, like this:
+	echo.^> qcollectiongenerator %DELIVERYDIR%\qthelp\lAppUpdate.qhcp
 	echo.To view the help file:
-	echo.^> assistant -collectionFile %BUILDDIR%\qthelp\lAppUpdate.ghc
+	echo.^> assistant -collectionFile %DELIVERYDIR%\qthelp\lAppUpdate.ghc
 	goto end
 )
 
 if "%1" == "devhelp" (
-	%SPHINXBUILD% -b devhelp %ALLSPHINXOPTS% %BUILDDIR%/devhelp
+	%SPHINXBUILD% -b devhelp %ALLSPHINXOPTS% %DELIVERYDIR%/devhelp
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Build finished.
@@ -146,121 +149,121 @@ if "%1" == "devhelp" (
 )
 
 if "%1" == "epub" (
-	%SPHINXBUILD% -b epub %ALLSPHINXOPTS% %BUILDDIR%/epub
+	%SPHINXBUILD% -b epub %ALLSPHINXOPTS% %DELIVERYDIR%/epub
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The epub file is in %BUILDDIR%/epub.
+	echo.Build finished. The epub file is in %DELIVERYDIR%/epub.
 	goto end
 )
 
 if "%1" == "latex" (
-	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
+	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %DELIVERYDIR%/latex
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished; the LaTeX files are in %BUILDDIR%/latex.
+	echo.Build finished; the LaTeX files are in %DELIVERYDIR%/latex.
 	goto end
 )
 
 if "%1" == "latexpdf" (
-	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
-	cd %BUILDDIR%/latex
+	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %DELIVERYDIR%/latex
+	cd %DELIVERYDIR%/latex
 	make all-pdf
 	cd %~dp0
 	echo.
-	echo.Build finished; the PDF files are in %BUILDDIR%/latex.
+	echo.Build finished; the PDF files are in %DELIVERYDIR%/latex.
 	goto end
 )
 
 if "%1" == "latexpdfja" (
-	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
-	cd %BUILDDIR%/latex
+	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %DELIVERYDIR%/latex
+	cd %DELIVERYDIR%/latex
 	make all-pdf-ja
 	cd %~dp0
 	echo.
-	echo.Build finished; the PDF files are in %BUILDDIR%/latex.
+	echo.Build finished; the PDF files are in %DELIVERYDIR%/latex.
 	goto end
 )
 
 if "%1" == "text" (
-	%SPHINXBUILD% -b text %ALLSPHINXOPTS% %BUILDDIR%/text
+	%SPHINXBUILD% -b text %ALLSPHINXOPTS% %DELIVERYDIR%/text
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The text files are in %BUILDDIR%/text.
+	echo.Build finished. The text files are in %DELIVERYDIR%/text.
 	goto end
 )
 
 if "%1" == "man" (
-	%SPHINXBUILD% -b man %ALLSPHINXOPTS% %BUILDDIR%/man
+	%SPHINXBUILD% -b man %ALLSPHINXOPTS% %DELIVERYDIR%/man
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The manual pages are in %BUILDDIR%/man.
+	echo.Build finished. The manual pages are in %DELIVERYDIR%/man.
 	goto end
 )
 
 if "%1" == "texinfo" (
-	%SPHINXBUILD% -b texinfo %ALLSPHINXOPTS% %BUILDDIR%/texinfo
+	%SPHINXBUILD% -b texinfo %ALLSPHINXOPTS% %DELIVERYDIR%/texinfo
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The Texinfo files are in %BUILDDIR%/texinfo.
+	echo.Build finished. The Texinfo files are in %DELIVERYDIR%/texinfo.
 	goto end
 )
 
 if "%1" == "gettext" (
-	%SPHINXBUILD% -b gettext %I18NSPHINXOPTS% %BUILDDIR%/locale
+	%SPHINXBUILD% -b gettext %I18NSPHINXOPTS% %DELIVERYDIR%/locale
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The message catalogs are in %BUILDDIR%/locale.
+	echo.Build finished. The message catalogs are in %DELIVERYDIR%/locale.
 	goto end
 )
 
 if "%1" == "changes" (
-	%SPHINXBUILD% -b changes %ALLSPHINXOPTS% %BUILDDIR%/changes
+	%SPHINXBUILD% -b changes %ALLSPHINXOPTS% %DELIVERYDIR%/changes
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.The overview file is in %BUILDDIR%/changes.
+	echo.The overview file is in %DELIVERYDIR%/changes.
 	goto end
 )
 
 if "%1" == "linkcheck" (
-	%SPHINXBUILD% -b linkcheck %ALLSPHINXOPTS% %BUILDDIR%/linkcheck
+	%SPHINXBUILD% -b linkcheck %ALLSPHINXOPTS% %DELIVERYDIR%/linkcheck
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Link check complete; look for any errors in the above output ^
-or in %BUILDDIR%/linkcheck/output.txt.
+or in %DELIVERYDIR%/linkcheck/output.txt.
 	goto end
 )
 
 if "%1" == "doctest" (
-	%SPHINXBUILD% -b doctest %ALLSPHINXOPTS% %BUILDDIR%/doctest
+	%SPHINXBUILD% -b doctest %ALLSPHINXOPTS% %DELIVERYDIR%/doctest
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Testing of doctests in the sources finished, look at the ^
-results in %BUILDDIR%/doctest/output.txt.
+results in %DELIVERYDIR%/doctest/output.txt.
 	goto end
 )
 
 if "%1" == "coverage" (
-	%SPHINXBUILD% -b coverage %ALLSPHINXOPTS% %BUILDDIR%/coverage
+	%SPHINXBUILD% -b coverage %ALLSPHINXOPTS% %DELIVERYDIR%/coverage
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Testing of coverage in the sources finished, look at the ^
-results in %BUILDDIR%/coverage/python.txt.
+results in %DELIVERYDIR%/coverage/python.txt.
 	goto end
 )
 
 if "%1" == "xml" (
-	%SPHINXBUILD% -b xml %ALLSPHINXOPTS% %BUILDDIR%/xml
+	%SPHINXBUILD% -b xml %ALLSPHINXOPTS% %DELIVERYDIR%/xml
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The XML files are in %BUILDDIR%/xml.
+	echo.Build finished. The XML files are in %DELIVERYDIR%/xml.
 	goto end
 )
 
 if "%1" == "pseudoxml" (
-	%SPHINXBUILD% -b pseudoxml %ALLSPHINXOPTS% %BUILDDIR%/pseudoxml
+	%SPHINXBUILD% -b pseudoxml %ALLSPHINXOPTS% %DELIVERYDIR%/pseudoxml
 	if errorlevel 1 exit /b 1
 	echo.
-	echo.Build finished. The pseudo-XML files are in %BUILDDIR%/pseudoxml.
+	echo.Build finished. The pseudo-XML files are in %DELIVERYDIR%/pseudoxml.
 	goto end
 )
 
