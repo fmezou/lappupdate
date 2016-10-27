@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 import glob
 
 setup(
-    name="lAppDownload",
+    name="appdownload",
     version="0.1.0-dev.0",
     description="Tracks and downloads application installers or its update.",
     long_description="Lightweight application update (commonly known as "
