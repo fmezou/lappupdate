@@ -112,7 +112,7 @@ import logging.config
 import json
 import sys
 
-import report
+from support import report
 
 
 __author__ = "Frederic MEZOU"

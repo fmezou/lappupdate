@@ -16,7 +16,7 @@ import datetime
 import logging
 
 from cots import core
-from cots import semver
+from support import semver
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -62,7 +62,7 @@ class Product(core.BaseProduct):
 
         This method compare the version of the two product, and return the
         comparison result. The version numbers used by the editor are compliant
-        with the semantic versioning specification 2.0.0 (see `cots.semver`
+        with the semantic versioning specification 2.0.0 (see `support.semver`
         module)
 
         Args:

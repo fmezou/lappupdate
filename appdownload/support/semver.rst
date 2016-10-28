@@ -2,9 +2,9 @@
 .. default-domain:: py
 .. default-role:: any
 
-`cots.semver` -- Semantic Versioning Support
-============================================
-.. automodule:: cots.semver
+`support.semver` -- Semantic Versioning Support
+===============================================
+.. automodule:: support.semver
     :platform: all
     :synopsis: Semantic Versioning Support
 

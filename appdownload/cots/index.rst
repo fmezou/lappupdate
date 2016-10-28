@@ -5,6 +5,7 @@
 **********************************
 `cots` -- Product Handlers Package
 **********************************
+
 .. automodule:: cots
     :platform: all
     :synopsis: Product Handlers Package

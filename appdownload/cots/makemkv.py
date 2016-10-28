@@ -24,8 +24,8 @@ from html.parser import HTMLParser
 
 
 from cots import core
-from cots import pad
-from cots import semver
+from support import pad
+from support import semver
 
 
 __author__ = "Frederic MEZOU"
@@ -141,7 +141,7 @@ class Product(core.BaseProduct):
 
         This method compare the version of the two product, and return the
         comparison result. The version numbers used by the editor are compliant
-        with the semantic versioning specification 2.0.0 (see `cots.semver`
+        with the semantic versioning specification 2.0.0 (see `support.semver`
         module)
 
         Args:

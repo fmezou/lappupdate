@@ -2,9 +2,9 @@
 .. default-domain:: py
 .. default-role:: any
 
-`cots.progressbar` -- Progress Bar Widgets
-==========================================
-.. automodule:: cots.progressbar
+`support.progressbar` -- Progress Bar Widgets
+=============================================
+.. automodule:: support.progressbar
     :platform: all
     :synopsis: Progress Bar Widgets
 

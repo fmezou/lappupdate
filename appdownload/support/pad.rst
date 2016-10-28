@@ -2,9 +2,9 @@
 .. default-domain:: py
 .. default-role:: any
 
-`cots.pad` -- Lightweight Portable Application Description Support
-===================================================================
-.. automodule:: cots.pad
+`support.pad` -- Lightweight Portable Application Description Support
+=====================================================================
+.. automodule:: support.pad
     :platform: all
     :synopsis: Lightweight Portable Application Description Support
 

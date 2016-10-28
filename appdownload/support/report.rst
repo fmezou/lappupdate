@@ -3,9 +3,9 @@
 .. default-role:: any
 
 
-:mod:`report` -- Reporting Manager
-==================================
-.. automodule:: report
+:mod:`support.report` -- Reporting Manager
+==========================================
+.. automodule:: support.report
     :platform: all
     :synopsis: Reporting Manager
 

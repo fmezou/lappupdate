@@ -42,7 +42,7 @@ import os
 import tempfile
 import urllib.request
 
-from cots import progressbar
+from support import progressbar
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
