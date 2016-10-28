@@ -122,7 +122,8 @@ class Product(core.BaseProduct):
         self.description = "This dummy module is a trivial example of a " \
                            "Product class implementation. "
         self.editor = "Example. inc"
-        self.location = "http://www.example.com/index.html"
+        self.web_site_location = "http://www.example.com/index.html"
+        self.location = "http://www.example.com/dist.zip"
         self.icon = None
         self.announce_location = "http://www.example.com/news.txt"
         self.feed_location = "http://www.example.com/feed.rss"
