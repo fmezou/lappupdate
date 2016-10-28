@@ -30,13 +30,13 @@ But, these two use cases comply with the following steps:
 By default, you have nothing to tune. The default values of environment
 variables allows a working with the following features:
 
-  * all action, expect debug one, are only logged in a text file named _appdeploy.log_ in the `%SystemRoot%` directory (typically _C:\Windows\appdeploy.log_).
-  * the applist files (at least _applist-all.txt_) are stored in the _appstore_ directory located at the same level that the directory containing the appdeploy script.
+  * all action, expect debug one, are only logged in a text file named _lappdeploy.log_ in the `%SystemRoot%` directory (typically _C:\Windows\lappdeploy.log_).
+  * the applist files (at least _applist-all.txt_) are stored in the _appstore_ directory located at the same level that the directory containing the lappdeploy script.
 
 If these features do not comply with your need, you must consider tuning the
 environment variables. The most efficient way to do that is to use __init__
 and __exit__ hook scripts. See ___init__.cmd.example_ and
-___exit__.cmd.example_ located in the directory containing the appdeploy
+___exit__.cmd.example_ located in the directory containing the lappdeploy
 script. in to have examples.
 
   * To change the location of applist files and installers packages, you must tune the APP_STORE_DIR environment variable. 
@@ -46,10 +46,10 @@ script. in to have examples.
 
 # Build the application list to deploy
 
-The appdeploy script uses two applist files to verify which applications were
+The lappdeploy script uses two applist files to verify which applications were
 installed and if it needs to be updated: the first one is named _applist-
 all.txt_; the second is named _applist-<set>.txt_ where `<set>` is the
-argument passed to appdeploy on the command line (e.g. `.\appdeploy dummy`).
+argument passed to lappdeploy on the command line (e.g. `.\lappdeploy dummy`).
 
 _**Note**: applist files may be empty including applist-all.txt._
 
@@ -66,7 +66,7 @@ children, purchasing department...). If you use a domain controller, you can
 match applist files with your Organisational Units (OU).
 
 By default, the applist files are stored in the _appstore_ directory located
-at the same level that the directory containing the appdeploy script. To
+at the same level that the directory containing the lappdeploy script. To
 change the location of applist files and installers packages, you must tune
 the APP_STORE_DIR environment variable.
 
@@ -86,7 +86,7 @@ organisation and allow to have a __postinstall__ hook script for each of them.
 
 # Build the medium
 
-The appdeploy script is designed to be independent from the type of used
+The lappdeploy script is designed to be independent from the type of used
 media. This can be a network share reached from its UNC name (e.g.
 _\\\myserver\share_), a DVD or CD, a USB Stick or any removable media. Thus
 the media building is limited to copy files or use your favourite CD/DVD
@@ -94,9 +94,9 @@ burner utility.
 
 The medium must contain the directory with installers (see 'How to build the
 application list') according to the APP_STORE_DIR environment variable and the
-following files from the _appdeploy_ directory:
+following files from the _lappdeploy_ directory:
 
-  * _appdeploy.cmd_
+  * _lappdeploy.cmd_
   * __appfilter.vbs_
   * __log2mail.vbs_
   * ___exit__.cmd_ _(optional)_
@@ -107,8 +107,8 @@ following files from the _appdeploy_ directory:
 The below block show a typical file tree for a media of deployment.
 
     \
-    ├───appdeploy
-    │       appdeploy.cmd
+    ├───lappdeploy
+    │       lappdeploy.cmd
     │       _appfilter.vbs
     │       _log2mail.vbs
     │       __exit__.cmd
@@ -128,9 +128,9 @@ The below block show a typical file tree for a media of deployment.
 
 # Deploy applications from a DVD
 
-he phase of deployment start by calling appdeploy script from a command shell.
-The only argument to pass is the set name according to your organisation
-choice (see How to build the application list)
+he phase of deployment start by calling lappdeploy script from a command
+shell. The only argument to pass is the set name according to your
+organisation choice (see How to build the application list)
 
 As any installation of program, you must launch the script with administrator
 privilege (right click on the command prompt link, and choose `run as
@@ -138,11 +138,11 @@ administrator`) .
 
 ## example
 
-C:\>d:\appdeploy\appdeploy.cmd dummy
+C:\>d:\lappdeploy\lappdeploy.cmd dummy
 
 # Deploy applications from a Network share
 
-The phase of deployment start by calling appdeploy script from a command
+The phase of deployment start by calling lappdeploy script from a command
 shell. The only argument to pass is the set name according to your
 organisation choice (see How to build the application list)
 
@@ -155,7 +155,7 @@ task with the sending of an summary mail (see How to tune your environment).
 
 ## example
 
-C:>\\\myserver\share\appdeploy.cmd dummy
+C:>\\\myserver\share\lappdeploy.cmd dummy
 
 * * *
 

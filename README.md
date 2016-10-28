@@ -9,20 +9,20 @@ searches led me to the following products:
   * updaters family ([Avast Software Updater](https://www.avast.com/f-software-updater), [FileHippo App Manager](http://filehippo.com/download_app_manager) (formerly FileHippo Update Checker)...): theses tools are well designed for home PC connected to internet, but they mix the two following functions (checking the availability of updates from the editor web site, checking installed local applications). In my point of view, theses function must be separated to consider the case where target PC are not connected or the need to centralise custom software updates.
 
 So I choose to develop my own deployment system built around two main module :
-the first one, named appdeploy, deploys application, the second one, named
-appdownload, checks and downloads applications updates if any (or the full
+the first one, named lappdeploy, deploys application, the second one, named
+lapptrack, checks and downloads applications updates if any (or the full
 installation package).
 
 # Requirements
 
 The requirements for this project were:
 
-  * appdeploy must run on windows 7 without prerequisites (I.e. no agent must be prior installed). Theses implies that this modules must be written in [Command shell](https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR) or [Windows Script Host](https://msdn.microsoft.com/library/d1wf56tt.aspx).
-  * appdeploy must run from a network share (aka from a UNC path) or a removable disk (CD or DVD, USB stick...).
-  * appdeploy must work with any type of installation package (MSI package, EXE package or a classic distribution with files and a setup.exe).
-  * appdeploy must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, ~VirtualBox Extension Pack, Tortoise Language Pack...)
+  * lappdeploy must run on windows 7 without prerequisites (I.e. no agent must be prior installed). Theses implies that this modules must be written in [Command shell](https://technet.microsoft.com/en-us/library/cc754340.aspx#BKMK_OVR) or [Windows Script Host](https://msdn.microsoft.com/library/d1wf56tt.aspx).
+  * lappdeploy must run from a network share (aka from a UNC path) or a removable disk (CD or DVD, USB stick...).
+  * lappdeploy must work with any type of installation package (MSI package, EXE package or a classic distribution with files and a setup.exe).
+  * lappdeploy must have pre install and post installation hook to customize the start menu or install additional packs (e.g. Firefox extension, ~VirtualBox Extension Pack, Tortoise Language Pack...)
 
-# appdeploy
+# lappdeploy
 
 This script is a public script. It launches the installer package of the
 standard application. See Usage description syntax for details about used
@@ -30,7 +30,7 @@ syntax.
 
 ## Usage
 
-`appdeploy [set]`
+`lappdeploy [set]`
 
 ## Arguments
 
@@ -52,7 +52,7 @@ invalid argument. An argument of the command line is not valid (see Usage)
 
 ## Environment variables
 
-The following environment variables affect the execution of `appdeploy`:
+The following environment variables affect the execution of `lappdeploy`:
 
 APP_STORE_DIR
 
@@ -101,7 +101,7 @@ Specify the scripts logging mode.
 
 LOGMAIL
 
-Specify if a mail containing the current appdeploy log messages will be sent
+Specify if a mail containing the current lappdeploy log messages will be sent
 (see _log2mail script).
 
 LOGLEVEL
