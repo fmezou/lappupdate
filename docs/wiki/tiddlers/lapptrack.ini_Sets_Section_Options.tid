@@ -3,7 +3,7 @@ created: 20160227143308904
 modified: 20160516142120230
 name: sets
 tags: 
-title: appdownload.ini Sets Section Options
+title: lapptrack.ini Sets Section Options
 type: text/vnd.tiddlywiki
 
 |^`<name>`|^is the name of the set and contains a set of computer names or any organisational units according with the lappdeploy script call. A set may be empty, in this case, no file is going to be created for this one. |

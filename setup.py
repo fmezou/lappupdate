@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 import glob
 
 setup(
-    name="appdownload",
+    name="lapptrack",
     version="0.1.0-dev.0",
     description="Tracks and downloads application installers or its update.",
     long_description="Lightweight application update (commonly known as "
@@ -37,15 +37,15 @@ setup(
     packages=find_packages(exclude=["tests"]),
     install_requires=[""],
     package_data={
-        "appdownload": ["*.example.ini", "*.tmpl.html"],
-        "appdownload.cots": ["padspec40.xml"]
+        "lapptrack": ["*.example.ini", "*.tmpl.html"],
+        "lapptrack.cots": ["padspec40.xml"]
     },
     data_files=[
         ("man", glob.glob("_build/html/**/*.*", recursive=True))
     ],
     entry_points={
          "console_scripts": [
-             "appdownload=appdownload.appdownload:main",
+             "lapptrack=lapptrack.lapptrack:main",
          ],
      },
 )

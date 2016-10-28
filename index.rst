@@ -8,7 +8,7 @@ standalone computers running under Microsoft Windows.
 
 It built around two main parts: the first one, named **lappdeploy**, deploys
 application from a removable media or a shared folder; the second one, named
-**appdownload**, tracks and downloads application installers or its updates.
+**lapptrack**, tracks and downloads application installers or its updates.
 
 Parts
 %%%%%

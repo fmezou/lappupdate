@@ -6,7 +6,7 @@
 Main Script
 ***********
 
-The main component is the :mod:`appdownload` module which offers a command line
+The main component is the :mod:`lapptrack` module which offers a command line
 interface and is in charge of plug-in handling and operations scheduling.
 
 To sum up, this module call a product handler from the `cots` package to
@@ -17,4 +17,4 @@ used by the ``lappdeploy`` script.
 .. toctree::
     :maxdepth: 1
 
-    appdownload
+    lapptrack

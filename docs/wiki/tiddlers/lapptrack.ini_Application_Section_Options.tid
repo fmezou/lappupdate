@@ -3,10 +3,10 @@ created: 20160227143139971
 modified: 20160228150629766
 name: application
 tags: 
-title: appdownload.ini Application Section Options
+title: lapptrack.ini Application Section Options
 type: text/vnd.tiddlywiki
 
-<<note "name section must be lowercase, since the section name is a key in [[applications section|appdownload.ini Applications Section]].">>
+<<note "name section must be lowercase, since the section name is a key in [[applications section|lapptrack.ini Applications Section]].">>
 
 |^`qualname` (mandatory) |^is the qualified name of the application handler. |
 |^`path` (optional) |^is the path name where to store the installer package. The default value is `${core:store}\<section name>`. |

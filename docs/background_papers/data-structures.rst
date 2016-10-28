@@ -7,7 +7,7 @@ Data Structures
 ***************
 
 The following topics provide background papers for data structures that
-`appdownload` uses.
+`lapptrack` uses.
 
 .. toctree::
     :maxdepth: 1

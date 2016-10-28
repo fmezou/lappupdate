@@ -61,7 +61,7 @@ In `this post <http://www.makemkv.com/forum2/viewtopic.php?f=1&t=4363>`_, the
 MakeMKV author give a method to detect the up-to-date version. It based on a XML
 file matching the `PAD 3.10 Specification <http://pad.asp-software.org/spec/
 spec_310.php>`_ at http://www.makemkv.com/makemkv.xml.
-Consequently, the update checking mechanism of `appdownload` use this method.
+Consequently, the update checking mechanism of `lapptrack` use this method.
 
 Example
 

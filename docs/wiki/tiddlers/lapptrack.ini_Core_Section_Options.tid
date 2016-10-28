@@ -3,7 +3,7 @@ created: 20160227150137910
 modified: 20160228160348029
 name: core
 tags: 
-title: appdownload.ini Core Section Options
+title: lapptrack.ini Core Section Options
 type: text/vnd.tiddlywiki
 
 |^`store` (mandatory) |^contains the path where installation package and [[applist]] files are stored |

@@ -138,11 +138,11 @@ fabric.properties
 /*.lnk
 desktop.ini
 __*__.cmd
-/appdownload/appdownload.ini
-/appdownload/approving_report.ini
-/appdownload/fetching_report.ini
-/appdownload/logger.ini
-/appdownload/pulling_report.ini
+/lapptrack/lapptrack.ini
+/lapptrack/approving_report.ini
+/lapptrack/fetching_report.ini
+/lapptrack/logger.ini
+/lapptrack/pulling_report.ini
 /docs/wiki/tiddlers/$__StoryList.tid
 /_delivery
 /~store

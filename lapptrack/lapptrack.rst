@@ -3,10 +3,10 @@
 .. default-role:: any
 
 
-:mod:`appdownload` -- Applications' Updates Manager
+:mod:`lapptrack` -- Applications' Updates Manager
 ===================================================
 
-.. automodule:: appdownload
+.. automodule:: lapptrack
     :platform: all
     :synopsis: Applications' Updates Manager
 
@@ -16,7 +16,7 @@ This section details the objects defined in this module. In this case, there is
 only one object which is the main entry point of the scheduler. It offers an API
 for implementing user interface.
 
-.. autoclass:: AppDownload
+.. autoclass:: lAppTrack
     :members:
     :show-inheritance:
 
@@ -49,10 +49,10 @@ This section details the specific exception used in this module.
 Configuration file
 ------------------
 
-.. literalinclude:: appdownload.example.ini
+.. literalinclude:: lapptrack.example.ini
    :language: ini
    :caption: Example of configuration file
-   :name: appdownload.example.ini
+   :name: lapptrack.example.ini
 
 .. literalinclude:: logger.example.ini
    :language: ini

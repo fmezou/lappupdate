@@ -1,6 +1,6 @@
 """
 This package is the place where the supporting module are defined. Theses
-modules provide support for the :mod:`appdownload` and the product handlers
+modules provide support for the :mod:`lapptrack` and the product handlers
 grouped in the `cots` package.
 """
 

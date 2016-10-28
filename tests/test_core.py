@@ -5,7 +5,7 @@ This module defines a test suite for testing the core module.
 import logging
 import os
 
-from appdownload.cots import core
+from lapptrack.cots import core
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"

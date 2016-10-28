@@ -6,4 +6,4 @@ type: text/vnd.tiddlywiki
 
 The prerequisites for this project were:
 
-* This script is a [[Python script|https://www.python.org/]] one. Thus, it must be launched with [[python interpreter|https://docs.python.org/3/tutorial/interpreter.html#invoking-the-interpreter]]. (e.g. `python -m appdownload.py --help`)
+* This script is a [[Python script|https://www.python.org/]] one. Thus, it must be launched with [[python interpreter|https://docs.python.org/3/tutorial/interpreter.html#invoking-the-interpreter]]. (e.g. `python -m lapptrack.py --help`)

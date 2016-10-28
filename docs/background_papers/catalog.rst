@@ -10,10 +10,10 @@ Catalog Format
 The catalog is a file which is automatically generated, and **must not be
 manually modified**. It contains the applications database and specifies the
 following properties, for each application, using the JavaScript Object Notation
-(JSON), specified by :rfc:`7159`. The :mod:`appdownload` script uses this
+(JSON), specified by :rfc:`7159`. The :mod:`lapptrack` script uses this
 database to build the input files used by the ``lappdeploy`` script.
 
-The constant `appdownload.CATALOG_FNAME` specifies the file name of the catalog
+The constant `lapptrack.CATALOG_FNAME` specifies the file name of the catalog
 and it's located in the 'store' folder (see item '`store`_' in the configuration
 file).
 
@@ -86,5 +86,5 @@ Example
         }
     }
 
-.. _store: http://fmezou.github.io/lappupdate/lappupdate_wiki.html#appdownload.
+.. _store: http://fmezou.github.io/lappupdate/lappupdate_wiki.html#lapptrack.
     ini%20Core%20Section

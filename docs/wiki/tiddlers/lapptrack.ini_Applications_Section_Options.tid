@@ -1,0 +1,9 @@
+abstract: contains the list of applications to maintains
+created: 20160227143236382
+modified: 20160227160106797
+name: applications
+tags: 
+title: lapptrack.ini Applications Section Options
+type: text/vnd.tiddlywiki
+
+|^`<name>`|^is the name of the [[application section|lapptrack.ini Application Section]] and contains a flag specifying if the application have been taking into account. |

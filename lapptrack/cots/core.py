@@ -231,7 +231,7 @@ class BaseProduct:
 
     **Using BaseProduct...**
         This class is the base class for product handler used by
-        `appdownload.AppDownload` and this one only use the public methods.
+        `lapptrack.lAppTrack` and this one only use the public methods.
 
         After created a class instance, the `get_origin` method populate the
         attributes with the most up-to-date information from the editor's

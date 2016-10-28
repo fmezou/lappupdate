@@ -1,17 +1,17 @@
 created: 20151108162244448
 modified: 20160313173422910
 tags: Usages [[Public scripts]]
-title: appdownload
+title: lapptrack
 type: text/vnd.tiddlywiki
 
 This script is a [[public script|Public script]]. It checks and downloads applications' updates if any. See [[Usage description syntax]] for details about used syntax. 
 
 This script is a [[Python script|https://www.python.org/]] one. Thus, it must be launched with [[python interpreter|https://docs.python.org/3/tutorial/interpreter.html#invoking-the-interpreter]].
-(e.g. `python -m appdownload.py --help`)
+(e.g. `python -m lapptrack.py --help`)
 
 !!Usage 
 
-appdownload.py [-h] [-p|-f|-a [-y]|-m|-t] [-v] [-c FILE]
+lapptrack.py [-h] [-p|-f|-a [-y]|-m|-t] [-v] [-c FILE]
 
 !!Optional arguments
 |^`-h`, `--help` |^show this help message and exit |
@@ -21,7 +21,7 @@ appdownload.py [-h] [-p|-f|-a [-y]|-m|-t] [-v] [-c FILE]
 |^`-m`, `--make` |^make applist files based on the last build catalog (useful to make applist files after a configuration modification) |
 |^`-t`, `--testconf` |^check the configuration file for internal correctness |
 |^`-y`, `--yes` |^force applications approval (see `--approve`) |
-|^`-c`, `--configfile FILE` |^specifies the configuration file. It includes the list of handled applications, the file <<file appdownload.example.ini>> details configuration topics. The default configuration file name is '[[appdownload.ini]]' located in the current working directory. |
+|^`-c`, `--configfile FILE` |^specifies the configuration file. It includes the list of handled applications, the file <<file lapptrack.example.ini>> details configuration topics. The default configuration file name is '[[lapptrack.ini]]' located in the current working directory. |
 |^`--version` |^show program's version number and exit |
 
 !!Exit code

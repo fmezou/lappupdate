@@ -11,7 +11,7 @@ Glossary
         content of this file.
 
     Catalog
-        A file where :class:`AppDownload` class (resp. :mod:`appdownload`
+        A file where :class:`lAppTrack` class (resp. :mod:`lapptrack`
         script) stores information (name, version, published date,...) about the
         handled products.
 

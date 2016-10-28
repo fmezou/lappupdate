@@ -10,7 +10,7 @@ import smtplib
 import socket
 import traceback
 
-from appdownload import report
+from lapptrack import report
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0"
@@ -68,7 +68,7 @@ def test_multiple_report():
     a_report.add_section(content_attributes)
     a_report.publish()
 
-    a_report.set_template("./appdownload/report_template.txt")
+    a_report.set_template("./lapptrack/report_template.txt")
     a_handler.set_filename("./tempstore/report.txt")
     a_report.publish()
 

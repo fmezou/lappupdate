@@ -7,7 +7,7 @@ Supported Products
 ******************
 
 The following topics provide background papers for all the products that
-`appdownload` currently supports.
+`lapptrack` currently supports.
 
 .. toctree::
     :maxdepth: 1

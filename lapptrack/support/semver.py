@@ -76,7 +76,7 @@ class SemVer:
         identifier string and use the comparison operator as shown in the below
         example.
 
-        >>> import appdownload.cots.semver as semver
+        >>> import lapptrack.cots.semver as semver
         >>> v1 = semver.SemVer("1.0.0")
         >>> v2 = semver.SemVer("2.0.0")
         >>> v1 < v2
