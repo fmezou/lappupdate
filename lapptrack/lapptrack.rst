@@ -3,12 +3,12 @@
 .. default-role:: any
 
 
-:mod:`lapptrack` -- Applications' Updates Manager
-===================================================
+:mod:`lapptrack` -- Products Tracking Manager
+=============================================
 
 .. automodule:: lapptrack
     :platform: all
-    :synopsis: Applications' Updates Manager
+    :synopsis: Products Tracking Manager
 
 Objects reference
 -----------------
