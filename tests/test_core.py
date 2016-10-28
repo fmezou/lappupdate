@@ -4,109 +4,79 @@ This module defines a test suite for testing the core module.
 
 import logging
 import os
+import sys
+import unittest
 
-from lapptrack.cots import core
+# Modules to be tested are located in another directory. So the Module Search
+# Path is modified for including the root of theses modules.
+pathname = os.path.join(os.path.dirname(__file__), os.pardir, "lapptrack")
+sys.path.append(os.path.abspath(pathname))
+
+from cots import core
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
-if __name__ == "__main__":
-    logging.basicConfig(
-        format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
-        level=logging.WARNING)
-    logger = logging.getLogger(__name__)
-    checked = True
+class TestSemVer(unittest.TestCase):
+    def setUp(self):
+        # Modules to be testes use the logging facility, so a minimal
+        # configuration is set.
+        logging.basicConfig(
+            format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
+            level=logging.ERROR)
+        logger = logging.getLogger(__name__)
 
-    # non variant
-    url = "https://addons.cdn.mozilla.net/user-media/addons/1865/" \
-          "adblock_plus-2.7-fx+sm+tb+an.xpi"
-    dir_name = "../tempstore/"
-    # Test 1 :
-    ctype = "application/x-xpinstall"
-    clength = 989188
-    chash = (
-        "sha256",
-        "c1ef9d41e122ceb242facab8755219a8ffa9b8a15321c352d0e95e1ac9994c2a"
-    )
-    try:
-        filename = core.retrieve_file(url, dir_name,
-                                      content_type=ctype,
-                                      content_length=clength,
-                                      content_hash=chash)
-    except core.Error as error:
-        checked = False
-        msg = "..Unexpected exception - {} - args : {}"
-        logger.error(msg.format(error, error.args))
-    else:
+        # non variant
+        self.url = "https://addons.cdn.mozilla.net/user-media/addons/1865/" \
+                   "adblock_plus-2.7-fx+sm+tb+an.xpi"
+        self.dir_name = "../~store/app"
+
+    def tearDown(self):
         pass
-    print("Test #1 {}verified".format("" if checked else "not "))
 
-    # Test 2 :
-    try:
-        filename = core.retrieve_file(url, dir_name)
-    except core.Error as error:
-        checked = False
-        msg = "..Unexpected exception - {} - args : {}"
-        logger.error(msg.format(error, error.args))
-    else:
-        pass
-    print("Test #2 {}verified".format("" if checked else "not "))
+    def test_retrieve_file_ex(self):
+        ctype = "application/x-xpinstall"
+        clength = 989188
+        chash = (
+            "sha256",
+            "c1ef9d41e122ceb242facab8755219a8ffa9b8a15321c352d0e95e1ac9994c2a"
+        )
+        core.retrieve_file(self.url, self.dir_name,
+                           content_type=ctype,
+                           content_length=clength,
+                           content_hash=chash)
 
-    # - Unsupported hash -------------------------------------------------------
-    chash = ("md6", "")
-    try:
-        filename = core.retrieve_file(url, dir_name,
-                                      content_hash=chash)
-    except core.Error as error:
-        msg = "..Unexpected exception - {} - args : {}"
-        logger.error(msg.format(error, error.args))
-    else:
-        pass
-    print("Test Unsupported hash {}verified".format("" if checked else "not "))
+    def test_retrieve_file(self):
+        filename = core.retrieve_file(self.url, self.dir_name)
 
-    # - Bad hash ---------------------------------------------------------------
-    chash = (
-        "sha256",
-        "c1ef9d41e122ceb242facab8755219a8ffa9b8a15321c352d0e95e1ac9994c2b"
-    )
-    try:
-        filename = core.retrieve_file(url, dir_name,
-                                      content_hash=chash)
-    except core.UnexpectedContentError as error:
-        pass
-    else:
-        checked = False
-        msg = "..Bad hash must be rejected"
-        logger.error(msg.format(error, error.args))
-    print("Test Bad hash {}verified".format("" if checked else "not "))
+    def test_unsupported_hash(self):
+        chash = ("md6", "")
+        core.retrieve_file(self.url, self.dir_name, content_hash=chash)
 
-    # - Bad content length------------------------------------------------------
-    clength = 9891
-    try:
-        filename = core.retrieve_file(url, dir_name,
-                                      content_length=clength)
-    except core.UnexpectedContentLengthError as error:
-        pass
-    else:
-        checked = False
-        msg = "..Bad content length must be rejected"
-        logger.error(msg.format(error, error.args))
-    print("Test content length {}verified".format("" if checked else "not "))
+    def test_bad_hash(self):
+        chash = (
+            "sha256",
+            "c1ef9d41e122ceb242facab8755219a8ffa9b8a15321c352d0e95e1ac9994c2b"
+        )
+        msg = "Bad hash must be rejected"
+        with self.assertRaises(core.UnexpectedContentError, msg=msg):
+            core.retrieve_file(self.url, self.dir_name, content_hash=chash)
 
-    # - Bad content type------------------------------------------------------
-    ctype = "unknown/vnd"
-    try:
-        filename = core.retrieve_file(url, dir_name,
-                                      content_type=ctype)
-    except core.UnexpectedContentTypeError as error:
-        pass
-    else:
-        checked = False
-        msg = "..Bad content type must be rejected"
-        logger.error(msg.format(error, error.args))
-    print("Test content type {}verified".format("" if checked else "not "))
+    def test_bad_content_lenght(self):
+        clength = 9891
+        msg = "Bad content length must be rejected"
+        with self.assertRaises(core.UnexpectedContentLengthError, msg=msg):
+            core.retrieve_file(self.url, self.dir_name, content_length=clength)
 
-    # - unknown content length (no header)--------------------------------------
-    # no known url
+    def test_bad_content_type(self):
+        ctype = "unknown/vnd"
+        msg = "Bad content type must be rejectedd"
+        with self.assertRaises(core.UnexpectedContentTypeError, msg=msg):
+            core.retrieve_file(self.url, self.dir_name, content_type=ctype)
+
+# TODO: add unknown content length (no header) and unknow url
+if __name__ == '__main__':
+    unittest.main()
+
