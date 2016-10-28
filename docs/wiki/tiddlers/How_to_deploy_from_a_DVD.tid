@@ -5,10 +5,10 @@ modifier: fmezou
 tags: How-to
 title: How to deploy from a DVD
 
-he phase of deployment start by calling [[appdeploy]] script from a command shell. The only argument to pass is the set name according to your organisation choice (see [[How to build the application list]])
+he phase of deployment start by calling [[lappdeploy]] script from a command shell. The only argument to pass is the set name according to your organisation choice (see [[How to build the application list]])
 
 As any installation of program, you must launch the script with administrator privilege (right click on the command prompt link, and choose `run as administrator`) . 
 
 !!example
-<kbd>C:\>d:\appdeploy\appdeploy.cmd dummy</kbd>
+<kbd>C:\>d:\lappdeploy\lappdeploy.cmd dummy</kbd>
 

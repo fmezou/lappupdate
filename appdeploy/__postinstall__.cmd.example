@@ -1,6 +1,6 @@
 @echo off
 rem __postinstall__
-rem This script is a hook script called when appdeploy script ended an 
+rem This script is a hook script called when lappdeploy script ended an
 rem installation. See Usage description syntax for details about used syntax.
 rem When __postinstall__ is called the installation package execution ended. 
 rem Thus this hook is designed to host yours additional post installation tasks

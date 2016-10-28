@@ -5,7 +5,7 @@ modifier: fmezou
 tags: Usages [[Hook scripts]]
 title: __exit__
 
-This optional script is a [[hook script|Hook script]] called when [[appdeploy]] script end. See [[Usage description syntax]] for details about used syntax. 
+This optional script is a [[hook script|Hook script]] called when [[lappdeploy]] script end. See [[Usage description syntax]] for details about used syntax.
 
 When `__exit__` is called completion tasks have been launched. It is the reverse script of [[__init__]] hook script. Thus this hook is designed to host yours additional completion tasks.
 

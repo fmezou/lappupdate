@@ -3,13 +3,13 @@ creator: fmezou
 modified: 20150611194916517
 modifier: fmezou
 tags: Usages [[Public scripts]]
-title: appdeploy
+title: lappdeploy
 
 This script is a [[public script|Public script]]. It launches the installer package of the standard application.  See [[Usage description syntax]] for details about used syntax. 
 
 !!Usage 
 
-`appdeploy [set]`
+`lappdeploy [set]`
 
 !!Arguments
 

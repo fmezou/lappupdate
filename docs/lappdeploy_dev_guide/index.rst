@@ -7,7 +7,7 @@ lAppDeploy Developer Guide
 This manual is designed for a *developer audience* to enhance features. This
 documentation describes scripts composing the lAppDeploy part.
 
-The **appdeploy** part is written in `command shell`_ and `windows script`_.
+The **lappdeploy** part is written in `command shell`_ and `windows script`_.
 
 .. _command shell: https://technet.microsoft.com/en-us/library/cc754340.aspx
     #BKMK_OVR
@@ -17,4 +17,4 @@ The **appdeploy** part is written in `command shell`_ and `windows script`_.
 .. toctree::
     :maxdepth: 2
 
-    ../../appdeploy/scripts
+    ../../lappdeploy/scripts

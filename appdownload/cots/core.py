@@ -206,7 +206,7 @@ class BaseProduct:
             installation.
         silent_inst_args (str): Arguments to use with the installer for a silent
             installation (i.e. without any user's interaction, typically while
-            an automated deployment using ``appdeploy`` script).
+            an automated deployment using ``lappdeploy`` script).
 
 
     **Public Methods**

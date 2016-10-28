@@ -1,5 +1,5 @@
 rem __init__
-rem This script is a hook script called when appdeploy script start. See Usage 
+rem This script is a hook script called when lappdeploy script start. See Usage
 rem description syntax for details about used syntax.
 rem When __init__ is called no initialisation task have been launched and no 
 rem environment variables are set. Thus this hook is designed to host yours 
@@ -19,7 +19,7 @@ rem lines and adapt them.
 rem
 rem USB stick based deployment
 rem if not exist "%CD%\..\log" mkdir "%CD%\..\log"
-rem ARCHIVE_LOGFILE=%CD%\..\log\appdeploy.log
+rem ARCHIVE_LOGFILE=%CD%\..\log\lappdeploy.log
 rem set SILENT=0
 rem set LOGMAIL=0
 rem

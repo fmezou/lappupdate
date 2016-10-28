@@ -14,4 +14,4 @@ At the beginning, I searched a way to deploy application for my two personal pc 
 
 * updaters family ([[Avast Software Updater|https://www.avast.com/f-software-updater]], [[FileHippo App Manager|http://filehippo.com/download_app_manager]] (formerly FileHippo Update Checker)...): theses tools are well designed for home PC connected to internet, but they mix the two  following functions (checking the availability of updates from the editor web site, checking installed local applications). In my point of view, theses function must be separated to consider the case where target PC are not connected or the need to centralise custom software updates.
 
-So I choose to develop my own deployment system built around two main module : the first one, named [[appdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications updates if any (or the full installation package).
+So I choose to develop my own deployment system built around two main module : the first one, named [[lappdeploy]], deploys application, the second one, named [[appdownload]], checks and downloads applications updates if any (or the full installation package).

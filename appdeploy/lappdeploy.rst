@@ -3,8 +3,8 @@
 .. default-role:: any
 
 
-:mod:`appdeploy` -- Applications' Deploy Agent
-==============================================
+:mod:`lappdeploy` -- Applications' Deploy Agent
+===============================================
 
 <will be completed later>
 

@@ -5,7 +5,7 @@ modifier: fmezou
 tags: [[Hook scripts]] Usages
 title: __postinstall__
 
-This optional script is a [[hook script|Hook script]] called when [[appdeploy]] script ended an installation. See [[Usage description syntax]] for details about used syntax. 
+This optional script is a [[hook script|Hook script]] called when [[lappdeploy]] script ended an installation. See [[Usage description syntax]] for details about used syntax.
 
 When `__postinstall__` is called the installation package execution ended.  Thus this hook is designed to host yours additional post installation tasks like customize the start menu or install additional packs (e.g. Firefox extensions, ~VirtualBox Extension Pack, Tortoise Language Pack...).
 

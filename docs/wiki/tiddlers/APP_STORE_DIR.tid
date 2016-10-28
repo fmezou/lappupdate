@@ -9,6 +9,6 @@ title: APP_STORE_DIR
 
 {{!!contents}}
 
-<<note "Since [[appdeploy]] script may be use from removable media (e.g. DVD, USB Stick). It is recommended to use a relative path (e.g. `..\appstore`) rather than an absolute one. ">>
+<<note "Since [[lappdeploy]] script may be use from removable media (e.g. DVD, USB Stick). It is recommended to use a relative path (e.g. `..\appstore`) rather than an absolute one. ">>
 
 Default value: <code><<file "{{!!default-value}}">></code>

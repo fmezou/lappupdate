@@ -5,7 +5,7 @@ modifier: fmezou
 tags: Usages [[Hook scripts]]
 title: __init__
 
-This optional script is a [[hook script|Hook script]] called when [[appdeploy]] script start. See [[Usage description syntax]] for details about used syntax. 
+This optional script is a [[hook script|Hook script]] called when [[lappdeploy]] script start. See [[Usage description syntax]] for details about used syntax.
 
 When `__init__` is called no initialisation task have been launched and no [[environment variables|Environment Variables]] are set. Thus this hook is designed to host yours additional initialisation tasks (e.g. tuning environment variables)
 

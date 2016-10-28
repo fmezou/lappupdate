@@ -1,9 +1,9 @@
 @echo off
-rem appdeploy
+rem lappdeploy
 rem This script launches the installer package of the standard application. See 
 rem Usage description syntax for details about used syntax. 
 rem
-rem Usage: appdeploy [set]
+rem Usage: lappdeploy [set]
 rem     set is the set name, the script use a file named applist-[set].txt which
 rem     describing applications to install. 'all' is the default value.
 rem 
@@ -39,7 +39,7 @@ rem     LOGLEVEL=DEBUG: all the entry are logged
 if not defined UPDATE_LOGFILE  set UPDATE_LOGFILE=%TEMP%\appdeploy_today.log
 if not defined WARNING_LOGFILE set WARNING_LOGFILE=%TEMP%\appdeploy_warn_today.log
 if not defined SUMMARY_LOGFILE set SUMMARY_LOGFILE=%TEMP%\appdeploy_summary_today.log
-if not defined ARCHIVE_LOGFILE set ARCHIVE_LOGFILE=%SystemRoot%\appdeploy.log
+if not defined ARCHIVE_LOGFILE set ARCHIVE_LOGFILE=%SystemRoot%\lappdeploy.log
 if not defined SILENT          set SILENT=1
 if not defined LOGLEVEL        set LOGLEVEL=INFO
 if exist "%UPDATE_LOGFILE%" del "%UPDATE_LOGFILE%"

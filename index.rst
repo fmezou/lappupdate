@@ -6,7 +6,7 @@ Lightweight application update (commonly known as lAppUpdate) is a set of
 scripts to download and deploy application on a small network of computers or
 standalone computers running under Microsoft Windows.
 
-It built around two main parts: the first one, named **appdeploy**, deploys
+It built around two main parts: the first one, named **lappdeploy**, deploys
 application from a removable media or a shared folder; the second one, named
 **appdownload**, tracks and downloads application installers or its updates.
 

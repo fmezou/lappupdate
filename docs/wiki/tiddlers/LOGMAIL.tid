@@ -1,4 +1,4 @@
-contents: Specify if a mail containing the current appdeploy log messages will be sent (see [[_log2mail]] script).
+contents: Specify if a mail containing the current lappdeploy log messages will be sent (see [[_log2mail]] script).
 created: 20150523104212950
 creator: fmezou
 default-value: 0

@@ -5,11 +5,11 @@ modifier: fmezou
 tags: How-to
 title: How to build the medium
 
-The [[appdeploy]] script is designed to be independent from the type of used media. This can be a network share reached from its UNC name (e.g. <<file \\myserver\share>>), a DVD or CD, a USB Stick or any removable media. Thus the media building is limited to copy files or use your favourite CD/DVD burner utility. 
+The [[lappdeploy]] script is designed to be independent from the type of used media. This can be a network share reached from its UNC name (e.g. <<file \\myserver\share>>), a DVD or CD, a USB Stick or any removable media. Thus the media building is limited to copy files or use your favourite CD/DVD burner utility.
 
-The medium must contain the directory with installers (see  '[[How to build the application list]]') according to the [[APP_STORE_DIR]] environment variable and the following files from the <<file appdeploy>> directory: 
+The medium must contain the directory with installers (see  '[[How to build the application list]]') according to the [[APP_STORE_DIR]] environment variable and the following files from the <<file lappdeploy>> directory:
 
-*<<file appdeploy.cmd>>
+*<<file lappdeploy.cmd>>
 
 *<<file _appfilter.vbs>>
 
@@ -25,8 +25,8 @@ The below block show a typical file tree for a media of deployment.
 
 ```
 \
-├───appdeploy
-│       appdeploy.cmd
+├───lappdeploy
+│       lappdeploy.cmd
 │       _appfilter.vbs
 │       _log2mail.vbs
 │       __exit__.cmd

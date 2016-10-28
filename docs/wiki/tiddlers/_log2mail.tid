@@ -5,7 +5,7 @@ modifier: fmezou
 tags: Usages [[Non-public scripts]]
 title: _log2mail
 
-This script is a [[non-public script|Non-public script]]. It sends a mail containing the current [[appdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
+This script is a [[non-public script|Non-public script]]. It sends a mail containing the current [[lappdeploy]] log messages. See [[Usage description syntax]] for details about used syntax.
 
 This script is a [[Windows Script|https://technet.microsoft.com/en-us/library/cc784547%28v=ws.10%29.aspx]] one. Thus, it must be used launch with [[cscript|https://technet.microsoft.com/en-us/library/ff920171.aspx]] command.
 (e.g. `cscript.exe _log2mail.vbs`) 

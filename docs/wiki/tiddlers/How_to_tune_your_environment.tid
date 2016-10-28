@@ -7,11 +7,11 @@ title: How to tune your environment
 
 By default, you have nothing to tune. The default values of [[environment variables|Environment Variables]] allows a working with the following features:
 
-*all action, expect debug one, are only logged in a text file named <<file "appdeploy.log">> in the `%SystemRoot%` directory (typically <<file "C:\Windows\appdeploy.log">>).
+*all action, expect debug one, are only logged in a text file named <<file "lappdeploy.log">> in the `%SystemRoot%` directory (typically <<file "C:\Windows\lappdeploy.log">>).
 
-*the [[applist]] files (at least <<file "applist-all.txt">>) are stored in the <<file appstore>> directory located at the same level that the directory containing the [[appdeploy]] script.
+*the [[applist]] files (at least <<file "applist-all.txt">>) are stored in the <<file appstore>> directory located at the same level that the directory containing the [[lappdeploy]] script.
 
-If these features do not comply with your need, you must consider tuning the [[environment variables|Environment Variables]]. The most efficient way to do that is to use [[__init__]] and [[__exit__]] hook scripts. See <<file &#95;&#95;init&#95;&#95;.cmd.example>> and <<file  &#95;&#95;exit&#95;&#95;.cmd.example>> located in the directory containing the [[appdeploy]] script. in to have examples.
+If these features do not comply with your need, you must consider tuning the [[environment variables|Environment Variables]]. The most efficient way to do that is to use [[__init__]] and [[__exit__]] hook scripts. See <<file &#95;&#95;init&#95;&#95;.cmd.example>> and <<file  &#95;&#95;exit&#95;&#95;.cmd.example>> located in the directory containing the [[lappdeploy]] script. in to have examples.
 
 *To change the location of [[applist]] files and installers packages, you must tune the [[APP_STORE_DIR]] environment variable. 
 

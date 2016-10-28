@@ -1,5 +1,5 @@
 ' _log2mail
-' This script sends a mail containing the current appdeploy log messages. See 
+' This script sends a mail containing the current lappdeploy log messages. See
 ' Usage description syntax for details about used syntax.
 '
 ' This script is a Windows Script one. Thus, it must be used launch with cscript 
@@ -70,10 +70,10 @@ End If
 If (numLog2MailError=0) Then 
     ' Create the mail
     Set objMessage = CreateObject("CDO.Message")
-    objMessage.Subject = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%")) & " appdeploy results" 
+    objMessage.Subject = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%")) & " lappdeploy results"
     objMessage.From = LCase(wshShell.ExpandEnvironmentStrings("%FROM_MAIL_ADDR%"))
     objMessage.To = strMailAddr
-    objMessage.TextBody = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%")) & " appdeploy log messages" & vbCrlf 
+    objMessage.TextBody = LCase(wshShell.ExpandEnvironmentStrings("%COMPUTERNAME%")) & " lappdeploy log messages" & vbCrlf
 
     ' Add the summary
     strLogFileName=wshShell.ExpandEnvironmentStrings("%SUMMARY_LOGFILE%")

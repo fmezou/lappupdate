@@ -9,7 +9,7 @@ Scripts have short, all-lowercase names.
 
 A script may be [[public|Public script]], [[non-public|Non-public script]] or a [[hook|Hook script]]. 
 
-[[Public scripts|Public script]] have all-lowercase names (e.g. `appdeploy`).
+[[Public scripts|Public script]] have all-lowercase names (e.g. `lappdeploy`).
 
 [[Non-public scripts|Non-public script]] have all lowercase names with a leading underscore (e.g. `_log2mail`).
 

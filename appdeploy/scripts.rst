@@ -6,11 +6,11 @@
 Main Script
 ***********
 
-The main component is the `appdeploy` script which offers a command line
+The main component is the `lappdeploy` script which offers a command line
 interface. This script launches the installer package of the standard
 application.
 
 .. toctree::
     :maxdepth: 1
 
-    appdeploy
+    lappdeploy
