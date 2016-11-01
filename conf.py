@@ -235,8 +235,11 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "lAppUpdate.tex", "lAppUpdate Documentation",
-     "Frederic MEZOU", "manual"),
+    ("docs/about/about", "about.tex", "", "", "howto"),
+    ("docs/lappdeploy_dev_guide/index", "lappdeploy_dev_guide.tex", "", "", "manual"),
+    ("docs/lappdeploy_user_guide/index", "lappdeploy_user_guide.tex","", "", "manual"),
+    ("docs/lapptrack_dev_guide/index", "lapptrack_dev_guide.tex","", "", "manual"),
+    ("docs/lapptrack_user_guide/index", "lapptrack_user_guide.tex","", "", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -308,7 +311,8 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
-    "sphinx.ext.graphviz"
+    "sphinx.ext.graphviz",
+    "sphinx.ext.githubpages"
 ]
 
 # Options for sphinx.ext.intersphinx
