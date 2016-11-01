@@ -653,26 +653,26 @@ def get_handler(qualname):
 
     names = qualname.split(".")
     handler_class = None
-    if len(names) > 1:
-        path = ".".join(names[:-1])
-        name = names[-1]
-        module = importlib.import_module(path)
-        if name not in module.__dict__:
-            msg="No handler class named '{}' in module '{}'".format(name, path)
-            raise ImportError(msg, name=name, path=path)
-        else:
-            handler_class = module.__dict__[name]
-    else:
+    handler = None
+    if len(names) < 2:
         name = names[-1]
         msg = "No module named for handler class '{}'".format(name)
         raise ImportError(msg, name=name, path="")
 
+    path = ".".join(names[:-1])
+    name = names[-1]
+    module = importlib.import_module(path)
+    if name not in module.__dict__:
+        msg="No handler class named '{}' in module '{}'".format(name, path)
+        raise ImportError(msg, name=name, path=path)
+
+    handler_class = module.__dict__[name]
     if BaseProduct not in handler_class.__bases__:
         msg = "Handler class must be a class 'BaseProduct'. not {0}"
         msg = msg.format(handler_class)
         raise TypeError(msg)
-    else:
-        handler = handler_class()
+
+    handler = handler_class()
 
     return handler
 
