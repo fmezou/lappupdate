@@ -8,7 +8,7 @@ Public Classes
 This module has only one public class.
 
 ===================================  ===================================
-:class:`Product`                     ..
+:class:`DummyHandler`                ..
 ===================================  ===================================
 """
 
@@ -31,7 +31,7 @@ _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
 
-class Product(core.BaseProduct):
+class DummyHandler(core.BaseProduct):
     """
     Dummy product handler.
 
@@ -76,7 +76,7 @@ class Product(core.BaseProduct):
             TypeError: Parameters type mismatch.
         """
         # check parameters type
-        if not isinstance(product, Product):
+        if not isinstance(product, DummyHandler):
             msg = "product argument must be a class 'makemv.product'. not {0}"
             msg = msg.format(product.__class__)
             raise TypeError(msg)

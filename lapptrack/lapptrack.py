@@ -113,6 +113,7 @@ import json
 import sys
 
 from support import report
+from cots import core
 
 
 __author__ = "Frederic MEZOU"
@@ -394,14 +395,13 @@ class lAppTrack:
                     "Load and set the '{0}' module.".format(app_id)
                 )
                 qualname = self._config[app_id][_QUALNAME_KNAME]
-                app_mod = importlib.import_module(qualname)
-                app = app_mod.Product()
+                app = core.get_handler(qualname)
                 if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
                     app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
                     if len(app_entry[CAT_APPROVED_KNAME]) != 0:
                         app.load(app_entry[CAT_APPROVED_KNAME])
                         _logger.debug("Check if an update is available")
-                        origin_app = app_mod.Product()
+                        origin_app = core.get_handler(qualname)
                         origin_app.get_origin(app.version)
                         if origin_app.is_update(app):
                             msg = "A new version of '{0}' exist ({1}) " \
@@ -414,7 +414,7 @@ class lAppTrack:
                     else:
                         msg = "The product '{0}' isn't deployed.".format(app_id)
                         _logger.info(msg.format(app_id))
-                        origin_app = app_mod.Product()
+                        origin_app = core.get_handler(qualname)
                         origin_app.get_origin()
                         msg = "A version of '{0}' exist ({1}) " \
                               "published on {2}."
@@ -433,7 +433,7 @@ class lAppTrack:
                         CAT_APPROVED_KNAME: {}
                     }
                     _logger.debug("Check if an update is available")
-                    origin_app = app_mod.Product()
+                    origin_app = core.get_handler(qualname)
                     origin_app.get_origin()
                     msg = "A version of '{0}' exist ({1}) " \
                           "published on {2}."
@@ -446,7 +446,6 @@ class lAppTrack:
 
                 del app
                 del origin_app
-                del app_mod
                 _logger.debug("'{0}' checked.".format(app_id))
             else:
                 _logger.info("'{0}' ignored.".format(app_id))
@@ -466,9 +465,8 @@ class lAppTrack:
                 _logger.debug(
                     "Load and set the '{0}' module.".format(app_id)
                 )
-                mod_name = self._config[app_id][_QUALNAME_KNAME]
-                app_mod = importlib.import_module(mod_name)
-                app = app_mod.Product()
+                qualname = self._config[app_id][_QUALNAME_KNAME]
+                app = core.get_handler(qualname)
                 if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
                     app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
                     if len(app_entry[CAT_PULLED_KNAME]) != 0:
@@ -490,7 +488,6 @@ class lAppTrack:
                     _logger.warning(msg.format(app_id))
 
                 del app
-                del app_mod
             else:
                 _logger.info("'{0}' ignored.".format(app_id))
 
@@ -662,7 +659,9 @@ class lAppTrack:
             for app_name in self._config[_APPS_SNAME]:
                 if self._config[_APPS_SNAME].getboolean(app_name):
                     # Pre compute default value for the Application section
-                    app_module = ".".join((_PACKAGE_NAME, app_name))
+                    app_qualname = "{}.{}.{}Handler".format(
+                        _PACKAGE_NAME, app_name, app_name.capitalize()
+                    )
                     store_path = self._config[_CORE_SNAME][_STORE_KNAME]
                     app_path = os.path.join(store_path, app_name)
                     app_set = "__all__"
@@ -674,7 +673,7 @@ class lAppTrack:
                     if app_name in self._config.sections():
                         app_desc = self._config[app_name]
                         if _QUALNAME_KNAME not in app_desc:
-                            app_desc[_QUALNAME_KNAME] = app_module
+                            app_desc[_QUALNAME_KNAME] = app_qualname
                         if _PATH_KNAME not in app_desc:
                             app_desc[_PATH_KNAME] = app_path
                         # 'set' key must be declared in the sets section if it
@@ -694,7 +693,7 @@ class lAppTrack:
                         # Set the default value
                         self._config[app_name] = {}
                         app_desc = self._config[app_name]
-                        app_desc[_QUALNAME_KNAME] = app_module
+                        app_desc[_QUALNAME_KNAME] = app_qualname
                         app_desc[_PATH_KNAME] = app_path
                         app_desc[_SET_KNAME] = app_set
         else:

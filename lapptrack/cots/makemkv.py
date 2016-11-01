@@ -8,7 +8,7 @@ Public Classes
 This module has several public class listed below in alphabetical order.
 
 ===================================  ===================================
-:class:`Product`                     `ReleaseNotesParser`
+:class:`MakeMKVHandler`              `ReleaseNotesParser`
 ===================================  ===================================
 
 
@@ -41,7 +41,7 @@ _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
 
-class Product(core.BaseProduct):
+class MakeMKVHandler(core.BaseProduct):
     """
     MakeMKV product handler.
 
@@ -155,7 +155,7 @@ class Product(core.BaseProduct):
             TypeError: Parameters type mismatch.
         """
         # check parameters type
-        if not isinstance(product, Product):
+        if not isinstance(product, MakeMKVHandler):
             msg = "product argument must be a class 'makemv.Product'. not {0}"
             msg = msg.format(product.__class__)
             raise TypeError(msg)

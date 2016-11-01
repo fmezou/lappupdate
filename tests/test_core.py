@@ -95,7 +95,7 @@ class TestProductHandlerCore(unittest.TestCase):
 
     def test_get_handler(self):
         """Regular use case"""
-        core.get_handler("cots.dummy.Dummy")
+        core.get_handler("cots.dummy.DummyHandler")
 
     def test_unexpected_type(self):
         """Unexpected type for get_handler parameters"""
@@ -106,7 +106,7 @@ class TestProductHandlerCore(unittest.TestCase):
         """Unknown handler module or class"""
         qualnames = [
             "cots.dummy.NotKnown",
-            "cots.notknown.Dummy",
+            "cots.notknown.DummyHandler",
             "NotKnown"
         ]
         for qualname in qualnames:
