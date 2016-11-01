@@ -24,6 +24,7 @@ This section details the specific functions used in this module.
 
 .. autofunction:: retrieve_file
 .. autofunction:: retrieve_tempfile
+.. autofunction:: get_handler
 
 Data reference
 --------------

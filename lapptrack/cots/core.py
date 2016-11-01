@@ -41,6 +41,7 @@ import logging
 import os
 import tempfile
 import urllib.request
+import importlib
 
 from support import progressbar
 
@@ -624,3 +625,54 @@ def _retrieve_file(url, file,
                                          content_hash[0],
                                          content_hash[1],
                                          secure_hash.hexdigest())
+
+
+def get_handler(qualname):
+    """
+    Retrieve an instance of a handler class.
+
+    A handler class is appointed by its :term:`qualified name` (``package.
+    module.MyHandler`` for example). If the module part is not specified,a
+    ImportError exception is raised.
+
+    Args:
+        qualname (str): The qualified name of the handler class.
+
+    Returns:
+        BaseProduct: an instance of the handler class.
+
+    Raises:
+        TypeError: Parameters type mismatch.
+        ImportError:  Import fails to find the handler module or class.
+    """
+    # check parameters type
+    if not isinstance(qualname, str):
+        msg = "qualname argument must be a class 'str'. not {0}"
+        msg = msg.format(qualname.__class__)
+        raise TypeError(msg)
+
+    names = qualname.split(".")
+    handler_class = None
+    if len(names) > 1:
+        path = ".".join(names[:-1])
+        name = names[-1]
+        module = importlib.import_module(path)
+        if name not in module.__dict__:
+            msg="No handler class named '{}' in module '{}'".format(name, path)
+            raise ImportError(msg, name=name, path=path)
+        else:
+            handler_class = module.__dict__[name]
+    else:
+        name = names[-1]
+        msg = "No module named for handler class '{}'".format(name)
+        raise ImportError(msg, name=name, path="")
+
+    if BaseProduct not in handler_class.__bases__:
+        msg = "Handler class must be a class 'BaseProduct'. not {0}"
+        msg = msg.format(handler_class)
+        raise TypeError(msg)
+    else:
+        handler = handler_class()
+
+    return handler
+

@@ -19,7 +19,11 @@ __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
 
-class TestSemVer(unittest.TestCase):
+class TestRetrieveFile(unittest.TestCase):
+    """
+    Retrieve file
+    """
+    # TODO: add unknown content length (no header) and unknow url
     def setUp(self):
         # Modules to be testes use the logging facility, so a minimal
         # configuration is set.
@@ -76,7 +80,45 @@ class TestSemVer(unittest.TestCase):
         with self.assertRaises(core.UnexpectedContentTypeError, msg=msg):
             core.retrieve_file(self.url, self.dir_name, content_type=ctype)
 
-# TODO: add unknown content length (no header) and unknow url
+
+class TestProductHandlerCore(unittest.TestCase):
+    def setUp(self):
+        # Modules to be testes use the logging facility, so a minimal
+        # configuration is set.
+        logging.basicConfig(
+            format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
+            level=logging.ERROR)
+        logger = logging.getLogger(__name__)
+
+    def tearDown(self):
+        pass
+
+    def test_get_handler(self):
+        """Regular use case"""
+        core.get_handler("cots.dummy.Dummy")
+
+    def test_unexpected_type(self):
+        """Unexpected type for get_handler parameters"""
+        with self.assertRaises(TypeError):
+            core.get_handler(1)
+
+    def test_unknown_handler(self):
+        """Unknown handler module or class"""
+        qualnames = [
+            "cots.dummy.NotKnown",
+            "cots.notknown.Dummy",
+            "NotKnown"
+        ]
+        for qualname in qualnames:
+            with self.subTest(qualname=qualname):
+                with self.assertRaises(ImportError):
+                    core.get_handler(qualname)
+
+    def test_unexpected_class(self):
+        """Unexpected handler class"""
+        with self.assertRaises(TypeError):
+            core.get_handler("support.semver.SemVer")
+
 if __name__ == '__main__':
     unittest.main()
 
