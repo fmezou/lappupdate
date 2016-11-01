@@ -18,7 +18,8 @@ Public Functions
 This module has a number of functions listed below in alphabetical order.
 
 ===================================  ===================================
-`retrieve_file`                      `retrieve_tempfile`
+`get_handler`                        `retrieve_tempfile`
+`retrieve_file`
 ===================================  ===================================
 
 
@@ -631,9 +632,9 @@ def get_handler(qualname):
     """
     Retrieve an instance of a handler class.
 
-    A handler class is appointed by its :term:`qualified name` (``package.
-    module.MyHandler`` for example). If the module part is not specified,a
-    ImportError exception is raised.
+    A handler class is appointed by its :term:`qualified name`
+    (:class:`package.module.MyHandler` for example). If the module part is not
+    specified, an ImportError exception is raised.
 
     Args:
         qualname (str): The qualified name of the handler class.
