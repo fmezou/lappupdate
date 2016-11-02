@@ -11,8 +11,6 @@ This module has several public class listed below in alphabetical order.
 :class:`MakeMKVHandler`              `ReleaseNotesParser`
 ===================================  ===================================
 
-
-.. _user manual: http://fmezou.github.io/lappupdate/lappupdate_wiki.html#MakeMKV
 """
 
 
@@ -32,7 +30,7 @@ __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
-    "Product"
+    "MakeMKVHandler"
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
@@ -47,7 +45,7 @@ class MakeMKVHandler(core.BaseProduct):
 
     This concrete class implements the tracking mechanism for the MakeMKV
     product. So most of information are in the :mod:`core` and more particularly
-    in the `BaseProduct` class documentation. The information blow focuses on
+    in the `BaseProduct` class documentation. The information below focuses on
     the added value of this class.
 
     **Overridden Methods**
