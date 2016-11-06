@@ -45,9 +45,6 @@ Glossary
         Non-public scripts are those that are not intended to be used by third
         parties, so these scripts may change or even removed.
 
-    Zope
-        djkljlksqd
-
     Product
         A product is an commercial software tracked and deployed by lAppUpdate.
         It is commercial or a custom software, where commercial term covers

@@ -13,3 +13,4 @@ The following topics provide background papers for data structures that
     :maxdepth: 1
 
     catalog
+    applist
