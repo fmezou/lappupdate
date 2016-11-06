@@ -57,7 +57,7 @@ class Error(Exception):
     Base class for PADParser exceptions.
 
     Args:
-        message (str, optional): Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the exception.
 
     Attributes:
         message (str): Human readable string describing the exception.
@@ -111,7 +111,7 @@ class PadParser(xml.etree.ElementTree.ElementTree):
 
     Args:
         element (xml.etree.ElementTree.ElementTree, optional): Root element node
-        file (str, optional): A file handle or file name of an XML file whose
+        file (str): (optional) A file handle or file name of an XML file whose
             contents will be used to initialize the tree with.
 
     **Public Methods**

@@ -215,7 +215,7 @@ class Error(Exception):
     Base class for lAppTrack exceptions.
 
     Args:
-        message (str, optional): Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the exception.
 
     Attributes:
         message (str): Human readable string describing the exception.
@@ -235,14 +235,14 @@ class ConfigurationError(Error):
         filename (str): The path name (full or partial) of the configuration
             file.
         message (str): Human readable string describing the exception.
-        solution (str, optional): Human readable string providing a
+        solution (str): (optional) Human readable string providing a
             recommendation to solve the error.
 
     Attributes:
         filename (str): The path name (full or partial) of the configuration
             file.
         message (str): Human readable string describing the exception.
-        solution (str, optional): Human readable string providing a
+        solution (str): (optional) Human readable string providing a
             recommendation to solve the error.
     """
     def __init__(self, filename, message, solution=""):
@@ -515,9 +515,9 @@ class lAppTrack:
         Approve the deployment of applications.
 
         Args:
-            force (bool, optional): False to indicates if the user must approved
-                each deployment in a interactive session. True to indicates
-                that updates are all approved without prompt.
+            force (bool): (optional): False to indicates if the user must
+                approved each deployment in a interactive session. True to
+                indicates that updates are all approved without prompt.
         """
         # check parameters type
         if not isinstance(force, bool):

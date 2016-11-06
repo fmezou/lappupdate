@@ -215,10 +215,10 @@ class Report:
         Args:
             config (dict): The configuration as described in the
             `report.example.ini`.
-            append (bool, optional): False to indicate if the configuration
-                specified by the ``config`` parameter will overwrite the current
+            append (bool): (optional) False to indicate if the configuration
+                specified by the `config` parameter will overwrite the current
                 configuration. True to indicate if the configuration
-                specified by the ``config`` parameter will append to the current
+                specified by the `config` parameter will append to the current
                 configuration.
         """
         # check parameters type
@@ -274,11 +274,11 @@ class Report:
         Set the report template.
 
         Args:
-            template (str, optional): is the full path name of the template
+            template (str): (optional) is the full path name of the template
                 file. The format of the template file is described in the Report
                 class introduction. The `report_template.html` is used by
                 default.
-            separator (str, optional): The separator added at the end of each
+            separator (str): (optional) The separator added at the end of each
                 added section in the report.
         """
         # check parameters type
@@ -646,7 +646,7 @@ class MailHandler(BaseHandler):
 
         Args:
             hostname (str): The full qualified name of the SMTP server host.
-            port_number (int, optional): The port number to use. By default,
+            port_number (int): (optional): The port number to use. By default,
                 the standard SMTP port number is used.
         """
         # check parameters type
@@ -694,7 +694,7 @@ class MailHandler(BaseHandler):
         Set the sender mail address.
 
         Args:
-            address (str, optional): The mail addresses of the sender. If not
+            address (str): (optional) The mail addresses of the sender. If not
                 specified, the address is set to the local hostname. (see
                 `smtplib.SMTP`)
         """
@@ -737,7 +737,7 @@ class MailHandler(BaseHandler):
         Set the pending mail special folder.
 
         Args:
-            path (str, optional): The full path name of the folder where a copy
+            path (str): (optional) The full path name of the folder where a copy
                 of the mail will be written until it is sent. It avoid to lost
                 mail if the mail server configuration is erroneous or if the
                 mail server doesn't answer. An empty string does nothing.

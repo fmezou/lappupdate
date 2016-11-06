@@ -81,7 +81,7 @@ class Error(Exception):
     Base class for COTS Core exceptions.
 
     Args:
-        message (str, optional): Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the exception.
 
     Attributes:
         message (str): Human readable string describing the exception.
@@ -417,9 +417,9 @@ def retrieve_tempfile(url,
 
     Args:
         url (str): The URL of the file to retrieve.
-        content_type (str, optional): The mime type of the retrieved file. No
+        content_type (str): (optional) The mime type of the retrieved file. No
             check will be done if the value is None.
-        content_length (int, optional): The expected length of the retrieved
+        content_length (int): (optional) The expected length of the retrieved
             file expressed in bytes. -1 means that the expected length is
             unknown.
         content_hash (2-tuple): The expected secure hash value of the
@@ -466,9 +466,9 @@ def retrieve_file(url, dir_name,
         url (str): The URL of the file to retrieve.
         dir_name (str): The pathname of the directory where the retrieved file
             is going to be written.
-        content_type (str, optional): The mime type of the retrieved file. No
+        content_type (str): (optional) The mime type of the retrieved file. No
             check will be done if the value is None.
-        content_length (int, optional): The expected length of the retrieved
+        content_length (int): (optional) The expected length of the retrieved
             file expressed in bytes. -1 means that the expected length is
             unknown.
         content_hash (2-tuple): The expected secure hash value of the
@@ -522,9 +522,9 @@ def _retrieve_file(url, file,
         url (str): The URL of the file to retrieve.
         file (file-like object): A file-like object to use to store the
             retrieved data.
-        content_type (str, optional): The mime type of the retrieved file. No
+        content_type (str): (optional) The mime type of the retrieved file. No
             check will be done if the value is None.
-        content_length (int, optional): The expected length of the retrieved
+        content_length (int): (optional) The expected length of the retrieved
             file expressed in bytes. -1 means that the expected length is
             unknown.
         content_hash (2-tuple): The expected secure hash value of the
