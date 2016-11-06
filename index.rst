@@ -31,9 +31,9 @@ Parts
 | | :sub:`detail use cases and the     | | :sub:`describe data, and  scripts` |
 |   configuration files`               |                                      |
 +--------------------------------------+--------------------------------------+
-| | :ref:`how_to`                      | | :ref:`background_papers`           |
+| | :ref:`howto`                       | | :ref:`background_papers`           |
 | | :sub:`use case`                    | | :sub:`detail the supported         |
-|                                      |     COST and internal format`        |
+|                                      |   COST and internal format`          |
 +--------------------------------------+--------------------------------------+
 
 

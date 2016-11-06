@@ -13,7 +13,7 @@ lAppUpdate Documentation contents
     lapptrack_dev_guide/index
     lappdeploy_dev_guide/index
     background_papers/index
-    how_to/index
+    howto/index
 
 .. toctree::
     :hidden:
