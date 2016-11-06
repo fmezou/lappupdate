@@ -6,7 +6,7 @@ lAppUpdate Documentation contents
 
 .. toctree::
 
-    about/about
+    about/index
     releases/index
     lapptrack_user_guide/index
     lappdeploy_user_guide/index
