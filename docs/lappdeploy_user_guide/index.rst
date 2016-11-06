@@ -12,5 +12,7 @@ based on `TiddlyWiki`_, a unique non-linear notebook.
 .. _TiddlyWiki: http://tiddlywiki.com/#A%20Gentle%20Guide%20to%20TiddlyWiki
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
+
+    environment_variables
 
