@@ -7,6 +7,7 @@
 Versioning scheme
 =================
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+
 Each release of lAppUpdate is identified by a version number that complies with
 the `Semantic Versioning 2.0.0 <http://semver.org/>`_ standard.
 

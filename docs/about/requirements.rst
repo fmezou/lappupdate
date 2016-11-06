@@ -5,6 +5,7 @@
 Requirements
 ============
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+
 The requirements for this project were:
 
 * `lappdeploy` must run on windows 7 without prerequisites (I.e. no agent must

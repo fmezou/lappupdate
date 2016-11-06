@@ -5,6 +5,7 @@
 History of lAppUpdate
 =====================
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+
 At the beginning, I searched a way to deploy application for my two personal pc
 from a home server (based on `freenas`_). My searches led me to the following
 products:
