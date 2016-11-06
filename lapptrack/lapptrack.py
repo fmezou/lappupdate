@@ -11,14 +11,14 @@ The `user manual`_ details use cases and the configuration files.
 Synopsis
 --------
 
-lapptrack.py [-h] [-p | -f | -a [-y]| -m | -t] [-v] [-c FILE]
+``lapptrack.py [-h] [-p | -f | -a [-y]| -m | -t] [-v] [-c FILE]``
 
 
 Description
 -----------
 Pull update information from the editor information channel (web, rss..), fetch
 the update, store it on the local server and generate an applist file for
-deploying the application with the ``lappdeploy`` script. A plug-in handles
+deploying the application with the `lappdeploy` script. A plug-in handles
 information sources to determine if an update has been published, and to fetch
 it.
 
@@ -29,31 +29,48 @@ file (see `catalog_format` section for a detailed description)
 Command line options
 ^^^^^^^^^^^^^^^^^^^^
 
-======  =====================   ================================================
-``-h``  ``--help``              show this help message and exit
-``-p``  ``--pull``              pull the availability of updates
-``-f``  ``--fetch``             fetch applications updates based on the last
-                                build catalog (useful to recover a crashed
-                                application storage)
-``-a``  ``--approve``           approve the deployment of applications. With
-                                the option –y, applications are approved without
-                                any interaction. If the option ``–y`` isn't
-                                present, each application will has to be
-                                approved in interactive mode on the console
-``-m``  ``--make``              make applist files based on the last build
-                                catalog (useful to make applist files after a
-                                configuration modification)
-``-t``  ``--testconf``          check the configuration file for internal
-                                correctness
-``-y``  ``--yes``               force applications approval (see ``--approve``)
-``-c``  ``--configfile FILE``   specifies the configuration file. It includes
-                                the list of handled applications, the
-                                `lapptrack.example.ini` details configuration
-                                topics. The default configuration file name is
-                                'lapptrack.ini' located in the current working
-                                directory.
-``-v``  ``--version``           show program's version number and exit
-======  =====================   ================================================
+.. option:: -h, --help
+
+    show this help message and exit
+
+.. option:: -p, --pull
+
+    pull the availability of updates
+
+.. option:: -f, --fetch
+
+    fetch applications updates based on the last build catalog (useful to
+    recover a crashed application storage)
+
+.. option:: -a, --approve
+
+    approve the deployment of applications
+
+.. option:: -m, --make
+
+    make applist files based on the last build catalog (useful to make applist
+    files after a configuration modification)
+
+.. option:: -t, --testconf
+
+    check the configuration file for internal correctness
+
+.. option:: -y, --yes
+
+    force applications approval (see :option:`--approve`). With this flag,
+    applications are approved without any interaction else each application
+    will has to be approved in interactive mode on the console
+
+.. option:: -c, --configfile FILE
+
+    specifies the configuration file. It includes the list of handled
+    applications, the `lapptrack.example.ini` details configuration topics. The
+    default configuration file name is :file:`lapptrack.ini` located in the
+    current working directory
+
+.. option:: -v, --version
+
+    show program's version number and exit
 
 
 Exit code
@@ -342,7 +359,7 @@ class lAppTrack:
         Approve the deployment of applications.
 
         Args:
-            force (bool, optional): False to indicates if the user must approved
+            force (optional[bool]): False to indicates if the user must approved
                 each deployment in a interactive session. True to indicates that
                 updates are all approved without prompt.
         """
