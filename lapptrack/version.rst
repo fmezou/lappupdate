@@ -5,6 +5,8 @@
 
 :mod:`version` -- Project Metadata
 ==================================
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: version
     :platform: all
     :synopsis: Project Metadata

@@ -4,7 +4,8 @@
 
 `cots.core` -- Product Handler Core Module
 ==========================================
-
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: cots.core
     :platform: all
     :synopsis: Product Handlers Core Module

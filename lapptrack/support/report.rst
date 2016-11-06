@@ -5,6 +5,8 @@
 
 :mod:`support.report` -- Reporting Manager
 ==========================================
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: support.report
     :platform: all
     :synopsis: Reporting Manager

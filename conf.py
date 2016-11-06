@@ -85,7 +85,7 @@ add_function_parentheses = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-#show_authors = False
+show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -114,7 +114,10 @@ html_theme_options = {
     "github_user": "fmezou",
     "github_repo": "lappupdate",
     "github_banner": False,
-    "fixed_sidebar": True
+    "fixed_sidebar": True,
+    "extra_nav_links" : {
+        "Get it...":"http://fmezou.github.io/"
+    }
 }
 
 # Sidebar options, see the documentation.

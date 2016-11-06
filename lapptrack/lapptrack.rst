@@ -5,7 +5,8 @@
 
 :mod:`lapptrack` -- Products Tracking Manager
 =============================================
-
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: lapptrack
     :platform: all
     :synopsis: Products Tracking Manager

@@ -4,7 +4,8 @@
 
 `cots.makemkv` -- MakeMKV's Product Handler
 ===========================================
-
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: cots.makemkv
     :platform: all
     :synopsis: MakeMKV's Product Handler

@@ -5,7 +5,8 @@
 ***************************************
 `support` -- Supporting Modules Package
 ***************************************
-
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: support
     :platform: all
     :synopsis:  Supporting Modules Package
