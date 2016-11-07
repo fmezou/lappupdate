@@ -4,8 +4,9 @@
 
 .. _environment_variables:
 
+*********************
 Environment Variables
-=====================
+*********************
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 The following topics details environment variables used by lAppDeploy scripts.

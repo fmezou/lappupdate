@@ -8,6 +8,8 @@ Naming Conventions
 
 The following topics details the usage of lAppUpdate scripts.
 
+.. _scripts naming:
+
 Scripts naming
 --------------
 
