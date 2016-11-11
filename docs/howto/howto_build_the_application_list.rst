@@ -43,7 +43,7 @@ allow to have a `__postinstall__` :term:`hook script` for each of them.
 example
 -------
 
-.. literalinclude:: ./docs/background_papers/applist.example.txt
+.. literalinclude:: /docs/background_papers/applist.example.txt
    :language: text
    :name: applist.example.txt
 
