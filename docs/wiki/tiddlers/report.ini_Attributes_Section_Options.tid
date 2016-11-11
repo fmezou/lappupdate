@@ -1,9 +1,0 @@
-abstract: contains named keyword used in the template report (see `template` item in the [[core section|report.ini Core Section]])
-created: 20160227161344045
-modified: 20160227182443131
-name: attributes
-tags: 
-title: report.ini Attributes Section Options
-type: text/vnd.tiddlywiki
-
-Theses attributes are used in the header and tail sections of the report (see `Title`, `BodyStart`, `BodyEnd`, `Tail` sections in the [[Report Template]]). The `report_template.html` doesn't use any additional attribute, so this section is empty if you use the default templates.
