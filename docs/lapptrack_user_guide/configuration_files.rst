@@ -17,4 +17,5 @@ The following topics details file formats used by lAppUpdate scripts.
     lapptrack_ini
     logger_ini
     report_ini
+    report_template
 
