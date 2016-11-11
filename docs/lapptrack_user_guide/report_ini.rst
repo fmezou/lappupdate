@@ -161,7 +161,7 @@ Example of a ``[streamhandler]`` section
 .. _report.example.ini:
 
 Example of report.ini
------------------ ---
+---------------------
 
 .. literalinclude:: /lapptrack/support/report.example.ini
    :language: ini
