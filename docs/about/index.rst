@@ -13,3 +13,4 @@ The following topics provide everything you want to know about the project.
     requirements
     roadmap
     naming_conventions
+    usage_description_syntax
