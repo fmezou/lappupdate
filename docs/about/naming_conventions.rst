@@ -2,13 +2,15 @@
 .. default-domain:: py
 .. default-role:: any
 
+.. _about_naming:
+
 Naming Conventions
 ==================
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 The following topics details the usage of lAppUpdate scripts.
 
-.. _scripts naming:
+.. _about_scripts-naming:
 
 Scripts naming
 --------------

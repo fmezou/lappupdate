@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _lapptrack:
+.. _lapptrack-userguide_lapptrack-usage:
 
 lapptrack
 =========

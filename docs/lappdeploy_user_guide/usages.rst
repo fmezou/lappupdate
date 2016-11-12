@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _usages:
+.. _lappdeploy-userguide_usages:
 
 ******
 Usages
@@ -10,7 +10,7 @@ Usages
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 The following topics details the usage of lAppUpdate scripts. Complying with the
-`scripts naming` convention.
+`about_scripts-naming` convention.
 
 **Public scripts** are those that you can use.
 

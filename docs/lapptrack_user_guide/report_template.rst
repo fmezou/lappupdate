@@ -2,14 +2,14 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _report_template:
+.. _lapptrack-userguide_report-template:
 
 Report Template
 ===============
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 This file contains the configuration of the logging facility used by the
-`lapptrack` script. It use a structure similar to what’s found in Microsoft
+:doc:`lapptrack` script. It use a structure similar to what’s found in Microsoft
 Windows INI files. See the `Configuration file format
 <logging-config-fileformat>` section to have details about the file format.
 
@@ -33,8 +33,7 @@ and hyphen [0-9A-Za-z-] and MUST NOT be empty. If a named section is not
 declared in `Report.names`, its contents is added to the current section
 (i.e. no section is created).
 
-Example of Report Template
---------------------------
+.. topic:: Example of Report Template
 
-.. literalinclude:: /lapptrack/support/report_template.html
-   :language: html
+   .. literalinclude:: /lapptrack/support/report_template.html
+      :language: html

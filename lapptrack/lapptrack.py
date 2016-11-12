@@ -18,12 +18,12 @@ Description
 -----------
 Pull update information from the editor information channel (web, rss..), fetch
 the update, store it on the local server and generate an applist file for
-deploying the application with the `lappdeploy` script. A plug-in handles
-information sources to determine if an update has been published, and to fetch
-it.
+deploying the application with the :command:`lappdeploy` script. A plug-in
+handles information sources to determine if an update has been published, and to
+fetch it.
 
 All information about a handled :term:`product` are stored in a :term:`catalog`
-file (see `catalog_format` section for a detailed description)
+file (see `background_catalog-format` section for a detailed description)
 
 
 Command line options

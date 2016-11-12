@@ -214,12 +214,12 @@ class Report:
 
         Args:
             config (dict): The configuration as described in the
-            `report.example.ini`.
+                :file:`report.example.ini`.
             append (bool): (optional) False to indicate if the configuration
-                specified by the `config` parameter will overwrite the current
-                configuration. True to indicate if the configuration
-                specified by the `config` parameter will append to the current
-                configuration.
+                specified by the :dfn:`config` parameter will overwrite the
+                current configuration. True to indicate if the configuration
+                specified by the :dfn:`config` parameter will append to the
+                current configuration.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -497,8 +497,8 @@ class BaseHandler:
         Configure the handler from a dictionary.
 
         Args:
-            config (dict): The configuration as described in
-                `report.example.ini`.
+            config (dict): The configuration as described in the
+                :file:`report.example.ini`.
         """
         raise NotImplementedError
 
@@ -596,8 +596,8 @@ class MailHandler(BaseHandler):
         Configure the handler from a dictionary.
 
         Args:
-            config (dict): The configuration as described in
-                `report.example.ini`.
+            config (dict): The configuration as described in the
+                :file:`report.example.ini`.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -952,7 +952,7 @@ class FileHandler(BaseHandler):
 
         Args:
             config (dict): The configuration as described in
-                `report.example.ini`.
+                `lapptrack-userguide_report-ini-content`.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -1106,8 +1106,8 @@ class StreamHandler(BaseHandler):
         Configure the handler from a dictionary.
 
         Args:
-            config (dict): The configuration as described in
-                `report.example.ini`.
+            config (dict): The configuration as described in the
+                :file:`report.example.ini`.
         """
         # check parameters type
         if not isinstance(config, dict):

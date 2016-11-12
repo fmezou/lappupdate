@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _v0.3.0:
+.. _release_v0.3.0:
 
 Release 0.3.0 (in development)
 ==============================

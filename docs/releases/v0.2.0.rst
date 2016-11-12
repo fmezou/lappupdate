@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _v0.2.0:
+.. _release_v0.2.0:
 
 Release 0.2.0 (June 4th 2015)
 =============================

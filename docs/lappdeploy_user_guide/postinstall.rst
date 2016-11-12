@@ -2,10 +2,10 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _postinstall:
+.. _lappdeploy-userguide_postinstall-usage:
 
 __postinstall__
-========
+===============
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 
@@ -17,7 +17,7 @@ Synopsis
 Description
 -----------
 This optional script is a `hook script` called when `lappdeploy` script ended an
-installation. See `Usage description syntax` for details about used syntax.
+installation. See `about_usage-syntax` for details about used syntax.
 
 When ``__postinstall__`` is called the installation package execution ended.
 Thus this hook is designed to host yours additional post installation tasks

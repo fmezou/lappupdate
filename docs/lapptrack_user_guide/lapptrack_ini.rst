@@ -2,35 +2,41 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _lapptrack_ini:
+.. _lapptrack-userguide_lapptrack-ini-content:
 
-lapptrack.ini
-=============
+lapptrack.ini Content
+=====================
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
-This file contains the configuration of `lapptrack` script. It use a structure
-similar to what’s found in Microsoft Windows INI files, and parse with the
-`configparser` module of the Python standard library. See the 'Supported INI
+This file contains the configuration of :doc:`lapptrack` script. It use a
+structure similar to what’s found in Microsoft Windows INI files, and parse with
+the `configparser` module of the Python standard library. See the 'Supported INI
 File Structure' section to have details about the file format.
 
 The configuration consists of three main sections and one section per
 applications such as below.
 
-* :ref:`core-section` contains general parameter
+* :ref:`lapptrack-userguide_lapptrack-ini-core-section` contains general
+  parameter
 
-* :ref:`sets-section` contains the list of named sets used to deploy
-  applications
+* :ref:`lapptrack-userguide_lapptrack-ini-sets-section` contains the list of
+  named sets used to deploy applications
 
-* :ref:`applications-section` contains the list of applications to maintains.
+* :ref:`lapptrack-userguide_lapptrack-ini-applications-section` contains the
+  list of applications to maintains.
 
-* :ref:`application-section` contains configuration items for a specific
-  application.
+* :ref:`lapptrack-userguide_lapptrack-ini-application-section` contains
+  configuration items for a specific application.
 
 The following items details each sections and the associated options, and give
-an example. The '`lapptrack.example.ini`' topic give a whole example.
+an example.
 
+.. topic:: Example of lapptrack.ini
 
-.. _core-section:
+   .. literalinclude:: /lapptrack/lapptrack.example.ini
+      :language: ini
+
+.. _lapptrack-userguide_lapptrack-ini-core-section:
 
 Core Section
 ------------
@@ -42,23 +48,23 @@ The ``[core]`` section contains general parameters.
 ``logger``            (optional) contains the path name of the configuration
                       file of the logging system based on `logging` module.
 ``pulling_report``    (optional) contains the path name of the configuration
-                      file of the pulling activity report  (see `cots.report`
+                      file of the pulling activity report  (see `support.report`
                       for detailed information.
 ``fetching_report``   (optional) contains the path name of the configuration
-                      file of the fetching activity report (see `cots.report`
+                      file of the fetching activity report (see `support.report`
                       for detailed information.
 ``approving_report``  (optional) contains the path name of the configuration
-                      file of the approving activity report (see `cots.report`
-                      for detailed information.
+                      file of the approving activity report (see
+                      `support.report` for detailed information.
 ====================  ==========================================================
 
-Example of a ``[core]`` section
+..topic:  Example of a ``[core]`` section
 
-.. literalinclude:: /lapptrack/lapptrack.example.ini
-   :language: ini
-   :lines: 13-18
+   .. literalinclude:: /lapptrack/lapptrack.example.ini
+      :language: ini
+      :lines: 13-18
 
-.. _sets-section:
+.. _lapptrack-userguide_lapptrack-ini-sets-section:
 
 Sets Section
 ------------
@@ -83,13 +89,13 @@ applications.
                         installer is going to be launched on all computer.
 ====================  ==========================================================
 
-Example of a ``[sets]`` section
+.. topic:: Example of a ``[sets]`` section
 
-.. literalinclude:: /lapptrack/lapptrack.example.ini
-   :language: ini
-   :lines: 30-34
+   .. literalinclude:: /lapptrack/lapptrack.example.ini
+      :language: ini
+      :lines: 30-34
 
-.. _applications-section:
+.. _lapptrack-userguide_lapptrack-ini-applications-section:
 
 Applications Section
 --------------------
@@ -97,17 +103,18 @@ The ``[applications]`` section contains the list of applications to maintains.
 
 ====================  ==========================================================
 ``<name>``            (mandatory) is the name of the `application section
-                      <application-section>` and contains a flag specifying if
-                      the application have been taking into account.
+                      <lapptrack-userguide_lapptrack-ini-application-section>`
+                      and contains a flag specifying if the application have
+                      been taking into account.
 ====================  ==========================================================
 
-Example of a ``[applications]`` section
+.. topic:: Example of a ``[applications]`` section
 
-.. literalinclude:: /lapptrack/lapptrack.example.ini
-   :language: ini
-   :lines: 39-42
+   .. literalinclude:: /lapptrack/lapptrack.example.ini
+      :language: ini
+      :lines: 39-42
 
-.. _application-section:
+.. _lapptrack-userguide_lapptrack-ini-application-section:
 
 Application Section
 -------------------
@@ -117,7 +124,8 @@ a specific application.
 .. warning::
 
     Name section must be lowercase, since the section name is a key in
-    `applications section <applications-section>`
+    `applications section
+    <lapptrack-userguide_lapptrack-ini-applications-section>`
 
 ====================  ==========================================================
 ``handler``           (optional) is the qualified name of the handler class (A
@@ -130,20 +138,13 @@ a specific application.
                       package. The default value is ``${core:store}\<section
                       name>``.
 ``set``               (optional) is the name of the set associated with the
-                      application (see `sets-section`). The default value is
-                      ``__all__``.
+                      application (see
+                      `lapptrack-userguide_lapptrack-ini-sets-section`). The
+                      default value is ``__all__``.
 ====================  ==========================================================
 
-Example of an application section
+.. topic:: Example of an application section
 
-.. literalinclude:: /lapptrack/lapptrack.example.ini
-   :language: ini
-   :lines: 58-61
-
-.. _lapptrack.example.ini:
-
-Example of lapptrack.ini
-------------------------
-
-.. literalinclude:: /lapptrack/lapptrack.example.ini
-   :language: ini
+   .. literalinclude:: /lapptrack/lapptrack.example.ini
+      :language: ini
+      :lines: 58-61

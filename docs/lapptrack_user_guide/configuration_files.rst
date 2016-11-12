@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _configuration_files:
+.. _lapptrack-userguide_configuration-files:
 
 *******************
 Configuration Files

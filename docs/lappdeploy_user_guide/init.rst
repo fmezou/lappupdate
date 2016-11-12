@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _init:
+.. _lappdeploy-userguide_init-usage:
 
 __init__
 ========
@@ -16,11 +16,11 @@ Synopsis
 
 Description
 -----------
-This optional script is a `hook script` called when `lappdeploy` script start.
-See `Usage description syntax` for details about used syntax.
+This optional script is a `hook script` called when :doc:`lappdeploy` script start.
+See `about_usage-syntax` for details about used syntax.
 
 When ``__init__`` is called no initialisation task have been launched and no
-`environment variables <Environment Variables>` are set. Thus this hook is
+`environment variables <lappdeploy-userguide_envvars>` are set. Thus this hook is
 designed to host yours additional initialisation tasks (e.g. tuning
 environment variables)
 

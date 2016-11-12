@@ -7,8 +7,8 @@ NSIS installers can be both silent and not silent. The more useful method to
 make an installer silent is passing ``/S`` on the installers command line
 (case sensitive)
 
-Example
+.. topic:: Example
 
-.. code-block:: winbatch
+    .. code-block:: winbatch
 
-    installer.exe /S
+        installer.exe /S

@@ -2,17 +2,19 @@
 .. default-domain:: py
 .. default-role:: any
 
+.. _about_usages:
+
 Usages
 ======
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 The following topics details the usage of lAppUpdate scripts.
 
-.. _usage description syntax:
+.. _about_usage-syntax:
 
 Usage description syntax
 ------------------------
-Built-in usage help and `Usages` topics comply with the
+Built-in usage help and usages topics comply with the
 `Windows command line syntax`_ reminded below.
 
 * angle brackets for *required* parameters: :command:`ping <hostname>`

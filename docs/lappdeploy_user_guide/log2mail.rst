@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _log2mail:
+.. _lappdeploy-userguide_log2mail-usage:
 
 _log2mail
 =========
@@ -17,7 +17,7 @@ Description
 -----------
 This script is a `non-public script <Non-public script>`. It sends a mail
 containing the current `lappdeploy` log messages.
-See `Usage description syntax` for details about used syntax.
+See `about_usage-syntax` for details about used syntax.
 
 This script is a `Windows Script`_ one. Thus, it must be used launch with
 `cscript`_  command. (e.g. :command:`cscript.exe _log2mail.vbs`)

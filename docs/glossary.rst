@@ -2,11 +2,11 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _glossary:
+.. _global-glossary:
 
-********
+########
 Glossary
-********
+########
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 .. glossary::
@@ -14,8 +14,8 @@ Glossary
 
     Applist
         The applist file describe a list of application packages which will be
-        deployed on a workstation or a server. The `applist-format` details the
-        content of this file.
+        deployed on a workstation or a server. The `background_applist-format`
+        details the content of this file.
 
     Catalog
         A file where :class:`lAppTrack` class (resp. :mod:`lapptrack`

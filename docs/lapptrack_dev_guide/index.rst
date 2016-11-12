@@ -1,8 +1,13 @@
-.. _lapptrack_dev_guide:
+.. Set the default domain and role, for limiting the markup overhead.
+.. default-domain:: py
+.. default-role:: any
+
+.. _lapptrack-devguide:
 
 #########################
 lAppTrack Developer Guide
 #########################
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 This manual is designed for a *developer audience* to enhance features or to add
 plug-in to handle new products. This documentation describes data, classes and

@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _environment_variables:
+.. _lappdeploy-userguide_envvars:
 
 *********************
 Environment Variables
@@ -15,7 +15,7 @@ The following topics details environment variables used by lAppDeploy scripts.
 
     Contain the path for installation package and the :term:`applist` files.
 
-    Since `lappdeploy` script may be use from removable media (e.g. DVD, USB
+    Since :doc:`lappdeploy` script may be use from removable media (e.g. DVD, USB
     Stick). It is recommended to use a relative path (e.g. :file:`..\appstore`)
     rather than an absolute one.
 
@@ -23,15 +23,15 @@ The following topics details environment variables used by lAppDeploy scripts.
 
 .. envvar:: APPLIST
 
-    Contain the full pathname of the :term:`applist` file.
+    Contain the full pathname of the `applist` file.
 
     Default value: none
 
 .. envvar:: APPLIST_TO_INSTALL
 
-    Contain the full pathname of the `_appfilter` output file. This file matches
-    a subset of :term:`applist` syntax by containing only *appName*,
-    *appVersion*, *appPackage* and *appArgs* columns.
+    Contain the full pathname of the :doc:`appfilter` output file. This file
+    matches a subset of `applist` syntax by containing only :dfn:`appName`,
+    :dfn:`appVersion`, :dfn:`appPackage`, and :dfn:`appArgs` columns.
 
     Default value: none
 
@@ -67,7 +67,7 @@ The following topics details environment variables used by lAppDeploy scripts.
 .. envvar:: LOGMAIL
 
     Specify if a mail containing the current lappdeploy log messages will be
-    sent (see `_log2mail` script).
+    sent (see :doc:`log2mail` script).
 
     The value is one of:
 

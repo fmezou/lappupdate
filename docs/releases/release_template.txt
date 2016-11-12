@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _vX.Y.Z:
+.. _release_vX.Y.Z:
 
 Release X.Y.Z (mmmm ddth yyyy or in development)
 ================================================

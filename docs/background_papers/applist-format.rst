@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _applist-format:
+.. _background_applist-format:
 
 Applist Format
 ==============
@@ -46,12 +46,11 @@ Blank lines and comments introduced by a '#' sign are ignored.
 ``appArgs``      are arguments to use when launching ``appPackage``
 ===============  ===============================================================
 
-example
--------
+.. topic:: Example
 
-.. literalinclude:: applist.example.txt
-   :language: text
-   :name: applist.example.txt
+   .. literalinclude:: applist.example.txt
+      :language: text
+      :name: applist.example.txt
 
 
 .. _text file: http://en.wikipedia.org/wiki/Text_file

@@ -2,6 +2,8 @@
 .. default-domain:: py
 .. default-role:: any
 
+.. _about_history:
+
 History of lAppUpdate
 =====================
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>

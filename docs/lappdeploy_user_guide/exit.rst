@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _exit:
+.. _lappdeploy-userguide_exit-usage:
 
 __exit__
 ========
@@ -17,7 +17,7 @@ Synopsis
 Description
 -----------
 This optional script is a `hook script` called when `lappdeploy` script end.
-See `Usage description syntax` for details about used syntax.
+See `about_usage-syntax` for details about used syntax.
 
 When ``__exit__`` is called completion tasks have been launched. It is the
 reverse script of `init` hook script. Thus this hook is designed to host

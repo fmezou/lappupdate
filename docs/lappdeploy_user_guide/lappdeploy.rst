@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _lappdeploy:
+.. _lappdeploy-userguide_lappdeploy-usage:
 
 lappdeploy
 ==========
@@ -16,7 +16,7 @@ Synopsis
 Description
 -----------
 This script is a `public script <Public script>`. It launches the installer
-package of the standard application.  See `Usage description syntax`
+package of the standard application.  See `about_usage-syntax`
 for details about used syntax.
 
 Command line options

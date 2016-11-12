@@ -1,8 +1,8 @@
-.. _toc:
+.. _global_toc:
 
-#################################
-lAppUpdate Documentation contents
-#################################
+#################
+Table Of Contents
+#################
 
 .. toctree::
 

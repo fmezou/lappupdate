@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _howto_track_applications:
+.. _howto_track-apps:
 
 *************************
 How to track applications

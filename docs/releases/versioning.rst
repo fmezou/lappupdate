@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _versioning:
+.. _release_versioning:
 
 Versioning scheme
 =================
