@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _catalog_format:
+.. _catalog-format:
 
 Catalog Format
 ==============

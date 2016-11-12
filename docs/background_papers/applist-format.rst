@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _applist:
+.. _applist-format:
 
 Applist Format
 ==============

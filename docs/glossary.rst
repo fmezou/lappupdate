@@ -1,15 +1,20 @@
+.. Set the default domain and role, for limiting the markup overhead.
+.. default-domain:: py
+.. default-role:: any
+
 .. _glossary:
 
 ********
 Glossary
 ********
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 .. glossary::
     :sorted:
 
     Applist
         The applist file describe a list of application packages which will be
-        deployed on a workstation or a server. The `user manual`_ details the
+        deployed on a workstation or a server. The `applist-format` details the
         content of this file.
 
     Catalog
@@ -55,6 +60,4 @@ Glossary
 
 .. [#f1] Free-Libre / Open Source Software (FLOSS) is Commercial Software,
    http://www.dwheeler.com/essays/commercial-floss.html.
-
-.. _user manual: http://fmezou.github.io/lappupdate/lappupdate_wiki.html#applist
 
