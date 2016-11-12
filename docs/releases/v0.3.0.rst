@@ -1,0 +1,34 @@
+.. Set the default domain and role, for limiting the markup overhead.
+.. default-domain:: py
+.. default-role:: any
+
+.. _release_v0.3.0:
+
+Release 0.3.0 (in development)
+==============================
+
+See GitHub for `detailed change history`_ of this `release`_ and
+`download it`_.
+
+This release is a {initial development|maintenance|minor|major} one. <short
+description of this release (e.g. new feature or main fixes).>
+
+Usability Improvements
+----------------------
+
+* `Added <https://github.com/fmezou/lappupdate/commit/{sha}>`_ Lorem ipsum dolor
+  sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+  labore et dolore magna aliqua.
+
+Bug Fixes
+---------
+
+* `Fixed <https://github.com/fmezou/lappupdate/commit/{sha}>`_ Lorem ipsum dolor
+  sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
+  labore et dolore magna aliqua.
+
+.. _detailed change history: https://github.com/fmezou/lappupdate/compare/
+   0.2.1...develop
+.. _release: https://github.com/fmezou/lappupdate/tree/develop
+.. _download it: https://github.com/fmezou/lappupdate/archive/
+   develop.zip

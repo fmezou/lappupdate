@@ -5,7 +5,6 @@
 ***********
 Main Script
 ***********
-
 The main component is the :mod:`lapptrack` module which offers a command line
 interface and is in charge of plug-in handling and operations scheduling.
 

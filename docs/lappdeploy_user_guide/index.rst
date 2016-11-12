@@ -1,16 +1,20 @@
-.. _lappdeploy_user_guide:
+.. Set the default domain and role, for limiting the markup overhead.
+.. default-domain:: py
+.. default-role:: any
+
+.. _lappdeploy-userguide:
 
 #####################
 lAppDeploy User Guide
 #####################
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
-The `user manual`_ is designed for a *end-user audience* and details use
-cases and the configuration files. This manual is available as a single file
-based on `TiddlyWiki`_, a unique non-linear notebook.
-
-.. _user manual: http://fmezou.github.io/lappupdate/lappupdate_wiki.html
-.. _TiddlyWiki: http://tiddlywiki.com/#A%20Gentle%20Guide%20to%20TiddlyWiki
+This guide is designed for a *end-user audience* and details use
+cases and the configuration files.
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
+
+    usages
+    environment_variables
 

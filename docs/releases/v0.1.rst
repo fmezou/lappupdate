@@ -1,0 +1,19 @@
+.. Set the default domain and role, for limiting the markup overhead.
+.. default-domain:: py
+.. default-role:: any
+
+.. _release_v0.1:
+
+Release 0.1 (May 2nd 2015)
+==========================
+
+See GitHub for `detailed change history`_ of this `release`_ and
+`download it`_.
+
+This release is the ``initial commit`` of the project and contains only a
+README file with a short description of the project.
+
+.. _detailed change history: https://github.com/fmezou/lappupdate/compare/v0.1
+.. _release: https://github.com/fmezou/lappupdate/tree/v0.1
+.. _download it: https://github.com/fmezou/lappupdate/archive/v0.1.zip
+

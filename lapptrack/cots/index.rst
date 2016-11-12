@@ -5,7 +5,8 @@
 **********************************
 `cots` -- Product Handlers Package
 **********************************
-
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: cots
     :platform: all
     :synopsis: Product Handlers Package

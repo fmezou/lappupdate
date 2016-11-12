@@ -91,9 +91,6 @@ The creation step may be described in a configuration file (see
     a_report.set_attributes(report_attributes)
     a_report.add_section(content_attributes)
     a_report.publish()
-
-
-.. _IANA: http://www.iana.org/assignments/media-types/media-types.xhtml#text
 """
 
 import datetime
@@ -132,8 +129,8 @@ class Report:
 
     The report is based on a template using named keyword argument and composed
     of named sections. The module use the `report_template.html` by default.
-    The use of the named keyword argument is based on the `format string
-    syntax`_ of the `string` module.
+    The use of the named keyword argument is based on the `formatstrings` of the
+    `string` module.
 
     Each section starts with a HTML comment and it ends with the start of next
     section or with the end of the file. The comment must have the following
@@ -167,10 +164,6 @@ class Report:
     **Using Report...**
         The section "`Using the module`_" provides a simple use case of the
         class.
-
-
-    .. _format string syntax: https://docs.python.org/3/library/string.html#
-        format-string-syntax
     """
     names = [
         "Head",
@@ -214,12 +207,12 @@ class Report:
 
         Args:
             config (dict): The configuration as described in the
-            `report.example.ini`.
-            append (bool, optional): False to indicate if the configuration
-                specified by the ``config`` parameter will overwrite the current
-                configuration. True to indicate if the configuration
-                specified by the ``config`` parameter will append to the current
-                configuration.
+                :file:`report.example.ini`.
+            append (bool): (optional) False to indicate if the configuration
+                specified by the :dfn:`config` parameter will overwrite the
+                current configuration. True to indicate if the configuration
+                specified by the :dfn:`config` parameter will append to the
+                current configuration.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -274,11 +267,11 @@ class Report:
         Set the report template.
 
         Args:
-            template (str, optional): is the full path name of the template
+            template (str): (optional) is the full path name of the template
                 file. The format of the template file is described in the Report
                 class introduction. The `report_template.html` is used by
                 default.
-            separator (str, optional): The separator added at the end of each
+            separator (str): (optional) The separator added at the end of each
                 added section in the report.
         """
         # check parameters type
@@ -497,8 +490,8 @@ class BaseHandler:
         Configure the handler from a dictionary.
 
         Args:
-            config (dict): The configuration as described in
-                `report.example.ini`.
+            config (dict): The configuration as described in the
+                :file:`report.example.ini`.
         """
         raise NotImplementedError
 
@@ -596,8 +589,8 @@ class MailHandler(BaseHandler):
         Configure the handler from a dictionary.
 
         Args:
-            config (dict): The configuration as described in
-                `report.example.ini`.
+            config (dict): The configuration as described in the
+                :file:`report.example.ini`.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -646,7 +639,7 @@ class MailHandler(BaseHandler):
 
         Args:
             hostname (str): The full qualified name of the SMTP server host.
-            port_number (int, optional): The port number to use. By default,
+            port_number (int): (optional): The port number to use. By default,
                 the standard SMTP port number is used.
         """
         # check parameters type
@@ -694,7 +687,7 @@ class MailHandler(BaseHandler):
         Set the sender mail address.
 
         Args:
-            address (str, optional): The mail addresses of the sender. If not
+            address (str): (optional) The mail addresses of the sender. If not
                 specified, the address is set to the local hostname. (see
                 `smtplib.SMTP`)
         """
@@ -737,7 +730,7 @@ class MailHandler(BaseHandler):
         Set the pending mail special folder.
 
         Args:
-            path (str, optional): The full path name of the folder where a copy
+            path (str): (optional) The full path name of the folder where a copy
                 of the mail will be written until it is sent. It avoid to lost
                 mail if the mail server configuration is erroneous or if the
                 mail server doesn't answer. An empty string does nothing.
@@ -952,7 +945,7 @@ class FileHandler(BaseHandler):
 
         Args:
             config (dict): The configuration as described in
-                `report.example.ini`.
+                `lapptrack-userguide_report-ini-content`.
         """
         # check parameters type
         if not isinstance(config, dict):
@@ -1106,8 +1099,8 @@ class StreamHandler(BaseHandler):
         Configure the handler from a dictionary.
 
         Args:
-            config (dict): The configuration as described in
-                `report.example.ini`.
+            config (dict): The configuration as described in the
+                :file:`report.example.ini`.
         """
         # check parameters type
         if not isinstance(config, dict):

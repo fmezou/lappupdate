@@ -4,7 +4,8 @@
 
 `cots.dummy` -- Dummy Product Handler
 =====================================
-
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: cots.dummy
     :platform: all
     :synopsis: Dummy Product Handler

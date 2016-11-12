@@ -4,6 +4,8 @@
 
 `support.progressbar` -- Progress Bar Widgets
 =============================================
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: support.progressbar
     :platform: all
     :synopsis: Progress Bar Widgets

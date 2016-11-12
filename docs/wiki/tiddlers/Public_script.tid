@@ -1,8 +1,0 @@
-created: 20150602203335597
-creator: fmezou
-modified: 20150602205006126
-modifier: fmezou
-tags: Concepts
-title: Public script
-
-Public scripts are those that you can use, with the commitment to avoid backward incompatible changes (i.e. specially with the command line options).

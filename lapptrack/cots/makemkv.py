@@ -1,6 +1,6 @@
 """
 This module is the product handler of `MakeMKV <http://www.makemkv.com/>`_ from
-GuinpinSoft inc. The `makemkv-background` details information about it.
+GuinpinSoft inc. The `background_makemkv` details information about it.
 
 
 Public Classes
@@ -436,11 +436,11 @@ class ReleaseNotesParser(HTMLParser):
             event (int): The event identifier
             data (str): The tag identifier (i.e. ul) or the text.
             attributes (dict):  The attributes of the tag.
-            first (boolean, optional): Indicate if it's the first call of the
+            first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
                 `_set_state`) including if it's the same state). False is the
                 default.
-            last (boolean, optional): Indicate if it's the last call of the
+            last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
                 `_set_state`) including if it's the same state). False is the
                 default.
@@ -556,11 +556,11 @@ class ReleaseNotesParser(HTMLParser):
             event (int): The event identifier
             data (str): The tag identifier (i.e. ul) or the text.
             attributes (dict):  The attributes of the tag.
-            first (boolean, optional): Indicate if it's the first call of the
+            first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
                 `_set_state`) including if it's the same state). False is the
                 default.
-            last (boolean, optional): Indicate if it's the last call of the
+            last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
                 `_set_state`) including if it's the same state). False is the
                 default.
@@ -670,11 +670,11 @@ class ReleaseNotesParser(HTMLParser):
             event (int): The event identifier
             data (str): The tag identifier (i.e. ul) or the text.
             attributes (dict):  The attributes of the tag.
-            first (boolean, optional): Indicate if it's the first call of the
+            first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
                 `_set_state`) including if it's the same state). False is the
                 default.
-            last (boolean, optional): Indicate if it's the last call of the
+            last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
                 `_set_state`) including if it's the same state). False is the
                 default.

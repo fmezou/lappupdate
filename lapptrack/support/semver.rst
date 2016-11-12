@@ -4,6 +4,8 @@
 
 `support.semver` -- Semantic Versioning Support
 ===============================================
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: support.semver
     :platform: all
     :synopsis: Semantic Versioning Support

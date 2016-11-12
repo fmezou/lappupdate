@@ -4,6 +4,8 @@
 
 `support.pad` -- Lightweight Portable Application Description Support
 =====================================================================
+.. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
+.. codeauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 .. automodule:: support.pad
     :platform: all
     :synopsis: Lightweight Portable Application Description Support

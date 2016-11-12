@@ -2,6 +2,8 @@
 .. default-domain:: py
 .. default-role:: any
 
+.. _background_supported-product:
+
 ******************
 Supported Products
 ******************

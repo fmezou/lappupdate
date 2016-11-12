@@ -2,7 +2,7 @@
 .. default-domain:: py
 .. default-role:: any
 
-.. _background_papers:
+.. _background-papers:
 
 #################
 Background Papers

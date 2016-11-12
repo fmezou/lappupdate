@@ -1,0 +1,21 @@
+.. Set the default domain and role, for limiting the markup overhead.
+.. default-domain:: py
+.. default-role:: any
+
+.. _release_v0.2.1:
+
+Release 0.2.1 (June 11th 2015)
+==============================
+
+See GitHub for `detailed change history`_ of this `release`_ and
+`download it`_.
+
+This release is a bug fix one.
+
+* `issue #7 <https://github.com/fmezou/lappupdate/issues/7>`_ : remove the use
+  of :envvar:`userdnsdomain` environment variable
+
+.. _detailed change history: https://github.com/fmezou/lappupdate/compare/
+   v0.2.0...0.2.1
+.. _release: https://github.com/fmezou/lappupdate/tree/0.2.1
+.. _download it: https://github.com/fmezou/lappupdate/archive/0.2.1.zip

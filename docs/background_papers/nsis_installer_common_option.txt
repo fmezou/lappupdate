@@ -12,9 +12,9 @@ details).
             even if the path contains spaces. Only absolute paths are supported.
 ==========  ====================================================================
 
-Example
+.. topic:: Example
 
-.. code-block:: winbatch
+    .. code-block:: winbatch
 
-    installer.exe /S
-    installer.exe /NCRC /S /D=C:\Program Files\NSIS
+        installer.exe /S
+        installer.exe /NCRC /S /D=C:\Program Files\NSIS

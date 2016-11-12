@@ -1,0 +1,38 @@
+.. Common external link targets
+.. This place is reserved to define target of external links used through the
+   documentation.
+
+.. _Uninstall Registry Key: https://msdn.microsoft.com/library/windows/desktop/
+    aa372105%28v=vs.85%29.aspx
+
+.. _International System of Units: https://en.wikipedia.org/wiki/
+    International_System_of_Units
+
+.. _IANA: http://www.iana.org/assignments/media-types/media-types.xhtml#text
+
+.. _semantic versioning specification: http://semver.org/spec/v2.0.0.html
+
+.. _Command shell: https://technet.microsoft.com/en-us/library/cc754340.aspx
+   #BKMK_OVR
+
+.. _Windows command line syntax: http://technet.microsoft.com/en-us/library/
+    cc771080.aspx
+
+.. _text file: http://en.wikipedia.org/wiki/Text_file
+
+.. _Windows standard: http://en.wikipedia.org/wiki/Text_file
+   #Standard_Windows_.txt_files
+
+.. _ASCII printable characters: http://en.wikipedia.org/wiki/ASCII
+   #ASCII_printable_characters
+
+.. _Windows Script: https://technet.microsoft.com/en-us/library/cc784547%28v=
+   ws.10%29.aspx
+
+.. _cscript: https://technet.microsoft.com/en-us/library/ff920171.aspx
+
+.. _Windows Script Host: https://msdn.microsoft.com/library/d1wf56tt.aspx
+
+.. Substitutions
+.. This place is reserved to define substitutions used through the
+   documentation.
