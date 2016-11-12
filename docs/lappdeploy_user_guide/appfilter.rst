@@ -53,6 +53,3 @@ The following environment variables affect the execution:
 :envvar:`APPLIST_TO_INSTALL`   :envvar:`SUMMARY_LOGFILE`
 =============================  =============================
 
-.. _Windows Script: https://technet.microsoft.com/en-us/library/cc784547%28v=
-   ws.10%29.aspx
-.. _cscript: https://technet.microsoft.com/en-us/library/ff920171.aspx

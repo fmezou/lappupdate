@@ -22,9 +22,6 @@ This module has has a number of functions listed below in alphabetical order.
 `isu_format_prefix`                  `isu_format_thousand`
 ===================================  ===================================
 
-
-.. _International System of Units: https://en.wikipedia.org/wiki/
-    International_System_of_Units
 """
 
 import logging

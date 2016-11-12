@@ -4,7 +4,6 @@ This module defines a test suite for testing the semver module.
 The `semantic versioning specification`_ 2.0.0. defines the rules on which
 following tests are based.
 
-.. _semantic versioning specification: http://semver.org/spec/v2.0.0.html
 """
 
 import logging

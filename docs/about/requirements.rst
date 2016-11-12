@@ -24,7 +24,3 @@ The requirements for this project were:
 * :command:`lappdeploy``lappdeploy` must have pre install and post installation
   hook to customize the start menu or install additional packs (e.g. Firefox
   extension, VirtualBox Extension Pack, Tortoise Language Pack...)
-
-.. _Command shell: https://technet.microsoft.com/en-us/library/cc754340.aspx
-   #BKMK_OVR
-.. _Windows Script Host: https://msdn.microsoft.com/library/d1wf56tt.aspx

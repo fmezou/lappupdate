@@ -14,8 +14,9 @@ following properties, for each application, using the JavaScript Object Notation
 database to build the input files used by the ``lappdeploy`` script.
 
 The constant `lapptrack.CATALOG_FNAME` specifies the file name of the catalog
-and it's located in the 'store' folder (see item '`store`_' in the configuration
-file).
+and it's located in the 'store' folder (see item ``store`` in the
+`lapptrack-userguide_lapptrack-ini-core-section` of the :command:`lapptrack`
+configuration file).
 
 The catalog contains several level of nested objects. The root level contains
 the metadata of the database and the main object.
@@ -94,6 +95,3 @@ application as described in :class:`~cots.core.BaseProduct`.
                 }
             }
         }
-
-.. _store: http://fmezou.github.io/lappupdate/lappupdate_wiki.html#lapptrack.
-    ini%20Core%20Section

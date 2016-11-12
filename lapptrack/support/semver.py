@@ -12,8 +12,6 @@ This module has only one public class.
 `SemVer`                             ..
 ===================================  ===================================
 
-
-.. _semantic versioning specification: http://semver.org/spec/v2.0.0.html
 """
 
 import logging

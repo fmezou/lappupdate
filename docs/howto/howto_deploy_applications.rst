@@ -120,11 +120,6 @@ variable.
       :language: text
       :name: applist.example.txt
 
-.. _text file: http://en.wikipedia.org/wiki/Text_file
-.. _Windows standard: http://en.wikipedia.org/wiki/Text_file
-   #Standard_Windows_.txt_files
-
-
 .. _howto-deploy_build-medium:
 
 Build the medium

@@ -91,9 +91,6 @@ The creation step may be described in a configuration file (see
     a_report.set_attributes(report_attributes)
     a_report.add_section(content_attributes)
     a_report.publish()
-
-
-.. _IANA: http://www.iana.org/assignments/media-types/media-types.xhtml#text
 """
 
 import datetime
@@ -132,8 +129,8 @@ class Report:
 
     The report is based on a template using named keyword argument and composed
     of named sections. The module use the `report_template.html` by default.
-    The use of the named keyword argument is based on the `format string
-    syntax`_ of the `string` module.
+    The use of the named keyword argument is based on the `formatstrings` of the
+    `string` module.
 
     Each section starts with a HTML comment and it ends with the start of next
     section or with the end of the file. The comment must have the following
@@ -167,10 +164,6 @@ class Report:
     **Using Report...**
         The section "`Using the module`_" provides a simple use case of the
         class.
-
-
-    .. _format string syntax: https://docs.python.org/3/library/string.html#
-        format-string-syntax
     """
     names = [
         "Head",

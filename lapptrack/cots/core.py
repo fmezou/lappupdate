@@ -32,8 +32,6 @@ This module has has a number of exceptions listed below in alphabetical order.
 `UnexpectedContentTypeError`         ..
 ===================================  ===================================
 
-.. _Uninstall Registry Key: https://msdn.microsoft.com/library/windows/desktop/
-    aa372105%28v=vs.85%29.aspx
 """
 
 import contextlib

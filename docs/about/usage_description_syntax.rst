@@ -25,6 +25,3 @@ Built-in usage help and usages topics comply with the
 Furthermore, usage topics comply the rules defining in 'Python Developer's
 Guide' :pep:`257#multi-line-docstrings`, by documenting the script's function
 and command line syntax, environment variables, and files.
-
-.. _Windows command line syntax: http://technet.microsoft.com/en-us/library/
-    cc771080.aspx

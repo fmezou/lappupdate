@@ -51,13 +51,3 @@ Blank lines and comments introduced by a '#' sign are ignored.
    .. literalinclude:: applist.example.txt
       :language: text
       :name: applist.example.txt
-
-
-.. _text file: http://en.wikipedia.org/wiki/Text_file
-.. _Windows standard: http://en.wikipedia.org/wiki/Text_file
-   #Standard_Windows_.txt_files
-.. _Command shell: https://technet.microsoft.com/en-us/library/cc754340.aspx
-   #BKMK_OVR]]
-.. _Windows Script Host: https://msdn.microsoft.com/library/d1wf56tt.aspx
-.. _ASCII printable characters: http://en.wikipedia.org/wiki/ASCII
-   #ASCII_printable_characters

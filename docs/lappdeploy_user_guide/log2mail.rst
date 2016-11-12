@@ -54,9 +54,6 @@ The following environment variables affect the execution:
 :envvar:`SMTP_SERVER_PORT`
 ===========================  ===========================
 
-.. _Windows Script: https://technet.microsoft.com/en-us/library/cc784547%28v=
-   ws.10%29.aspx
-.. _cscript: https://technet.microsoft.com/en-us/library/ff920171.aspx
 .. _Microsoft Collaboration Data Objects for Windows 2000: https://msdn.
    microsoft.com/en-us/library/ms527568%28v=exchg.10%29.aspx
 .. _VBScript To Send Email Using CDO: http://www.paulsadowski.com/wsh/cdo.htm
