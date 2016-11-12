@@ -4,9 +4,8 @@
 
 .. _v0.2.0:
 
-Release 0.2.0
-=============
-:sub:`Released on June 4th 2015`
+Release 0.2.0 (June 4th 2015)
+=============================
 
 See GitHub for `detailed change history`_ of this `release`_ and
 `download it`_.

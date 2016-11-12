@@ -4,9 +4,8 @@
 
 .. _v0.1:
 
-Release 0.1
-===========
-:sub:`Released on May 2nd 2015`
+Release 0.1 (May 2nd 2015)
+==========================
 
 See GitHub for `detailed change history`_ of this `release`_ and
 `download it`_.

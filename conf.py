@@ -242,7 +242,10 @@ latex_documents = [
     ("docs/lappdeploy_dev_guide/index", "lappdeploy_dev_guide.tex", "", "", "manual"),
     ("docs/lappdeploy_user_guide/index", "lappdeploy_user_guide.tex","", "", "manual"),
     ("docs/lapptrack_dev_guide/index", "lapptrack_dev_guide.tex","", "", "manual"),
-    ("docs/lapptrack_user_guide/index", "lapptrack_user_guide.tex","", "", "manual")
+    ("docs/lapptrack_user_guide/index", "lapptrack_user_guide.tex","", "", "manual"),
+    ("docs/background_papers/index", "background_papers.tex", "", "","manual"),
+    ("docs/howto/index", "howto.tex", "", "", "howto"),
+    ("docs/releases/index", "releases.tex", "", "", "howto")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

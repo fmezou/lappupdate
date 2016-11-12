@@ -19,39 +19,54 @@ application from a removable media or a shared folder; the second one, named
 Parts
 %%%%%
 
-+--------------------------------------+--------------------------------------+
-| | :ref:`about`                       | | :ref:`releases`                    |
-| | :sub:`Everything you want to know` | | :sub:`detail releases since 0.1`   |
-+--------------------------------------+--------------------------------------+
-| | :ref:`lapptrack_user_guide`        | | :ref:`lapptrack_dev_guide`         |
-| | :sub:`detail use cases and the     | | :sub:`describe data, classes and   |
-|   configuration files`               |   scripts`                           |
-+--------------------------------------+--------------------------------------+
-| | :ref:`lappdeploy_user_guide`       | | :ref:`lappdeploy_dev_guide`        |
-| | :sub:`detail use cases and the     | | :sub:`describe data, and  scripts` |
-|   configuration files`               |                                      |
-+--------------------------------------+--------------------------------------+
-| | :ref:`howto`                       | | :ref:`background_papers`           |
-| | :sub:`use case`                    | | :sub:`detail the supported         |
-|                                      |   COST and internal format`          |
-+--------------------------------------+--------------------------------------+
+.. hlist::
+    :columns: 2
+
+    * | :ref:`about`
+      | :sub:`Everything you want to know`
+
+    * | :ref:`lapptrack_user_guide`
+      | :sub:`detail use cases and the configuration files`
+
+    * | :ref:`lappdeploy_user_guide`
+      | :sub:`detail use cases and the configuration files`
+
+    * | :ref:`howto`
+      | :sub:`use case`
+
+    * | :ref:`releases` (Current version\: :ref:`0.2.1 <v0.2.1>`)
+      | :sub:`detail releases since 0.1`
+
+    * | :ref:`lapptrack_dev_guide`
+      | :sub:`describe data, classes and scripts`
+
+    * | :ref:`lappdeploy_dev_guide`
+      | :sub:`describe data, and  scripts`
+
+    * | :ref:`background_papers`
+      | :sub:`detail the supported COST and internal format`
 
 
 Indices and tables
 %%%%%%%%%%%%%%%%%%
 
-+--------------------------------------------+--------------------------------------------+
-| | :ref:`modindex`                          | | :ref:`search`                            |
-| | :sub:`quick access to all modules`       | | :sub:`search this documentation`         |
-+--------------------------------------------+--------------------------------------------+
-| | :ref:`genindex`                          | | :ref:`Complete Table Of Contents <toc>`  |
-| | :sub:`all functions, classes, terms`     | | :sub:`list all sections and subsections` |
-+--------------------------------------------+--------------------------------------------+
-| | :ref:`glossary`                          |                                            |
-| | :sub:`the most important terms           |                                            |
-|   explained`                               |                                            |
-+--------------------------------------------+--------------------------------------------+
+.. hlist::
+    :columns: 2
 
+    * | :ref:`modindex`
+      | :sub:`quick access to all modules`
+
+    * | :ref:`genindex`
+      | :sub:`all functions, classes, terms`
+
+    * | :ref:`glossary`
+      | :sub:`the most important terms explained`
+
+    * | :ref:`search`
+      | :sub:`search this documentation`
+
+    * | :ref:`Complete Table Of Contents <toc>`
+      | :sub:`list all sections and subsections`
 
 .. toctree::
     :hidden:
