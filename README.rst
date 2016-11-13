@@ -52,9 +52,9 @@ The *lappdeploy* part is written in `command shell`_ and `windows script`_.
 Get it
 ******
 
-* `Documentation <http://fmezou.github.io/lappupdate/0.3.0/docs/index.html>`_
-* `Release 0.3.0 (in development) <http://fmezou.github.io/lappupdate/0.3.0/
-  release/lappupdate-0.3.0.zip>`_
+* `Documentation <http://fmezou.github.io/lappupdate/develop/docs/index.html>`_
+* `Release 0.3.0 (in development) <http://fmezou.github.io/lappupdate/develop/
+  release/lappupdate-develop.zip>`_
 
 ********
 Features
