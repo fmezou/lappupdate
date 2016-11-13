@@ -41,6 +41,13 @@ on the editor's information sources and fetches the updates.
 
 The *lappdeploy* part is written in `command shell`_ and `windows script`_.
 
+.. _freenas: <http://www.freenas.org/>
+.. _OCS Inventory NG: <http://www.ocsinventory-ng.org/en/>
+.. _Samba configured in domain controller mode:
+    <https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO
+.. _Avast Software Updater: <https://www.avast.com/f-software-updater>
+.. _FileHippo App Manager: <http://filehippo.com/download_app_manager>
+
 ******
 Get it
 ******
@@ -54,27 +61,23 @@ Features
 ********
 The requirements for this project were:
 
-* :command:`lappdeploy` run on Microsoft Windows (7 minimum) without
-  prerequisites (i.e. no agent must be prior installed). Theses implies that
-  theses modules must be written in `Command shell`_ or `Windows Script Host`_.
+* *lappdeploy* run on Microsoft Windows (7 minimum) without prerequisites (i.e.
+  no agent must be prior installed). Theses implies that theses modules must be
+  written in `Command shell`_ or `Windows Script Host`_.
 
-* :command:`lappdeploy``lappdeploy` run from a network share (aka from a
-  UNC path) or a removable disk (CD or DVD, USB stick...).
+* *lappdeploy* run from a network share (aka from a UNC path) or a removable
+  disk (CD or DVD, USB stick...).
 
-* :command:`lappdeploy``lappdeploy` work with any type of installation
-  package (MSI package, EXE package or a classic distribution with files and a
-  setup.exe).
+* *lappdeploy* work with any type of installation package (MSI package, EXE
+  package or a classic distribution with files and a setup.exe).
 
-* :command:`lappdeploy``lappdeploy` have pre install and post installation
-  hook to customize the start menu or install additional packs (e.g. Firefox
-  extension, VirtualBox Extension Pack, Tortoise Language Pack...)
+* *lappdeploy* have pre install and post installation hook to customize the
+  start menu or install additional packs (e.g. Firefox extension, VirtualBox
+  Extension Pack, Tortoise Language Pack...)
 
-.. _freenas: <http://www.freenas.org/>
-.. _OCS Inventory NG: <http://www.ocsinventory-ng.org/en/>
-.. _Samba configured in domain controller mode:
-    <https://wiki.samba.org/index.php/Samba_AD_DC_HOWTO
-.. _Avast Software Updater: <https://www.avast.com/f-software-updater>
-.. _FileHippo App Manager: <http://filehippo.com/download_app_manager>
 .. _Command shell: https://technet.microsoft.com/en-us/library/cc754340.aspx
    #BKMK_OVR
 .. _Windows Script Host: https://msdn.microsoft.com/library/d1wf56tt.aspx
+.. _Windows Script: https://technet.microsoft.com/en-us/library/cc784547%28v=
+   ws.10%29.aspx
+
