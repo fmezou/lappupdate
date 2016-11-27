@@ -1,0 +1,811 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="MakeMKV - software to convert blu-ray and dvd to mkv" />
+<meta name="keywords" content="mkv, blu-ray, dvd, decrypt blu-ray, osx, mac, convert, transcode, copy dvd, copy blu-ray, AACS, BD+" />
+<title>MakeMKV - Revision history</title>
+<link rel="stylesheet" href="http://www.makemkv.com/style.css" media="screen" />
+</head>
+<body>
+<div id="container">
+<div id="header">
+<h1>MakeMKV</h1>
+</div>
+<div id="content">
+<h2>Revision history</h2>
+<ul class="bullets">
+<li>MakeMKV v1.9.10 (17.4.2016 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v60</li>
+<li>Small miscellaneous improvements and bugfixes</li>
+</ul>
+<li>MakeMKV v1.9.9 (17.1.2016 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v58</li>
+<li>Improved BDAV discs compatibility</li>
+<li>Improved handling for BDAV discs with mastering errors</li>
+<li>Small miscellaneous improvements</li>
+</ul>
+<li>MakeMKV v1.9.8 (20.12.2015 )</li>
+<ul class="bullets2">
+<li>Improved BDAV discs compatibility</li>
+<li>Improved handling for DVD discs and MKV files with mastering errors</li>
+<li>Updated to use latest versions of libdcadec, libebml and libmatroska</li>
+<li>Small miscellaneous improvements</li>
+<li>Improved compatibility of produced MKV files (statistics tags)</li>
+</ul>
+<li>MakeMKV v1.9.7 ( 5.10.2015 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v57</li>
+<li>Updated BD+ engine</li>
+<li>Small miscellaneous improvements</li>
+</ul>
+<li>MakeMKV v1.9.6 ( 27.9.2015 )</li>
+<ul class="bullets2">
+<li>Updated BD+ engine</li>
+<li>Small miscellaneous improvements</li>
+</ul>
+<li>MakeMKV v1.9.5 (27.7.2015 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v56</li>
+<li>DTS (core) decoding is now handled by libdcadec as well (workaround for ffmpeg dca decoder bug)</li>
+<li>Added ability lo lock a program instance to a single drive</li>
+<li>Greatly improved compatibility with broken video streams (commonly present on BDAV discs)</li>
+<li>Small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Win10: Program could randomly crash or behave erratically</li>
+<li>Ceratin BDAV discs couldn't be opened on specific BD drives</li>
+<li>Language comparison logic was incorrect during profile evaluation (&quot;ger&quot; not equal to &quot;deu&quot; bug)</li>
+</ul>
+</ul>
+<li>MakeMKV v1.9.4 (12.6.2015 )</li>
+<ul class="bullets2">
+<li>Added workarounds for BD-drives and USB-SATA chipsets with incorrect SCSI protocol implementation</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Transcoding of multi-channel and 16-bit FLAC audio could still fail</li>
+<li>OS X: Restored 10.6 compatibility broken in 1.9.3</li>
+<li>1.9.3 Regression - program could hang using 100% CPU (almost always in backup mode, rarely in MKV mode)</li>
+</ul>
+</ul>
+<li>MakeMKV v1.9.3 ( 1.6.2015 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v54</li>
+<li>DTS-HD decoding is now handled by open-source libdcadec library (dtsdecoderdll.dll is still required for DTS express only)</li>
+<li>Blu-ray: M2TS hashes are now checked at all times, not only during backup</li>
+<li>Improved handling for discs with mastering errors</li>
+<li>Small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Transcoding of multi-channel FLAC audio could fail</li>
+<li>Windows: In rare specific cases, MakeMKV could hang and then crash just after opening the disc</li>
+<li>Windows: MakeMKV could incorrectly identify filesystem as FAT and impose 4GB file limit</li>
+</ul>
+</ul>
+<li>MakeMKV v1.9.2 ( 7.4.2015 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v52</li>
+<li>Added full support for BDAV discs</li>
+<li>Improved handling for discs with mastering errors</li>
+<li>Small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Frame duration was missing for TextST and certain PGS subtitles (can be fixed by re-opening MKV file in MakeMKV)</li>
+<li>MakeMKV could crash or produce invalid data when reading DVD with 20-bit LPCM audio</li>
+</ul>
+</ul>
+<li>MakeMKV v1.9.1 ( 22.1.2015 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v51</li>
+<li>Added limited support for BDAV discs</li>
+<li>Added support for TextST subtitles</li>
+<li>Small miscellaneous improvements</li>
+</ul>
+<li>MakeMKV v1.9.0 ( 17.11.2014 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v50</li>
+<li>Updated BD+ engine</li>
+<li>Improved handling for discs with mastering errors</li>
+<li>Small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Regression in 1.8.14 - some discs with BD+ released in 2010-2011 could fail to open</li>
+</ul>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>Manual DVD mode - custom content selection, split titles by chapters</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.14 ( 21.10.2014 )</li>
+<ul class="bullets2">
+<li>Added support for Dolby Atmos audio streams</li>
+<li>Updated BD+ engine</li>
+<li>Improved handling for discs with mastering errors</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Program could crash on some DVD discs with incorrect structure</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.13 ( 1.9.2014 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v48</li>
+<li>Added support for DTS-HD streams with variable bit depth</li>
+<li>Improved handling for discs with mastering errors</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Regression in 1.8.12 - program failed to process multi-channel LPCM audio</li>
+<li>Linux: lowered minimal required GLIBC version</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.12 ( 16.8.2014 )</li>
+<ul class="bullets2">
+<li>Added support for LPCM streams with variable bit depth</li>
+<li>Improved handling for discs with mastering errors</li>
+<li>Better handling for partially damaged streams</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>FLAC audio streams with large frames were not supported</li>
+<li>Rarely, program could crash at the end of audio transcoding, usually when processing DTS-HD 7.1 audio</li>
+<li>Most of DTS-HD LBR (DTS express) streams failed to decode</li>
+<li>Very very rarely, video frames were silently dropped at segment boundaries</li>
+<li>DVD: some titles were incorrectly detected as fake</li>
+<li>Linux: crash on systems with certain glibc (SYSV hash tables)</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.11 ( 16.6.2014 )</li>
+<ul class="bullets2">
+<li>Updated support for AACS v47</li>
+<li>Updated BD+ support</li>
+<li>Improved handling for discs with mastering errors</li>
+<li>Better handling for partially damaged streams</li>
+<li>Added support for decoding 16-bit DTS-HD MA streams</li>
+<li>Small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>MakeMKV could fail reading MKV files with compressed subtitles</li>
+<li>Occasionally, timecodes for B-frames were incorrect in produced MKV file</li>
+<li>DVD: rarely, some titles were incorrectly detected as fake</li>
+<li>Linux: MakeMKV could crash on systems with certain glibc (Gentoo)</li>
+<li>Libmmbd could fail to decrypt discs with old AACS protection</li>
+</ul>
+<li>Fixes for 1.8.10 regressions:</li>
+<ul class="bullets3">
+<li>Blu-ray: some (rare) multi-segment titles could produce error at the end of conversion</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.10 ( 14.4.2014 )</li>
+<ul class="bullets2">
+<li>Improved handling for discs with mastering errors</li>
+<li>Greatly improved conversion speed for multi-segment titles</li>
+<li>Small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>During streaming, program could crash randomly</li>
+<li>When changing preferences, program could crash randomly</li>
+</ul>
+<li>Fixes for 1.8.9 regressions:</li>
+<ul class="bullets3">
+<li>DVD: some titles were missing (incorrectly identified as fakes)</li>
+<li>Blu-ray: discs missing JAR directory failed to open</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.9 ( 27.2.2014 )</li>
+<ul class="bullets2">
+<li>Improved handling for DVD discs with mastering errors</li>
+<li>Small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Linux: Added compatibility APIs to libmmbd</li>
+</ul>
+<li>Fixes for 1.8.8 regressions:</li>
+<ul class="bullets3">
+<li>&quot;no filter&quot; error for certain LPCM tracks</li>
+<li>MKV flags were not written to output file</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.8 ( 2.2.2014 )</li>
+<ul class="bullets2">
+<li>Improved handling for discs with mastering errors</li>
+<li>Many small miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>A false &quot;100% hashcheck failed&quot; error could show up on certain drive/disc combinations</li>
+<li>DVD: Discs with multichannel mpeg2-audio failed to open</li>
+<li>Linux: Added workaround for broken openssl library on RedHat-based distributions</li>
+<li>Expert mode: TrueHD transcoding could fail on streams with certain (rare) encoding</li>
+</ul>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>Default selection rule now also applies to attachments, with new [+-]sel:attachment token</li>
+<li>Seamless sample-level joining for LPCM and transcoded audio tracks</li>
+<li>Audio mixing - channel and BPS downmix now can be set in profile</li>
+<li>Added support for AAC encoding (based on libfdk-aac: AAC-LC, HE-AAC and HE-AACv2 profiles)</li>
+<li>Added AAC-stereo conversion profile - allows converting any audio track to AAC stereo downmix in addition to saving the original track</li>
+<li>Improved display of transcoding settings</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.7 ( 11.12.2013 )</li>
+<ul class="bullets2">
+<li>Updated support for AACS v46</li>
+<li>Improved compatibility of produced MKV files</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Linux: On some distributions MakeMKV could randomly hang on startup</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.6 ( 11.11.2013 )</li>
+<ul class="bullets2">
+<li>Improved handling for discs with mastering errors</li>
+<li>Improved compatibility with certain (rare) H.264 and VC-1 streams</li>
+<li>Mac OS X: MakeMKV can now open .dvdmedia bundles</li>
+<li>Mac OS X: DASPI v1.4 now supports OS X Mavericks</li>
+<li>Stability improvements</li>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>MakeMKV no longer uses external ffmpeg binary</li>
+<li>Added support for AC3 encoding (mainly for DTS->AC3 audio transcoding)</li>
+<li>MMBD now emulates both old and latest libaacs/libbdplus API</li>
+</ul>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Windows: Rarely, an external drive was not recognized by program</li>
+<li>Linux: Discs with special characters in volume name could fail to open</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.5 ( 13.9.2013 )</li>
+<ul class="bullets2">
+<li>Improved handling for discs with mastering errors</li>
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.8.4 ( 19.7.2013 )</li>
+<ul class="bullets2">
+<li>Improved handling for discs with mastering errors</li>
+<li>Many miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Rarely, some episodes could be missing on a series blu-rays</li>
+<li>When using audio transcoding, channel layout was incorrect for certain DTS-HD surround modes</li>
+<li>Default/forced flag profile settings were ignored after 1.8.2 changes</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.3 ( 22.5.2013 )</li>
+<ul class="bullets2">
+<li>Updated support for AACS v40</li>
+<li>Reduced memory usage during conversion</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>MakeMKV could crash when backing up an incorrectly mastered 3D blu-ray disc</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.2 ( 13.5.2013 )</li>
+<ul class="bullets2">
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Randomly, MakeMKV could hang during eject, leaving console portion running in background</li>
+</ul>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>MKV track flags may be changed in GUI</li>
+<li>Forced tracks may be automatically marked as default in conversion profile</li>
+<li>Navigation keys may be used in property editor</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.1 ( 23.4.2013 )</li>
+<ul class="bullets2">
+<li>Improved compatibility of produced MKV files</li>
+<li>Improved handling for DVD discs with mastering errors</li>
+<li>Visual enhancements for HiDPI displays</li>
+<li>Many miscellaneous improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Mac OS X - Randomly, a disc could be unrecognized if inserted while MakeMKV running</li>
+<li>Mac OS X / Linux - Eject button was not always working</li>
+<li>Audio transcoding could fail for certain DTS HD HRA tracks</li>
+<li>Chapter names were inconsistent for blu-ray discs</li>
+<li>Some (rare) MKV files couldn't be opened</li>
+</ul>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>Chapter names may be changed in GUI</li>
+</ul>
+</ul>
+<li>MakeMKV v1.8.0 ( 21.2.2013 )</li>
+<ul class="bullets2">
+<li>Updated support for AACS v38</li>
+<li>Updated BD+ engine</li>
+<li>Added support for multi-angle blu-ray 3D</li>
+<li>Visual enhancements</li>
+<li>Improved compatibility of produced MKV files</li>
+<li>Italian translation</li>
+<li>Many miscellaneous stability improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Cover picture was always embedded into MKV file, even if not selected</li>
+<li>Failed to process some DVD with LPCM audio</li>
+<li>Saving to NFS volume on Linux could fail</li>
+</ul>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>Additional profile settings</li>
+</ul>
+</ul>
+<li>MakeMKV v1.7.10 ( 2.1.2013 )</li>
+<ul class="bullets2">
+<li>Improved handling for DVD discs with mastering errors</li>
+<li>Many miscellaneous improvements</li>
+</ul>
+<li>MakeMKV v1.7.9 ( 5.11.2012 )</li>
+<ul class="bullets2">
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Audio transcoding could fail on Windows 7 under some circumstances</li>
+<li>MakeMKV no longer requires GLIBC 2.15 on Linux</li>
+</ul>
+<li>Few miscellaneous improvements</li>
+</ul>
+<li>MakeMKV v1.7.8 ( 15.10.2012 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v35</li>
+<li>Updated BD+ engine</li>
+<li>Added ability to produce MKV files with compressed tracks (WDTV profile)</li>
+<li>Improved handling for DVD/Blu-ray discs with mastering errors</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Audio transcoding could fail or hang at the very end of file</li>
+<li>MakeMKV could crash when reading DVDs with a specific structure protection</li>
+</ul>
+<li>Many miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.7.7 ( 16.8.2012 )</li>
+<ul class="bullets2">
+<li>Improved handling for DVD/Blu-ray discs with mastering errors</li>
+<li>MakeMKV now prevents computer going to sleep mode during copy</li>
+<li>Miscellaneous stability improvements</li>
+<li>Max OS X changes:</li>
+<ul class="bullets3">
+<li>BDMV folder bundles can be selected on Mountain Lion</li>
+<li>Switched from GROWL to Mountain Lion notifications</li>
+</ul>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>MakeMKV now includes ffmpeg executable with 24-bit FLAC encoder</li>
+<li>New FLAC profile</li>
+</ul>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>On some DVDs MakeMKV could go into endless loop when opening disc in CellWalk mode</li>
+<li>MakeMKV could hang (endless ASSERT) on titles with seamless branching and LPCM tracks</li>
+<li>Forced subtitles were extracted incompletely on certain blu-ray discs</li>
+<li>Aspect ratio was sometimes incorrect for H.264 SD content</li>
+<li>Occasionally makemkvcon executable could stay running in background even after application window was closed</li>
+</ul>
+</ul>
+<li>MakeMKV v1.7.6 ( 30.6.2012 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v32</li>
+</ul>
+<li>MakeMKV v1.7.5 ( 20.6.2012 )</li>
+<ul class="bullets2">
+<li>Miscellaneous stability and improvements</li>
+<li>Expert mode - support for DTS-HD decoding/transcoding</li>
+</ul>
+<li>MakeMKV v1.7.4 ( 10.4.2012 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v31</li>
+<li>Improved handling for DVD/Blu-ray discs with mastering errors</li>
+<li>Conversion profile improvements in expert mode</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>On some discs 3D MVC video was not recognized</li>
+<li>Subtitle tracks were not available on HD-DVD discs after 1.7.0 update</li>
+</ul>
+</ul>
+<li>MakeMKV v1.7.3 ( 27.3.2012 )</li>
+<ul class="bullets2">
+<li>Added ability to extract and put 3D MVC Video into MKV container</li>
+<li>Initial support for on-the-fly audio reencoding</li>
+<li>Improved functionality in expert mode</li>
+<li>Improved handling for DVD/Blu-ray discs with mastering errors</li>
+<li>Improved handling for DVD/Blu-ray discs with structure protection</li>
+<li>Better handling of MKV files created by other programs</li>
+<li>Many UI and stability improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>MakeMKV could crash on profile change in expert mode</li>
+<li>A single audio frame could be incorrectly dropped at the start of file</li>
+<li>HD-DVD processing was accidentally broken in 1.7.0</li>
+</ul>
+</ul>
+<li>MakeMKV v1.7.2 ( 9.2.2012 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v30</li>
+</ul>
+<li>MakeMKV v1.7.1 ( 28.1.2012 )</li>
+<ul class="bullets2">
+<li>Improved handling for Blu-ray discs with seamless branching</li>
+<li>Improved handling for DVD discs with mastering errors</li>
+<li>Improved handling for DVD discs with structure protection</li>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>Profile can specify more complex default selection configurations</li>
+<li>Tracks order may be specified in profile and changed in GUI</li>
+</ul>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>MakeMKV could randomly crash in expert mode</li>
+<li>Rarely, some chapters could have been discarded from DVD disc</li>
+</ul>
+</ul>
+<li>MakeMKV v1.7.0 ( 21.12.2011 )</li>
+<ul class="bullets2">
+<li>Improved handling for Blu-ray with structure protection</li>
+<li>Improved handling for DVD discs with mastering errors</li>
+<li>Small performance improvements</li>
+<li>Expert mode:</li>
+<ul class="bullets3">
+<li>Many attributes of MKV file may be edited in GUI</li>
+<li>Output file name may be specified per title</li>
+<li>MakeMKV can output detailed AV synchronization statistics</li>
+<li>Arbitrary default track selection logic may be specified in profile</li>
+</ul>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Short titles were incorrectly skipped on some DVDs</li>
+<li>On multi-angle DVDs chapters were not preserved for non-first angles</li>
+<li>Program could crash when processing Blu-ray discs with LPCM audio</li>
+<li>On some DVDs different titles were incorrectly marked as duplicates</li>
+<li>Some multi-angle or interleaved DVDs produced MKV files with noticeable AV synchronization
+issues</li>
+</ul>
+</ul>
+<li>MakeMKV v1.6.16 ( 28.10.2011 )</li>
+<ul class="bullets2">
+<li>Updated BD+ engine</li>
+<li>Added support for new DVD copy protections</li>
+<li>MakeMKV is now much more tolerant to DVD mastering errors</li>
+<li>Improved support for AVCHD discs</li>
+<li>Many stability improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Backup failed for blu-ray discs with DCOPY folder</li>
+<li>Some multi-angle DVDs were processed incorrectly</li>
+<li>Some DVDs could hang in CSS search phase</li>
+<li>Some DVDs could hang with code 2025 during conversion</li>
+</ul>
+</ul>
+<li>MakeMKV v1.6.15 ( 20.9.2011 )</li>
+<ul class="bullets2">
+<li>Updated BD+ engine</li>
+<li>Added workarounds for incorrectly-mastered discs</li>
+<li>Miscellaneous bug fixes and stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.14 ( 18.8.2011 )</li>
+<ul class="bullets2">
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>MakeMKV was &quot;stuck&quot; when processing some blu-ray discs</li>
+<li>MakeMKV could randomly crash at start in rare cases</li>
+</ul>
+<li>Improved debug logging</li>
+<li>Miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.13 ( 5.8.2011 )</li>
+<ul class="bullets2">
+<li>Added support for AACS bus encryption</li>
+<li>Fixed failures on blu-ray discs with variable multi-angle playlists</li>
+<li>Added ability to open MKV files</li>
+<li>Various user interface improvements</li>
+<li>Many performance and stability improvements</li>
+<li>Bug fixes:</li>
+<ul class="bullets3">
+<li>Discs with LPCM audio could have failed occasionally</li>
+<li>Sparsely-encrypted discs could have failed</li>
+<li>No other fixes for submitted DVD and blu-ray reports, sorry</li>
+</ul>
+</ul>
+<li>MakeMKV v1.6.12 ( 9.7.2011 )</li>
+<ul class="bullets2">
+<li>MKV engine fixes:</li>
+<ul class="bullets3">
+<li>Some MKV files produced from h.264 AVC blu-ray discs were not seekable</li>
+<li>Subtitles were displayed too short on some players</li>
+<li>Occasional errors on titles with forced subtitles</li>
+<li>Improved compatibility of produced MKV files</li>
+</ul>
+<li>Added workarounds for new DVD protections</li>
+<li>Miscellaneous stability and UI improvements</li>
+</ul>
+<li>MakeMKV v1.6.10 ( 29.5.2011 )</li>
+<ul class="bullets2">
+<li>Added support for AACS v25</li>
+<li>Fixed MKV multiplexing error introduced in 1.6.9</li>
+</ul>
+<li>MakeMKV v1.6.9 ( 27.5.2011 )</li>
+<ul class="bullets2">
+<li>Updated BD+ engine</li>
+<li>New MKV multiplexing engine</li>
+<li>Fixed occasional program errors on Mac OS X</li>
+<li>Fixed DASPI for Mac OS X 10.5.8</li>
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.8 ( 26.4.2011 )</li>
+<ul class="bullets2">
+<li>Updated BD+ engine</li>
+<li>Workarounds for incorrectly-mastered discs</li>
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.7</li>
+<ul class="bullets2">
+<li>Added support for new DVD copy protections</li>
+<li>Workarounds for incorrectly-mastered discs</li>
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.6</li>
+<ul class="bullets2">
+<li>Added support for AACS v23</li>
+<li>Workarounds for some incorrectly mastered discs</li>
+<li>Workarounds for external USB drives with JMicron chipset</li>
+<li>Miscellaneous stability and UI improvements</li>
+<li>Fixes:</li>
+<ul class="bullets3">
+<li>Disc access speed was very slow in some cases</li>
+<li>AACS auth could randomly fail on Linux</li>
+<li>Some discs failed to open with error "UpdateTrackInfo failed"</li>
+</ul>
+</ul>
+<li>MakeMKV v1.6.5</li>
+<ul class="bullets2">
+<li>Fixed several UI errors introduced in 1.6.4</li>
+<li>Miscellaneous stability and UI improvements</li>
+</ul>
+<li>MakeMKV v1.6.4</li>
+<ul class="bullets2">
+<li>Improved conversion speed in most cases</li>
+<li>Improved handling for protected DVDs with episodic content</li>
+<li>Fixes:</li>
+<ul class="bullets3">
+<li>Some DVDs failed to open with error "Titleset #0 is invalid"</li>
+<li>Conversion failed with "code 15" at the end</li>
+</ul>
+<li>Max OS X changes:</li>
+<ul class="bullets3">
+<li>New disc access method - DASPI</li>
+<li>Overall UI improvements</li>
+<li>Growl notifications</li>
+</ul>
+<li>Miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.3</li>
+<ul class="bullets2">
+<li>Added support for AACS v20</li>
+<li>Updated BD+ engine</li>
+<li>Improved compatibility with incorrectly-encoded H.264 streams</li>
+<li>Improved processing for some DVDs</li>
+<li>Many stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.2</li>
+<ul class="bullets2">
+<li>Improved processing for some DVDs</li>
+<li>Fixed occasional crashes introduced in 1.6.0</li>
+<li>Many stability improvements</li>
+</ul>
+<li>MakeMKV v1.6.0</li>
+<ul class="bullets2">
+<li>Updated blu-ray keys for AACS v19</li>
+<li>Updated BD+ engine</li>
+<li>On backup MakeMKV now validates content hash tables and detects corrupted M2TS files</li>
+<li>Better support for DVD discs</li>
+<li>MakeMKV is now more tolerable to badly-mastered or damaged discs</li>
+<li>Better support for HD-DVD discs</li>
+<li>Many stability improvements</li>
+</ul>
+<li>MakeMKV v1.5.8</li>
+<ul class="bullets2">
+<li>Updated BD+ engine</li>
+<li>Added (optional) automatic checking for program and svq updates</li>
+<li>Miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.5.6</li>
+<ul class="bullets2">
+<li>Improved handling for DVD discs</li>
+<li>Added default tracks selection based on language</li>
+<li>Many small improvements</li>
+</ul>
+<li>MakeMKV v1.5.5</li>
+<ul class="bullets2">
+<li>Updated BD+ engine</li>
+<li>Corrected rare error with some H264 interlaced video</li>
+<li>Improved handling for DVDs with incorrect DVD-TEXT metadata</li>
+</ul>
+<li>MakeMKV v1.5.4</li>
+<ul class="bullets2">
+<li>Updated blu-ray keys for AACS v17</li>
+</ul>
+<li>MakeMKV v1.5.3</li>
+<ul class="bullets2">
+<li>OS X: OS access mode is now default</li>
+<li>Many miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.5.2</li>
+<ul class="bullets2">
+<li>Added support for MPEG audio tracks on DVD</li>
+<li>Corrected &quot;code 28&quot; error with some Blu-ray discs</li>
+<li>All LPCM audio formats from Blu-ray are now handled correctly</li>
+<li>Fixed occasional GUI failures</li>
+<li>Improved handling of Blu-ray discs with episodic content</li>
+<li>Various stability improvements</li>
+</ul>
+<li>MakeMKV v1.5.1</li>
+<ul class="bullets2">
+<li>Added myiBox streaming for NMT devices</li>
+<li>Improved compatibility of produced MKV files</li>
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.5.0</li>
+<ul class="bullets2">
+<li>Added ability to decrypt M2TS files during backup</li>
+<li>Added UPnP streaming mode</li>
+<li>Added OS drive access mode supporting all drives on OSX</li>
+<li>Significantly enhanced command-line interface</li>
+<li>Improved support for AVCHD sources</li>
+<li>Corrected error when chapters were missing with some blu-ray discs</li>
+<li>Corrected error when some blu-ray discs couldn't be opened</li>
+<li>Improved disc access speed on Linux</li>
+<li>Miscellaneous stability and UI improvements</li>
+</ul>
+<li>MakeMKV v1.4.12</li>
+<ul class="bullets2">
+<li>Added support for AVCHD sources with recognition of camera metadata</li>
+<li>Corrected error when subtitles were missing with some blu-ray discs</li>
+<li>Added ability to save only forced subtitles for blu-ray discs</li>
+<li>Miscellaneous stability and UI improvements</li>
+</ul>
+<li>MakeMKV v1.4.11</li>
+<ul class="bullets2">
+<li>Corrected compatibility issue with HD audio streams</li>
+<li>Corrected incorrect processing of blu-ray discs with seamless branching (introduced in 1.4.10)</li>
+<li>Miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.4.10</li>
+<ul class="bullets2">
+<li>New functionality: instant video streaming</li>
+<li>Added support for all blu-ray HD audio tracks:</li>
+<ul class="bullets3">
+<li>Dolby TrueHD</li>
+<li>Dolby Digital plus (E-AC3)</li>
+<li>DTS-HD</li>
+<li>DTS-HD Losless (Master audio)</li>
+<li>DTS-HD Low bitrate</li>
+</ul>
+<li>Corrected drive access problems on Windows (AHCI)</li>
+<li>Corrected "MKV_ASSERT" error on titles with many subtitle tracks</li>
+<li>Miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.4.9</li>
+<ul class="bullets2">
+<li>Faster processing for some DVD discs</li>
+<li>Miscellaneous stability improvements</li>
+</ul>
+<li>MakeMKV v1.4.8</li>
+<ul class="bullets2">
+<li>Fixed error leading to A/V desync in some cases</li>
+<li>Small UI improvements</li>
+<li>BD+ engine</li>
+</ul>
+<li>MakeMKV v1.4.7</li>
+<ul class="bullets2">
+<li>Small stability and UI improvements</li>
+<li>Fixed error leading to SIGSEGV on some Linux distributions</li>
+</ul>
+<li>MakeMKV v1.4.6</li>
+<ul class="bullets2">
+<li>Fixed error causing MKV files to be too short for some DVDs</li>
+<li>Fixed error leading to duplicate and out-of-order audio frames in some MKVs</li>
+<li>Many corrections in MKV multiplexor (forced subtitles, default tracks, simple blocks)</li>
+<li>MakeMKV now produces more detailed debug log</li>
+<li>Aspect ratio and frame rate information is now displayed for video streams</li>
+<li>Blu-ray discs now open significantly faster</li>
+<li>Improved conversion speed on OSX and Linux</li>
+</ul>
+<li>MakeMKV v1.4.5</li>
+<ul class="bullets2">
+<li>Updated to the latest AACS keys</li>
+</ul>
+<li>MakeMKV v1.4.4</li>
+<ul class="bullets2">
+<li>Added support for multi-angle Blu-ray discs</li>
+<li>Fixed MKV compatibility issues (chapter UIDs)</li>
+<li>Improved complex mpls handling</li>
+</ul>
+<li>MakeMKV v1.4.3</li>
+<ul class="bullets2">
+<li>First version for Mac OS X</li>
+<li>Added support for LPCM audio tracks</li>
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.4.2</li>
+<ul class="bullets2">
+<li>Many stability improvements</li>
+</ul>
+<li>MakeMKV v1.4.1</li>
+<ul class="bullets2">
+<li>Improved handling for incorrectly mastered Blu-ray discs</li>
+<li>MakeMKV now produces compatible timecodes for VC-1 streams</li>
+</ul>
+<li>MakeMKV v1.4.0</li>
+<ul class="bullets2">
+<li>Improved handling for incorrectly mastered DVD discs</li>
+<li>Stability and user interface improvements</li>
+</ul>
+<li>MakeMKV v1.3 build 797</li>
+<ul class="bullets2">
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.3 build 778</li>
+<ul class="bullets2">
+<li>Improved compatibility of produced MKV files</li>
+<li>Stability improvements</li>
+</ul>
+<li>MakeMKV v1.3 build 722</li>
+<ul class="bullets2">
+<li>Improved support for Blu-ray discs, including support for Blu-ray chapters</li>
+<li>Improved handling for DVD discs with structure protection</li>
+<li>Many stability improvements</li>
+</ul>
+<li>MakeMKV v1.2 build 692</li>
+<ul class="bullets2">
+<li>Fixed error during opening of already decrypted Blu-ray and HD-DVD files on harddrive</li>
+</ul>
+<li>MakeMKV v1.2 build 684</li>
+<ul class="bullets2">
+<li>Updated to the latest AACS keys</li>
+<li>Added support for multi-angle DVD discs</li>
+<li>Added support for Blu-ray PGS subtitles</li>
+<li>Fixed container incompatibility for VC-1 streams</li>
+</ul>
+<li>MakeMKV v1.01 build 650</li>
+<ul class="bullets2">
+<li>Fixed previously broken processing of already decrypted Blu-ray and HD-DVD discs</li>
+</ul>
+<li>MakeMKV v1.01 build 646</li>
+<ul class="bullets2">
+<li>Improved recognition of bogus titles on DVD discs with structure protection</li>
+</ul>
+<li>MakeMKV v1.01 build 634</li>
+<ul class="bullets2">
+<li>Improved handling for DVD discs with structure protection</li>
+</ul>
+<li>MakeMKV v1.01 build 630</li>
+<ul class="bullets2">
+<li>Initial beta release</li>
+<li>DVD functionality is fully implemented</li>
+<li>Blu-ray and Hd-dvd support is experimental</li>
+</ul>
+</ul>
+<p>
+</div>
+<div id="sidebar">
+<ul>
+<li><a href="http://www.makemkv.com/">Home</a></li>
+<li><a href="http://www.makemkv.com/download/">Download</a></li>
+<li><a href="http://www.makemkv.com/aboutmkv/">About MKV</a></li>
+<li><a href="http://www.makemkv.com/onlinehelp/">Online Help</a></li>
+<li><a href="http://www.makemkv.com/faq/">F.A.Q.</a></li>
+<li><a href="http://www.makemkv.com/forum2/">Forum</a></li>
+</ul>
+<div id="side_space"></div>
+<div id="d_button"> <a href='http://www.makemkv.com/download/Setup_MakeMKV_v1.9.10.exe'>
+<div id="d_buttonimg" align="center">Download MakeMKV for Windows</div>
+</a> </div>
+<div id="d_buttonimg_preload"></div>
+<div id="side_space2"></div>
+<div id="logo_softpedia"><a href='http://www.softpedia.com/progClean/MakeMKV-Clean-117330.html'>
+<div id="logo_softpediaimg" align="center"></div>
+</a> </div>
+</div>
+<div id="footer">Copyright &#169 2008-2016 GuinpinSoft inc</div>
+</div>
+</body>
+</html>

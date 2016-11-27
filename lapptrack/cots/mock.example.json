@@ -1,9 +1,0 @@
-{
-    "Default" :{
-        "dump": ["attributes['name']='hiaark'"],
-        "load": [],
-        "get_origin": ["msg='an error'", "raise Exception(msg)"],
-        "fetch": "",
-        "is_update":["update=True"]
-    }
-}

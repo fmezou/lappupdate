@@ -369,7 +369,7 @@ class BaseProduct:
 
         Returns:
             bool: True if this instance is an update of the product specified
-                by the `product` parameter.
+            by the `product` parameter.
         """
         raise NotImplementedError
 
@@ -666,7 +666,7 @@ def get_handler(qualname):
         raise ImportError(msg, name=name, path=path)
 
     handler_class = module.__dict__[name]
-    if BaseProduct not in handler_class.__bases__:
+    if not issubclass(handler_class, BaseProduct):
         msg = "Handler class must be a class 'BaseProduct'. not {0}"
         msg = msg.format(handler_class)
         raise TypeError(msg)

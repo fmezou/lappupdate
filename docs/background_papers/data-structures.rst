@@ -16,4 +16,3 @@ The following topics provide background papers for data structures that
 
     catalog-format
     applist-format
-    mock-script

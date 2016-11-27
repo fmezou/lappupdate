@@ -147,7 +147,7 @@ class MakeMKVHandler(core.BaseProduct):
 
         Returns:
             bool: True if this instance is an update of the product specified
-                by the `product` parameter.
+            by the `product` parameter.
 
         Raises:
             TypeError: Parameters type mismatch.
