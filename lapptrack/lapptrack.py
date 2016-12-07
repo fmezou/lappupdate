@@ -137,6 +137,8 @@ __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 
+# Script display name: use in logger and the console UI
+_DISPLAY_NAME = "lapptrack ({})".format(__version__)
 
 # Sections and keys names used in the configuration file (see lapptrack.ini)
 _CORE_SNAME = "core"
@@ -289,7 +291,6 @@ class lAppTrack:
         `approve` method, and then generate the `applist` file with the `make`
         method.
     """
-
     def __init__(self, config_file):
         # check parameters type
         if not isinstance(config_file, io.TextIOBase):
@@ -316,43 +317,79 @@ class lAppTrack:
         msg = "Instance of {} created <- {}"
         _logger.debug(msg.format(self.__class__, config_file))
 
+    def get_banner(self, verb=None):
+        """
+        Get the banner of the script.
+
+        The banner is used as the first (resp. the last) displayed line on the
+        console and in the log file.
+
+        Args:
+            verb (str): The action verb used on the starting of the script
+
+        Returns:
+            tuple: The head and the tail banner text
+        """
+        head = "Starting {}".format(_DISPLAY_NAME)
+        if verb:
+            head += ": {}".format(verb)
+        tail = "{} completed".format(_DISPLAY_NAME)
+
+        return head, tail
+
     def run(self):
         """
         Run the lAppTrack application.
         """
+        head, tail = self.get_banner()
+        print(head)
+
         self._load_config()
-        _logger.info("Starting Appdownload (%s)", __version__)
+        _logger.info(head)
+
         self._read_catalog()
         self._pull_update()
         self._fetch_update()
         self._approve_update(True)
         self._write_catalog()
         self._write_applist()
-        _logger.info("Appdownload (%s) completed.", __version__)
+
+        _logger.info(tail)
+        print(tail)
 
     def pull(self):
         """
         Pull the availability of updates.
         """
+        head, tail = self.get_banner("pull")
+        print(head)
+
         self._load_config()
-        _logger.info("Starting Appdownload (%s), pull the availability of "
-                     "updates.", __version__)
+        _logger.info(head)
+
         self._read_catalog()
         self._pull_update()
         self._write_catalog()
-        _logger.info("Appdownload (%s) completed.", __version__)
+
+        _logger.info(tail)
+        print(tail)
 
     def fetch(self):
         """
         Fetch application updates based on the last build catalog.
         """
+        head, tail = self.get_banner("fetch")
+        print(head)
+
         self._load_config()
-        _logger.info("Starting Appdownload (%s), Fetch applications updates "
-                     "based on the last build catalog.", __version__)
+        _logger.info(head)
+
         self._read_catalog()
         self._fetch_update()
         self._write_catalog()
-        _logger.info("Appdownload (%s) completed.", __version__)
+
+        _logger.info(tail)
+        print(tail)
 
     def approve(self, force=False):
         """
@@ -363,25 +400,35 @@ class lAppTrack:
                 each deployment in a interactive session. True to indicates that
                 updates are all approved without prompt.
         """
+        head, tail = self.get_banner("approve force=".format(force))
+        print(head)
+
         self._load_config()
-        _logger.info("Starting Appdownload (%s), approve applications updates "
-                     "based on the last build catalog.", __version__)
+        _logger.info(head)
+
         self._read_catalog()
         self._approve_update(force)
         self._write_catalog()
         self._write_applist()
-        _logger.info("Appdownload (%s) completed.", __version__)
+
+        _logger.info(tail)
+        print(tail)
 
     def make(self):
         """
         Make `applist` files based on the last build catalog
         """
+        head, tail = self.get_banner("make")
+        print(head)
+
         self._load_config()
-        _logger.info("Starting Appdownload (%s), make applist files based "
-                     "on the last build catalog.", __version__)
+        _logger.info(head)
+
         self._read_catalog()
         self._write_applist()
-        _logger.info("Appdownload (%s) completed.", __version__)
+
+        _logger.info(tail)
+        print(tail)
 
     def test_config(self):
         """
@@ -390,36 +437,49 @@ class lAppTrack:
         # The logging configuration may be not valid, events are only print on
         # the console with print(). Furthermore, the use case of this method is
         # typically in interactive mode.
-        print("Starting Appdownload ({0}), check the configuration file for "
-              "internal correctness.".format(__version__))
+        head, tail = self.get_banner("testconf")
+        print(head)
+
         print("Configuration details are loaded from '{0}'."
               .format(self._config_file.name))
         self._load_config()
         if self._checked_config:
             print("Configuration details are validated.")
-        print("Appdownload ({0}) completed.".format(__version__))
+
+        _logger.info(tail)
+        print(tail)
 
     def _pull_update(self):
         """
         Pull the availability of updates.
         """
-        assert self._checked_config is True
-        _logger.info("Pull the availability of updates.")
-
+        assert self._checked_config
+        # TODO: mettre un log du type cost name n/m
         for app_id in self._config[_APPS_SNAME]:
             if self._config[_APPS_SNAME].getboolean(app_id):
                 _logger.debug(
                     "Load and set the '{0}' module.".format(app_id)
                 )
                 qualname = self._config[app_id][_QUALNAME_KNAME]
+                # FIXME (fmu): exception treatment
                 app = core.get_handler(qualname)
+
                 if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
                     app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[CAT_APPROVED_KNAME]) != 0:
+                    if app_entry[CAT_APPROVED_KNAME]:
                         app.load(app_entry[CAT_APPROVED_KNAME])
                         _logger.debug("Check if an update is available")
+
+                        # FIXME (fmu): exception treatment
                         origin_app = core.get_handler(qualname)
+
+                        # FIXME (fmu): exception treatment
+                        # pour les method : un retour d'un bool est suffisant
+                        # Success or Fail : et enregistrement dans un dict
+                        # pour afficher une synthèse à la fin du traitement du
+                        # verb
                         origin_app.get_origin(app.version)
+
                         if origin_app.is_update(app):
                             msg = "A new version of '{0}' exist ({1}) " \
                                   "published on {2}."
@@ -427,18 +487,24 @@ class lAppTrack:
                                                     origin_app.version,
                                                     origin_app.published))
                             app_entry[CAT_PULLED_KNAME] = origin_app.dump()
+
+                            # FIXME (fmu): exception treatment
                             self._pulling_report.add_section(origin_app.dump())
                     else:
                         msg = "The product '{0}' isn't deployed.".format(app_id)
                         _logger.info(msg.format(app_id))
+                        # FIXME (fmu): exception treatment
                         origin_app = core.get_handler(qualname)
                         origin_app.get_origin()
+
                         msg = "A version of '{0}' exist ({1}) " \
                               "published on {2}."
                         _logger.info(msg.format(app_id,
                                                 origin_app.version,
                                                 origin_app.published))
                         app_entry[CAT_PULLED_KNAME] = origin_app.dump()
+
+                        # FIXME (fmu): exception treatment
                         self._pulling_report.add_section(origin_app.dump())
                 else:
                     msg = "The product '{0}' don't exist. A new one will " \
@@ -450,6 +516,8 @@ class lAppTrack:
                         CAT_APPROVED_KNAME: {}
                     }
                     _logger.debug("Check if an update is available")
+
+                    # FIXME (fmu): exception treatment
                     origin_app = core.get_handler(qualname)
                     origin_app.get_origin()
                     msg = "A version of '{0}' exist ({1}) " \
@@ -459,6 +527,8 @@ class lAppTrack:
                                             origin_app.published))
                     app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
                     app_entry[CAT_PULLED_KNAME] = origin_app.dump()
+
+                    # FIXME (fmu): exception treatment
                     self._pulling_report.add_section(origin_app.dump())
 
                 del app
@@ -467,6 +537,7 @@ class lAppTrack:
             else:
                 _logger.info("'{0}' ignored.".format(app_id))
 
+        # FIXME (fmu): exception treatment
         self._pulling_report.publish()
 
     def _fetch_update(self):
