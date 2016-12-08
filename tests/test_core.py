@@ -49,10 +49,10 @@ class BaseProductLoadTestCase(unittest.TestCase):
             "web_site_location": "https://fmezou.github.io/lappupdate/",
             "location":
                 "https://github.com/fmezou/lappupdate/archive/0.2.1.zip",
-            "icon" : "pathname/iconfile",
-            "announce_location" :
+            "icon": "pathname/iconfile",
+            "announce_location":
                 "https://github.com/fmezou/lappupdate/releases",
-            "feed_location" :
+            "feed_location":
                 "https://github.com/fmezou/lappupdate/releases.atom",
             "release_note_location": "http://www.example.com/release_note.txt",
             "change_summary": "<ul>"
@@ -61,8 +61,8 @@ class BaseProductLoadTestCase(unittest.TestCase):
                               "<li>a dummy feature</li>"
                               "</ul>"
                               "</ul>",
-            "installer" : "../~store/app/lappupdate_0.2.1.zip",
-            "file_size" : 278331,
+            "installer": "../~store/app/lappupdate_0.2.1.zip",
+            "file_size": 278331,
             "secure_hash": ("sha1", "e945a9739ab9bb3bb9960f4e168f47e9ab401ea1"),
             "std_inst_args": "/option",
             "silent_inst_args": "/silent"
@@ -147,6 +147,7 @@ class BaseProductNotImplementedTestCase(unittest.TestCase):
             self.cots.is_update(core.BaseProduct())
         _logger.info("Completed")
 
+
 class BaseProductFetchTestCase(unittest.TestCase):
     """
     BaseProduct.fetch method test case
@@ -156,21 +157,19 @@ class BaseProductFetchTestCase(unittest.TestCase):
 
         # Attributes default value
         self.default_attrs = {
-            "name": "lappupdate",
-            "display_name": "lappupdate Display Name",
-            "version": "0.2.1",
+            "name": "lorem",
+            "display_name": "Lorem ipsum dolor sit",
+            "version": "0.1.0",
             "published": "2016-10-27T17:01:30",
             "target": "unified",
-            "description": "Test Suite Short Description.",
+            "description":
+                "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
             "editor": "Example. inc",
-            "web_site_location": "https://fmezou.github.io/lappupdate/",
-            "location":
-                "https://github.com/fmezou/lappupdate/archive/0.2.1.zip",
-            "icon" : "pathname/iconfile",
-            "announce_location" :
-                "https://github.com/fmezou/lappupdate/releases",
-            "feed_location" :
-                "https://github.com/fmezou/lappupdate/releases.atom",
+            "web_site_location": "http://localhost:53230",
+            "location": "http://localhost:53230/lorem.txt",
+            "icon": "pathname/iconfile",
+            "announce_location": "http://www.example.com/news.txt",
+            "feed_location": "http://www.example.com/news.atom",
             "release_note_location": "http://www.example.com/release_note.txt",
             "change_summary": "<ul>"
                               "<li>version 1.0.0 published on 2016-02-02</li>"
@@ -178,9 +177,9 @@ class BaseProductFetchTestCase(unittest.TestCase):
                               "<li>a dummy feature</li>"
                               "</ul>"
                               "</ul>",
-            "installer" : "../~store/app/lappupdate_0.2.1.zip",
-            "file_size" : 278331,
-            "secure_hash": ("sha1", "e945a9739ab9bb3bb9960f4e168f47e9ab401ea1"),
+            "installer": "../~store/app/lorem_0.1.0.txt",
+            "file_size": 42961,
+            "secure_hash": ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0"),
             "std_inst_args": "/option",
             "silent_inst_args": "/silent"
         }
@@ -202,7 +201,7 @@ class BaseProductFetchTestCase(unittest.TestCase):
         del self.cots
         _logger.info(50*"-")
 
-    def test01_fetch(self):
+    def test0101_fetch(self):
         # Download a regular file
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
@@ -220,21 +219,20 @@ class BaseProductFetchTestCase(unittest.TestCase):
         _logger.info("Completed")
 
     @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
-    def test02_read_only_path(self):
+    def test0201_read_only_path(self):
         # Download to a read only path
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
         self.dir_name = "c:\windows"
-        with self.assertRaises(PermissionError) as cm:
+        with self.assertRaises(PermissionError):
             self.cots.fetch(self.dir_name)
 
         self.assertEqual(os.path.abspath(self.cots.installer),
                          os.path.abspath(self.default_attrs["installer"]))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.default_attrs["installer"])
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
         _logger.info("Completed")
 
-    def test03_unknown_length(self):
+    def test0301_unknown_length(self):
         # Download with an unknown length
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
@@ -252,7 +250,7 @@ class BaseProductFetchTestCase(unittest.TestCase):
                          self.default_attrs["secure_hash"][1])
         _logger.info("Completed")
 
-    def test04_too_high_length(self):
+    def test0302_too_high_length(self):
         # Download with a too high length
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
@@ -260,14 +258,12 @@ class BaseProductFetchTestCase(unittest.TestCase):
         with self.assertRaises(core.UnexpectedContentLengthError):
             self.cots.fetch(self.dir_name)
 
-        # TODO (fmezou): check result when raise an exception (cleanup)
         self.assertEqual(os.path.abspath(self.cots.installer),
                          os.path.abspath(self.default_attrs["installer"]))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.default_attrs["installer"])
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
         _logger.info("Completed")
 
-    def test05_too_small_length(self):
+    def test0303_too_small_length(self):
         # Download with a too high length
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
@@ -277,11 +273,36 @@ class BaseProductFetchTestCase(unittest.TestCase):
 
         self.assertEqual(os.path.abspath(self.cots.installer),
                          os.path.abspath(self.default_attrs["installer"]))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.default_attrs["installer"])
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
         _logger.info("Completed")
 
-    def test06_with_no_hash(self):
+    def test0304_server_too_high_length(self):
+        # Download with a too high length
+        _logger.info("Starting...")
+        self.cots.load(self.default_attrs)
+        self.cots.location = "http://localhost:53230/increaselen"
+        with self.assertRaises(core.UnexpectedContentLengthError):
+            self.cots.fetch(self.dir_name)
+
+        self.assertEqual(os.path.abspath(self.cots.installer),
+                         os.path.abspath(self.default_attrs["installer"]))
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
+        _logger.info("Completed")
+
+    def test0305_server_too_small_length(self):
+        # Download with a too small length
+        _logger.info("Starting...")
+        self.cots.load(self.default_attrs)
+        self.cots.location = "http://localhost:53230/decreaselen"
+        with self.assertRaises(core.UnexpectedContentLengthError):
+            self.cots.fetch(self.dir_name)
+
+        self.assertEqual(os.path.abspath(self.cots.installer),
+                         os.path.abspath(self.default_attrs["installer"]))
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
+        _logger.info("Completed")
+
+    def test0401_with_no_hash(self):
         # Download with no hash
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
@@ -299,7 +320,7 @@ class BaseProductFetchTestCase(unittest.TestCase):
                          self.default_attrs["secure_hash"][1])
         _logger.info("Completed")
 
-    def test07_with_unsupported_hash(self):
+    def test0402_with_unsupported_hash(self):
         # Download with a non supported hash algorithm
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
@@ -312,7 +333,7 @@ class BaseProductFetchTestCase(unittest.TestCase):
         self.assertTrue(stat.S_ISREG(st.st_mode))
         _logger.info("Completed")
 
-    def test08_unexpected_hash(self):
+    def test0403_unexpected_hash(self):
         # Download with an unexpected hash value
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
@@ -322,45 +343,41 @@ class BaseProductFetchTestCase(unittest.TestCase):
 
         self.assertEqual(os.path.abspath(self.cots.installer),
                          os.path.abspath(self.default_attrs["installer"]))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.default_attrs["installer"])
-            self.assertFalse(stat.S_ISREG(st.st_mode))
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
         _logger.info("Completed")
 
-    def test09_with_bad_domain(self):
+    def test0501_with_bad_domain(self):
         # Download with an url having a bad domain name
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
-        self.cots.location = "https://nodomain.fr/nofile.bin"
+        self.cots.location = "http://nolocalhost/nofile.bin"
         with self.assertRaises(urllib.error.URLError):
             self.cots.fetch(self.dir_name)
 
         self.assertEqual(os.path.abspath(self.cots.installer),
                          os.path.abspath(self.default_attrs["installer"]))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.default_attrs["installer"])
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
         _logger.info("Completed")
 
-    def test10_non_existant_url(self):
+    def test0502_non_existant_url(self):
         # Download with a non-existent URL
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
-        self.cots.location = "https://github.com/fmezou/lappupdate/archive/0.0.0.zip"
+        self.cots.location = "http://localhost:53230/error?code=404"
         with self.assertRaises(urllib.error.HTTPError) as cm:
             self.cots.fetch(self.dir_name)
 
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(os.path.abspath(self.cots.installer),
                          os.path.abspath(self.default_attrs["installer"]))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.default_attrs["installer"])
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
         _logger.info("Completed")
 
-    def test11_forbidden_url(self):
+    def test0503_forbidden_url(self):
         # Download with a forbidden URL
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
-        self.cots.location = "http://ftp.free.fr/lost%2bfound/"
+        self.cots.location = "http://localhost:53230/error?code=403"
         with self.assertRaises(urllib.error.HTTPError) as cm:
             self.cots.fetch(self.dir_name)
 
@@ -368,8 +385,7 @@ class BaseProductFetchTestCase(unittest.TestCase):
         self.assertEqual(os.path.abspath(self.cots.installer),
                          os.path.abspath(self.default_attrs["installer"]))
         self.assertEqual(self.cots.installer, self.default_attrs["installer"])
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.default_attrs["installer"])
+        self.assertFalse(os.path.exists(self.default_attrs["installer"]))
         _logger.info("Completed")
 
 
@@ -381,12 +397,12 @@ class RetrieveFileTestCase(unittest.TestCase):
         _logger.info(53 * "-")
 
         # Attributes default value
-        self.url = "https://github.com/fmezou/lappupdate/archive/0.2.1.zip"
-        self.content_type = "application/zip"
-        self.content_lenght = 278331
-        self.content_hash = ("sha1", "e945a9739ab9bb3bb9960f4e168f47e9ab401ea1")
+        self.url = "http://localhost:53230/lorem.txt"
+        self.content_type = "text/plain"
+        self.content_lenght = 42961
+        self.content_hash = ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0")
         self.dir_name = "../~store/app"
-        self.filename = os.path.join(self.dir_name, "0.2.1.zip")
+        self.filename = os.path.join(self.dir_name, "lorem.txt")
 
     def tearDown(self):
         # Clean up
@@ -396,7 +412,7 @@ class RetrieveFileTestCase(unittest.TestCase):
             pass
         _logger.info(50 * "-")
 
-    def test01_retrieve_file(self):
+    def test0101_retrieve_file(self):
         # Download a regular file
         _logger.info("Starting...")
         filename = core.retrieve_file(self.url,
@@ -417,22 +433,21 @@ class RetrieveFileTestCase(unittest.TestCase):
         _logger.info("Completed")
 
     @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
-    def test02_read_only_path(self):
+    def test0201_read_only_path(self):
         # Download to a read only path
         _logger.info("Starting...")
         self.dir_name = "c:\windows"
         self.filename = os.path.join(self.dir_name, "0.2.1.zip")
         filename = ""
-        with self.assertRaises(PermissionError) as cm:
+        with self.assertRaises(PermissionError):
             filename = core.retrieve_file(self.url, self.dir_name)
 
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test03_unknown_length(self):
+    def test0301_unknown_length(self):
         # Download with an unknown length
         _logger.info("Starting...")
         filename = core.retrieve_file(self.url,
@@ -451,7 +466,7 @@ class RetrieveFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test04_too_high_length(self):
+    def test0302_too_high_length(self):
         # Download with a too high length
         _logger.info("Starting...")
         filename = ""
@@ -464,11 +479,10 @@ class RetrieveFileTestCase(unittest.TestCase):
 
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test05_too_small_length(self):
+    def test0303_too_small_length(self):
         # Download with a too high length
         _logger.info("Starting...")
         filename = ""
@@ -481,11 +495,44 @@ class RetrieveFileTestCase(unittest.TestCase):
 
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test06_no_hash(self):
+    def test0304_server_too_high_length(self):
+        # Download with a too high length
+        _logger.info("Starting...")
+        filename = ""
+        url = "http://localhost:53230/increaselen"
+        with self.assertRaises(core.UnexpectedContentLengthError):
+            filename = core.retrieve_file(self.url,
+                                          self.dir_name,
+                                          content_type=self.content_type,
+                                          content_length=self.content_lenght,
+                                          content_hash=self.content_hash)
+
+        self.assertEqual(os.path.abspath(filename),
+                         os.path.abspath(self.filename))
+        self.assertFalse(os.path.exists(self.filename))
+        _logger.info("Completed")
+
+    def test0305_server_too_small_length(self):
+        # Download with a too small length
+        _logger.info("Starting...")
+        filename = ""
+        url = "http://localhost:53230/decreaselen"
+        with self.assertRaises(core.UnexpectedContentLengthError):
+            filename = core.retrieve_file(self.url,
+                                          self.dir_name,
+                                          content_type=self.content_type,
+                                          content_length=self.content_lenght,
+                                          content_hash=self.content_hash)
+
+        self.assertEqual(os.path.abspath(filename),
+                         os.path.abspath(self.filename))
+        self.assertFalse(os.path.exists(self.filename))
+        _logger.info("Completed")
+
+    def test0401_no_hash(self):
         # Download with no hash
         _logger.info("Starting...")
         filename = core.retrieve_file(self.url,
@@ -503,7 +550,7 @@ class RetrieveFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test07_unsupported_hash(self):
+    def test0402_unsupported_hash(self):
         # Download with a non supported hash algorithm
         _logger.info("Starting...")
         filename = core.retrieve_file(self.url,
@@ -522,7 +569,7 @@ class RetrieveFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test08_unexpected_hash(self):
+    def test0403_unexpected_hash(self):
         # Download with an unexpected hash value
         _logger.info("Starting...")
         secure_hash = ("sha1", "0000000000000000000000000000000000000000")
@@ -535,11 +582,10 @@ class RetrieveFileTestCase(unittest.TestCase):
 
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test09_no_mimetype(self):
+    def test0501_no_mimetype(self):
         # Download with no hash
         _logger.info("Starting...")
         filename = core.retrieve_file(self.url, self.dir_name)
@@ -555,39 +601,37 @@ class RetrieveFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test10_unexpected_mimetype(self):
+    def test0502_unexpected_mimetype(self):
         # Download with an unexpected hash value
         _logger.info("Starting...")
         filename = ""
         with self.assertRaises(core.UnexpectedContentTypeError):
             filename = core.retrieve_file(self.url,
                                           self.dir_name,
-                                          content_type="text/plain")
+                                          content_type="x-app/x-bin")
 
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test11_bad_domain(self):
+    def test0601_bad_domain(self):
         # Download with an url having a bad domain name
         _logger.info("Starting...")
-        url = "https://nodomain.fr/nofile.bin"
+        url = "http://nolocalhost/nofile.bin"
         filename = ""
         with self.assertRaises(urllib.error.URLError):
             filename = core.retrieve_file(url, self.dir_name)
 
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test12_non_existant_url(self):
+    def test0602_non_existant_url(self):
         # Download with a non-existent URL
         _logger.info("Starting...")
-        url = "https://github.com/fmezou/lappupdate/archive/0.0.0.zip"
+        url = "http://localhost:53230/error?code=404"
         filename = ""
         with self.assertRaises(urllib.error.HTTPError) as cm:
             filename = core.retrieve_file(url, self.dir_name)
@@ -595,23 +639,21 @@ class RetrieveFileTestCase(unittest.TestCase):
         self.assertEqual(cm.exception.code, 404)
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test13_forbidden_url(self):
+    def test0603_forbidden_url(self):
         # Download with a forbidden URL
         _logger.info("Starting...")
-        url = "http://ftp.free.fr/lost%2bfound/"
+        url = "http://localhost:53230/error?code=403"
         filename = ""
         with self.assertRaises(urllib.error.HTTPError) as cm:
-            filename = core.retrieve_file(self.url, self.dir_name)
+            filename = core.retrieve_file(url, self.dir_name)
 
         self.assertEqual(cm.exception.code, 403)
         self.assertEqual(os.path.abspath(filename),
                          os.path.abspath(self.filename))
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
 
@@ -623,11 +665,10 @@ class RetrieveTempFileTestCase(unittest.TestCase):
         _logger.info(53 * "-")
 
         # Attributes default value
-        self.url = "https://github.com/fmezou/lappupdate/archive/0.2.1.zip"
-        self.content_type = "application/zip"
-        self.content_lenght = 278331
-        self.content_hash = (
-        "sha1", "e945a9739ab9bb3bb9960f4e168f47e9ab401ea1")
+        self.url = "http://localhost:53230/lorem.txt"
+        self.content_type = "text/plain"
+        self.content_lenght = 42961
+        self.content_hash = ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0")
         self.dir_name = "../~store/app"
         self.filename = ""
 
@@ -639,7 +680,7 @@ class RetrieveTempFileTestCase(unittest.TestCase):
             pass
         _logger.info(50 * "-")
 
-    def test01_retrieve_file(self):
+    def test0101_retrieve_file(self):
         # Download a regular file
         _logger.info("Starting...")
         self.filename = core.retrieve_tempfile(self.url,
@@ -655,7 +696,7 @@ class RetrieveTempFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test02_unknown_length(self):
+    def test0201_unknown_length(self):
         # Download with an unknown length
         _logger.info("Starting...")
         self.filename = core.retrieve_tempfile(self.url,
@@ -670,7 +711,7 @@ class RetrieveTempFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test03_too_high_length(self):
+    def test0202_too_high_length(self):
         # Download with a too high length
         _logger.info("Starting...")
         with self.assertRaises(core.UnexpectedContentLengthError):
@@ -678,11 +719,10 @@ class RetrieveTempFileTestCase(unittest.TestCase):
                                                    content_type=self.content_type,
                                                    content_length=self.content_lenght * 2,
                                                    content_hash=self.content_hash)
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test04_too_small_length(self):
+    def test0203_too_small_length(self):
         # Download with a too high length
         _logger.info("Starting...")
         with self.assertRaises(core.UnexpectedContentLengthError):
@@ -690,11 +730,40 @@ class RetrieveTempFileTestCase(unittest.TestCase):
                                                    content_type=self.content_type,
                                                    content_length=self.content_lenght // 2,
                                                    content_hash=self.content_hash)
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test05_no_hash(self):
+    def test0204_server_too_high_length(self):
+        # Download with a too high length
+        _logger.info("Starting...")
+        filename = ""
+        url = "http://localhost:53230/increaselen"
+        with self.assertRaises(core.UnexpectedContentLengthError):
+            filename = core.retrieve_tempfile(self.url,
+                                              content_type=self.content_type,
+                                              content_length=self.content_lenght,
+                                              content_hash=self.content_hash)
+        self.assertEqual(os.path.abspath(filename),
+                         os.path.abspath(self.filename))
+        self.assertFalse(os.path.exists(self.filename))
+        _logger.info("Completed")
+
+    def test0205_server_too_small_length(self):
+        # Download with a too small length
+        _logger.info("Starting...")
+        filename = ""
+        url = "http://localhost:53230/decreaselen"
+        with self.assertRaises(core.UnexpectedContentLengthError):
+            filename = core.retrieve_tempfile(self.url,
+                                              content_type=self.content_type,
+                                              content_length=self.content_lenght,
+                                              content_hash=self.content_hash)
+        self.assertEqual(os.path.abspath(filename),
+                         os.path.abspath(self.filename))
+        self.assertFalse(os.path.exists(self.filename))
+        _logger.info("Completed")
+
+    def test0301_no_hash(self):
         # Download with no hash
         _logger.info("Starting...")
         self.filename = core.retrieve_tempfile(self.url,
@@ -708,7 +777,7 @@ class RetrieveTempFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test06_unsupported_hash(self):
+    def test0302_unsupported_hash(self):
         # Download with a non supported hash algorithm
         _logger.info("Starting...")
         self.filename = core.retrieve_tempfile(self.url,
@@ -724,7 +793,7 @@ class RetrieveTempFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test07_unexpected_hash(self):
+    def test0303_unexpected_hash(self):
         # Download with an unexpected hash value
         _logger.info("Starting...")
         secure_hash = ("sha1", "0000000000000000000000000000000000000000")
@@ -732,11 +801,10 @@ class RetrieveTempFileTestCase(unittest.TestCase):
             self.filename = core.retrieve_tempfile(self.url,
                                                    content_type=self.content_type,
                                                    content_hash=secure_hash)
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test08_no_mimetype(self):
+    def test0401_no_mimetype(self):
         # Download with no hash
         _logger.info("Starting...")
         self.filename = core.retrieve_tempfile(self.url)
@@ -749,61 +817,47 @@ class RetrieveTempFileTestCase(unittest.TestCase):
                          self.content_hash[1])
         _logger.info("Completed")
 
-    def test09_unexpected_mimetype(self):
+    def test0402_unexpected_mimetype(self):
         # Download with an unexpected hash value
         _logger.info("Starting...")
         with self.assertRaises(core.UnexpectedContentTypeError):
             self.filename = core.retrieve_tempfile(self.url,
-                                                   content_type="text/plain")
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+                                                   content_type="x-app/x-bin")
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test10_bad_domain(self):
+    def test0501_bad_domain(self):
         # Download with an url having a bad domain name
         _logger.info("Starting...")
-        url = "https://nodomain.fr/nofile.bin"
+        url = "http://nolocalhost/nofile.bin"
         with self.assertRaises(urllib.error.URLError):
             self.filename = core.retrieve_tempfile(url)
 
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test11_non_existant_url(self):
+    def test0502_non_existant_url(self):
         # Download with a non-existent URL
         _logger.info("Starting...")
-        url = "https://github.com/fmezou/lappupdate/archive/0.0.0.zip"
+        url = "http://localhost:53230/error?code=404"
         with self.assertRaises(urllib.error.HTTPError) as cm:
             self.filename = core.retrieve_tempfile(url)
 
         self.assertEqual(cm.exception.code, 404)
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-    def test12_forbidden_url(self):
+    def test0503_forbidden_url(self):
         # Download with a forbidden URL
         _logger.info("Starting...")
-        url = "http://ftp.free.fr/lost%2bfound/"
+        url = "http://localhost:53230/error?code=403"
         with self.assertRaises(urllib.error.HTTPError) as cm:
-            self.filename = core.retrieve_tempfile(self.url)
+            self.filename = core.retrieve_tempfile(url)
 
         self.assertEqual(cm.exception.code, 403)
-        with self.assertRaises(FileNotFoundError):
-            st = os.stat(self.filename)
+        self.assertFalse(os.path.exists(self.filename))
         _logger.info("Completed")
 
-
-#TODO (fmu): même test avec lenght à -1 (test core.py - line 619)
-# import http.server
-# a = http.server.SimpleHTTPRequestHandler()
-# creation de son propre serveur web basé sur BaseHTTPRequestHandler
-# avec une retour spécifique sur une URL
-# code erreor (401, 301...)
-# header spécifique : content-lengh : absent par exemple
-# import pydoc
-# pydoc.doc()
 
 class GetHandlerTestCase(unittest.TestCase):
     """
@@ -819,10 +873,10 @@ class GetHandlerTestCase(unittest.TestCase):
     def test01_get_handler(self):
         # Regular use case
         _logger.info("Starting...")
-        handler=core.get_handler("cots.dummy.DummyHandler")
+        handler = core.get_handler("cots.dummy.DummyHandler")
         self.assertIsInstance(handler, core.BaseProduct)
 
-        handler=core.get_handler("cots.mock.MockHandler")
+        handler = core.get_handler("cots.mock.MockHandler")
         self.assertIsInstance(handler, core.BaseProduct)
         _logger.info("Completed")
 
@@ -842,7 +896,7 @@ class GetHandlerTestCase(unittest.TestCase):
         ]
         _logger.info("Starting...")
         for qualname in qualnames:
-            _logger.info("(qualname=%s)",qualname)
+            _logger.info("(qualname=%s)", qualname)
             with self.subTest(qualname=qualname):
                 with self.assertRaises(ImportError):
                     core.get_handler(qualname)
@@ -857,4 +911,3 @@ class GetHandlerTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
