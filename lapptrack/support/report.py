@@ -34,13 +34,13 @@ Using the module with its API
 
 Creating a report needs at least the following steps.
 
-# . Create a `Report` class instance.
-# . Set the template report with the `Report.set_template` method.
-# . Create at least a **handler** class instance (see `FileHandler` for a file
+#. Create a `Report` class instance.
+#. Set the template report with the `Report.set_template` method.
+#. Create at least a **handler** class instance (see `FileHandler` for a file
    handler).
-# . Set the handler options (see `FileHandler.set_filename` for the file
+#. Set the handler options (see `FileHandler.set_filename` for the file
    handler).
-# . Add the created handler to the report with the `Report.add_handler` method.
+#. Add the created handler to the report with the `Report.add_handler` method.
 
 A report mainly consist in four parts: a *header*, a *table of contents*, a list
 of *sections* and a *tail*. The *header* and the *tail* may have some optional
