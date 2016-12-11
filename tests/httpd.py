@@ -239,7 +239,7 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
 
         return file
-import pydoc
+
 
 def main():
     """
