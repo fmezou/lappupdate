@@ -123,7 +123,6 @@ import os.path
 import datetime
 import argparse
 import configparser
-import importlib
 import logging
 import logging.config
 import json
@@ -207,14 +206,14 @@ _APPLIST_EXT = ".txt"
 
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
 
 class Error(Exception):
     """
-    Base class for lAppTrack exceptions.
+    Base class for LAppTrack exceptions.
 
     Args:
         message (str): (optional) Human readable string describing the exception.
@@ -255,7 +254,7 @@ class ConfigurationError(Error):
         self.solution = solution
 
 
-class lAppTrack:
+class LAppTrack:
     """
     Schedule products updates retrieving operations.
 
@@ -276,7 +275,7 @@ class lAppTrack:
         ===================================  ===================================
 
 
-    **Using lAppTrack...**
+    **Using LAppTrack...**
         This class is the scheduler and handles elementary operations to
         complete the expected task.
 
@@ -339,7 +338,7 @@ class lAppTrack:
 
     def run(self):
         """
-        Run the lAppTrack application.
+        Run the LAppTrack application.
         """
         head, tail = self.get_banner()
         print(head)
@@ -993,7 +992,7 @@ def main():
 
     # Parse and run.
     args = parser.parse_args()
-    main_task = lAppTrack(args.configfile)
+    main_task = LAppTrack(args.configfile)
     if args.pull:
         main_task.pull()
     elif args.fetch:

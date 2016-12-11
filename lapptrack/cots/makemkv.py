@@ -18,6 +18,7 @@ import datetime
 import logging
 import re
 import os
+import tempfile
 from html.parser import HTMLParser
 
 
@@ -34,7 +35,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -57,6 +58,9 @@ class MakeMKVHandler(core.BaseProduct):
         ===================================  ===================================
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
+
         super().__init__()
 
         # At this point, only the name and the catalog location are known.
@@ -77,6 +81,9 @@ class MakeMKVHandler(core.BaseProduct):
         self._catalog_url = "http://www.makemkv.com/makemkv.xml"
         self._parser = pad.PadParser()
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def get_origin(self, version=None):
         """
         Get product information from the remote repository.
@@ -91,6 +98,9 @@ class MakeMKVHandler(core.BaseProduct):
             `pad.SpecSyntaxError`: PAD spec file is erroneous.
             `pad.PADSyntaxError`: A tag in a PAD file don't match the PAD Specs.
        """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
         # check parameters type
         if version is not None and not isinstance(version, str):
             msg = "version argument must be a class 'str' or None. not {0}"
@@ -100,7 +110,9 @@ class MakeMKVHandler(core.BaseProduct):
         msg = "Get the latest product information. Current version is '{0}'"
         _logger.debug(msg.format(self.version))
 
-        local_filename = core.retrieve_tempfile(self._catalog_url)
+        with tempfile.NamedTemporaryFile(delete=False) as file:
+            local_filename = file.name
+            core.retrieve_file(self._catalog_url, file)
         msg = "Catalog downloaded: '{0}'".format(local_filename)
         _logger.debug(msg)
 
@@ -133,6 +145,9 @@ class MakeMKVHandler(core.BaseProduct):
         # clean up the temporary files
         os.unlink(local_filename)
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def is_update(self, product):
         """
         Return if this instance is an update of product.
@@ -152,6 +167,9 @@ class MakeMKVHandler(core.BaseProduct):
         Raises:
             TypeError: Parameters type mismatch.
         """
+        msg = ">>> (product={})"
+        _logger.debug(msg.format(product))
+
         # check parameters type
         if not isinstance(product, MakeMKVHandler):
             msg = "product argument must be a class 'makemv.Product'. not {0}"
@@ -167,12 +185,18 @@ class MakeMKVHandler(core.BaseProduct):
         else:
             msg = "No new version available."
             _logger.debug(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
         return result
 
     def _get_published(self):
         """
         Extract the date of the installer’s publication from the PAD file.
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
+
         self.published = None
         year = self._get_field("Program_Info/Program_Release_Year")
         month = self._get_field("Program_Info/Program_Release_Month")
@@ -183,6 +207,9 @@ class MakeMKVHandler(core.BaseProduct):
             msg = "Release date :'{0}'"
             _logger.debug(msg.format(self.published))
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _get_change_summary(self, version=None):
         """
         Extract the release note’s URL from the PAD File.
@@ -192,7 +219,12 @@ class MakeMKVHandler(core.BaseProduct):
                 deployed product). It'a string following the editor versioning
                 rules.
         """
-        local_filename = core.retrieve_tempfile(self.release_note_location)
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
+        with tempfile.NamedTemporaryFile(delete=False) as file:
+            local_filename = file.name
+            core.retrieve_file(self.release_note_location, file)
         print("History downloaded: '{0}'".format(local_filename))
 
         parser = ReleaseNotesParser(version)
@@ -209,6 +241,9 @@ class MakeMKVHandler(core.BaseProduct):
         msg = "Change summary :{0}"
         _logger.debug(msg.format(repr(self.change_summary)))
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _get_field(self, path):
         """
         Get the value from a field in a PAD File.
@@ -219,6 +254,9 @@ class MakeMKVHandler(core.BaseProduct):
         Returns:
             str: Contain the value of the field
         """
+        msg = ">>> (path={})"
+        _logger.debug(msg.format(path))
+
         text = None
         item = self._parser.find(path)
         if item is not None:
@@ -229,6 +267,8 @@ class MakeMKVHandler(core.BaseProduct):
             msg = "Unknown path ({})"
             _logger.warning(msg.format(repr(path)))
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(text))
         return text
 
 
@@ -318,6 +358,9 @@ class ReleaseNotesParser(HTMLParser):
                            "|(\s+build\s+(?P<build>[0-9]+))?)$")
 
     def __init__(self, version=None):
+        msg = ">>> ()"
+        _logger.debug(msg)
+
         # check parameters type
         if version is not None and not isinstance(version, str):
             msg = "version argument must be a class 'str' or None. not {0}"
@@ -388,6 +431,8 @@ class ReleaseNotesParser(HTMLParser):
 
         msg = "Instance of {} created."
         _logger.debug(msg.format(self.__class__))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def _process_event(self, event, data, attributes):
         """
@@ -398,6 +443,9 @@ class ReleaseNotesParser(HTMLParser):
             data (str): The tag identifier (i.e. ul) or the text.
             attributes (dict):  The attributes of the tag.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
+
         if event == self._START_TAG_EVT:
             self._tag_depth += 1
 
@@ -413,6 +461,9 @@ class ReleaseNotesParser(HTMLParser):
         if event == self._END_TAG_EVT:
             self._tag_depth -= 1
 
+        msg = "<<< ()"
+        _logger.debug(msg)
+
     def _set_state(self, state):
         """
         Set the state
@@ -420,12 +471,17 @@ class ReleaseNotesParser(HTMLParser):
         Args:
             state (str): The state identifier.
         """
+        msg = ">>> (state={})"
+        _logger.debug(msg.format(state))
+
         msg = "State {} -> {}"
         _logger.debug(msg.format(self._state, state))
-
         self._actuating = self._sched_map[state][0]
         self._transitions = self._sched_map[state][1]
         self._state = state
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def _null_actuating(self, event, data, attributes,
                         first=False, last=False):
@@ -445,7 +501,11 @@ class ReleaseNotesParser(HTMLParser):
                 `_set_state`) including if it's the same state). False is the
                 default.
         """
+        msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
+        _logger.debug(msg.format(event, data, attributes, first, last))
         pass
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def _is_content_beginning(self, event, data, attributes):
         """
@@ -458,6 +518,8 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._START_TAG_EVT and data == "div":
@@ -466,6 +528,8 @@ class ReleaseNotesParser(HTMLParser):
                     verified = True
                     self._depth_map["content"] = self._tag_depth
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _is_content_ending(self, event, data, attributes):
@@ -479,12 +543,16 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._END_TAG_EVT and data == "div":
             if self._depth_map["content"] == self._tag_depth:
                 verified = True
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _is_releases_list_beginning(self, event, data, attributes):
@@ -498,6 +566,8 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._START_TAG_EVT and data == "ul":
@@ -506,6 +576,8 @@ class ReleaseNotesParser(HTMLParser):
                     verified = True
                     self._depth_map["release_list"] = self._tag_depth
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _is_releases_list_ending(self, event, data, attributes):
@@ -519,12 +591,16 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._END_TAG_EVT and data == "ul":
             if self._depth_map["release_list"] == self._tag_depth:
                 verified = True
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _is_release_id_beginning(self, event, data, attributes):
@@ -538,6 +614,8 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._START_TAG_EVT and data == "li":
@@ -545,6 +623,8 @@ class ReleaseNotesParser(HTMLParser):
             self._depth_map["release_id"] = self._tag_depth
             self._release = ""
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _release_id_fetching(self, event, data, attributes,
@@ -565,11 +645,16 @@ class ReleaseNotesParser(HTMLParser):
                 `_set_state`) including if it's the same state). False is the
                 default.
         """
+        msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
+        _logger.debug(msg.format(event, data, attributes, first, last))
         if first:
             self._release = ""
 
         if event == self._DATA_EVT:
             self._release += data
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def _is_new_release(self, event, data, attributes):
         """
@@ -582,6 +667,8 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._END_TAG_EVT and data == "li":
@@ -591,6 +678,8 @@ class ReleaseNotesParser(HTMLParser):
                     if self._version > self._deployed:
                         verified = True
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _is_old_or_unknown_release(self, event, data, attributes):
@@ -604,6 +693,8 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._END_TAG_EVT and data == "li":
@@ -615,6 +706,8 @@ class ReleaseNotesParser(HTMLParser):
                     if not (self._version > self._deployed):
                         verified = True
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _release_id_computing(self):
@@ -622,6 +715,8 @@ class ReleaseNotesParser(HTMLParser):
         Release id computing.
 
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         self._release_id = self._title_re.match(self._release)
         if self._release_id:
             if self._release_id.group("date"):
@@ -640,6 +735,9 @@ class ReleaseNotesParser(HTMLParser):
                 ver += "+{}".format(self._release_id.group("build"))
             self._version = semver.SemVer(ver)
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _is_release_notes_beginning(self, event, data, attributes):
         """
 
@@ -651,6 +749,8 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._START_TAG_EVT and data == "ul":
@@ -659,6 +759,8 @@ class ReleaseNotesParser(HTMLParser):
                     verified = True
                     self._depth_map["release_notes"] = self._tag_depth
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def _release_notes_fetching(self, event, data, attributes,
@@ -679,6 +781,8 @@ class ReleaseNotesParser(HTMLParser):
                 `_set_state`) including if it's the same state). False is the
                 default.
         """
+        msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
+        _logger.debug(msg.format(event, data, attributes, first, last))
         if first:
             self._release_notes = ""
 
@@ -698,6 +802,8 @@ class ReleaseNotesParser(HTMLParser):
                 self.changelog.append(("{}".format(self._version),
                                        "unknown",
                                        self._release_notes))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def _is_release_notes_ending(self, event, data, attributes):
         """
@@ -710,22 +816,39 @@ class ReleaseNotesParser(HTMLParser):
         Returns:
             bool: True if the transition is verified.
         """
+        msg = ">>> (event={}, data={}, attributes={})"
+        _logger.debug(msg.format(event, data, attributes))
         verified = False
 
         if event == self._END_TAG_EVT and data == "ul":
             if self._depth_map["release_notes"] == self._tag_depth:
                 verified = True
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(verified))
         return verified
 
     def handle_starttag(self, tag, attrs):
+        msg = ">>> (tag={}, attrs={})"
+        _logger.debug(msg.format(tag, attrs))
         attributes = {}
         for attr in attrs:
             attributes[attr[0]] = attr[1]
         self._process_event(self._START_TAG_EVT, tag, attributes)
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def handle_endtag(self, tag):
+        msg = ">>> (tag={})"
+        _logger.debug(msg.format(tag))
         self._process_event(self._END_TAG_EVT, tag, {})
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def handle_data(self, data):
+        msg = ">>> (data={})"
+        _logger.debug(msg.format(data))
         self._process_event(self._DATA_EVT, data, {})
+        msg = "<<< ()=None"
+        _logger.debug(msg)

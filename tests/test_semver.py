@@ -36,6 +36,7 @@ class TestSemVer(unittest.TestCase):
 
     def test_left_op(self):
         """Left operand testing"""
+        # TODO (fmu): each condition must be in a assertRaise context
         msg = "Operation must have an semver. SemVer object as left operand"
         with self.assertRaises(TypeError, msg=msg):
             v = semver.SemVer("1.0.0")
@@ -49,7 +50,7 @@ class TestSemVer(unittest.TestCase):
                 pass
 
     def test_positive_integer(self):
-        """Rule #2 compliance"""
+        """Rule # 2 compliance"""
         msg = "Negative integers must be rejected"
         vers = ["-1.0.0", "0.-1.0", "0.0.-1"]
         for ver in vers:
@@ -58,19 +59,19 @@ class TestSemVer(unittest.TestCase):
                     v = semver.SemVer(ver)
 
     def test_major_zero(self):
-        """Rule #4 compliance"""
+        """Rule # 4 compliance"""
         msg = "Major version zero (0.y.z) is for initial development."
         v = semver.SemVer("0.1.0")
         self.assertTrue(v.unstable, msg=msg)
 
     def test_pre_release(self):
-        """Rule #9 compliance"""
+        """Rule # 9 compliance"""
         msg = "A pre-release version indicates that the version is unstable."
         v1 = semver.SemVer("1.0.0-alpha.1")
         self.assertTrue(v1.unstable, msg=msg)
 
     def test_pre_release_precedence1(self):
-        """Rule #9 compliance"""
+        """Rule # 9 compliance"""
         msg = "Pre-release versions have a lower precedence than the " \
               "associated normal version"
         v1 = semver.SemVer("1.0.0-alpha.1")
@@ -79,7 +80,7 @@ class TestSemVer(unittest.TestCase):
         self.assertTrue(v2 > v1, msg=msg)
 
     def test_metadata_precedence(self):
-        """Rule #10 compliance"""
+        """Rule # 10 compliance"""
         msg = "Two versions that differ only in the build metadata, have the " \
               "same precedence"
         v1 = semver.SemVer("1.0.0-beta+exp.sha.5114f85")
@@ -88,7 +89,7 @@ class TestSemVer(unittest.TestCase):
         self.assertFalse(v1 != v2, msg=msg)
 
     def test_precedence(self):
-        """Rule #11 compliance"""
+        """Rule # 11 compliance"""
         msg = "Precedence is determined by the first difference when " \
               "comparing each of these identifiers from left to right."
         v1 = semver.SemVer("1.0.0")
@@ -99,7 +100,7 @@ class TestSemVer(unittest.TestCase):
         self.assertTrue(v4 > v3 > v2 > v1, msg=msg)
 
     def test_pre_release_precedence2(self):
-        """Rule #11 compliance"""
+        """Rule # 11 compliance"""
         msg = "Precedence for two pre-release versions with the same major, " \
               "minor, and patch version MUST be determined by comparing each " \
               "dot separated identifier from left to right until a " \

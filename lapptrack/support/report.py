@@ -34,13 +34,13 @@ Using the module with its API
 
 Creating a report needs at least the following steps.
 
-#. Create a `Report` class instance.
-#. Set the template report with the `Report.set_template` method.
-#. Create at least a **handler** class instance (see `FileHandler` for a file
+# . Create a `Report` class instance.
+# . Set the template report with the `Report.set_template` method.
+# . Create at least a **handler** class instance (see `FileHandler` for a file
    handler).
-#. Set the handler options (see `FileHandler.set_filename` for the file
+# . Set the handler options (see `FileHandler.set_filename` for the file
    handler).
-#. Add the created handler to the report with the `Report.add_handler` method.
+# . Add the created handler to the report with the `Report.add_handler` method.
 
 A report mainly consist in four parts: a *header*, a *table of contents*, a list
 of *sections* and a *tail*. The *header* and the *tail* may have some optional
@@ -118,7 +118,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -189,6 +189,9 @@ class Report:
     _SUMMARY = os.path.join(os.path.dirname(__file__), "report_template.html")
 
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
+
         self._attributes = {}
         self._sections = []
         self._template = {}
@@ -200,6 +203,8 @@ class Report:
 
         msg = "Instance of {} created."
         _logger.debug(msg.format(self.__class__))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def load_config(self, config, append=True):
         """
@@ -214,6 +219,8 @@ class Report:
                 specified by the :dfn:`config` parameter will append to the
                 current configuration.
         """
+        msg = ">>> (config={}, append={})"
+        _logger.debug(msg.format(config, append))
         # check parameters type
         if not isinstance(config, dict):
             msg = "config argument must be a class 'dict'. not {0}"
@@ -254,13 +261,20 @@ class Report:
         if "attributes" in config:
             self.set_attributes(config["attributes"])
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _load_default(self):
         """
         Configure the report module with its default value.
         """
         # use the default template
+        msg = ">>> ()"
+        _logger.debug(msg)
         self.set_template()
         self.set_attributes()
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_template(self, template=_SUMMARY, separator=""):
         """
@@ -275,6 +289,8 @@ class Report:
                 added section in the report.
         """
         # check parameters type
+        msg = ">>> (template={}, separator={})"
+        _logger.debug(msg.format(template, separator))
         if not isinstance(template, str):
             msg = "template argument must be a class 'str'. not {0}"
             msg = msg.format(template.__class__)
@@ -290,6 +306,8 @@ class Report:
 
         msg = "Template is set to '{}'."
         _logger.debug(msg.format(template))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_attributes(self, attributes=None):
         """
@@ -303,6 +321,8 @@ class Report:
             attributes (dict): The attributes.
         """
         # check parameters type
+        msg = ">>> (attributes={})"
+        _logger.debug(msg.format(attributes))
         if attributes is not None and not isinstance(attributes, dict):
             msg = "attributes argument must be a class 'dict'. not {0}"
             msg = msg.format(attributes.__class__)
@@ -317,6 +337,8 @@ class Report:
 
         msg = "Report attributes are set to : {}"
         _logger.debug(msg.format(self._attributes))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def add_handler(self, handler):
         """
@@ -327,6 +349,8 @@ class Report:
                 derived from the `BaseHandler` base class.
         """
         # check parameters type
+        msg = ">>> (handler={})"
+        _logger.debug(msg.format(handler))
         if not isinstance(handler, BaseHandler):
             msg = "handler argument must be a class 'BaseHandler'. not {0}"
             msg = msg.format(handler.__class__)
@@ -335,6 +359,8 @@ class Report:
         self._handlers.append(handler)
         msg = "{} added."
         _logger.debug(msg.format(handler.__class__))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def add_section(self, attributes):
         """
@@ -345,6 +371,8 @@ class Report:
                 returned by the `cots.core.BaseProduct.dump` method).
         """
         # check parameters type
+        msg = ">>> (attributes={})"
+        _logger.debug(msg.format(attributes))
         if not isinstance(attributes, dict):
             msg = "attributes argument must be a class 'dict'. not {0}"
             msg = msg.format(attributes.__class__)
@@ -357,11 +385,15 @@ class Report:
 
         msg = "A new section was added and attributes are : {}"
         _logger.debug(msg.format(self._sections[-1]))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def publish(self):
         """
         Publish the report with the registered handler
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         # Generate the report as a string
         report = ""
         report += self._template["Head"]
@@ -394,6 +426,9 @@ class Report:
             msg = "There is no handler defined. So the publishing do nothing."
             _logger.warning(msg)
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _parse_template(self, template):
         """
         Parse the template to extract the report sections.
@@ -401,6 +436,8 @@ class Report:
         Args:
             template (str): The full path name of the template file.
         """
+        msg = ">>> (template={})"
+        _logger.debug(msg.format(template))
         self._clear_template()  # clean up the template before replacing
 
         # Guess the content type based on the template file's extension.
@@ -442,15 +479,22 @@ class Report:
                         msg = "'{}' is not a well-know section. Line ignored"
                         _logger.warning(msg.format(name))
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _clear_template(self):
         """
         Clear the template.
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         self._subtype = "plain"
         self._charset = "utf-8"
         self._template.clear()
         for name in self.names:
             self._template[name] = ""
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
 
 class BaseHandler:
@@ -482,8 +526,12 @@ class BaseHandler:
         `Report` and this one only use the public methods.
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         msg = "Instance of {} created."
         _logger.debug(msg.format(self.__class__))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def load_config(self, config):
         """
@@ -571,6 +619,8 @@ class MailHandler(BaseHandler):
         declared handler (see "`Configuration file`_" section).
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         # Initial values
         super().__init__()
         self._hostname = ""
@@ -583,6 +633,8 @@ class MailHandler(BaseHandler):
 
         self._subject = "Report"
         self._to_addresses = []
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def load_config(self, config):
         """
@@ -592,6 +644,8 @@ class MailHandler(BaseHandler):
             config (dict): The configuration as described in the
                 :file:`report.example.ini`.
         """
+        msg = ">>> (config={})"
+        _logger.debug(msg.format(config))
         # check parameters type
         if not isinstance(config, dict):
             msg = "config argument must be a class 'dict'. not {0}"
@@ -624,6 +678,8 @@ class MailHandler(BaseHandler):
         self.set_to_addresses(config["to_addresses"].split(","))
         if "subject" in config:
             self.set_subject(config["subject"])
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def _load_default(self):
         """
@@ -631,7 +687,11 @@ class MailHandler(BaseHandler):
 
         For the mail handler, there is no default value
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         self.__init__()
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_host(self, hostname, port_number=25):
         """
@@ -642,6 +702,8 @@ class MailHandler(BaseHandler):
             port_number (int): (optional): The port number to use. By default,
                 the standard SMTP port number is used.
         """
+        msg = ">>> (hostname={}, port_number={})"
+        _logger.debug(msg.format(hostname, port_number))
         # check parameters type
         if not isinstance(hostname, str):
             msg = "hostname argument must be a class 'str'. not {0}"
@@ -661,6 +723,8 @@ class MailHandler(BaseHandler):
 
         msg = "Mail host is set to '{}:{}'"
         _logger.debug(msg.format(self._hostname, self._port_number))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_credentials(self, credentials):
         """
@@ -670,6 +734,8 @@ class MailHandler(BaseHandler):
             credentials (list): The username and the password to connect to the
                 SMTP server.
         """
+        msg = ">>> (credentials={})"
+        _logger.debug(msg.format(credentials))
         # check parameters type
         if not isinstance(credentials, list):
             msg = "credentials argument must be a class 'list'. " \
@@ -681,6 +747,8 @@ class MailHandler(BaseHandler):
 
         msg = "Credential are set to '{}'"
         _logger.debug(msg.format(self._credentials[0]))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_from_address(self, address=""):
         """
@@ -691,6 +759,8 @@ class MailHandler(BaseHandler):
                 specified, the address is set to the local hostname. (see
                 `smtplib.SMTP`)
         """
+        msg = ">>> (address={})"
+        _logger.debug(msg.format(address))
         # check parameters type
         if address is not None and not isinstance(address, str):
             msg = "address argument must be a class 'str'. not {0}"
@@ -701,6 +771,8 @@ class MailHandler(BaseHandler):
 
         msg = "Sender addresses are set to '{}'"
         _logger.debug(msg.format(self._from_address))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_sent_mail_folder(self, path):
         """
@@ -711,6 +783,8 @@ class MailHandler(BaseHandler):
                 mail will be written. If the folder doesn't exit, it will be
                 create. An empty string does nothing.
         """
+        msg = ">>> (path={})"
+        _logger.debug(msg.format(path))
         # check parameters type
         if path is not None and not isinstance(path, str):
             msg = "path argument must be a class 'str'. not {0}"
@@ -724,6 +798,8 @@ class MailHandler(BaseHandler):
 
         msg = "Mail sent special folder is set to '{}'"
         _logger.debug(msg.format(self._mail_sent_folder))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_pending_mail_folder(self, path=""):
         """
@@ -735,6 +811,8 @@ class MailHandler(BaseHandler):
                 mail if the mail server configuration is erroneous or if the
                 mail server doesn't answer. An empty string does nothing.
         """
+        msg = ">>> (path={})"
+        _logger.debug(msg.format(path))
         # check parameters type
         if path is not None and not isinstance(path, str):
             msg = "path argument must be a class 'str'. not {0}"
@@ -748,6 +826,8 @@ class MailHandler(BaseHandler):
 
         msg = "Mail sent special folder is set to '{}'"
         _logger.debug(msg.format(self._pending_mail_folder))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_to_addresses(self, addresses):
         """
@@ -758,6 +838,8 @@ class MailHandler(BaseHandler):
                 empty item of the list, an empty list or an empty string (or
                 only composed of space) raised a ValueError exception.
         """
+        msg = ">>> (path={})"
+        _logger.debug(msg.format(addresses))
         # check parameters type
         if not isinstance(addresses, (str, list)):
             msg = "addresses argument must be a class 'str' or 'list'. " \
@@ -782,6 +864,8 @@ class MailHandler(BaseHandler):
 
         msg = "Recipient addresses are set to '{}'"
         _logger.debug(msg.format(self._to_addresses))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_subject(self, subject=""):
         """
@@ -790,6 +874,8 @@ class MailHandler(BaseHandler):
         Args:
             subject (str): The subject mail. An empty string does nothing.
         """
+        msg = ">>> (subject={})"
+        _logger.debug(msg.format(subject))
         # check parameters type
         if not isinstance(subject, str):
             msg = "subject argument must be a class 'str'. not {0}"
@@ -801,6 +887,8 @@ class MailHandler(BaseHandler):
 
         msg = "Subject mail is set to '{}'"
         _logger.debug(msg.format(self._subject))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def publish(self, report, subtype, charset=None):
         """
@@ -814,6 +902,8 @@ class MailHandler(BaseHandler):
                 parameter is specified in the report, this parameter should not
                 used according to the :rfc:`6838`.
         """
+        msg = ">>> (report={}, subtype={}, charset={})"
+        _logger.debug(msg.format(report, subtype, charset))
         # check parameters type
         if not isinstance(report, str):
             msg = "report argument must be a class 'str'. not {0}"
@@ -859,6 +949,9 @@ class MailHandler(BaseHandler):
                 with open(filename, mode="w") as file:
                     file.write(mail.as_string())
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _subject2filename(self):
         """
         Convert a mail subject in a file name.
@@ -873,10 +966,14 @@ class MailHandler(BaseHandler):
         Return:
             str: unique string for the filename.
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         name = urllib.parse.quote(self._subject.lower()[:14], safe="")
         timestamp = str(time.time())
         filename = "{}-{}.eml".format(name, timestamp)
 
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(filename))
         return filename
 
 
@@ -935,9 +1032,13 @@ class FileHandler(BaseHandler):
         declared handler (see "`Configuration file`_" section).
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         super().__init__()
         self._filename = ""
         self._mode = "w"
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def load_config(self, config):
         """
@@ -947,6 +1048,8 @@ class FileHandler(BaseHandler):
             config (dict): The configuration as described in
                 `lapptrack-userguide_report-ini-content`.
         """
+        msg = ">>> (config={})"
+        _logger.debug(msg.format(config))
         # check parameters type
         if not isinstance(config, dict):
             msg = "config argument must be a class 'dict'. not {0}"
@@ -957,6 +1060,8 @@ class FileHandler(BaseHandler):
         self.set_filename(config["filename"])
         if "mode" in config:
             self.set_mode(config["mode"])
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def _load_default(self):
         """
@@ -964,7 +1069,11 @@ class FileHandler(BaseHandler):
 
         For the file handler, there is no default value
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         self.__init__()
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_mode(self, mode="w"):
         """
@@ -973,6 +1082,8 @@ class FileHandler(BaseHandler):
         Args:
             mode (str): The mode in which the file is opened.(see `open`)
         """
+        msg = ">>> (mode={})"
+        _logger.debug(msg.format(mode))
         # check parameters type
         if not isinstance(mode, str):
             msg = "mode argument must be a class 'str'. not {0}"
@@ -983,6 +1094,8 @@ class FileHandler(BaseHandler):
 
         msg = "Open mode is set to '{}'"
         _logger.debug(msg.format(self._mode))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_filename(self, filename):
         """
@@ -991,6 +1104,8 @@ class FileHandler(BaseHandler):
         Args:
             filename (str): The full path name of the destination file.
         """
+        msg = ">>> (filename={})"
+        _logger.debug(msg.format(filename))
         # check parameters type
         if not isinstance(filename, str):
             msg = "filename argument must be a class 'str'. not {0}"
@@ -1005,6 +1120,8 @@ class FileHandler(BaseHandler):
 
         msg = "Filename is set to '{}'"
         _logger.debug(msg.format(self._filename))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def publish(self, report, subtype, charset=None):
         """
@@ -1018,6 +1135,8 @@ class FileHandler(BaseHandler):
                 parameter is specified in the report, this parameter should not
                 used according to the :rfc:`6838`.
         """
+        msg = ">>> (report={}, subtype={}, charset={})"
+        _logger.debug(msg.format(report, subtype, charset))
         # check parameters type
         if not isinstance(report, str):
             msg = "report argument must be a class 'str'. not {0}"
@@ -1034,6 +1153,9 @@ class FileHandler(BaseHandler):
 
         with open(self._filename, self._mode) as file:
             file.write(report)
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
 
 class StreamHandler(BaseHandler):
@@ -1091,8 +1213,12 @@ class StreamHandler(BaseHandler):
     }
 
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         super().__init__()
         self._stream = sys.stdout
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def load_config(self, config):
         """
@@ -1102,6 +1228,8 @@ class StreamHandler(BaseHandler):
             config (dict): The configuration as described in the
                 :file:`report.example.ini`.
         """
+        msg = ">>> (config={})"
+        _logger.debug(msg.format(config))
         # check parameters type
         if not isinstance(config, dict):
             msg = "config argument must be a class 'dict'. not {0}"
@@ -1109,8 +1237,6 @@ class StreamHandler(BaseHandler):
             raise TypeError(msg)
 
         # Stream configuration
-        # The
-
         if "stream" in config:
             if config["stream"] in self._known_streams:
                 self.set_stream(self._known_streams[config["stream"]])
@@ -1122,13 +1248,20 @@ class StreamHandler(BaseHandler):
         else:
             self.set_stream(sys.stdout)
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def _load_default(self):
         """
         Configure the handler with its default value.
 
         For the file handler, there is no default value
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         self.__init__()
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def set_stream(self, stream=sys.stdout):
         """
@@ -1139,6 +1272,8 @@ class StreamHandler(BaseHandler):
                 be written. If it is not present, `sys.stdout` is going to be
                 used.
         """
+        msg = ">>> (stream={})"
+        _logger.debug(msg.format(stream))
         # check parameters type
         if not isinstance(stream, io.TextIOWrapper):
             msg = "mode argument must be a class '_io.TextIOWrapper'. not {0}"
@@ -1149,6 +1284,8 @@ class StreamHandler(BaseHandler):
 
         msg = "Stream is set to '{}'"
         _logger.debug(msg.format(self._stream))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def publish(self, report, subtype, charset=None):
         """
@@ -1162,6 +1299,8 @@ class StreamHandler(BaseHandler):
                 parameter is specified in the report, this parameter should not
                 used according to the :rfc:`6838`.
         """
+        msg = ">>> (report={}, subtype={}, charset={})"
+        _logger.debug(msg.format(report, subtype, charset))
         print(report, file=self._stream)
-
-
+        msg = "<<< ()=None"
+        _logger.debug(msg)

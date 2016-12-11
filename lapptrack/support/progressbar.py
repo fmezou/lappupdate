@@ -38,7 +38,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -60,6 +60,8 @@ def isu_format_prefix(value, unit):
     Raises:
         TypeError: Parameters type mismatch.
     """
+    msg = ">>> (value={}, unit={})"
+    _logger.debug(msg.format(value, unit))
     # check parameters type
     if not (isinstance(value, int) or isinstance(value, float)):
         msg = "value argument must be a class 'int' or 'float'. not {0}"
@@ -89,6 +91,8 @@ def isu_format_prefix(value, unit):
     else:
         result = ">999 " + mul_unit
 
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(result))
     return result
 
 
@@ -108,6 +112,8 @@ def isu_format_thousand(value):
     Raises:
         TypeError: Parameters type mismatch.
     """
+    msg = ">>> (value={})"
+    _logger.debug(msg.format(value))
     # check parameters type
     if not (isinstance(value, int) or isinstance(value, float)):
         msg = "value argument must be a class 'int' or 'float'. not {0}"
@@ -119,6 +125,8 @@ def isu_format_thousand(value):
     else:
         result = ("{:>,f}".format(value)).replace(",", " ")
 
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(result))
     return result
 
 
@@ -172,6 +180,8 @@ class TextProgressBar:
     """
 
     def __init__(self, max_len=-1):
+        msg = ">>> (max_len={})"
+        _logger.debug(msg.format(max_len))
         # check parameters type
         if not isinstance(max_len, int):
             msg = "max_len argument must be a class 'int'. not {0}"
@@ -182,6 +192,9 @@ class TextProgressBar:
         self._length = 0
         self._content_length = max_len
         self._t1 = 0.0
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def compute(self, length, content_length=-1):
         """
@@ -215,6 +228,8 @@ class TextProgressBar:
         Raises:
             TypeError: Parameters type mismatch.
         """
+        msg = ">>> (length={}, content_length={})"
+        _logger.debug(msg.format(length, content_length))
         # check parameters type
         if not isinstance(length, int):
             msg = "length argument must be a class 'int'. not {0}"
@@ -265,6 +280,9 @@ class TextProgressBar:
                                                        receive, rate, eta)
             print("\r" + progress, end="")
 
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
     def finish(self):
         """
         Compute the progress bar completion and return the computed string.
@@ -284,6 +302,8 @@ class TextProgressBar:
         Return:
             str: A string representing the progress information.
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         # compute the length of received data
         receive = isu_format_prefix(self._length, "B")
 
@@ -305,4 +325,7 @@ class TextProgressBar:
         progress = "{} received - {} in {}".format(receive, rate, eta)
         progress = progress.ljust(80)  # to overwrite the previous progress bar
         print("\r" + progress)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(progress))
         return progress

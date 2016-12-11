@@ -297,7 +297,7 @@ class TestReport(unittest.TestCase):
     def _load_config(self, filename):
         """
         Load the configuration from a configuration file (see [`config.parser`]
-        (https://docs.python.org/3/library/configparser.html#module-configparser)
+        (https://docs.python.org/3/library/configparser.html# module-configparser)
 
         The configuration is stored in a dictionary with the same structure as the
         configuration file.

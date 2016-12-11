@@ -30,10 +30,14 @@ class TestlAppTrack(unittest.TestCase):
         logger = logging.getLogger(__name__)
 
         self.file = open("./test_lapptrack.ini")
-        self.main = lapptrack.lAppTrack(self.file)
+        self.main = lapptrack.LAppTrack(self.file)
 
     def tearDown(self):
         self.file.close()
+
+    def test_run(self):
+        self.main.run()
+        # que doit t'on tester
 
     def test_pull(self):
         self.main.pull()
@@ -58,8 +62,18 @@ class TestlAppTrack(unittest.TestCase):
 # TODO (fmu): prevoir des test avec les configuration par defaut des .ini
 # absence des fichier de reporting pa exemple.
 
-class Test2lAppTrack(TestlAppTrack):
-    pass
+
+class TestlAppTrackNull(TestlAppTrack):
+    def setUp(self):
+        # Modules to be tested use the logging facility, so a minimal
+        # configuration is set.
+        logging.basicConfig(
+            format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
+            level=logging.ERROR)
+        logger = logging.getLogger(__name__)
+
+        self.file = open("./test_lapptrack-null.ini")
+        self.main = lapptrack.LAppTrack(self.file)
 
 if __name__ == '__main__':
     unittest.main()

@@ -38,7 +38,6 @@ import contextlib
 import hashlib
 import logging
 import os
-import tempfile
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -72,7 +71,7 @@ TARGET_UNIFIED = "unified"
 
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -234,7 +233,7 @@ class BaseProduct:
 
     **Using BaseProduct...**
         This class is the base class for product handler used by
-        `lapptrack.lAppTrack` and this one only use the public methods.
+        `lapptrack.LAppTrack` and this one only use the public methods.
 
         After created a class instance, the `get_origin` method populate the
         attributes with the most up-to-date information from the editor's
@@ -277,7 +276,6 @@ class BaseProduct:
         _logger.debug(msg.format(self.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
-
 
     def load(self, attributes):
         """
@@ -404,7 +402,7 @@ class BaseProduct:
                 msg = "Unexpected content: {}"
                 _logger.error(msg.format(str(err)))
                 result = False
-            except (ValueError) as err:
+            except ValueError as err:
                 msg = "Internal error: {}"
                 _logger.error(msg.format(str(err)))
                 result = False
@@ -635,7 +633,6 @@ def get_handler(qualname):
     msg = ">>> (qualname={})"
     _logger.debug(msg.format(qualname))
     # check parameters type
-    result = None
     if not isinstance(qualname, str):
         msg = "qualname argument must be a class 'str'. not {0}"
         msg = msg.format(qualname.__class__)
@@ -651,7 +648,7 @@ def get_handler(qualname):
     name = names[-1]
     module = importlib.import_module(path)
     if name not in module.__dict__:
-        msg="No handler class named '{}' in module '{}'".format(name, path)
+        msg = "No handler class named '{}' in module '{}'".format(name, path)
         raise ImportError(msg, name=name, path=path)
 
     handler_class = module.__dict__[name]

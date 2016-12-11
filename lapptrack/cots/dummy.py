@@ -26,7 +26,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -49,12 +49,19 @@ class DummyHandler(core.BaseProduct):
         ===================================  ===================================
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         super().__init__()
 
         # At this point, only name and catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "Dummy Product"
+
+        msg = "Instance of {} created."
+        _logger.debug(msg.format(self.__class__))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def is_update(self, product):
         """
@@ -75,6 +82,9 @@ class DummyHandler(core.BaseProduct):
         Raises:
             TypeError: Parameters type mismatch.
         """
+        msg = ">>> (product={})"
+        _logger.debug(msg.format(product))
+
         # check parameters type
         if not isinstance(product, DummyHandler):
             msg = "product argument must be a class 'makemv.product'. not {0}"
@@ -90,6 +100,9 @@ class DummyHandler(core.BaseProduct):
         else:
             msg = "No new version available."
             _logger.debug(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
         return result
 
     def get_origin(self, version=None):
@@ -104,6 +117,9 @@ class DummyHandler(core.BaseProduct):
         Raises:
             TypeError: Parameters type mismatch.
         """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
         # check parameters type
         if version is not None and not isinstance(version, str):
             msg = "version argument must be a class 'str' or None. not {0}"
@@ -144,3 +160,6 @@ class DummyHandler(core.BaseProduct):
         self.secure_hash = None
         self.std_inst_args = ""
         self.silent_inst_args = "/silent"
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)

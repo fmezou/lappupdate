@@ -38,7 +38,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -85,7 +85,7 @@ class BaseMockHandler(core.BaseProduct):
         """
         msg = "load(attributes={})".format(attributes)
         _logger.debug(msg)
-        super().load()
+        super().load(attributes)
 
     def dump(self):
         """
@@ -181,24 +181,24 @@ class BaseMockHandler(core.BaseProduct):
             assert self.file_size == -1
             assert self.secure_hash is None
 
-    def fetch(self, path):
+    def fetch(self, dirpath):
         """
         Download the mocking installer.
 
         Args:
-            path (str): The path name where to store the installer package.
+            dirpath (str): The path name where to store the installer package.
         """
-        msg = "fetch(path={})".format(path)
+        msg = "fetch(dirpath={})".format(dirpath)
         _logger.debug(msg)
 
         content = """
         This file is the result of the use of a mocking handler.
         """
-        os.makedirs(path, exist_ok=True)
-        filename = os.path.join(path, "mocker.txt")
-        with open(filename, mode="w") as file:
+        os.makedirs(dirpath, exist_ok=True)
+        name = "{}_{}{}".format(self.name, self.version, ".txt")
+        pathname = os.path.join(dirpath, name)
+        with open(pathname, mode="w") as file:
             file.writelines(content)
-        self._rename_installer(filename)
 
     def is_update(self, product):
         """
@@ -281,7 +281,7 @@ class HTTPMockHandler(BaseMockHandler):
 
         raise urllib.error.HTTPError("", 403, "Forbidden", [], None)
 
-    def fetch(self, path):
+    def fetch(self, dirpath):
         """
         Download the mocking installer.
 
@@ -289,9 +289,9 @@ class HTTPMockHandler(BaseMockHandler):
         the status code 403 (see :rfc:`2616` which defines HTTP status code)
 
         Args:
-            path (str): The path name where to store the installer package.
+            dirpath (str): The path name where to store the installer package.
         """
-        msg = "fetch(path={})".format(path)
+        msg = "fetch(dirpath={})".format(dirpath)
         _logger.debug(msg)
 
         raise urllib.error.HTTPError("", 403, "Forbidden", [], None)
@@ -319,7 +319,7 @@ class ContentErrorMockHandler(BaseMockHandler):
 
     This concrete class implements a mocking handler used to test the 
     `lapptrack` module or any python module using the `cots` package. This 
-    handler raises an `core.UnexpectedContentTypeError` exception on the `fetch`
+    handler raises an `core.ContentTypeError` exception on the `fetch`
     or `get_origin` method call. In this context, `is_update` method should not 
     be called so his call raise an `AssertionError` exception.
 
@@ -344,7 +344,7 @@ class ContentErrorMockHandler(BaseMockHandler):
         """
         Get the mocking information.
 
-        This method always raises an `core.UnexpectedContentTypeError`
+        This method always raises an `core.ContentTypeError`
         exception.
 
         Args:
@@ -353,22 +353,22 @@ class ContentErrorMockHandler(BaseMockHandler):
         msg = "get_origin(version={})".format(version)
         _logger.debug(msg)
 
-        raise core.UnexpectedContentTypeError("", "unknown", "text/plain")
+        raise core.ContentTypeError("", "unknown", "text/plain")
 
-    def fetch(self, path):
+    def fetch(self, dirpath):
         """
         Download the mocking installer.
 
-        This method always raises an `core.UnexpectedContentTypeError`
+        This method always raises an `core.ContentTypeError`
         exception.
 
         Args:
-            path (str): The path name where to store the installer package.
+            dirpath (str): The path name where to store the installer package.
         """
-        msg = "fetch(path={})".format(path)
+        msg = "fetch(dirpath={})".format(dirpath)
         _logger.debug(msg)
 
-        raise core.UnexpectedContentTypeError("", "unknown", "text/plain")
+        raise core.ContentTypeError("", "unknown", "text/plain")
 
     def is_update(self, product):
         """

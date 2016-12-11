@@ -26,7 +26,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -284,7 +284,7 @@ def _comp_version(version1, version2):
     """
     Compare two version identifiers limited to the major, minor and patch fields.
 
-    The rule #11 specify the precedence rules for comparing version identifiers
+    The rule # 11 specify the precedence rules for comparing version identifiers
     (i.e. ``1.0.0 < 2.0.0 < 2.1.0 < 2.1.1``).
 
     Args:
@@ -328,7 +328,7 @@ def _comp_prerelease(prerelease1, prerelease2):
     """
     Compare two pre-release version identifiers.
 
-    The rule #11 specify the precedence rules for comparing pre-release version
+    The rule # 11 specify the precedence rules for comparing pre-release version
     identifiers (i.e. 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2
     < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0).
 

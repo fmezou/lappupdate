@@ -115,7 +115,7 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         return None
 
-    def do_no_length (self, query):
+    def do_no_length(self, query):
         """
         No_length virtual resource handling.
 
@@ -145,7 +145,7 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         return file
 
-    def do_increase_length (self, query):
+    def do_increase_length(self, query):
         """
         Increase_length virtual resource handling.
 
@@ -177,7 +177,7 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         return file
 
-    def do_decrease_length (self, query):
+    def do_decrease_length(self, query):
         """
         Decrease_length virtual resource handling.
 
