@@ -48,8 +48,11 @@ class SemVer:
     Args:
         version_string (str): The version string matching the `semantic
             versioning specification`_. Otherwise a ValueError exception is
-            raised (see `semver.SemVer._parse`).
+            raised.
 
+    Raises:
+        TypeError: Parameters type mismatch.
+        ValueError: Version string do not match the specification rules.
 
     Attributes:
         major (property): get the major version number.
@@ -239,6 +242,10 @@ class SemVer:
             version_string (str): The version string matching the `semantic
                 versioning specification`_. Otherwise a ValueError exception is
                 raised.
+
+        Raises:
+            TypeError: Parameters type mismatch.
+            ValueError: Version string do not match the specification rules.
         """
         # check parameters type
         if not isinstance(version_string, str):
@@ -299,6 +306,9 @@ def _comp_version(version1, version2):
             * -1: ``version1`` is lower than ``version2``
             * 0: ``version1`` is equal to ``version2``
             * 1: ``version1`` is greater than ``version2``
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
     # check parameters type
     if not isinstance(version1, list):
@@ -344,6 +354,9 @@ def _comp_prerelease(prerelease1, prerelease2):
             * -1: ``prerelease1`` is lower than ``prerelease2``
             * 0: ``prerelease1`` is equal to ``prerelease2``
             * 1: ``prerelease1`` is greater than ``prerelease2``
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
     # check parameters type
     if not isinstance(prerelease1, list):
@@ -404,6 +417,9 @@ def _compstr(string1, string2):
             * -1: ``string1`` is lower than ``string2``
             * 0: ``string1`` is equal to ``string2``
             * 1: ``string1`` is greater than ``string1``
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
     # check parameters type
     if not isinstance(string1, str):
