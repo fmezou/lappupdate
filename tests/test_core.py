@@ -131,7 +131,7 @@ class BaseProductNotImplementedTestCase(unittest.TestCase):
     """
     BaseProduct NotImplemented method test case
 
-    This class checks the method witch will have to be implemented by
+    This class checks the method which will have to be implemented by
     subclasses.
     """
     def setUp(self):
