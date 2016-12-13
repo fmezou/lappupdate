@@ -201,8 +201,6 @@ class Report:
         self._separator = ""
         self._clear_template()
 
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -305,7 +303,7 @@ class Report:
         self._parse_template(template)
 
         msg = "Template is set to '{}'."
-        _logger.debug(msg.format(template))
+        _logger.info(msg.format(template))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -336,7 +334,7 @@ class Report:
         self._attributes["date"] = dt.isoformat()
 
         msg = "Report attributes are set to : {}"
-        _logger.debug(msg.format(self._attributes))
+        _logger.info(msg.format(self._attributes))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -358,7 +356,7 @@ class Report:
 
         self._handlers.append(handler)
         msg = "{} added."
-        _logger.debug(msg.format(handler.__class__))
+        _logger.info(msg.format(handler.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -384,7 +382,7 @@ class Report:
         self._sections.append(section)
 
         msg = "A new section was added and attributes are : {}"
-        _logger.debug(msg.format(self._sections[-1]))
+        _logger.info(msg.format(self._sections[-1]))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -395,36 +393,42 @@ class Report:
         msg = ">>> ()"
         _logger.debug(msg)
         # Generate the report as a string
-        report = ""
-        report += self._template["Head"]
-        report += self._template["HeaderStart"]
-        report += self._template["Title"].format_map(self._attributes)
-        report += self._template["HeaderEnd"]
-        report += self._template["BodyStart"].format_map(self._attributes)
+        if self._sections:
+            report = ""
+            report += self._template["Head"]
+            report += self._template["HeaderStart"]
+            report += self._template["Title"].format_map(self._attributes)
+            report += self._template["HeaderEnd"]
+            report += self._template["BodyStart"].format_map(self._attributes)
 
-        report += self._template["TOCStart"]
-        for section in self._sections:
-            report += self._template["TOCEntry"].format_map(section)
-            report += self._separator
-        report += self._template["TOCEnd"]
+            report += self._template["TOCStart"]
+            for section in self._sections:
+                report += self._template["TOCEntry"].format_map(section)
+                report += self._separator
+            report += self._template["TOCEnd"]
 
-        report += self._template["SummaryStart"]
-        for section in self._sections:
-            report += self._template["SummaryEntry"].format_map(section)
-            report += self._separator
-        report += self._template["SummaryEnd"]
+            report += self._template["SummaryStart"]
+            for section in self._sections:
+                report += self._template["SummaryEntry"].format_map(section)
+                report += self._separator
 
-        report += self._template["BodyEnd"].format_map(self._attributes)
-        report += self._template["Tail"].format_map(self._attributes)
+            report += self._template["SummaryEnd"]
 
-        # Publish it
-        if len(self._handlers) != 0:
-            for handler in self._handlers:
-                handler.publish(report, self._subtype, self._charset)
+            report += self._template["BodyEnd"].format_map(self._attributes)
+            report += self._template["Tail"].format_map(self._attributes)
+
+            # Publish it
+            if len(self._handlers) != 0:
+                for handler in self._handlers:
+                    handler.publish(report, self._subtype, self._charset)
+            else:
+                # no handler to publish the report
+                msg = "There is no handler defined. No publishing."
+                _logger.warning(msg)
         else:
-            # no handler to publish the report
-            msg = "There is no handler defined. So the publishing do nothing."
-            _logger.warning(msg)
+            # no information to publish, no report will be generated
+            msg = "No information to publish"
+            _logger.info(msg)
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -528,8 +532,6 @@ class BaseHandler:
     def __init__(self):
         msg = ">>> ()"
         _logger.debug(msg)
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -722,7 +724,7 @@ class MailHandler(BaseHandler):
         self._port_number = port_number
 
         msg = "Mail host is set to '{}:{}'"
-        _logger.debug(msg.format(self._hostname, self._port_number))
+        _logger.info(msg.format(self._hostname, self._port_number))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -746,7 +748,7 @@ class MailHandler(BaseHandler):
         self._credentials = credentials
 
         msg = "Credential are set to '{}'"
-        _logger.debug(msg.format(self._credentials[0]))
+        _logger.info(msg.format(self._credentials[0]))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -770,7 +772,7 @@ class MailHandler(BaseHandler):
         self._from_address = address
 
         msg = "Sender addresses are set to '{}'"
-        _logger.debug(msg.format(self._from_address))
+        _logger.info(msg.format(self._from_address))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -797,7 +799,7 @@ class MailHandler(BaseHandler):
             self._mail_sent_folder = path
 
         msg = "Mail sent special folder is set to '{}'"
-        _logger.debug(msg.format(self._mail_sent_folder))
+        _logger.info(msg.format(self._mail_sent_folder))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -825,7 +827,7 @@ class MailHandler(BaseHandler):
             self._pending_mail_folder = path
 
         msg = "Mail sent special folder is set to '{}'"
-        _logger.debug(msg.format(self._pending_mail_folder))
+        _logger.info(msg.format(self._pending_mail_folder))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -863,7 +865,7 @@ class MailHandler(BaseHandler):
             self._to_addresses = [addresses]
 
         msg = "Recipient addresses are set to '{}'"
-        _logger.debug(msg.format(self._to_addresses))
+        _logger.info(msg.format(self._to_addresses))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -886,7 +888,7 @@ class MailHandler(BaseHandler):
             self._subject = subject
 
         msg = "Subject mail is set to '{}'"
-        _logger.debug(msg.format(self._subject))
+        _logger.info(msg.format(self._subject))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -1093,7 +1095,7 @@ class FileHandler(BaseHandler):
         self._mode = mode
 
         msg = "Open mode is set to '{}'"
-        _logger.debug(msg.format(self._mode))
+        _logger.info(msg.format(self._mode))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -1119,7 +1121,7 @@ class FileHandler(BaseHandler):
             self._filename = filename
 
         msg = "Filename is set to '{}'"
-        _logger.debug(msg.format(self._filename))
+        _logger.info(msg.format(self._filename))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -1283,7 +1285,7 @@ class StreamHandler(BaseHandler):
         self._stream = stream
 
         msg = "Stream is set to '{}'"
-        _logger.debug(msg.format(self._stream))
+        _logger.info(msg.format(self._stream))
         msg = "<<< ()=None"
         _logger.debug(msg)
 

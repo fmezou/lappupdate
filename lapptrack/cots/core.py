@@ -272,8 +272,6 @@ class BaseProduct:
 
         self._catalog_url = ""
 
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -422,7 +420,7 @@ class BaseProduct:
                 self.secure_hash = h
                 self.installer = pathname
                 msg = "Installer downloaded: '{}'".format(self.installer)
-                _logger.debug(msg)
+                _logger.info(msg)
 
         # clean up
         if not result:
@@ -585,7 +583,7 @@ def retrieve_file(url, file, exp_ctype=None, exp_clength=-1, exp_chash=None):
             _logger.warning(msg)
 
         msg = "Retrieving '{}' -> '{}'"
-        _logger.debug(msg.format(url, file.name))
+        _logger.info(msg.format(url, file.name))
         length = 0
         # TODO (fmezou) prevoir la passage en paramètre de l'objet
         progress_bar = progressbar.TextProgressBar(exp_clength)
@@ -664,6 +662,8 @@ def get_handler(qualname):
         msg = msg.format(handler_class)
         raise TypeError(msg)
 
+    msg = "{} handler loaded from {} package"
+    _logger.info(msg.format(handler_class, path))
     result = handler_class()
     msg = "<<< ()={}"
     _logger.debug(msg.format(result))

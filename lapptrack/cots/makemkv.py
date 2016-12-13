@@ -110,8 +110,8 @@ class MakeMKVHandler(core.BaseProduct):
             msg = msg.format(version.__class__)
             raise TypeError(msg)
 
-        msg = "Get the latest product information. Current version is '{0}'"
-        _logger.debug(msg.format(self.version))
+        msg = "Fetching the latest product information since the version {}"
+        _logger.info(msg.format(self.version))
         local_filename = ""
         result = True
 
@@ -178,6 +178,8 @@ class MakeMKVHandler(core.BaseProduct):
                 # else:
                 #     self.file_size = -1
                 self.file_size = -1
+                msg = "Latest product information fetched ({} published on {})"
+                _logger.info(msg.format(self.version, self.published))
 
         # clean up the temporary files
         try:
@@ -232,14 +234,15 @@ class MakeMKVHandler(core.BaseProduct):
                 msg = "Internal error: deployed product version - {}"
                 _logger.error(msg.format(str(err)))
                 result = False
+            else:
+                result = bool(a < b)
 
         if result:
-            if a < b:
-                msg = "A new version exist ({})."
-                _logger.debug(msg.format(product.version))
-            else:
-                msg = "No new version available."
-                _logger.debug(msg)
+            msg = "It is an update ({} vs. {})."
+            _logger.info(msg.format(self.version, product.version))
+        else:
+            msg = "{} is not an update."
+            _logger.info(msg.format(self.version))
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
@@ -309,7 +312,7 @@ class MakeMKVHandler(core.BaseProduct):
             _logger.error(msg.format(str(err)))
             result = False
         else:
-            msg = "History downloaded: '{0}'".format(local_filename)
+            msg = "Change log fetched -> '{0}'".format(local_filename)
             _logger.debug(msg)
 
         if result:
@@ -335,8 +338,8 @@ class MakeMKVHandler(core.BaseProduct):
                 _logger.debug(msg.format(repr(self.change_summary)))
 
         if not result:
-            self.change_summary = "No history available"
-            _logger.debug(msg.format(repr(self.change_summary)))
+            self.change_summary = "No change log available"
+            _logger.info(msg)
 
         # clean up the temporary files
         try:
@@ -532,8 +535,6 @@ class ReleaseNotesParser(HTMLParser):
         else:
             self._deployed = semver.SemVer("0.0.0")
 
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
 

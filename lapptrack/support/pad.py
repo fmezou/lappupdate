@@ -140,8 +140,6 @@ class PadParser(xml.etree.ElementTree.ElementTree):
         self._specs = xml.etree.ElementTree.parse(filename)
         self._tree = None
 
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
 

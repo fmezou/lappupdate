@@ -58,8 +58,6 @@ class DummyHandler(core.BaseProduct):
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "Dummy Product"
 
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
         msg = "<<< ()=None"
         _logger.debug(msg)
 
@@ -106,14 +104,15 @@ class DummyHandler(core.BaseProduct):
                 msg = "Internal error: deployed product version - {}"
                 _logger.error(msg.format(str(err)))
                 result = False
+            else:
+                result = bool(a < b)
 
         if result:
-            if a < b:
-                msg = "A new version exist ({})."
-                _logger.debug(msg.format(product.version))
-            else:
-                msg = "No new version available."
-                _logger.debug(msg)
+            msg = "It is an update ({} vs. {})."
+            _logger.info(msg.format(self.version, product.version))
+        else:
+            msg = "{} is not an update."
+            _logger.info(msg.format(self.version))
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
@@ -144,10 +143,9 @@ class DummyHandler(core.BaseProduct):
             msg = msg.format(version.__class__)
             raise TypeError(msg)
 
-        msg = "Get the latest product information. Current version is '{0}'"
-        _logger.debug(msg.format(self.version))
+        msg = "Fetching the latest product information since the version {}"
+        _logger.info(msg.format(self.version))
         result = True
-
         self.name = "Dummy Product"
         self.version = "1.0.1"
         self.display_name = "{} v{}".format(self.name, self.version)
@@ -179,6 +177,9 @@ class DummyHandler(core.BaseProduct):
         self.secure_hash = None
         self.std_inst_args = ""
         self.silent_inst_args = "/silent"
+
+        msg = "Latest product information fetched ({} published on {})"
+        _logger.info(msg.format(self.version, self.published))
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))

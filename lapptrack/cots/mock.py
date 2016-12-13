@@ -172,6 +172,9 @@ class BaseMockHandler(core.BaseProduct):
             dt = (datetime.datetime.now()).replace(microsecond=0)
             self.published = dt.isoformat()
 
+        msg = "Latest product information fetched ({} published on {})"
+        _logger.info(msg.format(self.version, self.published))
+
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
         return result
@@ -212,7 +215,7 @@ class BaseMockHandler(core.BaseProduct):
         else:
             self.installer = pathname
             msg = "Installer downloaded: '{}'".format(self.installer)
-            _logger.debug(msg)
+            _logger.info(msg)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
