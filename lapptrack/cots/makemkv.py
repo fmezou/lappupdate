@@ -19,6 +19,7 @@ import logging
 import re
 import os
 import tempfile
+import urllib.error
 from html.parser import HTMLParser
 
 
@@ -93,10 +94,12 @@ class MakeMKVHandler(core.BaseProduct):
                 deployed product). It'a string following the editor versioning
                 rules.
 
+        Returns:
+            bool: True if the download of the file went well. In case of
+            failure, the members are not modified and an error log is written.
+
         Raises:
             `TypeError`: Parameters type mismatch.
-            `pad.SpecSyntaxError`: PAD spec file is erroneous.
-            `pad.PADSyntaxError`: A tag in a PAD file don't match the PAD Specs.
        """
         msg = ">>> (version={})"
         _logger.debug(msg.format(version))
@@ -109,44 +112,82 @@ class MakeMKVHandler(core.BaseProduct):
 
         msg = "Get the latest product information. Current version is '{0}'"
         _logger.debug(msg.format(self.version))
+        local_filename = ""
+        result = True
 
-        with tempfile.NamedTemporaryFile(delete=False) as file:
-            local_filename = file.name
-            core.retrieve_file(self._catalog_url, file)
-        msg = "Catalog downloaded: '{0}'".format(local_filename)
-        _logger.debug(msg)
+        try:
+            with tempfile.NamedTemporaryFile(delete=False) as file:
+                local_filename = file.name
+                core.retrieve_file(self._catalog_url, file)
+        except urllib.error.URLError as err:
+            msg = "Inaccessible resource: {} - url: {}"
+            _logger.error(msg.format(str(err), self.location))
+            result = False
+        except (core.ContentTypeError, core.ContentLengthError,
+                core.ContentError) as err:
+            msg = "Unexpected content: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        except ValueError as err:
+            msg = "Internal error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        except OSError as err:
+            msg = "OS error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        else:
+            msg = "Catalog downloaded: '{0}'".format(local_filename)
+            _logger.debug(msg)
 
-        # Parse the catalog and retrieve information
-        self._parser.parse(local_filename)
+        if result:
+            try:
+                # Parse the catalog and retrieve information
+                self._parser.parse(local_filename)
+            except pad.PADSyntaxError as err:
+                msg = "Erroneous PAD File: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            except pad.SpecSyntaxError as err:
+                msg = "Erroneous PAD Spec File: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            else:
+                self.name = self._get_field("Program_Info/Program_Name")
+                self.version = self._get_field("Program_Info/Program_Version")
+                self.display_name = "{} v{}".format(self.name, self.version)
+                self._get_published()
+                self.description = self._get_field(
+                    "Program_Descriptions/English/Char_Desc_250")
+                self.editor = self._get_field("Company_Info/Company_Name")
+                self.location = self._get_field(
+                    "Web_Info/Download_URLs/Primary_Download_URL")
+                self.icon = self._get_field(
+                    "Web_Info/Application_URLs/Application_Icon_URL")
 
-        self.name = self._get_field("Program_Info/Program_Name")
-        self.version = self._get_field("Program_Info/Program_Version")
-        self.display_name = "{} v{}".format(self.name, self.version)
-        self._get_published()
-        self.description = self._get_field(
-            "Program_Descriptions/English/Char_Desc_250")
-        self.editor = self._get_field("Company_Info/Company_Name")
-        self.location = self._get_field(
-            "Web_Info/Download_URLs/Primary_Download_URL")
-        self.icon = self._get_field(
-            "Web_Info/Application_URLs/Application_Icon_URL")
-        self._get_change_summary(version)
+                # A failure in the change log fetching is not critical, and the
+                # result of _get_change_summary is simply ignored.
+                self._get_change_summary(version)
 
-        # FIXME: incorrect file size in the PAD File.
-        # The PAD file specifies a file size which do not match with the real
-        # file size. So -1 (unknown file size) is used.
-        # size = self._get_field("Program_Info/File_Info/File_Size_Bytes")
-        # if size is not None:
-        #     self.file_size = int(size)
-        # else:
-        #     self.file_size = -1
-        self.file_size = -1
+                # FIXME (support@makemkv.com) change the file size in PAD File.
+                # The PAD file specifies a file size which do not match with
+                # the real file size. So -1 (unknown file size) is used.
+                # s = self._get_field("Program_Info/File_Info/File_Size_Bytes")
+                # if s is not None:
+                #     self.file_size = int(s)
+                # else:
+                #     self.file_size = -1
+                self.file_size = -1
 
         # clean up the temporary files
-        os.unlink(local_filename)
+        try:
+            os.remove(local_filename)
+        except OSError:
+            pass
 
-        msg = "<<< ()=None"
-        _logger.debug(msg)
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def is_update(self, product):
         """
@@ -177,14 +218,28 @@ class MakeMKVHandler(core.BaseProduct):
             raise TypeError(msg)
 
         # comparison based on version number.
-        result = False
-        if semver.SemVer(self.version) > semver.SemVer(product.version):
-            result = True
-            msg = "A new version exist ({})."
-            _logger.debug(msg.format(self.version))
+        result = True
+        try:
+            a = semver.SemVer(self.version)
+        except ValueError as err:
+            msg = "Internal error: current product version - {}"
+            _logger.error(msg.format(str(err)))
+            result = False
         else:
-            msg = "No new version available."
-            _logger.debug(msg)
+            try:
+                b = semver.SemVer(product.version)
+            except ValueError as err:
+                msg = "Internal error: deployed product version - {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+
+        if result:
+            if a < b:
+                msg = "A new version exist ({})."
+                _logger.debug(msg.format(product.version))
+            else:
+                msg = "No new version available."
+                _logger.debug(msg)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
@@ -218,31 +273,79 @@ class MakeMKVHandler(core.BaseProduct):
             version (str): The version of the reference product (i.e. the
                 deployed product). It'a string following the editor versioning
                 rules.
+
+        Returns:
+            bool: True if the download of the change log file went well. In case
+            of failure, the members are not modified and an error log is
+            written.
+
+        Raises:
+            `TypeError`: Parameters type mismatch.
         """
         msg = ">>> (version={})"
         _logger.debug(msg.format(version))
 
-        with tempfile.NamedTemporaryFile(delete=False) as file:
-            local_filename = file.name
-            core.retrieve_file(self.release_note_location, file)
-        print("History downloaded: '{0}'".format(local_filename))
+        local_filename = ""
+        result = True
+        try:
+            with tempfile.NamedTemporaryFile(delete=False) as file:
+                local_filename = file.name
+                core.retrieve_file(self.release_note_location, file)
+        except urllib.error.URLError as err:
+            msg = "Inaccessible resource: {} - url: {}"
+            _logger.error(msg.format(str(err), self.release_note_location))
+            result = False
+        except (core.ContentTypeError, core.ContentLengthError,
+                core.ContentError) as err:
+            msg = "Unexpected content: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        except ValueError as err:
+            msg = "Internal error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        except OSError as err:
+            msg = "OS error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        else:
+            msg = "History downloaded: '{0}'".format(local_filename)
+            _logger.debug(msg)
 
-        parser = ReleaseNotesParser(version)
-        with open(local_filename) as file:
-            parser.feed(file.read())
+        if result:
+            try:
+                parser = ReleaseNotesParser(version)
+                with open(local_filename) as file:
+                    parser.feed(file.read())
+            except ValueError as err:
+                msg = "Internal error: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            except OSError as err:
+                msg = "OS error: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            else:
+                self.change_summary = "<ul>"
+                template = "<li>version {} published on {}</li>{}"
+                for i in parser.changelog:
+                    self.change_summary += template.format(i[0], i[1], i[2])
+                self.change_summary += "</ul>"
+                msg = "Change summary :{0}"
+                _logger.debug(msg.format(repr(self.change_summary)))
 
-        self.change_summary = "<ul>"
-        template = "<li>version {} published on {}</li>{}"
-        for i in parser.changelog:
-            self.change_summary += template.format(i[0], i[1], i[2])
-        self.change_summary += "</ul>"
-        os.unlink(local_filename)
+        if not result:
+            self.change_summary = "No history available"
+            _logger.debug(msg.format(repr(self.change_summary)))
 
-        msg = "Change summary :{0}"
-        _logger.debug(msg.format(repr(self.change_summary)))
+        # clean up the temporary files
+        try:
+            os.remove(local_filename)
+        except OSError:
+            pass
 
-        msg = "<<< ()=None"
-        _logger.debug(msg)
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
 
     def _get_field(self, path):
         """

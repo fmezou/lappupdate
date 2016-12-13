@@ -92,14 +92,28 @@ class DummyHandler(core.BaseProduct):
             raise TypeError(msg)
 
         # comparison based on version number.
-        result = False
-        if semver.SemVer(self.version) < semver.SemVer(product.version):
-            result = True
-            msg = "A new version exist ({})."
-            _logger.debug(msg.format(product.version))
+        result = True
+        try:
+            a = semver.SemVer(self.version)
+        except ValueError as err:
+            msg = "Internal error: current product version - {}"
+            _logger.error(msg.format(str(err)))
+            result = False
         else:
-            msg = "No new version available."
-            _logger.debug(msg)
+            try:
+                b = semver.SemVer(product.version)
+            except ValueError as err:
+                msg = "Internal error: deployed product version - {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+
+        if result:
+            if a < b:
+                msg = "A new version exist ({})."
+                _logger.debug(msg.format(product.version))
+            else:
+                msg = "No new version available."
+                _logger.debug(msg)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
@@ -113,6 +127,10 @@ class DummyHandler(core.BaseProduct):
             version (str): The version of the reference product (i.e. the
                 deployed product). It'a string following the editor versioning
                 rules.
+
+        Returns:
+            bool: True if the download of the file went well. In case of
+            failure, the members are not modified and an error log is written.
 
         Raises:
             TypeError: Parameters type mismatch.
@@ -128,6 +146,7 @@ class DummyHandler(core.BaseProduct):
 
         msg = "Get the latest product information. Current version is '{0}'"
         _logger.debug(msg.format(self.version))
+        result = True
 
         self.name = "Dummy Product"
         self.version = "1.0.1"
@@ -161,5 +180,6 @@ class DummyHandler(core.BaseProduct):
         self.std_inst_args = ""
         self.silent_inst_args = "/silent"
 
-        msg = "<<< ()=None"
-        _logger.debug(msg)
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result

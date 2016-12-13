@@ -460,9 +460,9 @@ class RetrieveFileTestCase(unittest.TestCase):
         _logger.info("Starting...")
         with self.assertRaises(core.ContentTypeError):
             with tempfile.NamedTemporaryFile(delete=False) as file:
-                result = core.retrieve_file(self.url, file,
-                                            exp_ctype="x-app/x-bin")
-            self.assertFalse(result)
+                t, l, h = core.retrieve_file(self.url, file,
+                                             exp_ctype="x-app/x-bin")
+            self.assertFalse(all([t, l, h]))
             os.remove(file.name)
         _logger.info("Completed")
 

@@ -346,6 +346,10 @@ class BaseProduct:
                 deployed product). It'a string following the editor versioning
                 rules.
 
+        Returns:
+            bool: True if the download of the file went well. In case of
+            failure, the members are not modified and an error log is written.
+
         Raises:
             TypeError: Parameters type mismatch.
         """
@@ -362,6 +366,9 @@ class BaseProduct:
         Returns:
             bool: True if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
+
+        Raises:
+            `TypeError`: Parameters type mismatch.
         """
         msg = ">>> (dirpath={})"
         _logger.debug(msg.format(dirpath))
@@ -389,10 +396,10 @@ class BaseProduct:
         if result:
             try:
                 with open(tempname, mode="wb") as file:
-                    result = retrieve_file(self.location,
-                                           file,
-                                           exp_clength=self.file_size,
-                                           exp_chash=self.secure_hash)
+                    t, l, h = retrieve_file(self.location,
+                                            file,
+                                            exp_clength=self.file_size,
+                                            exp_chash=self.secure_hash)
                 os.replace(tempname, pathname)  # rename with the real name
             except urllib.error.URLError as err:
                 msg = "Inaccessible resource: {} - url: {}"
@@ -411,8 +418,8 @@ class BaseProduct:
                 _logger.error(msg.format(str(err)))
                 result = False
             else:
-                self.file_size = result[1]
-                self.secure_hash = result[2]
+                self.file_size = l
+                self.secure_hash = h
                 self.installer = pathname
                 msg = "Installer downloaded: '{}'".format(self.installer)
                 _logger.debug(msg)

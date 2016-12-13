@@ -24,12 +24,12 @@ This section details the objects defined in this module.
     :private-members:
     :show-inheritance:
 
-.. autoclass:: HTTPMockHandler
+.. autoclass:: FailureMockHandler
     :members:
     :private-members:
     :show-inheritance:
 
-.. autoclass:: ContentErrorMockHandler
+.. autoclass:: ErrorMockHandler
     :members:
     :private-members:
     :show-inheritance:

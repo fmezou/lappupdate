@@ -12,8 +12,8 @@ This module includes a number of *handlers* listed below in alphabetical order.
 A mocking handler is a derived class from the `BaseMockHandler` class.
 
 ===================================  ===================================
-:class:`ContentErrorMockHandler`     :class:`MockHandler`
-:class:`HTTPMockHandler`
+:class:`BaseMockHandler`             :class:`FailureMockHandler`
+:class:`ErrorMockHandler`            :class:`MockHandler`
 ===================================  ===================================
 """
 
@@ -22,7 +22,6 @@ import datetime
 import logging
 import os
 import os.path
-import urllib.error
 
 
 from cots import core
@@ -32,9 +31,10 @@ __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
+    "BaseMockHandler",
     "MockHandler",
-    "HTTPMockHandler",
-    "ContentErrorMockHandler"
+    "FailureMockHandler",
+    "ErrorMockHandler"
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
@@ -63,12 +63,17 @@ class BaseMockHandler(core.BaseProduct):
         ===================================  ===================================
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         super().__init__()
 
         # At this point, only the name is set.
         # All others attributes will be set during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "BaseMocker"
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def load(self, attributes=None):
         """
@@ -83,9 +88,12 @@ class BaseMockHandler(core.BaseProduct):
         Raises:
             TypeError: Parameters type mismatch.
         """
-        msg = "load(attributes={})".format(attributes)
-        _logger.debug(msg)
+        msg = ">>> (attributes={})"
+        _logger.debug(msg.format(attributes))
         super().load(attributes)
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def dump(self):
         """
@@ -98,27 +106,38 @@ class BaseMockHandler(core.BaseProduct):
         Returns:
             dict: Contain a copy of the instance variables values.
         """
-        attributes = super().dump()
-        msg = "dump() -> attributes={}".format(attributes)
+        msg = ">>> ()"
         _logger.debug(msg)
+        attributes = super().dump()
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(attributes))
         return attributes
 
     def get_origin(self, version=None):
         """
         Get the mocking information.
 
+        This method return always true to indicate that the most-update
+        information are available. On each call, the version patch number is
+        incremented to be compliant with the `semantic versioning
+        specification`_ 2.0.0.
+
         Args:
             version (str): The version of the reference product.
-        """
-        # check parameters type
-        msg = "get_origin(version={})".format(version)
-        _logger.debug(msg)
 
+        Returns:
+            bool: always True.
+        """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+        # check parameters type
         if version is not None and not isinstance(version, str):
             msg = "version argument must be a class 'str' or None. not {0}"
             msg = msg.format(version.__class__)
             raise TypeError(msg)
 
+        result = True
         if version is None:
             # set the instance variables to the default value
             self.target = core.TARGET_UNIFIED
@@ -129,16 +148,10 @@ class BaseMockHandler(core.BaseProduct):
                 "http://mockapp.example.com/history.html"
             self.std_inst_args = ""
             self.silent_inst_args = "/S"
-
-            patch = 0
-            if version:
-                patch = 1 + int(version.split(".")[2])
-            self.version = "1.0.{}".format(patch)
+            self.version = "1.0.0"
             self.display_name = "{} v{}".format(self.name, self.version)
-
             dt = (datetime.datetime.now()).replace(microsecond=0)
             self.published = dt.isoformat()
-
             self.description = "Mocking handler"
             self.editor = "MockApp. Inc"
             self.location = "http://mockapp.example.com/dist.zip"
@@ -151,74 +164,76 @@ class BaseMockHandler(core.BaseProduct):
             self.file_size = -1
             self.secure_hash = None
         else:
-            assert self.target == core.TARGET_UNIFIED
-            assert self.web_site_location == "http://mockapp.example.com"
-            assert self.announce_location == ""
-            assert self.feed_location == ""
-            assert self.release_note_location == \
-                "http://mockapp.example.com/history.html"
-            assert self.std_inst_args == ""
-            assert self.silent_inst_args == "/S"
-            assert self.display_name == "{} v{}".format(self.name, self.version)
-
             patch = 0
             if version:
                 patch = 1 + int(version.split(".")[2])
             self.version = "1.0.{}".format(patch)
-
+            self.display_name == "{} v{}".format(self.name, self.version)
             dt = (datetime.datetime.now()).replace(microsecond=0)
             self.published = dt.isoformat()
 
-            assert self.description == "Mocking handler"
-            assert self.editor == "MockApp. Inc"
-            assert self.location == "http://mockapp.example.com/dist.zip"
-            assert self.icon is None
-            assert self.change_summary == \
-                "<ul>" \
-                "<li>a feature</li>" \
-                "<li>Small miscellaneous improvements and bugfixes</li>" \
-                "</ul>"
-            assert self.file_size == -1
-            assert self.secure_hash is None
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def fetch(self, dirpath):
         """
         Download the mocking installer.
 
-        Args:
-            dirpath (str): The path name where to store the installer package.
-        """
-        msg = "fetch(dirpath={})".format(dirpath)
-        _logger.debug(msg)
 
+        Args:
+            dirpath (str): The directory path name where to store the installer
+                package.
+
+        Returns:
+            bool: True if the fake installer creation went well. In case of
+            failure, the members are not modified and an error log is written.
+
+        Raises:
+            `TypeError`: Parameters type mismatch.
+        """
+        msg = ">>> (dirpath={})"
+        _logger.debug(msg.format(dirpath))
+
+        result = True
         content = """
         This file is the result of the use of a mocking handler.
         """
         os.makedirs(dirpath, exist_ok=True)
         name = "{}_{}{}".format(self.name, self.version, ".txt")
         pathname = os.path.join(dirpath, name)
-        with open(pathname, mode="w") as file:
-            file.writelines(content)
+        try:
+            with open(pathname, mode="w") as file:
+                file.writelines(content)
+        except OSError as err:
+            msg = "OS error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        else:
+            self.installer = pathname
+            msg = "Installer downloaded: '{}'".format(self.installer)
+            _logger.debug(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def is_update(self, product):
         """
         Return if this instance is an update.
 
-        The method use a variable named ``update`` to store the result of the
-        comparison. The ``update`` content may be altered by the script.
-
         Args:
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: True if this instance is an update of the product specified
-            by the :dfn:`product` parameter.
+            bool: always True.
         """
-        # Execute the additional statement in the context of the current method.
-        update = False
-        msg = "is_update(product={}) -> {}".format(product, update)
-        _logger.debug(msg)
-        return update
+        msg = ">>> (product={})"
+        _logger.debug(msg.format(product))
+        result = True
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
 
 class MockHandler(BaseMockHandler):
@@ -231,23 +246,26 @@ class MockHandler(BaseMockHandler):
     particularly in the `BaseProduct` class documentation.
     """
     def __init__(self):
-        super().__init__()
-
+        msg = ">>> ()"
+        _logger.debug(msg)
         # At this point, only the name is set.
         # All others attributes will be set during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
+        super().__init__()
         self.name = "Mocker"
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
 
-class HTTPMockHandler(BaseMockHandler):
+class FailureMockHandler(BaseMockHandler):
     """
-    HTTP Error mocking handler.
+    Failure mocking handler.
 
     This concrete class implements a mocking handler used to test the
     `lapptrack` module or any python module using the `cots` package. This
-    handler raises an `urllib.error.HTTPError` exception on the `fetch` or
-    `get_origin` method call. In this context, `is_update` method should not be
-    called so his call raise an `AssertionError` exception.
+    handler always return an error on the `fetch` or `get_origin` method call.
+    In this context, `is_update` method should not be called so his call raise
+    an `RuntimeError` exception.
 
     **Overridden Methods**
         This class is a concrete class, so the overridden methods are listed
@@ -259,42 +277,68 @@ class HTTPMockHandler(BaseMockHandler):
         ===================================  ===================================
     """
     def __init__(self):
-        super().__init__()
-
+        msg = ">>> ()"
+        _logger.debug(msg)
         # At this point, only the name is set.
         # All others attributes will be set during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
-        self.name = "HTTPMocker"
+        super().__init__()
+        self.name = "FailureMocker"
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def get_origin(self, version=None):
         """
         Get the mocking information.
 
-        This method always raises an `urllib.error.HTTPError` exception with
-        the status code 403 (see :rfc:`2616` which defines HTTP status code)
+        This method always return false to indicate that an error has occurred
+        while the fetching of the product information.
 
         Args:
             version (str): The version of the reference product.
-        """
-        msg = "get_origin(version={})".format(version)
-        _logger.debug(msg)
 
-        raise urllib.error.HTTPError("", 403, "Forbidden", [], None)
+        Returns:
+            bool: always False.
+        """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
+        msg = "Inaccessible resource: ERROR 403 - url: {}"
+        _logger.error(msg.format(self.location))
+        result = False
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def fetch(self, dirpath):
         """
         Download the mocking installer.
 
-        This method always raises an `urllib.error.HTTPError` exception with
-        the status code 403 (see :rfc:`2616` which defines HTTP status code)
+        This method always return false to indicate that an error has occurred
+        while the product installer fetching.
 
         Args:
-            dirpath (str): The path name where to store the installer package.
-        """
-        msg = "fetch(dirpath={})".format(dirpath)
-        _logger.debug(msg)
+            dirpath (str): The directory path name where to store the installer
+                package.
 
-        raise urllib.error.HTTPError("", 403, "Forbidden", [], None)
+        Returns:
+            bool: True if the download of the file went well. In case of
+            failure, the members are not modified and an error log is written.
+
+        Returns:
+            bool: always False.
+        """
+        msg = ">>> (dirpath={})"
+        _logger.debug(msg.format(dirpath))
+
+        msg = "Inaccessible resource: ERROR 403 - url: {}"
+        _logger.error(msg.format(self.location))
+        result = False
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def is_update(self, product):
         """
@@ -305,23 +349,25 @@ class HTTPMockHandler(BaseMockHandler):
         Args:
             product (BaseProduct): The reference product (i.e. the deployed one)
 
-        Returns:
-            bool: True if this instance is an update of the product specified
-            by the `product` parameter.
+        Raises:
+            `RuntimeError`: see above.
         """
         # Execute the additional statement in the context of the current method.
-        assert False
+        msg = ">>> (product={})"
+        _logger.debug(msg.format(product))
+        msg = "In this context, this method should not be called."
+        raise RuntimeError(msg)
 
 
-class ContentErrorMockHandler(BaseMockHandler):
+class ErrorMockHandler(BaseMockHandler):
     """
-    Content Error mocking handler.
+    Error mocking handler.
 
     This concrete class implements a mocking handler used to test the 
     `lapptrack` module or any python module using the `cots` package. This 
-    handler raises an `core.ContentTypeError` exception on the `fetch`
-    or `get_origin` method call. In this context, `is_update` method should not 
-    be called so his call raise an `AssertionError` exception.
+    handler raises an `TypeError` exception on the `fetch` or `get_origin`
+    method call. In this context, `is_update` method should not be called so
+    his call raise an `RuntimeError` exception.
 
     **Overridden Methods**
         This class is a concrete class, so the overridden methods are listed
@@ -333,42 +379,53 @@ class ContentErrorMockHandler(BaseMockHandler):
         ===================================  ===================================
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         super().__init__()
 
         # At this point, only the name is set.
         # All others attributes will be set during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
-        self.name = "ContentMocker"
+        self.name = "ErrorMocker"
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def get_origin(self, version=None):
         """
         Get the mocking information.
 
-        This method always raises an `core.ContentTypeError`
-        exception.
+        This method always raises an `TypeError` exception.
 
         Args:
             version (str): The version of the reference product.
-        """
-        msg = "get_origin(version={})".format(version)
-        _logger.debug(msg)
 
-        raise core.ContentTypeError("", "unknown", "text/plain")
+        Raises:
+            `TypeError`: see above.
+        """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
+        msg = "It is a fake error."
+        raise TypeError()
 
     def fetch(self, dirpath):
         """
         Download the mocking installer.
 
-        This method always raises an `core.ContentTypeError`
-        exception.
+        This method always raises an `TypeError` exception.
 
         Args:
             dirpath (str): The path name where to store the installer package.
-        """
-        msg = "fetch(dirpath={})".format(dirpath)
-        _logger.debug(msg)
 
-        raise core.ContentTypeError("", "unknown", "text/plain")
+        Raises:
+            `TypeError`: see above.
+        """
+        msg = ">>> (dirpath={})"
+        _logger.debug(msg.format(dirpath))
+
+        msg = "It is a fake error."
+        raise TypeError()
 
     def is_update(self, product):
         """
@@ -379,9 +436,10 @@ class ContentErrorMockHandler(BaseMockHandler):
         Args:
             product (BaseProduct): The reference product (i.e. the deployed one)
 
-        Returns:
-            bool: True if this instance is an update of the product specified
-            by the `product` parameter.
+        Raises:
+            `RuntimeError`: see above.
         """
-        # Execute the additional statement in the context of the current method.
-        assert False
+        msg = ">>> (product={})"
+        _logger.debug(msg.format(product))
+        msg = "In this context, this method should not be called."
+        raise RuntimeError(msg)
