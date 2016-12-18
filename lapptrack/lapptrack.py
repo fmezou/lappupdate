@@ -89,7 +89,7 @@ Public Classes
 This module has only one public class.
 
 ===================================  ===================================
-`lAppTrack`                          ..
+`LAppTrack`                          ..
 ===================================  ===================================
 
 
@@ -123,11 +123,11 @@ import os.path
 import datetime
 import argparse
 import configparser
-import importlib
 import logging
 import logging.config
 import json
 import sys
+import smtplib
 
 from support import report
 from cots import core
@@ -136,7 +136,24 @@ from cots import core
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+__all__ = [
+    "LAppTrack",
+    "main",
+    "CATALOG_FNAME",
+    "CAT_WARNING_KNAME",
+    "CAT_VERSION_KNAME",
+    "CAT_VERSION",
+    "CAT_MODIFIED_KNAME",
+    "CAT_PRODUCTS_KNAME",
+    "CAT_PULLED_KNAME",
+    "CAT_FETCHED_KNAME",
+    "CAT_APPROVED_KNAME",
+    "Error",
+    "ConfigurationError"
+]
 
+# Script display name: use in logger and the console UI
+_DISPLAY_NAME = "lapptrack ({})".format(__version__)
 
 # Sections and keys names used in the configuration file (see lapptrack.ini)
 _CORE_SNAME = "core"
@@ -205,17 +222,18 @@ _APPLIST_EXT = ".txt"
 
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
 
 class Error(Exception):
     """
-    Base class for lAppTrack exceptions.
+    Base class for LAppTrack exceptions.
 
     Args:
-        message (str): (optional) Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the
+            exception.
 
     Attributes:
         message (str): Human readable string describing the exception.
@@ -253,14 +271,9 @@ class ConfigurationError(Error):
         self.solution = solution
 
 
-class lAppTrack:
+class LAppTrack:
     """
     Schedule products updates retrieving operations.
-
-
-    Args:
-        config_file (str): The name of the configuration file. It may
-            be a partial or a full pathname.
 
 
     **Public Methods**
@@ -270,11 +283,12 @@ class lAppTrack:
         ===================================  ===================================
         `approve`                            `pull`
         `fetch`                              `run`
-        `make`                               `test_config`
+        `load_config`                        `test_config`
+        `make`                               ..
         ===================================  ===================================
 
 
-    **Using lAppTrack...**
+    **Using LAppTrack...**
         This class is the scheduler and handles elementary operations to
         complete the expected task.
 
@@ -289,70 +303,100 @@ class lAppTrack:
         `approve` method, and then generate the `applist` file with the `make`
         method.
     """
-
-    def __init__(self, config_file):
-        # check parameters type
-        if not isinstance(config_file, io.TextIOBase):
-            msg = "config_file argument must be a class 'io.TextIOBase'. " \
-                  "not {0}"
-            msg = msg.format(config_file.__class__)
-            raise TypeError(msg)
-
+    def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         # initialise the configuration based on ConfigParser module.
         self._config = configparser.ConfigParser(
             interpolation=configparser.ExtendedInterpolation())
         self._checked_config = False
-        self._config_file = config_file
         self._pulling_report = None
         self._fetching_report = None
         self._approving_report = None
 
         # initialise the application catalog.
-        self._catalog_filename = ""
+        self._catalog_path = ""
         self._catalog = None
-
         self._report = ""
 
-        msg = "Instance of {} created <- {}"
-        _logger.debug(msg.format(self.__class__, config_file))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def run(self):
         """
-        Run the lAppTrack application.
+        Run the LAppTrack application.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
-        self._load_config()
-        _logger.info("Starting Appdownload (%s)", __version__)
-        self._read_catalog()
-        self._pull_update()
-        self._fetch_update()
-        self._approve_update(True)
-        self._write_catalog()
-        self._write_applist()
-        _logger.info("Appdownload (%s) completed.", __version__)
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        notify_start("run")
+        result = self._read_catalog()
+        if result:
+            # Fetch error are ignored to allow a complete cycle. All errors
+            # are logged and notified to the user.
+            self._pull_update()
+            self._fetch_update()
+            self._approve_update(True)
+            result = self._write_catalog()
+            if result:
+                result = self._write_applist()
+        notify_end("run", result)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def pull(self):
         """
         Pull the availability of updates.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
-        self._load_config()
-        _logger.info("Starting Appdownload (%s), pull the availability of "
-                     "updates.", __version__)
-        self._read_catalog()
-        self._pull_update()
-        self._write_catalog()
-        _logger.info("Appdownload (%s) completed.", __version__)
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        notify_start("pull")
+        result = self._read_catalog()
+        if result:
+            # Fetch error are ignored to allow a complete cycle. All errors
+            # are logged and notified to the user.
+            self._pull_update()
+            result = self._write_catalog()
+        notify_end("pull", result)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def fetch(self):
         """
         Fetch application updates based on the last build catalog.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
-        self._load_config()
-        _logger.info("Starting Appdownload (%s), Fetch applications updates "
-                     "based on the last build catalog.", __version__)
-        self._read_catalog()
-        self._fetch_update()
-        self._write_catalog()
-        _logger.info("Appdownload (%s) completed.", __version__)
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        notify_start("pull")
+        result = self._read_catalog()
+        if result:
+            # Fetch error are ignored to allow a complete cycle. All errors
+            # are logged and notified to the user.
+            self._fetch_update()
+            result = self._write_catalog()
+        notify_end("pull", result)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def approve(self, force=False):
         """
@@ -362,153 +406,235 @@ class lAppTrack:
             force (optional[bool]): False to indicates if the user must approved
                 each deployment in a interactive session. True to indicates that
                 updates are all approved without prompt.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
-        self._load_config()
-        _logger.info("Starting Appdownload (%s), approve applications updates "
-                     "based on the last build catalog.", __version__)
-        self._read_catalog()
-        self._approve_update(force)
-        self._write_catalog()
-        self._write_applist()
-        _logger.info("Appdownload (%s) completed.", __version__)
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        notify_start("approve force=".format(force))
+        result = self._read_catalog()
+        if result:
+            self._approve_update(force)
+            result = self._write_catalog()
+            if result:
+                result = self._write_applist()
+        notify_end("approve force=".format(force), result)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def make(self):
         """
         Make `applist` files based on the last build catalog
-        """
-        self._load_config()
-        _logger.info("Starting Appdownload (%s), make applist files based "
-                     "on the last build catalog.", __version__)
-        self._read_catalog()
-        self._write_applist()
-        _logger.info("Appdownload (%s) completed.", __version__)
 
-    def test_config(self):
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        notify_start("make")
+        result = self._read_catalog()
+        if result:
+            result = self._write_applist()
+        notify_end("make", result)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def test_config(self, config_file):
         """
         Check the configuration file for internal correctness.
+
+        Args:
+            config_file (file object): The `file object` of the configuration
+                file opened for reading in text mode (see `open` for details
+                about opening mode).
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
         # The logging configuration may be not valid, events are only print on
         # the console with print(). Furthermore, the use case of this method is
         # typically in interactive mode.
-        print("Starting Appdownload ({0}), check the configuration file for "
-              "internal correctness.".format(__version__))
-        print("Configuration details are loaded from '{0}'."
-              .format(self._config_file.name))
-        self._load_config()
-        if self._checked_config:
-            print("Configuration details are validated.")
-        print("Appdownload ({0}) completed.".format(__version__))
+        msg = "Starting task: testconf configfile={}".format(config_file.name)
+        print(msg)
+        result = self.load_config(config_file)
+        if result:
+            msg = "Task successfully completed : testconf configfile={}". \
+                format(config_file.name)
+        else:
+            msg = "TASK FAILED : TESTCONF configfile={}". \
+                format(config_file.name)
+        print(msg)
+        return result
 
     def _pull_update(self):
         """
         Pull the availability of updates.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
-        assert self._checked_config is True
-        _logger.info("Pull the availability of updates.")
+        msg = ">>> ()"
+        _logger.debug(msg)
 
-        for app_id in self._config[_APPS_SNAME]:
+        assert self._checked_config
+
+        result = True
+        apps_num = len(self._config[_APPS_SNAME])
+        for i, app_id in enumerate(self._config[_APPS_SNAME]):
+            msg = "Fetching update information for '{}' ({}/{})".\
+                format(app_id, i+1, apps_num)
+            notify_info(msg)
             if self._config[_APPS_SNAME].getboolean(app_id):
-                _logger.debug(
-                    "Load and set the '{0}' module.".format(app_id)
-                )
-                qualname = self._config[app_id][_QUALNAME_KNAME]
-                app = core.get_handler(qualname)
-                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[CAT_APPROVED_KNAME]) != 0:
-                        app.load(app_entry[CAT_APPROVED_KNAME])
-                        _logger.debug("Check if an update is available")
-                        origin_app = core.get_handler(qualname)
-                        origin_app.get_origin(app.version)
-                        if origin_app.is_update(app):
-                            msg = "A new version of '{0}' exist ({1}) " \
-                                  "published on {2}."
-                            _logger.info(msg.format(app_id,
-                                                    origin_app.version,
-                                                    origin_app.published))
-                            app_entry[CAT_PULLED_KNAME] = origin_app.dump()
-                            self._pulling_report.add_section(origin_app.dump())
-                    else:
-                        msg = "The product '{0}' isn't deployed.".format(app_id)
-                        _logger.info(msg.format(app_id))
-                        origin_app = core.get_handler(qualname)
-                        origin_app.get_origin()
-                        msg = "A version of '{0}' exist ({1}) " \
-                              "published on {2}."
-                        _logger.info(msg.format(app_id,
-                                                origin_app.version,
-                                                origin_app.published))
-                        app_entry[CAT_PULLED_KNAME] = origin_app.dump()
-                        self._pulling_report.add_section(origin_app.dump())
-                else:
-                    msg = "The product '{0}' don't exist. A new one will " \
-                          "be created.".format(app_id)
-                    _logger.warning(msg)
-                    self._catalog[CAT_PRODUCTS_KNAME][app_id] = {
-                        CAT_PULLED_KNAME: {},
-                        CAT_FETCHED_KNAME: {},
-                        CAT_APPROVED_KNAME: {}
-                    }
-                    _logger.debug("Check if an update is available")
-                    origin_app = core.get_handler(qualname)
-                    origin_app.get_origin()
-                    msg = "A version of '{0}' exist ({1}) " \
-                          "published on {2}."
-                    _logger.info(msg.format(app_id,
-                                            origin_app.version,
-                                            origin_app.published))
-                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
-                    app_entry[CAT_PULLED_KNAME] = origin_app.dump()
-                    self._pulling_report.add_section(origin_app.dump())
+                qn = self._config[app_id][_QUALNAME_KNAME]
+                try:
+                    app = core.get_handler(qn)
+                    origin_app = core.get_handler(qn)
+                except ImportError as err:
+                    msg = "Erroneous config: {}".format(str(err))
+                    notify_error(msg)
+                    result = False
+                except TypeError as err:
+                    msg = "Internal error: {}".format(str(err))
+                    notify_error(msg)
+                    result = False
 
+                if result:
+                    if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
+                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                        # Load deployed product if exists
+                        if app_entry[CAT_APPROVED_KNAME]:
+                            app.load(app_entry[CAT_APPROVED_KNAME])
+                    else:
+                        # Do not exist in catalog, a new one will be created
+                        self._catalog[CAT_PRODUCTS_KNAME][app_id] = {
+                            CAT_PULLED_KNAME: {},
+                            CAT_FETCHED_KNAME: {},
+                            CAT_APPROVED_KNAME: {}
+                        }
+                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+
+                    r = origin_app.get_origin(app.version)
+                    if r:
+                        if origin_app.is_update(app):
+                            app_entry[CAT_PULLED_KNAME] = origin_app.dump()
+                            msg = "A new version of '{}' exist ({}) published" \
+                                  " on {}.".format(app_id, origin_app.version,
+                                                   origin_app.published)
+                            notify_info(msg)
+                            self._pulling_report.add_section(origin_app.dump())
+                        else:
+                            msg = "No newer version of '{0}' " \
+                                  "exist.".format(app_id)
+                            notify_info(msg)
+                    else:
+                        msg = "Fetch update information for '{}' " \
+                              "failed".format(app_id)
+                        notify_error(msg)
+                        result = False
                 del app
                 del origin_app
-                _logger.debug("'{0}' checked.".format(app_id))
             else:
-                _logger.info("'{0}' ignored.".format(app_id))
+                msg = "Tracking of '{0}' deactivated.".format(app_id)
+                notify_info(msg)
 
-        self._pulling_report.publish()
+        if self._pulling_report:
+            try:
+                self._pulling_report.publish()
+            except (smtplib.SMTPException, OSError) as err:
+                # The failure to send the report is simply notified, but it
+                # is not a critical error.
+                msg = "Failed to send or write the report: {}".format(str(err))
+                notify_error(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def _fetch_update(self):
         """
         Fetch applications updates based on the last build catalog.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
+
         assert self._checked_config is True
-
-        _logger.info("Fetch applications updates based on the last build "
-                     "catalog.")
-        for app_id in self._config[_APPS_SNAME]:
+        result = True
+        apps_num = len(self._config[_APPS_SNAME])
+        for i, app_id in enumerate(self._config[_APPS_SNAME]):
+            msg = "Fetching installer for '{}' ({}/{})".\
+                format(app_id, i+1, apps_num)
+            notify_info(msg)
             if self._config[_APPS_SNAME].getboolean(app_id):
-                _logger.debug(
-                    "Load and set the '{0}' module.".format(app_id)
-                )
-                qualname = self._config[app_id][_QUALNAME_KNAME]
-                app = core.get_handler(qualname)
-                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[CAT_PULLED_KNAME]) != 0:
-                        app.load(app_entry[CAT_PULLED_KNAME])
-                        _logger.debug("Fetch the update.")
-                        app.fetch(self._config[app_id][_PATH_KNAME])
-                        msg = "New version of '{0}' fetched. saved as '{1}'."
-                        _logger.info(msg.format(app_id, app.installer))
+                qn = self._config[app_id][_QUALNAME_KNAME]
+                try:
+                    app = core.get_handler(qn)
+                except ImportError as err:
+                    msg = "Erroneous config: {}".format(str(err))
+                    notify_error(msg)
+                    result = False
+                except TypeError as err:
+                    msg = "Internal error: {}".format(str(err))
+                    notify_error(msg)
+                    result = False
 
-                        # replace the fetched product by the newest.
-                        app_entry[CAT_FETCHED_KNAME] = app.dump()
-                        app_entry[CAT_PULLED_KNAME] = {}
-                        self._fetching_report.add_section(app.dump())
+                if result:
+                    if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
+                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                        if app_entry[CAT_PULLED_KNAME]:
+                            app.load(app_entry[CAT_PULLED_KNAME])
+                            r = app.fetch(self._config[app_id][_PATH_KNAME])
+                            if r:
+                                # replace the fetched product by the newest.
+                                app_entry[CAT_FETCHED_KNAME] = app.dump()
+                                app_entry[CAT_PULLED_KNAME] = {}
+                                msg = "Installer of '{0}' fetched. saved as" \
+                                      " '{1}'.".format(app_id, app.installer)
+                                notify_info(msg)
+                                self._fetching_report.add_section(app.dump())
+                            else:
+                                msg = "Fetch installer for '{}' " \
+                                      "failed".format(app_id)
+                                notify_error(msg)
+                                result = False
                     else:
-                        msg = "No update for product '{0}'."
-                        _logger.info(msg.format(app_id))
-                else:
-                    msg = "The product '{0}' don't exist. Request ignored."
-                    _logger.warning(msg.format(app_id))
-
-                del app
+                        # The product do not exist in the catalog. It's a
+                        # product newly added and the update information have
+                        # not been fetched.
+                        msg = "The product '{0}' don't exist. " \
+                              "Request ignored.".format(app_id)
+                        notify_warning(msg)
+                    del app
             else:
-                _logger.info("'{0}' ignored.".format(app_id))
+                msg = "Tracking of '{0}' deactivated.".format(app_id)
+                notify_info(msg)
 
-        self._fetching_report.publish()
+        if self._fetching_report:
+            try:
+                self._fetching_report.publish()
+            except (smtplib.SMTPException, OSError) as err:
+                # The failure to send the report is simply notified, but it
+                # is not a critical error.
+                msg = "Failed to send or write the report: {}".format(str(err))
+                notify_error(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def _approve_update(self, force):
         """
@@ -518,7 +644,13 @@ class lAppTrack:
             force (bool): (optional): False to indicates if the user must
                 approved each deployment in a interactive session. True to
                 indicates that updates are all approved without prompt.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
+        msg = ">>> (force={})"
+        _logger.debug(msg.format(force))
         # check parameters type
         if not isinstance(force, bool):
             msg = "force argument must be a class 'bool'. " \
@@ -527,18 +659,18 @@ class lAppTrack:
             raise TypeError(msg)
 
         assert self._checked_config is True
-
         # The expected response to the approval
         expected_resp = {
             "Y": True,
-            "y": True,
             "": False,
             "N": False,
-            "n": False
         }
 
-        _logger.info("Approve the deployment of applications.")
-        for app_id in self._config[_APPS_SNAME]:
+        apps_num = len(self._config[_APPS_SNAME])
+        for i, app_id in enumerate(self._config[_APPS_SNAME]):
+            msg = "Approving the deployment of '{}' ({}/{})".\
+                format(app_id, i+1, apps_num)
+            _logger.info(msg)
             if self._config[_APPS_SNAME].getboolean(app_id):
                 if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
                     app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
@@ -551,7 +683,7 @@ class lAppTrack:
                             )
                             while True:
                                 resp = input(prompt)
-                                if resp in expected_resp:
+                                if resp.upper() in expected_resp:
                                     approved = expected_resp[resp]
                                     break
                                 else:
@@ -567,208 +699,355 @@ class lAppTrack:
                             app_entry[CAT_APPROVED_KNAME] = app
                             app_entry[CAT_FETCHED_KNAME] = {}
                             self._approving_report.add_section(app)
-                            msg = "The product '{0}' approved."
-                            _logger.info(msg.format(app_id))
+                            msg = "Deployment of '{0}' approved.".format(app_id)
+                            notify_info(msg)
                         else:
-                            msg = "The product '{0}' not approved."
+                            # The disapproval is simply log (it is an user
+                            # action)
+                            msg = "Deployment of '{0}' " \
+                                  "disapproved.".format(app_id)
                             _logger.info(msg.format(app_id))
                 else:
-                    msg = "The product '{0}' don't exist. Request ignored."
-                    _logger.warning(msg.format(app_id))
+                    # The product do not exist in the catalog. It's a
+                    # product newly added and the update information have
+                    # not been fetched.
+                    msg = "The product '{0}' don't exist. " \
+                          "Request ignored.".format(app_id)
+                    notify_warning(msg)
             else:
-                _logger.info("'{0}' ignored.".format(app_id))
+                msg = "Tracking of '{0}' deactivated.".format(app_id)
+                notify_info(msg)
 
-        self._approving_report.publish()
+        if self._approving_report:
+            try:
+                self._approving_report.publish()
+            except (smtplib.SMTPException, OSError) as err:
+                # The failure to send the report is simply notified, but it
+                # is not a critical error.
+                msg = "Failed to send or write the report: {}".format(str(err))
+                notify_error(msg)
 
-    def _load_config(self):
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def load_config(self, config_file):
         """
         Load the configuration details from the configuration file.
+
+        Args:
+            config_file (file object): The `file object` of the configuration
+                file opened for reading in text mode (see `open` for details
+                about opening mode).
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
+        # check parameters type
+        if not isinstance(config_file, io.TextIOBase):
+            msg = "config_file argument must be a class 'io.TextIOBase'. " \
+                  "not {0}"
+            msg = msg.format(config_file.__class__)
+            raise TypeError(msg)
+
+        result = True
         # Load the configuration, and set the logging configuration from it.
         # I'am still using the fileConfig() method instead of dictConfig() to
         # keep the configuration in a ini file, which is easy to write and to
         # read for a human.
-        self._config.read_file(self._config_file)
+        try:
+            self._config.read_file(config_file)
+        except configparser.Error as err:
+            msg = "Failed to parse the logger configuration" \
+                  " file: {}".format(str(err))
+            notify_error(msg)
+            result = False
 
-        # Check the core section
-        if _CORE_SNAME in self._config.sections():
-            section = self._config[_CORE_SNAME]
-            # 'store' key is mandatory
-            if _STORE_KNAME in section:
-                # Set the catalog filename (absolute path).
-                os.makedirs(
-                    self._config[_CORE_SNAME][_STORE_KNAME],
-                    exist_ok=True
-                )
-                self._catalog_filename = os.path.join(
-                    self._config[_CORE_SNAME][_STORE_KNAME],
-                    CATALOG_FNAME
-                )
-                self._catalog_filename = os.path.abspath(self._catalog_filename)
-            else:
-                msg = "the key '{}' is missing in section '{}'."
-                msg = msg.format(_STORE_KNAME, _CORE_SNAME)
-                raise ConfigurationError(self._config_file.name, msg)
-
-            # 'logger' key is optional
-            if _LOGGER_KNAME in section:
-                filename = self._config[_CORE_SNAME][_LOGGER_KNAME]
-                if os.path.isfile(filename):
-                    logging.config.fileConfig(filename,
-                                              disable_existing_loggers=False)
+        if result:
+            # Check the core section
+            if _CORE_SNAME in self._config.sections():
+                section = self._config[_CORE_SNAME]
+                # 'store' key is mandatory
+                if _STORE_KNAME in section:
+                    # Set the catalog pathname.
+                    path = self._config[_CORE_SNAME][_STORE_KNAME]
+                    try:
+                        os.makedirs(path, exist_ok=True)
+                        self._catalog_path = os.path.join(path, CATALOG_FNAME)
+                        self._catalog_path = os.path.abspath(self._catalog_path)
+                    except OSError as err:
+                        msg = "Failed to create the store directory - " \
+                              "OS error: {}".format(str(err))
+                        notify_error(msg)
+                        result = False
                 else:
-                    msg = "configuration file specified in '{}' key doesn't" \
-                          "exist (see section '{}')."
-                    msg = msg.format(_LOGGER_KNAME, _CORE_SNAME)
-                    raise ConfigurationError(self._config_file.name, msg)
+                    msg = "Missing mandatory key in {} section: " \
+                          "'{}'".format(_STORE_KNAME, _CORE_SNAME)
+                    notify_error(msg)
+                    result = False
 
-            # 'pulling_report' key is optional
-            if _PULL_REPORT_KNAME in section:
-                filename = self._config[_CORE_SNAME][_PULL_REPORT_KNAME]
-                if os.path.isfile(filename):
-                    self._pulling_report = report.Report()
-                    config = _load_config(filename)
-                    self._pulling_report.load_config(config, False)
-                else:
-                    msg = "configuration file specified in '{}' key doesn't" \
-                          "exist (see section '{}')."
-                    msg = msg.format(_PULL_REPORT_KNAME, _CORE_SNAME)
-                    raise ConfigurationError(self._config_file.name, msg)
-
-            # 'fetching_report' key is optional
-            if _FETCH_REPORT_KNAME in section:
-                filename = self._config[_CORE_SNAME][_FETCH_REPORT_KNAME]
-                if os.path.isfile(filename):
-                    self._fetching_report = report.Report()
-                    config = _load_config(filename)
-                    self._fetching_report.load_config(config, False)
-                else:
-                    msg = "configuration file specified in '{}' key doesn't" \
-                          "exist (see section '{}')."
-                    msg = msg.format(_FETCH_REPORT_KNAME, _CORE_SNAME)
-                    raise ConfigurationError(self._config_file.name, msg)
-
-            # 'approving_report' key is optional
-            if _APPROVE_REPORT_KNAME in section:
-                filename = self._config[_CORE_SNAME][_APPROVE_REPORT_KNAME]
-                if os.path.isfile(filename):
-                    self._approving_report = report.Report()
-                    config = _load_config(filename)
-                    self._approving_report.load_config(config, False)
-                else:
-                    msg = "configuration file specified in '{}' key doesn't" \
-                          "exist (see section '{}')."
-                    msg = msg.format(_APPROVE_REPORT_KNAME, _CORE_SNAME)
-                    raise ConfigurationError(self._config_file.name, msg)
-        else:
-            msg = "the section '{}' is missing.".format(_CORE_SNAME)
-            raise ConfigurationError(self._config_file.name, msg)
-
-        # Check the sets section
-        if _SETS_SNAME in self._config.sections():
-            sets = self._config[_SETS_SNAME]
-        else:
-            msg = "the section '{}' is missing.".format(_SETS_SNAME)
-            raise ConfigurationError(self._config_file.name, msg)
-
-        # Check the applications section
-        if _APPS_SNAME in self._config.sections():
-            for app_name in self._config[_APPS_SNAME]:
-                if self._config[_APPS_SNAME].getboolean(app_name):
-                    # Pre compute default value for the Application section
-                    app_qualname = "{}.{}.{}Handler".format(
-                        _PACKAGE_NAME, app_name, app_name.capitalize()
-                    )
-                    store_path = self._config[_CORE_SNAME][_STORE_KNAME]
-                    app_path = os.path.join(store_path, app_name)
-                    app_set = "__all__"
-
-                    # Checks the item in the application section
-                    # If a section or a key is missing, it is added in the
-                    # config object, so this object will contain a complete
-                    # configuration
-                    if app_name in self._config.sections():
-                        app_desc = self._config[app_name]
-                        if _QUALNAME_KNAME not in app_desc:
-                            app_desc[_QUALNAME_KNAME] = app_qualname
-                        if _PATH_KNAME not in app_desc:
-                            app_desc[_PATH_KNAME] = app_path
-                        # 'set' key must be declared in the sets section if it
-                        # exist.
-                        if _SET_KNAME in app_desc:
-                            if app_desc[_SET_KNAME] in sets:
-                                pass
-                            else:
-                                msg = "'set' value '{}' is not declared in " \
-                                      "'sets' section (see {} application)"
-                                msg = msg.format(app_desc[_SET_KNAME], app_name)
-                                raise ConfigurationError(self._config_file.name,
-                                                         msg)
-                        else:
-                            app_desc[_SET_KNAME] = app_set
+                # 'logger' key is optional
+                if _LOGGER_KNAME in section:
+                    filename = self._config[_CORE_SNAME][_LOGGER_KNAME]
+                    if os.path.isfile(filename):
+                        try:
+                            logging.config.fileConfig(
+                                filename, disable_existing_loggers=False
+                            )
+                        except Exception as err:
+                            msg = "Failed to parse the logger configuration" \
+                                  " file: {}".format(str(err))
+                            notify_error(msg)
+                            result = False
                     else:
-                        # Set the default value
-                        self._config[app_name] = {}
-                        app_desc = self._config[app_name]
-                        app_desc[_QUALNAME_KNAME] = app_qualname
-                        app_desc[_PATH_KNAME] = app_path
-                        app_desc[_SET_KNAME] = app_set
-        else:
-            msg = "the section '{}' is missing.".format(_APPS_SNAME)
-            raise ConfigurationError(self._config_file.name, msg)
+                        msg = "Configuration file specified in '{}' key " \
+                              "do not exist (see section " \
+                              "'{}')".format(_LOGGER_KNAME, _CORE_SNAME)
+                        notify_error(msg)
+                        result = False
 
-        # Checked
-        self._checked_config = True
-        self._config_file.close()
-        self._config_file = None
+                # 'pulling_report' key is optional
+                if _PULL_REPORT_KNAME in section:
+                    filename = self._config[_CORE_SNAME][_PULL_REPORT_KNAME]
+                    if os.path.isfile(filename):
+                        try:
+                            self._pulling_report = report.Report()
+                            config = _load_config(filename)
+                            self._pulling_report.load_config(config, False)
+                        except configparser.Error as err:
+                            msg = "Failed to parse the pulling report" \
+                                  " configuration file: {}".format(str(err))
+                            notify_error(msg)
+                            result = False
+                        except OSError as err:
+                            msg = "Failed to read the pulling report" \
+                                  " configuration file - OS Error:" \
+                                  " {}".format(str(err))
+                            notify_error(msg)
+                            result = False
+                    else:
+                        msg = "Configuration file specified in '{}' key " \
+                              "do not exist (see section " \
+                              "'{}')".format(_PULL_REPORT_KNAME, _CORE_SNAME)
+                        notify_error(msg)
+                        result = False
+
+                # 'fetching_report' key is optional
+                if _FETCH_REPORT_KNAME in section:
+                    filename = self._config[_CORE_SNAME][_FETCH_REPORT_KNAME]
+                    if os.path.isfile(filename):
+                        try:
+                            self._fetching_report = report.Report()
+                            config = _load_config(filename)
+                            self._fetching_report.load_config(config, False)
+                        except configparser.Error as err:
+                            msg = "Failed to parse the fetching report" \
+                                  " configuration file: {}".format(str(err))
+                            notify_error(msg)
+                            result = False
+                        except OSError as err:
+                            msg = "Failed to read the fetching report" \
+                                  " configuration file - OS Error:" \
+                                  " {}".format(str(err))
+                            notify_error(msg)
+                            result = False
+                    else:
+                        msg = "Configuration file specified in '{}' key " \
+                              "do not exist (see section " \
+                              "'{}')".format(_FETCH_REPORT_KNAME, _CORE_SNAME)
+                        notify_error(msg)
+                        result = False
+
+                # 'approving_report' key is optional
+                if _APPROVE_REPORT_KNAME in section:
+                    filename = self._config[_CORE_SNAME][_APPROVE_REPORT_KNAME]
+                    if os.path.isfile(filename):
+                        try:
+                            self._approving_report = report.Report()
+                            config = _load_config(filename)
+                            self._approving_report.load_config(config, False)
+                        except configparser.Error as err:
+                            msg = "Failed to parse the approving report" \
+                                  " configuration file: {}".format(str(err))
+                            notify_error(msg)
+                            result = False
+                        except OSError as err:
+                            msg = "Failed to read the approving report" \
+                                  " configuration file - OS Error:" \
+                                  " {}".format(str(err))
+                            notify_error(msg)
+                            result = False
+                    else:
+                        msg = "Configuration file specified in '{}' key " \
+                              "do not exist (see section " \
+                              "'{}')".format(_APPROVE_REPORT_KNAME, _CORE_SNAME)
+                        notify_error(msg)
+                        result = False
+            else:
+                msg = "the section '{}' is missing.".format(_CORE_SNAME)
+                notify_error(msg)
+                result = False
+
+            # Check the sets section
+            if _SETS_SNAME in self._config.sections():
+                sets = self._config[_SETS_SNAME]
+            else:
+                sets = {}
+                msg = "the section '{}' is missing.".format(_SETS_SNAME)
+                notify_error(msg)
+                result = False
+
+            # Check the applications section
+            if _APPS_SNAME in self._config.sections():
+                for app_name in self._config[_APPS_SNAME]:
+                    if self._config[_APPS_SNAME].getboolean(app_name):
+                        # Pre compute default value for the Application section
+                        app_qualname = "{}.{}.{}Handler".format(
+                            _PACKAGE_NAME, app_name, app_name.capitalize()
+                        )
+                        store_path = self._config[_CORE_SNAME][_STORE_KNAME]
+                        app_path = os.path.join(store_path, app_name)
+                        app_set = "__all__"
+
+                        # Checks the item in the application section
+                        # If a section or a key is missing, it is added in the
+                        # config object, so this object will contain a complete
+                        # configuration
+                        if app_name in self._config.sections():
+                            app_desc = self._config[app_name]
+                            if _QUALNAME_KNAME not in app_desc:
+                                app_desc[_QUALNAME_KNAME] = app_qualname
+                            if _PATH_KNAME not in app_desc:
+                                app_desc[_PATH_KNAME] = app_path
+                            # 'set' key must be declared in the sets section
+                            # if it exist.
+                            if _SET_KNAME in app_desc:
+                                if app_desc[_SET_KNAME] in sets:
+                                    pass
+                                else:
+                                    msg = "'set' value '{}' is not declared " \
+                                          "in 'sets' section (see {} "\
+                                          "application)"
+                                    msg = msg.format(app_desc[_SET_KNAME],
+                                                     app_name)
+                                    notify_error(msg)
+                                    result = False
+                            else:
+                                app_desc[_SET_KNAME] = app_set
+                        else:
+                            # Set the default value
+                            self._config[app_name] = {}
+                            app_desc = self._config[app_name]
+                            app_desc[_QUALNAME_KNAME] = app_qualname
+                            app_desc[_PATH_KNAME] = app_path
+                            app_desc[_SET_KNAME] = app_set
+            else:
+                msg = "the section '{}' is missing.".format(_APPS_SNAME)
+                notify_error(msg)
+                result = False
+
+            # Checked
+            self._checked_config = True
+            if result:
+                msg = "Configuration loaded from '{}'".format(config_file.name)
+                notify_info(msg)
+
+        config_file.close()
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def _read_catalog(self):
         """
         Load the product's catalog.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
-        msg = "Load the products' catalog ({0}).".format(self._catalog_filename)
-        _logger.info(msg)
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        result = True
         try:
-            with open(self._catalog_filename, "r+t") as file:
+            with open(self._catalog_path, "r+t") as file:
                 self._catalog = json.load(file)
                 # force the version number.
                 # at time, there is non need to have a update function
                 self._catalog[CAT_VERSION_KNAME] = CAT_VERSION
         except FileNotFoundError:
             # the catalog may be not exist
-            _logger.warning("The product's catalog don't exist. A new one "
-                            "will be created.")
+            notify_warning("The product's catalog don't exist, a new one will"
+                           " be created")
             self._catalog = {
                 CAT_WARNING_KNAME: _CAT_WARNING,
                 CAT_VERSION_KNAME: CAT_VERSION,
                 CAT_MODIFIED_KNAME: None,
                 CAT_PRODUCTS_KNAME: {}
             }
+        except json.JSONDecodeError as err:
+            msg = "Failed to parse the catalog: {}".format(str(err))
+            notify_error(msg)
+            result = False
+        except OSError as err:
+            msg = "Failed to read the catalog - OS error: {}".format(str(err))
+            notify_error(msg)
+            result = False
         else:
-            msg = "Products' catalog loaded."
-            _logger.info(msg)
+            msg = "Products' catalog loaded from" \
+                  " '{}'".format(self._catalog_path)
+            notify_info(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def _write_catalog(self):
         """
         Write the catalog products file.
-        """
-        msg = "Write the products' catalog ({0})."
-        _logger.info(msg.format(self._catalog_filename))
 
-        with open(self._catalog_filename, "w+t") as file:
-            # write the warning header with a naive time representation.
-            dt = (datetime.datetime.now()).replace(microsecond=0)
-            self._catalog[CAT_MODIFIED_KNAME] = dt.isoformat()
-            json.dump(self._catalog, file, indent=4, sort_keys=True)
-        msg = "Products' catalog saved"
-        _logger.info(msg)
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        msg = "Write the products' catalog ({0})."
+        _logger.info(msg.format(self._catalog_path))
+        result = True
+        try:
+            with open(self._catalog_path, "w+t") as file:
+                # write the warning header with a naive time representation.
+                dt = (datetime.datetime.now()).replace(microsecond=0)
+                self._catalog[CAT_MODIFIED_KNAME] = dt.isoformat()
+                json.dump(self._catalog, file, indent=4, sort_keys=True)
+        except OSError as err:
+            msg = "Failed to write the catalog - OS error: {}".format(str(err))
+            notify_error(msg)
+            result = False
+        else:
+            msg = "Products' catalog saved to " \
+                  " '{}'".format(self._catalog_path)
+            notify_info(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def _write_applist(self):
         """
         Write the `applist` files from the catalog.
+
+        Returns:
+            bool: True if the execution went well. In case of failure, an error
+            log is written.
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
         _logger.info("Write the applist files from the catalog.")
-        app_set_file = {}
+        result = True
+        set_file = {}
 
         header = \
             "# --------------------------------------------------------------" \
@@ -790,63 +1069,94 @@ class lAppTrack:
                 msg = "Deleting obsolete applist file : '{}'."
                 _logger.debug(msg.format(entry.name))
                 os.unlink(entry.path)
-        _logger.info("Applist files cleaned up.")
+        notify_info("Applist files cleaned up.")
 
         # Create the new applist files based on the 'sets' section of the
         # configuration file. All the applist files is going to be created
         # and should be empty.
-        for named_set in self._config[_SETS_SNAME]:
-            comps = self._config[_SETS_SNAME][named_set]
-            for comp_name in comps.split(","):
-                comp_name = comp_name.strip()
-                if comp_name:
-                    filename = _APPLIST_PREFIX + comp_name + _APPLIST_EXT
-                    filename = os.path.join(store_path, filename)
-                    if comp_name not in app_set_file:
-                        file = open(filename, "w+t")
-                        app_set_file[comp_name] = file
-                        msg = "'{0}' applist file created -> '{1}'."
-                        _logger.debug(msg.format(comp_name, filename))
-                        dt = (datetime.datetime.now()).replace(microsecond=0)
-                        file.write(header.format(dt.isoformat(), comp_name))
-                    else:
-                        msg = "'{}' applist file already exist."
-                        _logger.debug(msg.format(comp_name))
+        msg = "Building applist file"
+        notify_info(msg)
+        for k, v in self._config[_SETS_SNAME].items():
+            for name in v.split(","):
+                name = name.strip()
+                if name:
+                    path = _APPLIST_PREFIX + name + _APPLIST_EXT
+                    path = os.path.join(store_path, path)
+                    if name not in set_file:
+                        try:
+                            file = open(path, "w+t")
+                        except OSError as err:
+                            msg = "Failed to create the applist file {} - " \
+                                  "OS error: {}".format(path, str(err))
+                            notify_error(msg)
+                            result = False
+                        else:
+                            set_file[name] = file
+                            try:
+                                dt = (datetime.datetime.now()).replace(
+                                    microsecond=0)
+                                file.write(header.format(dt.isoformat(), name))
+                            except OSError as err:
+                                msg = "Failed to write the applist file {} - " \
+                                      "OS error: {}".format(path, str(err))
+                                notify_error(msg)
+                                result = False
                 else:
-                    msg = "Set '{}' contains no names or an empty one."
-                    _logger.warning(msg.format(named_set))
+                    msg = "Set '{}' contains no names or an empty " \
+                          "one ('{}')".format(k, v)
+                    notify_warning(msg)
 
-        for app_id in self._config[_APPS_SNAME]:
-            if self._config[_APPS_SNAME].getboolean(app_id):
-                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[CAT_APPROVED_KNAME]) != 0:
-                        app = app_entry[CAT_APPROVED_KNAME]
-                        # build the catalog line
-                        app_line = \
-                            app[_PROD_TARGET_KNAME] + _APPLIST_SEP + \
-                            app[_PROD_NAME_KNAME] + _APPLIST_SEP + \
-                            app[_PROD_VERSION_KNAME] + _APPLIST_SEP + \
-                            app[_PROD_INSTALLER_KNAME] + _APPLIST_SEP + \
-                            app[_PROD_SILENT_INSTALL_ARGS_KNAME]
+        if result:
+            apps_num = len(self._config[_APPS_SNAME])
+            for i, app_id in enumerate(self._config[_APPS_SNAME]):
+                msg = "Adding '{}' ({}/{})".format(app_id, i, apps_num)
+                _logger.info(msg)
+                if self._config[_APPS_SNAME].getboolean(app_id):
+                    if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
+                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                        if app_entry[CAT_APPROVED_KNAME]:
+                            app = app_entry[CAT_APPROVED_KNAME]
+                            # build the catalog line
+                            app_line = \
+                                app[_PROD_TARGET_KNAME] + _APPLIST_SEP + \
+                                app[_PROD_NAME_KNAME] + _APPLIST_SEP + \
+                                app[_PROD_VERSION_KNAME] + _APPLIST_SEP + \
+                                app[_PROD_INSTALLER_KNAME] + _APPLIST_SEP + \
+                                app[_PROD_SILENT_INSTALL_ARGS_KNAME]
 
-                        app_set_name = self._config[app_id][_SET_KNAME]
-                        comps = self._config[_SETS_SNAME][app_set_name]
-                        for comp_name in comps.split(","):
-                            comp_name = comp_name.strip()
-                            app_set_file[comp_name].write(app_line + "\n")
+                            app_set_name = self._config[app_id][_SET_KNAME]
+                            comps = self._config[_SETS_SNAME][app_set_name]
+                            for name in comps.split(","):
+                                name = name.strip()
+                                try:
+                                    set_file[name].write(app_line + "\n")
+                                except OSError as err:
+                                    msg = "Failed to write the applist file " \
+                                          "{} - OS error: {}".format(name,
+                                                                     str(err))
+                                    notify_error(msg)
+                                    result = False
                     else:
-                        msg = "The product '{0}' is not approved."
-                        _logger.info(msg.format(app_id))
+                        # The product do not exist in the catalog. It's a
+                        # product newly added and the update information have
+                        # not been fetched.
+                        msg = "The product '{0}' don't exist. " \
+                              "Request ignored.".format(app_id)
+                        notify_warning(msg)
                 else:
-                    msg = "The product '{0}' don't exist. Request ignored."
-                    _logger.warning(msg.format(app_id))
-            else:
-                _logger.info("'{0}' ignored.".format(app_id))
+                    msg = "Tracking of '{0}' deactivated.".format(app_id)
+                    notify_info(msg)
 
         # Terminate by closing the files
-        for comp_name, file in app_set_file.items():
-            file.close()
+        for name, file in set_file.items():
+            try:
+                file.close()
+            except OSError:
+                pass
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
 
 def _load_config(filename):
@@ -875,12 +1185,83 @@ def _load_config(filename):
     return config_dict
 
 
+def notify_start(verb):
+    """
+    Notify the user of the task starting.
+
+    The notification is displayed line on the console and in the log file.
+
+    Args:
+        verb (str): The action verb of the task
+    """
+    msg = "Starting task: {}".format(verb)
+    print(msg)
+    _logger.info(msg)
+
+
+def notify_end(verb, result):
+    """
+    Notify the user of the task completing.
+
+    The notification is displayed line on the console and in the log file.
+
+    Args:
+        verb (str): The action verb of the task
+        result (bool): True if the execution went well.
+    """
+    if result:
+        msg = "Task successfully completed : {}".format(verb)
+    else:
+        msg = "TASK FAILED : {}".format(verb.upper())
+    print(msg)
+    _logger.info(msg)
+
+
+def notify_info(msg):
+    """
+    Notify the user of the progress of the task.
+
+    The notification is displayed line on the console and in the log file.
+
+    Args:
+        msg (str): The information message
+    """
+    print(msg)
+    _logger.info(msg)
+
+
+def notify_error(msg):
+    """
+    Notify the user of an error.
+
+    The notification is displayed line on the console and in the log file.
+
+    Args:
+        msg (str): The error message
+    """
+    print("ERROR! - ", msg.upper())
+    _logger.error(msg)
+
+
+def notify_warning(msg):
+    """
+    Notify the user of a warning.
+
+    The notification is displayed line on the console and in the log file.
+
+    Args:
+        msg (str): The error message
+    """
+    print("warning! - ", msg)
+    _logger.warning(msg)
+
+
 def main():
     """
     Entry point
 
-    Returns:
-
+    This function call the sys.exit with the appropriate exit code (see
+    the section *Exit Code* in :mod:`lapptrack`)
     """
     # Entry point
     # Build the command line parser
@@ -921,21 +1302,31 @@ def main():
                         version="%(prog)s version " + __version__)
 
     # Parse and run.
-    args = parser.parse_args()
-    main_task = lAppTrack(args.configfile)
-    if args.pull:
-        main_task.pull()
-    elif args.fetch:
-        main_task.fetch()
-    elif args.approve:
-        main_task.approve(args.yes)
-    elif args.make:
-        main_task.make()
-    elif args.testconf:
-        main_task.test_config()
+    result = False
+    args = parser.parse_args()  # the arg_parse call sys.exit in case of failure
+    main_task = LAppTrack()
+    if args.testconf:
+        result = main_task.test_config(args.configfile)
     else:
-        main_task.run()
+        dt = datetime.datetime.now()
+        print("Starting {} on {:%c}".format(_DISPLAY_NAME, dt))
+        result = main_task.load_config(args.configfile)
+        if result:
+            if args.pull:
+                result = main_task.pull()
+            elif args.fetch:
+                result = main_task.fetch()
+            elif args.approve:
+                result = main_task.approve(args.yes)
+            elif args.make:
+                result = main_task.make()
+            else:
+                result = main_task.run()
+        dt = datetime.datetime.now()
+        print("{} completed on {:%c}".format(_DISPLAY_NAME, dt))
 
+    if not result:
+        sys.exit(1)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

@@ -21,18 +21,24 @@ from support import report
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
+__all__ = [
+    "ReportTestCase",
+]
+
+# Modules to be tested use the logging facility, so a minimal
+# configuration is set. To avoid side effects with the `unittest`
+# console output, log entries are written in a file.
+logging.basicConfig(
+    format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
+    filename="test_report.log",
+    filemode="a",
+    level=logging.DEBUG)
+_logger = logging.getLogger(__name__)
 
 
-class TestReport(unittest.TestCase):
+class ReportTestCase(unittest.TestCase):
     def setUp(self):
-        # Modules to be testes use the logging facility, so a minimal
-        # configuration is set.
-        logging.basicConfig(
-            filename=os.path.splitext(__file__)[0]+".log",
-            filemode="w",
-            format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
-            level=logging.ERROR)
-        _logger = logging.getLogger(__name__)
+        _logger.info(53*"-")
 
         self.content_attributes = {
             "name": "Dummy Product",
@@ -74,13 +80,12 @@ class TestReport(unittest.TestCase):
         }
 
     def tearDown(self):
-        pass
+        _logger.info(50*"-")
 
-    def test_api_default(self):
-        """
-        Make a report based on default values and publish it using available
-        handlers (Mail, File and Stream)
-        """
+    def test0101_api_default(self):
+        # Make a report based on default values and publish it using available
+        # handlers (Mail, File and Stream)
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -99,12 +104,12 @@ class TestReport(unittest.TestCase):
     
         a_report.add_section(self.content_attributes)
         a_report.publish()
+        _logger.info("Completed")
 
-    def test_multiple_report(self):
-        """
-        Make reports using multiple templates based on default values and write
-        it in files.
-        """
+    def test0201_multiple_report(self):
+        # Make reports using multiple templates based on default values and
+        # write it in files.
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -119,12 +124,12 @@ class TestReport(unittest.TestCase):
         a_report.set_template("../lapptrack/support/report_template.txt")
         a_handler.set_filename("../~store/report.txt")
         a_report.publish()
+        _logger.info("Completed")
 
-    def test_api_custom(self):
-        """
-        Make a report based on custom values and publish it using available
-        handlers (Mail, File and Stream). Customised values are set with API
-        """
+    def test0301_api_custom(self):
+        # Make a report based on custom values and publish it using available
+        # handlers (Mail, File and Stream). Customised values are set with API
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -150,34 +155,36 @@ class TestReport(unittest.TestCase):
     
         a_report.add_section(self.content_attributes)
         a_report.publish()
+        _logger.info("Completed")
 
-    def test_ini_default(self):
-        """
-        Make a report based on default values stored in a ini file and publish it
-        using available handlers (Mail, File and Stream).
-        """
+    def test0401_ini_default(self):
+        # Make a report based on default values stored in a ini file and publish
+        # it using available handlers (Mail, File and Stream).
+        _logger.info("Starting...")
         a_report = report.Report()
-        filename = os.path.join(os.path.dirname(__file__), "test_ini_default.ini")
+        filename = os.path.join(os.path.dirname(__file__),
+                                "test_ini_default.ini")
         a_report.load_config(self._load_config(filename), False)
         a_report.set_attributes(self.report_attributes)
         a_report.add_section(self.content_attributes)
         a_report.publish()
+        _logger.info("Completed")
 
-    def test_ini_custom(self):
-        """
-        Make a report based on custom values stored in a ini file and publish it
-        using available handlers (Mail, File and Stream).
-        """
+    def test0402_ini_custom(self):
+        # Make a report based on custom values stored in a ini file and publish
+        # it using available handlers (Mail, File and Stream).
+        _logger.info("Starting...")
         a_report = report.Report()
-        filename = os.path.join(os.path.dirname(__file__), "test_ini_custom.ini")
+        filename = os.path.join(os.path.dirname(__file__),
+                                "test_ini_custom.ini")
         a_report.load_config(self._load_config(filename), False)
         a_report.add_section(self.content_attributes)
         a_report.publish()
+        _logger.info("Completed")
 
-    def test_api_host_connect_error(self):
-        """
-        Use a non SMTP server (example.com)
-        """
+    def test0501_api_host_connect_error(self):
+        # Use a non SMTP server (example.com)
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -190,11 +197,11 @@ class TestReport(unittest.TestCase):
 
         with self.assertRaises(smtplib.SMTPConnectError):
             a_report.publish()
+        _logger.info("Completed")
 
-    def test_api_host_error(self):
-        """
-        Use a unknown hostname
-        """
+    def test0502_api_host_error(self):
+        # Use a unknown hostname
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -207,11 +214,11 @@ class TestReport(unittest.TestCase):
     
         with self.assertRaises(socket.gaierror):
             a_report.publish()
+        _logger.info("Completed")
 
-    def test_api_to_addr_error(self):
-        """
-        Use recipients invalid mail addresses
-        """
+    def test0503_api_to_addr_error(self):
+        # Use recipients invalid mail addresses
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -225,11 +232,11 @@ class TestReport(unittest.TestCase):
     
         with self.assertRaises(smtplib.SMTPRecipientsRefused):
             a_report.publish()
+        _logger.info("Completed")
 
-    def test_api_from_addr_error(self):
-        """
-        Use a sender unknown mail address
-        """
+    def test0504_api_from_addr_error(self):
+        # Use a sender unknown mail address
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -243,11 +250,11 @@ class TestReport(unittest.TestCase):
     
         with self.assertRaises(smtplib.SMTPSenderRefused):
             a_report.publish()
+        _logger.info("Completed")
 
-    def test_api_mail_folder_error(self):
-        """
-        Use a inaccessible path as a mail folder
-        """
+    def test0506_api_mail_folder_error(self):
+        # Use a inaccessible path as a mail folder
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -273,11 +280,11 @@ class TestReport(unittest.TestCase):
         with self.assertRaises(PermissionError):
             a_handler.set_pending_mail_folder("C:/Program Files/mailstore")
             a_report.publish()
+        _logger.info("Completed")
 
-    def test_api_file_folder_error(self):
-        """
-        Use a inaccessible path for the file report
-        """
+    def test0601_api_file_folder_error(self):
+        # Use a inaccessible path for the file report
+        _logger.info("Starting...")
         a_report = report.Report()
         a_report.set_template()
         a_report.set_attributes(self.report_attributes)
@@ -285,7 +292,8 @@ class TestReport(unittest.TestCase):
         a_handler = report.FileHandler()
         a_handler.set_mode("a")
         a_report.add_handler(a_handler)
-    
+        a_report.add_section(self.content_attributes)
+
         with self.assertRaises(FileNotFoundError):
             a_handler.set_filename("W:/Program Files/report.html")
             a_report.publish()
@@ -293,14 +301,16 @@ class TestReport(unittest.TestCase):
         with self.assertRaises(PermissionError):
             a_handler.set_filename("C:/Program Files/report.html")
             a_report.publish()
+        _logger.info("Completed")
 
     def _load_config(self, filename):
         """
         Load the configuration from a configuration file (see [`config.parser`]
-        (https://docs.python.org/3/library/configparser.html#module-configparser)
+        (https://docs.python.org/3/library/configparser.html
+        #module-configparser)
 
-        The configuration is stored in a dictionary with the same structure as the
-        configuration file.
+        The configuration is stored in a dictionary with the same structure as
+        the configuration file.
 
         :param filename: is the full path name of the configuration file.
         :return: a dictionary containing the configuration.

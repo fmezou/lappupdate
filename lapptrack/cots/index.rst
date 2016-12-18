@@ -16,4 +16,5 @@
 
    makemkv
    dummy
+   mock
    core

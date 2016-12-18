@@ -26,7 +26,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -49,12 +49,17 @@ class DummyHandler(core.BaseProduct):
         ===================================  ===================================
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
         super().__init__()
 
         # At this point, only name and catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "Dummy Product"
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def is_update(self, product):
         """
@@ -70,11 +75,14 @@ class DummyHandler(core.BaseProduct):
 
         Returns:
             bool: True if this instance is an update of the product specified
-                by the `product` parameter.
+            by the `product` parameter.
 
         Raises:
             TypeError: Parameters type mismatch.
         """
+        msg = ">>> (product={})"
+        _logger.debug(msg.format(product))
+
         # check parameters type
         if not isinstance(product, DummyHandler):
             msg = "product argument must be a class 'makemv.product'. not {0}"
@@ -82,14 +90,32 @@ class DummyHandler(core.BaseProduct):
             raise TypeError(msg)
 
         # comparison based on version number.
-        result = False
-        if semver.SemVer(self.version) < semver.SemVer(product.version):
-            result = True
-            msg = "A new version exist ({})."
-            _logger.debug(msg.format(product.version))
+        result = True
+        try:
+            a = semver.SemVer(self.version)
+        except ValueError as err:
+            msg = "Internal error: current product version - {}"
+            _logger.error(msg.format(str(err)))
+            result = False
         else:
-            msg = "No new version available."
-            _logger.debug(msg)
+            try:
+                b = semver.SemVer(product.version)
+            except ValueError as err:
+                msg = "Internal error: deployed product version - {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            else:
+                result = bool(a < b)
+
+        if result:
+            msg = "It is an update ({} vs. {})."
+            _logger.info(msg.format(self.version, product.version))
+        else:
+            msg = "{} is not an update."
+            _logger.info(msg.format(self.version))
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
         return result
 
     def get_origin(self, version=None):
@@ -101,18 +127,25 @@ class DummyHandler(core.BaseProduct):
                 deployed product). It'a string following the editor versioning
                 rules.
 
+        Returns:
+            bool: True if the download of the file went well. In case of
+            failure, the members are not modified and an error log is written.
+
         Raises:
             TypeError: Parameters type mismatch.
         """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
         # check parameters type
         if version is not None and not isinstance(version, str):
             msg = "version argument must be a class 'str' or None. not {0}"
             msg = msg.format(version.__class__)
             raise TypeError(msg)
 
-        msg = "Get the latest product information. Current version is '{0}'"
-        _logger.debug(msg.format(self.version))
-
+        msg = "Fetching the latest product information since the version {}"
+        _logger.info(msg.format(self.version))
+        result = True
         self.name = "Dummy Product"
         self.version = "1.0.1"
         self.display_name = "{} v{}".format(self.name, self.version)
@@ -144,3 +177,10 @@ class DummyHandler(core.BaseProduct):
         self.secure_hash = None
         self.std_inst_args = ""
         self.silent_inst_args = "/silent"
+
+        msg = "Latest product information fetched ({} published on {})"
+        _logger.info(msg.format(self.version, self.published))
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result

@@ -24,8 +24,8 @@ Functions reference
 This section details the specific functions used in this module.
 
 .. autofunction:: retrieve_file
-.. autofunction:: retrieve_tempfile
 .. autofunction:: get_handler
+.. autofunction:: get_file_hash
 
 Data reference
 --------------
@@ -40,12 +40,12 @@ Exceptions reference
 --------------------
 This section details the specific exception used in this module.
 
-.. autoexception:: UnexpectedContentLengthError
+.. autoexception:: ContentLengthError
     :members:
     :show-inheritance:
-.. autoexception:: UnexpectedContentError
+.. autoexception:: ContentError
     :members:
     :show-inheritance:
-.. autoexception:: UnexpectedContentTypeError
+.. autoexception:: ContentTypeError
     :members:
     :show-inheritance:

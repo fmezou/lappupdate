@@ -14,14 +14,14 @@ The easiest way to use is to import the module as below.
 'GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007'
 
 .. _Single-sourcing the Project Version: https://packaging.python.org/
-    single_source_version/#single-sourcing-the-project-version
+    single_source_version/# single-sourcing-the-project-version
 .. _Python Packaging User Guide: https://packaging.python.org/
 """
 
 __project__ = "lAppDownload"
 __version__ = "0.1.0-dev.0"
 __author__ = "Frederic MEZOU"
-__author_email__= "frederic.mezou@example.com"
+__author_email__ = "frederic.mezou@example.com"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __copyright__ = "2016, Frederic MEZOU"
 __description__ = "Tracks and downloads application installers or its update."

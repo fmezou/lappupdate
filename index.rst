@@ -10,7 +10,7 @@ standalone computers running under Microsoft Windows.
 
 It built around two main parts: the first one, named **lAppDeploy**, deploys
 application from a removable media or a shared folder; the second one, named
-**lAppTrack**, tracks and downloads application installers or its updates.
+**LAppTrack**, tracks and downloads application installers or its updates.
 
 |
 

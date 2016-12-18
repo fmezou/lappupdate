@@ -47,7 +47,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -57,7 +57,8 @@ class Error(Exception):
     Base class for PADParser exceptions.
 
     Args:
-        message (str): (optional) Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the
+            exception.
 
     Attributes:
         message (str): Human readable string describing the exception.
@@ -131,6 +132,8 @@ class PadParser(xml.etree.ElementTree.ElementTree):
     _PADSPECS_FILENAME = "padspec40.xml"
 
     def __init__(self, element=None, file=None):
+        msg = ">>> (element={}, file={})"
+        _logger.debug(msg.format(element, file))
         super().__init__(element, file)
 
         filename = os.path.join(os.path.dirname(__file__),
@@ -138,8 +141,8 @@ class PadParser(xml.etree.ElementTree.ElementTree):
         self._specs = xml.etree.ElementTree.parse(filename)
         self._tree = None
 
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def parse(self, source, parser=None):
         """
@@ -160,6 +163,8 @@ class PadParser(xml.etree.ElementTree.ElementTree):
             xml.etree.ElementTree.ElementTree: the root element of the
                 given source document.
         """
+        msg = ">>> (source={}, parser={})"
+        _logger.debug(msg.format(source, parser))
         super().parse(source, parser)
 
         # Load the PAD Specs (XML)
@@ -199,4 +204,6 @@ class PadParser(xml.etree.ElementTree.ElementTree):
                             _logger.debug(msg.format(path.text, item.text))
                         else:
                             raise PADSyntaxError(item.tag, item.text)
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(self._root))
         return self._root

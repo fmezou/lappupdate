@@ -5,18 +5,18 @@
 .. _lapptrack-devguide:
 
 #########################
-lAppTrack Developer Guide
+LAppTrack Developer Guide
 #########################
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
 This manual is designed for a *developer audience* to enhance features or to add
 plug-in to handle new products. This documentation describes data, classes and
-scripts composing the lAppTrack part.
+scripts composing the LAppTrack part.
 
-The **lAppTrack** part is written only in Python, and it composed of several
+The **LAppTrack** part is written only in Python, and it composed of several
 components. The main component is a script (:mod:`lapptrack`) in charge of the
 user interface (in text mode), plug-in handling and operations scheduling. The
-bulk of the lAppTrack part consists of a collection of python modules grouped
+bulk of the LAppTrack part consists of a collection of python modules grouped
 in a package (:mod:`cots`). Each of these modules tracks a :term:`product` based
 on the editor's information sources and fetches the updates.
 

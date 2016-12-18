@@ -5,7 +5,7 @@
 .. _lapptrack-userguide:
 
 ####################
-lAppTrack User Guide
+LAppTrack User Guide
 ####################
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 

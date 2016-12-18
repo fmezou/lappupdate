@@ -26,7 +26,7 @@ __all__ = [
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
@@ -48,8 +48,11 @@ class SemVer:
     Args:
         version_string (str): The version string matching the `semantic
             versioning specification`_. Otherwise a ValueError exception is
-            raised (see `semver.SemVer._parse`).
+            raised.
 
+    Raises:
+        TypeError: Parameters type mismatch.
+        ValueError: Version string do not match the specification rules.
 
     Attributes:
         major (property): get the major version number.
@@ -91,6 +94,9 @@ class SemVer:
         True
     """
     def __init__(self, version_string):
+        msg = ">>> (version_string={})"
+        _logger.debug(msg.format(version_string))
+
         # Default values
         self._version = []
         self._pre_release = []
@@ -100,8 +106,8 @@ class SemVer:
         # Parse the string
         self._parse(version_string)
 
-        msg = "Instance of {} created <- {}."
-        _logger.debug(msg.format(self.__class__, version_string))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     @property
     def major(self):
@@ -169,6 +175,8 @@ class SemVer:
 
     def __eq__(self, other):
         """Rich comparison method, return self == other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
         # check parameters type
         if not isinstance(other, SemVer):
             msg = "right operand argument must be a class 'SemVer'. not {0}"
@@ -182,19 +190,29 @@ class SemVer:
         if cmp == 0:
             result = True
 
-        msg = "{} vs {} -> {}"
-        _logger.debug(msg.format(self, other, result))
+        msg = "{} eq {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
         return result
 
     def __ne__(self, other):
         """Rich comparison method, return self != other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
+
         result = not self.__eq__(other)
-        msg = "{} vs {} -> {}"
-        _logger.debug(msg.format(self, other, result))
+
+        msg = "{} ne {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
         return result
 
     def __gt__(self, other):
         """Rich comparison method, return self > other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
         # check parameters type
         if not isinstance(other, SemVer):
             msg = "right operand argument must be a class 'SemVer'. not {0}"
@@ -208,12 +226,16 @@ class SemVer:
         if cmp == 1:
             result = True
 
-        msg = "{} vs {} -> {}"
-        _logger.debug(msg.format(self, other, result))
+        msg = "{} gt {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
         return result
 
     def __lt__(self, other):
         """Rich comparison method, return self < other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
         # check parameters type
         if not isinstance(other, SemVer):
             msg = "right argument must be a class 'SemVer'. not {0}"
@@ -227,8 +249,10 @@ class SemVer:
         if cmp == -1:
             result = True
 
-        msg = "{} vs {} -> {}"
-        _logger.debug(msg.format(self, other, result))
+        msg = "{} lt {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
         return result
 
     def _parse(self, version_string):
@@ -239,7 +263,13 @@ class SemVer:
             version_string (str): The version string matching the `semantic
                 versioning specification`_. Otherwise a ValueError exception is
                 raised.
+
+        Raises:
+            TypeError: Parameters type mismatch.
+            ValueError: Version string do not match the specification rules.
         """
+        msg = ">>> (version_string={})"
+        _logger.debug(msg.format(version_string))
         # check parameters type
         if not isinstance(version_string, str):
             msg = "version_string argument must be a class 'str'. not {0}"
@@ -257,34 +287,37 @@ class SemVer:
         self._version.append(int(match.group("minor")))
         self._version.append(int(match.group("patch")))
         msg = "{} -> Major:{}, Minor:{}, Patch:{}"
-        _logger.debug(msg.format(version_string,
-                                 self._version[0],
-                                 self._version[1],
-                                 self._version[2]))
+        _logger.info(msg.format(version_string,
+                                self._version[0],
+                                self._version[1],
+                                self._version[2]))
         if self._version[0] == 0:
             self._unstable = True
             msg = "{} -> Major version is zero, it's an unstable version."
-            _logger.debug(msg.format(version_string))
+            _logger.info(msg.format(version_string))
 
         pre_release = match.group("pre_release")
         if pre_release is not None:
             self._unstable = True
             self._pre_release = pre_release.split(".")
             msg = "{} -> Pre-release:{}, it's an unstable version."
-            _logger.debug(msg.format(version_string, self._pre_release))
+            _logger.info(msg.format(version_string, self._pre_release))
 
         build = match.group("build")
         if build is not None:
             self._build = build
             msg = "{} -> Build metadata:{}, it will be ignored."
-            _logger.debug(msg.format(version_string, self._build))
+            _logger.info(msg.format(version_string, self._build))
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
 
 def _comp_version(version1, version2):
     """
     Compare two version identifiers limited to the major, minor and patch fields.
 
-    The rule #11 specify the precedence rules for comparing version identifiers
+    The rule # 11 specify the precedence rules for comparing version identifiers
     (i.e. ``1.0.0 < 2.0.0 < 2.1.0 < 2.1.1``).
 
     Args:
@@ -299,7 +332,12 @@ def _comp_version(version1, version2):
             * -1: ``version1`` is lower than ``version2``
             * 0: ``version1`` is equal to ``version2``
             * 1: ``version1`` is greater than ``version2``
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
+    msg = ">>> (version1={}, version2={})"
+    _logger.debug(msg.format(version1, version2))
     # check parameters type
     if not isinstance(version1, list):
         msg = "version1 argument must be a class 'list'. not {0}"
@@ -321,6 +359,8 @@ def _comp_version(version1, version2):
                 result = 1
             break
 
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(result))
     return result
 
 
@@ -328,9 +368,9 @@ def _comp_prerelease(prerelease1, prerelease2):
     """
     Compare two pre-release version identifiers.
 
-    The rule #11 specify the precedence rules for comparing pre-release version
-    identifiers (i.e. 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2
-    < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0).
+    The rule # 11 specify the precedence rules for comparing pre-release version
+    identifiers (i.e. 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta <
+    1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0).
 
     Args:
         prerelease1 (list): The list of fields from the pre-release
@@ -344,7 +384,12 @@ def _comp_prerelease(prerelease1, prerelease2):
             * -1: ``prerelease1`` is lower than ``prerelease2``
             * 0: ``prerelease1`` is equal to ``prerelease2``
             * 1: ``prerelease1`` is greater than ``prerelease2``
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
+    msg = ">>> (prerelease1={}, version2={})"
+    _logger.debug(msg.format(prerelease1, prerelease2))
     # check parameters type
     if not isinstance(prerelease1, list):
         msg = "prerelease1 argument must be a class 'list'. not {0}"
@@ -376,6 +421,8 @@ def _comp_prerelease(prerelease1, prerelease2):
             elif cmp > 0:
                 result = 1
 
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(result))
     return result
 
 
@@ -404,7 +451,12 @@ def _compstr(string1, string2):
             * -1: ``string1`` is lower than ``string2``
             * 0: ``string1`` is equal to ``string2``
             * 1: ``string1`` is greater than ``string1``
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
+    msg = ">>> (string1={}, string2={})"
+    _logger.debug(msg.format(string1, string2))
     # check parameters type
     if not isinstance(string1, str):
         msg = "string1 argument must be a class 'str'. not {0}"
@@ -430,4 +482,6 @@ def _compstr(string1, string2):
         elif string1 > string2:
             result = 1
 
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(result))
     return result

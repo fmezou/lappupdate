@@ -1,7 +1,7 @@
 """
 This module defines core functions and classes for product handlers.
 
-All product handlers are derived classes from `BaseProduct` class.
+Product handlers are derived classes from `BaseProduct` class.
 
 
 Public Classes
@@ -18,8 +18,8 @@ Public Functions
 This module has a number of functions listed below in alphabetical order.
 
 ===================================  ===================================
-`get_handler`                        `retrieve_tempfile`
-`retrieve_file`
+`get_handler`                        `retrieve_file`
+`get_file_hash`                      ..
 ===================================  ===================================
 
 
@@ -28,8 +28,8 @@ Public Exceptions
 This module has has a number of exceptions listed below in alphabetical order.
 
 ===================================  ===================================
-`UnexpectedContentError`             `UnexpectedContentLengthError`
-`UnexpectedContentTypeError`         ..
+`ContentError`                       `ContentTypeError`
+`ContentLengthError`                 ..
 ===================================  ===================================
 
 """
@@ -38,8 +38,9 @@ import contextlib
 import hashlib
 import logging
 import os
-import tempfile
 import urllib.request
+import urllib.parse
+import urllib.error
 import importlib
 
 from support import progressbar
@@ -50,10 +51,11 @@ __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
     "BaseProduct",
     "retrieve_file",
-    "retrieve_tempfile",
-    "UnexpectedContentLengthError",
-    "UnexpectedContentError",
-    "UnexpectedContentTypeError"
+    "get_file_hash",
+    "get_handler",
+    "ContentLengthError",
+    "ContentError",
+    "ContentTypeError"
 ]
 
 # Target architecture supported (see `BaseProduct.target` attribute)
@@ -69,17 +71,18 @@ TARGET_UNIFIED = "unified"
 
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
-# docs.python.org/3/howto/logging.html#configuring-logging-for-a-library
+# docs.python.org/3/howto/logging.html# configuring-logging-for-a-library
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 
 
 class Error(Exception):
     """
-    Base class for COTS Core exceptions.
+    Base class for Core exceptions.
 
     Args:
-        message (str): (optional) Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the
+            exception.
 
     Attributes:
         message (str): Human readable string describing the exception.
@@ -91,9 +94,9 @@ class Error(Exception):
         return self.message
 
 
-class UnexpectedContentLengthError(Error):
+class ContentLengthError(Error):
     """
-    Raised when the content length don't match.
+    Raised when the content length does not match the expected length.
 
     Args:
         url (str): The URL of the fetched file.
@@ -107,16 +110,16 @@ class UnexpectedContentLengthError(Error):
     """
     def __init__(self, url, expected, received):
         msg = "Unexpected content length: {0} received bytes vs. {1} " \
-              "waited. \nUrl '{2}'."
+              "waited. Url '{2}'."
         Error.__init__(self, msg.format(received, expected, url))
         self.expected = expected
         self.received = received
         self.url = url
 
 
-class UnexpectedContentError(Error):
+class ContentError(Error):
     """
-    Raised when the content secure hash don't match.
+    Raised when the content secure hash does not match the expected hash.
 
     Args:
         url (str): The URL of the fetched file.
@@ -131,8 +134,8 @@ class UnexpectedContentError(Error):
         computed (str): The computed secure hash value in hexadecimal notation.
     """
     def __init__(self, url, algorithm, expected, computed):
-        msg = "Unexpected content secure hash: {0} computed bytes vs. {1} " \
-              "waited. \nUrl '{2}'."
+        msg = "Unexpected content secure hash: {0} computed vs. {1} waited. " \
+              "Url '{2}'."
         Error.__init__(self, msg.format(computed, expected, url))
         self.algorithm = algorithm
         self.expected = expected
@@ -140,9 +143,9 @@ class UnexpectedContentError(Error):
         self.url = url
 
 
-class UnexpectedContentTypeError(Error):
+class ContentTypeError(Error):
     """
-    Raised when the content-type don't match.
+    Raised when the content-type does not match the expected type.
 
     Args:
         url (str): The URL of the fetched file.
@@ -156,7 +159,7 @@ class UnexpectedContentTypeError(Error):
     """
 
     def __init__(self, url, expected, received):
-        msg = "Unexpected content type: '{0}' received vs. '{1}' waited. \n" \
+        msg = "Unexpected content type: '{0}' received vs. '{1}' waited. " \
               "Url '{2}'."
         Error.__init__(self, msg.format(received, expected, url))
         self.expected = expected
@@ -231,7 +234,7 @@ class BaseProduct:
 
     **Using BaseProduct...**
         This class is the base class for product handler used by
-        `lapptrack.lAppTrack` and this one only use the public methods.
+        `lapptrack.LAppTrack` and this one only use the public methods.
 
         After created a class instance, the `get_origin` method populate the
         attributes with the most up-to-date information from the editor's
@@ -245,9 +248,12 @@ class BaseProduct:
         Then you can save the updated instances by calling the `dump` method.
     """
     def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
+
         self.name = ""
         self.display_name = ""
-        self.version = ""
+        self.version = "0.0.0"  # Match with the semantic versioning rules
         self.published = ""
         self.target = TARGET_UNIFIED
         self.description = ""
@@ -267,10 +273,10 @@ class BaseProduct:
 
         self._catalog_url = ""
 
-        msg = "Instance of {} created."
-        _logger.debug(msg.format(self.__class__))
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
-    def load(self, attributes=None):
+    def load(self, attributes):
         """
         Load a product class.
 
@@ -283,23 +289,29 @@ class BaseProduct:
         Raises:
             TypeError: Parameters type mismatch.
         """
+        msg = ">>> (attributes={})"
+        _logger.debug(msg.format(attributes))
         # check parameters type
-        if attributes is not None:
-            if not isinstance(attributes, dict):
-                msg = "attributes argument must be a class 'dict'. not {0}"
-                msg = msg.format(attributes.__class__)
-                raise TypeError(msg)
+        if not isinstance(attributes, dict):
+            msg = "attributes argument must be a class 'dict'. not {0}"
+            msg = msg.format(attributes.__class__)
+            raise TypeError(msg)
 
         # set instance variables
-        _logger.info("Load the product.")
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
             else:
-                if attributes[k] is not None:
+                if k in attributes:
                     self.__dict__[k] = attributes[k]
                     msg = "Instance variables '{0}' : '{1}' -> '{2}'"
                     _logger.debug(msg.format(k, v, attributes[k]))
+                else:
+                    msg = "Instance variables '{0}' : not modified"
+                    _logger.debug(msg.format(k))
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
 
     def dump(self):
         """
@@ -308,13 +320,18 @@ class BaseProduct:
         Returns:
             dict: Contain a copy of the instance variables values.
         """
+        msg = ">>> ()"
+        _logger.debug(msg)
+
         attributes = {}
-        _logger.info("Dump the product.")
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue  # non-public instance variables are ignored
             else:
                 attributes[k] = v
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(attributes))
         return attributes
 
     def get_origin(self, version=None):
@@ -328,34 +345,94 @@ class BaseProduct:
                 deployed product). It'a string following the editor versioning
                 rules.
 
+        Returns:
+            bool: True if the download of the file went well. In case of
+            failure, the members are not modified and an error log is written.
+
         Raises:
             TypeError: Parameters type mismatch.
         """
         raise NotImplementedError
 
-    def fetch(self, path):
+    def fetch(self, dirpath):
         """
         Download the product installer.
 
         Args:
-            path (str): The path name where to store the installer package.
+            dirpath (str): The directory path name where to store the installer
+                package.
+
+        Returns:
+            bool: True if the download of the file went well. In case of
+            failure, the members are not modified and an error log is written.
 
         Raises:
-            TypeError: Parameters type mismatch.
-            UnexpectedContentLengthError: The content length don't match.
-            UnexpectedContentError: The content secure hash don't match.
-            Same as `urllib.request.urlopen`.
+            `TypeError`: Parameters type mismatch.
         """
-        msg = "Downloads the latest version of the installer."
-        _logger.debug(msg)
+        msg = ">>> (dirpath={})"
+        _logger.debug(msg.format(dirpath))
 
-        # Update the update object
-        local_filename = retrieve_file(self.location, path,
-                                       content_length=self.file_size,
-                                       content_hash=self.secure_hash)
-        self._rename_installer(local_filename)
-        msg = "Update downloaded in '{}'".format(self.installer)
-        _logger.debug(msg)
+        result = True
+        # TODO (fmezou): l'url ne contient pas necessairement le nom de la
+        # ressource, il faut utiliser le champs Content-disposition
+        # Content-Disposition: attachment; filename=my_sandbox.tar.gz
+        # see RFC 2183
+        components = urllib.parse.urlsplit(self.location)
+        name = os.path.basename(
+            urllib.request.url2pathname(components.path))
+        ext = os.path.splitext(name)[1]
+        filename = "{}_{}{}".format(self.name, self.version, ext)
+        pathname = os.path.normcase(os.path.join(dirpath, filename))
+        tempname = self.installer + ".partial"
+
+        try:
+            os.makedirs(dirpath, exist_ok=True)
+        except OSError as err:
+            msg = "Failed to create the destination directory - OS error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+
+        if result:
+            try:
+                with open(tempname, mode="wb") as file:
+                    t, l, h = retrieve_file(self.location,
+                                            file,
+                                            exp_clength=self.file_size,
+                                            exp_chash=self.secure_hash)
+                os.replace(tempname, pathname)  # rename with the real name
+            except urllib.error.URLError as err:
+                msg = "Inaccessible resource: {} - url: {}"
+                _logger.error(msg.format(str(err), self.location))
+                result = False
+            except (ContentTypeError, ContentLengthError, ContentError) as err:
+                msg = "Unexpected content: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            except ValueError as err:
+                msg = "Internal error: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            except OSError as err:
+                msg = "OS error: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
+            else:
+                self.file_size = l
+                self.secure_hash = h
+                self.installer = pathname
+                msg = "Installer downloaded: '{}'".format(self.installer)
+                _logger.info(msg)
+
+        # clean up
+        if not result:
+            try:
+                os.remove(tempname)
+            except OSError:
+                pass
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
     def is_update(self, product):
         """
@@ -369,261 +446,176 @@ class BaseProduct:
 
         Returns:
             bool: True if this instance is an update of the product specified
-                by the `product` parameter.
+            by the `product` parameter.
         """
         raise NotImplementedError
 
-    def _rename_installer(self, filename):
-        """
-        Rename the installer executable.
 
-        Installer name match the following format:
-        ``<name>_<version>.<extension>``
-
-        where
-
-        * ``name``: is the name of the product
-        * ``version``: is the version of the product
-        * ``extension``: is the original extension of the download resource.
-
-
-        Args:
-            filename (str): The local name of the installer executable.
-
-        Raises:
-            TypeError: Parameters type mismatch.
-            The others exception are the same as `os.replace`.
-        """
-        # check parameters type
-        if not isinstance(filename, str):
-            msg = "filename argument must be a class 'str'. not {0}"
-            msg = msg.format(filename.__class__)
-            raise TypeError(msg)
-
-        # Compute the destination name and replace it
-        basename = os.path.dirname(filename)
-        ext = os.path.splitext(filename)[1]
-        dest = "{}_{}{}".format(self.name, self.version, ext)
-        self.installer = os.path.normpath(os.path.join(basename, dest))
-        os.replace(filename, self.installer)
-
-
-def retrieve_tempfile(url,
-                      content_type=None, content_length=-1, content_hash=None):
+def retrieve_file(url, file, exp_ctype=None, exp_clength=-1, exp_chash=None):
     """
-    Retrieve a URL into a temporary url on disk.
-
-    Args:
-        url (str): The URL of the file to retrieve.
-        content_type (str): (optional) The mime type of the retrieved file. No
-            check will be done if the value is None.
-        content_length (int): (optional) The expected length of the retrieved
-            file expressed in bytes. -1 means that the expected length is
-            unknown.
-        content_hash (2-tuple): The expected secure hash value of the
-            retrieved file. No check will be done if the value is None. It's a
-            tuple containing, in this order, the name of secure hash algorithm
-            (see `hashlib.algorithms_guaranteed`) and the secure hash value in
-            hexadecimal notation. If the secure hash algorithm is not supported,
-            it will be ignored.
-
-    Returns:
-        str: a string specifying the local file name.
-
-    Raises:
-        TypeError: Parameters type mismatch.
-        UnexpectedContentTypeError: The downloaded content-type don't match.
-        UnexpectedContentLengthError: The content length don't match.
-        UnexpectedContentError: the content secure hash don't match.
-        Same as `urllib.request.urlopen`.
-    """
-    # check parameters type
-    if not isinstance(url, str):
-        msg = "url argument must be a class 'str'. not {0}"
-        msg = msg.format(url.__class__)
-        raise TypeError(msg)
-
-    # default value
-    filename = ""
-
-    with tempfile.NamedTemporaryFile(delete=False) as file:
-        filename = file.name
-        _retrieve_file(url, file, content_type, content_length, content_hash)
-
-    return filename
-
-
-def retrieve_file(url, dir_name,
-                  content_type=None, content_length=-1, content_hash=None):
-    """
-    Retrieve a URL into a file on disk.
-
-    The filename is the same as the name of the retrieved resource.
-
-    Args:
-        url (str): The URL of the file to retrieve.
-        dir_name (str): The pathname of the directory where the retrieved file
-            is going to be written.
-        content_type (str): (optional) The mime type of the retrieved file. No
-            check will be done if the value is None.
-        content_length (int): (optional) The expected length of the retrieved
-            file expressed in bytes. -1 means that the expected length is
-            unknown.
-        content_hash (2-tuple): The expected secure hash value of the
-            retrieved file. No check will be done if the value is None. It's a
-            tuple containing, in this order, the name of secure hash algorithm
-            (see `hashlib.algorithms_guaranteed`) and the secure hash value in
-            hexadecimal notation. If the secure hash algorithm is not supported,
-            it will be ignored.
-
-    Returns:
-        str: a string specifying the local file name.
-
-    Raises:
-        TypeError: Parameters type mismatch.
-        UnexpectedContentTypeError: The downloaded content-type don't match.
-        UnexpectedContentLengthError: The content length don't match.
-        UnexpectedContentError: The content secure hash don't match.
-        Same as `urllib.request.urlopen`.
-    """
-    # check parameters type
-    if not isinstance(url, str):
-        msg = "url argument must be a class 'str'. not {0}"
-        msg = msg.format(url.__class__)
-        raise TypeError(msg)
-    if not isinstance(dir_name, str):
-        msg = "dir_name argument must be a class 'str'. not {0}"
-        msg = msg.format(dir_name.__class__)
-        raise TypeError(msg)
-
-    # default value
-    filename = ""
-
-    os.makedirs(dir_name, exist_ok=True)
-    basename = os.path.basename(urllib.request.url2pathname(url))
-    filename = os.path.join(dir_name, basename)
-    part_filename = filename + ".partial"
-    with open(part_filename, mode="wb") as file:
-        _retrieve_file(url, file, content_type, content_length, content_hash)
-    os.replace(part_filename, filename)  # rename with the real name
-
-    return filename
-
-
-def _retrieve_file(url, file,
-                   content_type=None, content_length=-1, content_hash=None):
-    """
-    Retrieve a URL into a url on disk.
+    Retrieve a URL into a file-like object.
 
 
     Args:
         url (str): The URL of the file to retrieve.
         file (file-like object): A file-like object to use to store the
             retrieved data.
-        content_type (str): (optional) The mime type of the retrieved file. No
-            check will be done if the value is None.
-        content_length (int): (optional) The expected length of the retrieved
+        exp_ctype (str): (optional) The expected mime type of the retrieved
+            file. No check will be done if the value is None.
+        exp_clength (int): (optional) The expected length of the retrieved
             file expressed in bytes. -1 means that the expected length is
             unknown.
-        content_hash (2-tuple): The expected secure hash value of the
-            retrieved file. No check will be done if the value is None. It's a
-            tuple containing, in this order, the name of secure hash algorithm
+        exp_chash (2-tuple): The expected secure hash value of the retrieved
+            file. No check will be done if the value is None. It's a tuple
+            containing, in this order, the name of secure hash algorithm
             (see `hashlib.algorithms_guaranteed`) and the secure hash value in
             hexadecimal notation. If the secure hash algorithm is not supported,
-             it will be ignored.
+            it will be ignored.
+
+    Returns:
+        tuple: it's a 3-tuple containing, in this order, the content type, the
+        content length and the content hash and . If the content hash algorithm
+        is not specified in the :dfn:`content_hash` parameter, the sha-1
+        algorithm will be used.
 
     Raises:
         TypeError: Parameters type mismatch.
-        UnexpectedContentTypeError: The downloaded content-type don't match.
-        UnexpectedContentLengthError: The content length don't match.
-        UnexpectedContentError: The content secure hash don't match.
+        ContentTypeError: The downloaded content-type don't match.
+        ContentLengthError: The content length don't match.
+        ContentError: The content secure hash don't match.
         Same as `urllib.request.urlopen`.
     """
+    msg = ">>> (url={}, file={}, exp_ctype={}, exp_clength={}, exp_chash={})"
+    _logger.debug(msg.format(url, file, exp_ctype, exp_clength, exp_chash))
+
     # check parameters type
     if not isinstance(url, str):
         msg = "url argument must be a class 'str'. not {0}"
         msg = msg.format(url.__class__)
         raise TypeError(msg)
-    if content_type is not None:
-        if not isinstance(content_type, str):
-            msg = "content_type argument must be a class 'str'. not {0}"
-            msg = msg.format(content_type.__class__)
+
+    if exp_ctype is not None:
+        if not isinstance(exp_ctype, str):
+            msg = "exp_ctype argument must be a class 'str'. not {0}"
+            msg = msg.format(exp_ctype.__class__)
             raise TypeError(msg)
-    if not isinstance(content_length, int):
-        msg = "content_length argument must be a class 'int'. not {0}"
-        msg = msg.format(content_length.__class__)
+
+    if not isinstance(exp_clength, int):
+        msg = "exp_clength argument must be a class 'int'. not {0}"
+        msg = msg.format(exp_clength.__class__)
         raise TypeError(msg)
-    if content_hash is not None:
-        if not isinstance(content_hash, tuple):
-            msg = "content_hash argument must be a class 'tuple'. not {0}"
-            msg = msg.format(content_hash.__class__)
+
+    if exp_chash is not None:
+        if isinstance(exp_chash, tuple) and len(exp_chash) == 2:
+            if not isinstance(exp_chash[0], str):
+                msg = "hash algorithm argument must be a class 'str'. not {0}"
+                msg = msg.format(exp_chash[0].__class__)
+                raise TypeError(msg)
+            if not isinstance(exp_chash[1], str):
+                msg = "hash value argument must be a class 'str'. not {0}"
+                msg = msg.format(exp_chash[1].__class__)
+                raise TypeError(msg)
+        else:
+            msg = "exp_chash argument must be a class 'tuple'. not {0}"
+            msg = msg.format(exp_chash.__class__)
             raise TypeError(msg)
-        if content_hash[0] not in hashlib.algorithms_available:
-            msg = "Hash algorithm {} is not supported. Hash control " \
-                  "will be ignored."
-            _logger.warning(msg.format(content_hash[0]))
-            content_hash = None  # Deactivate the secure hash control
 
     # retrieve the resource
-    msg = "Retrieve '{}'"
-    _logger.debug(msg.format(url))
+    check_ctype = True
+    check_clength = True
+    check_chash = True
+    rcv_ctype = ""
+    rcv_clength = -1
+    rcv_hash = hashlib.sha1()
 
     # some web servers refuse to deliver pages when the user-agent is set to
     # 'Python-urllib'. So the user-agent is set to the name of the project.
+    # TODO (fmezou): mettre le nom et la version du projet dans le user-agent
+    # see version.py
     headers = {"User-Agent": "lAppUpdate/0.1"}
+
     request = urllib.request.Request(url, headers=headers)
     with contextlib.closing(urllib.request.urlopen(request)) as stream:
         headers = stream.info()
         # Check the expected content
-        if "Content-Type" in headers and content_type is not None:
-            if headers["Content-Type"] != content_type:
-                raise UnexpectedContentTypeError(url, content_type,
-                                                 headers["Content-Type"])
+        if "Content-Type" in headers:
+            rcv_ctype = headers["Content-Type"]
+            if exp_ctype is not None:
+                if rcv_ctype != exp_ctype:
+                    raise ContentTypeError(url, exp_ctype, rcv_ctype)
+            else:
+                check_ctype = False
+                msg = "Content-type is not specified."
+                _logger.warning(msg)
+        else:
+            check_ctype = False
+            msg = "Content-type header do not exist."
+            _logger.warning(msg)
+        if not check_ctype:
+            msg = "Content-type control will be ignored."
+            _logger.warning(msg)
 
         if "Content-Length" in headers:
-            length = int(headers["Content-Length"])
-            if content_length == -1:
-                content_length = length
+            rcv_clength = int(headers["Content-Length"])
+            if exp_clength != -1 and rcv_clength != exp_clength:
+                raise ContentLengthError(url, exp_clength, rcv_clength)
+        else:
+            if exp_clength == -1:
+                check_clength = False
+                msg = "Content-Length is not specified."
+                _logger.warning(msg)
+        if not check_clength:
+            msg = "Content-Length control will be ignored."
+            _logger.warning(msg)
+
+        if exp_chash:
+            if exp_chash[0] in hashlib.algorithms_available:
+                rcv_hash = hashlib.new(exp_chash[0])
             else:
-                if length != content_length:
-                    raise UnexpectedContentLengthError(url,
-                                                       content_length,
-                                                       length)
+                check_chash = False
+                msg = "Hash algorithm {} is not supported"
+                _logger.warning(msg.format(exp_chash[0]))
+        else:
+            check_chash = False
+            msg = "Hash algorithm is not specified"
+            _logger.warning(msg)
+        if not check_chash:
+            msg = "Content-Hash control will be ignored."
+            _logger.warning(msg)
 
-        msg = "Retrieve '{}' in '{}'"
-        _logger.debug(msg.format(url, file.name))
-
+        msg = "Retrieving '{}' -> '{}'"
+        _logger.info(msg.format(url, file.name))
         length = 0
-        secure_hash = None
-        if content_hash is not None:
-            secure_hash = hashlib.new(content_hash[0])
-
-        progress_bar = progressbar.TextProgressBar(content_length)
-        progress_bar.compute(length, content_length)
-
-        while True:
-            data = stream.read(4096)
-            if not data:
-                break
+        # TODO (fmezou) prevoir la passage en paramètre de l'objet
+        progress_bar = progressbar.TextProgressBar(exp_clength)
+        progress_bar.compute(length, exp_clength)
+        data = stream.read(1500)
+        while data:
             length += len(data)
             file.write(data)
-            if secure_hash is not None:
-                secure_hash.update(data)
-            progress_bar.compute(length, content_length)
+            rcv_hash.update(data)
+            progress_bar.compute(length, rcv_clength)
+            data = stream.read(1500)
+        progress_bar.finish()
+        msg = "'{}' retrieved - (length: {}B, mime type: {}, {}={})"
+        msg = msg.format(file.name, rcv_clength, rcv_ctype,
+                         rcv_hash.name, rcv_hash.hexdigest())
+        _logger.info(msg)
 
-        msg = "'{}' retrieved - ".format(url)
-        msg += progress_bar.finish()
-        _logger.debug(msg)
+        # Post content checking
+        if check_clength:
+            if length != rcv_clength:
+                raise ContentLengthError(url, rcv_clength, length)
+        if check_chash:
+            if rcv_hash.hexdigest() != exp_chash[1]:
+                raise ContentError(url, exp_chash[0], exp_chash[1],
+                                   rcv_hash.hexdigest())
 
-        # Content checking
-        if content_length >= 0 and length < content_length:
-            raise UnexpectedContentLengthError(url, content_length, length)
-        if secure_hash is not None and secure_hash.hexdigest() != \
-                content_hash[1]:
-            raise UnexpectedContentError(url,
-                                         content_hash[0],
-                                         content_hash[1],
-                                         secure_hash.hexdigest())
+    result = (rcv_ctype, rcv_clength, (rcv_hash.name, rcv_hash.hexdigest()))
+
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(result))
+    return result
 
 
 def get_handler(qualname):
@@ -644,6 +636,8 @@ def get_handler(qualname):
         TypeError: Parameters type mismatch.
         ImportError:  Import fails to find the handler module or class.
     """
+    msg = ">>> (qualname={})"
+    _logger.debug(msg.format(qualname))
     # check parameters type
     if not isinstance(qualname, str):
         msg = "qualname argument must be a class 'str'. not {0}"
@@ -651,8 +645,6 @@ def get_handler(qualname):
         raise TypeError(msg)
 
     names = qualname.split(".")
-    handler_class = None
-    handler = None
     if len(names) < 2:
         name = names[-1]
         msg = "No module named for handler class '{}'".format(name)
@@ -662,16 +654,58 @@ def get_handler(qualname):
     name = names[-1]
     module = importlib.import_module(path)
     if name not in module.__dict__:
-        msg="No handler class named '{}' in module '{}'".format(name, path)
+        msg = "No handler class named '{}' in module '{}'".format(name, path)
         raise ImportError(msg, name=name, path=path)
 
     handler_class = module.__dict__[name]
-    if BaseProduct not in handler_class.__bases__:
+    if not issubclass(handler_class, BaseProduct):
         msg = "Handler class must be a class 'BaseProduct'. not {0}"
         msg = msg.format(handler_class)
         raise TypeError(msg)
 
-    handler = handler_class()
+    msg = "{} handler loaded from {} package"
+    _logger.info(msg.format(handler_class, path))
+    result = handler_class()
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(result))
+    return result
 
-    return handler
+
+def get_file_hash(path, hash_name):
+    """
+    Compute a secure hash based on the content of a file.
+
+    Args:
+        path (str): The pathname of the file
+        hash_name: The name of secure hash algorithm (see
+            `hashlib.algorithms_guaranteed`). If the secure hash algorithm is
+            not supported, a `ValueError` exception is raised.
+
+    Returns:
+        HASH: A hash object instance (see `hashlib`). This instance contains
+        the computed hash of the given path.
+
+    """
+    msg = ">>> (path={}, hash_name={})"
+    _logger.debug(msg.format(path, hash_name))
+    # check parameters type
+    if not isinstance(path, str):
+        msg = "path argument must be a class 'str'. not {0}"
+        msg = msg.format(path.__class__)
+        raise TypeError(msg)
+    if hash_name not in hashlib.algorithms_available:
+        msg = "Hash algorithm {} is not supported."
+        raise ValueError(msg)
+
+    secure_hash = hashlib.new(hash_name)
+    with open(path, mode="rb") as file:
+        while True:
+            data = file.read(4096)
+            if not data:
+                break
+            secure_hash.update(data)
+
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(secure_hash))
+    return secure_hash
 
