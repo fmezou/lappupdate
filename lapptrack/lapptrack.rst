@@ -21,6 +21,12 @@ for implementing user interface.
     :members:
     :show-inheritance:
 
+Functions reference
+-------------------
+This section details the specific functions used in this module.
+
+.. autofunction:: main
+
 Data reference
 --------------
 This section details global data, including both variables and values used

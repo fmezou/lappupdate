@@ -52,7 +52,7 @@ Configuration file
 
 
 Report Templates
------------------
+----------------
 
 .. literalinclude:: report_template.html
    :language: html

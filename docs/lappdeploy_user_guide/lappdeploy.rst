@@ -37,7 +37,7 @@ Exit code
 ==  ============================================================================
 
 Environment variables
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 The following environment variables affect the execution:
 

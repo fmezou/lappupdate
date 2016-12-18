@@ -43,12 +43,12 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
       with no Content-Length header.
     * *notype*: this resource return the content of default file (lorem.txt)
       with no Content-Type header.
-    * *increaselen*: this resource return the content of default file (lorem.txt)
-      with Content-Length header increased (the real content length do not
-      change).
-    * *decreaselen*: this resource return the content of default file (lorem.txt)
-      with Content-Length header decreased (the real content length do not
-      change).
+    * *increaselen*: this resource return the content of default file
+      (lorem.txt) with Content-Length header increased (the real content length
+      do not change).
+    * *decreaselen*: this resource return the content of default file
+      (lorem.txt) with Content-Length header decreased (the real content length
+      do not change).
 
     In other cases, this serves files from the current directory and any of its
     subdirectories (topic `http.server.SimpleHTTPRequestHandler` details the

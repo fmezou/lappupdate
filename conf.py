@@ -123,8 +123,8 @@ html_theme_options = {
     "github_repo": "lappupdate",
     "github_banner": False,
     "fixed_sidebar": True,
-    "extra_nav_links" : {
-        "Get it...":"http://fmezou.github.io/"
+    "extra_nav_links": {
+        "Get it...": "http://fmezou.github.io/"
     }
 }
 
@@ -134,7 +134,7 @@ html_sidebars = {
     "**": [
         "about.html",
         "navigation.html",
-        "sidebar_index.html", # Project's specific sidebar for Index
+        "sidebar_index.html",  # Project's specific sidebar for Index
         "relations.html",
         "searchbox.html",
         "donate.html",
@@ -229,17 +229,17 @@ htmlhelp_basename = "lAppUpdatedoc"
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-# The paper size ("letterpaper" or "a4paper").
-# "papersize": "letterpaper",
+    # The paper size ("letterpaper" or "a4paper").
+    # "papersize": "letterpaper",
 
-# The font size ("10pt", "11pt" or "12pt").
-# "pointsize": "10pt",
+    # The font size ("10pt", "11pt" or "12pt").
+    # "pointsize": "10pt",
 
-# Additional stuff for the LaTeX preamble.
-# "preamble": "",
+    # Additional stuff for the LaTeX preamble.
+    # "preamble": "",
 
-# Latex figure (float) alignment
-# "figure_align": "htbp",
+    # Latex figure (float) alignment
+    # "figure_align": "htbp",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -248,10 +248,10 @@ latex_elements = {
 latex_documents = [
     ("docs/about/about", "about.tex", "", "", "howto"),
     ("docs/lappdeploy_dev_guide/index", "lappdeploy_dev_guide.tex", "", "", "manual"),
-    ("docs/lappdeploy_user_guide/index", "lappdeploy_user_guide.tex","", "", "manual"),
-    ("docs/lapptrack_dev_guide/index", "lapptrack_dev_guide.tex","", "", "manual"),
-    ("docs/lapptrack_user_guide/index", "lapptrack_user_guide.tex","", "", "manual"),
-    ("docs/background_papers/index", "background_papers.tex", "", "","manual"),
+    ("docs/lappdeploy_user_guide/index", "lappdeploy_user_guide.tex", "", "", "manual"),
+    ("docs/lapptrack_dev_guide/index", "lapptrack_dev_guide.tex", "", "", "manual"),
+    ("docs/lapptrack_user_guide/index", "lapptrack_user_guide.tex", "", "", "manual"),
+    ("docs/background_papers/index", "background_papers.tex", "", "", "manual"),
     ("docs/howto/index", "howto.tex", "", "", "howto"),
     ("docs/releases/index", "releases.tex", "", "", "howto")
 ]

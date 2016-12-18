@@ -36,27 +36,27 @@ class TestlAppTrack(unittest.TestCase):
         self.file.close()
 
     def test_run(self):
-        self.main.run()
+        r = self.main.run()
         # que doit t'on tester
 
     def test_pull(self):
-        self.main.pull()
+        r = self.main.pull()
         # que doit t'on tester
 
     def test_fetch(self):
-        self.main.fetch()
+        r = self.main.fetch()
         # que doit t'on tester
 
     def test_approve(self):
-        self.main.approve(False)
+        r = self.main.approve(False)
         # que doit t'on tester
 
     def test_make(self):
-        self.main.make()
+        r = self.main.make()
         # que doit t'on tester
 
     def test_config(self):
-        self.main.test_config()
+        r = self.main.test_config()
         # que doit t'on tester
 
 # TODO (fmu): prevoir des test avec les configuration par defaut des .ini

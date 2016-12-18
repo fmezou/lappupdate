@@ -410,7 +410,7 @@ class ErrorMockHandler(BaseMockHandler):
         _logger.debug(msg.format(version))
 
         msg = "It is a fake error."
-        raise TypeError()
+        raise TypeError(msg)
 
     def fetch(self, dirpath):
         """
@@ -428,7 +428,7 @@ class ErrorMockHandler(BaseMockHandler):
         _logger.debug(msg.format(dirpath))
 
         msg = "It is a fake error."
-        raise TypeError()
+        raise TypeError(msg)
 
     def is_update(self, product):
         """

@@ -69,6 +69,7 @@ class MakeMKVHandler(core.BaseProduct):
         # (`get_origin`) and update downloading (`fetch`)
         self.name = "MakeMKV"
         self.target = core.TARGET_UNIFIED
+        self.version = "0.0.0"  # Match with the editor versioning rules
 
         self.web_site_location = "http://www.makemkv.com/"
         self.announce_location = ""

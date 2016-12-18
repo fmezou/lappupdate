@@ -81,7 +81,8 @@ class Error(Exception):
     Base class for Core exceptions.
 
     Args:
-        message (str): (optional) Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the
+            exception.
 
     Attributes:
         message (str): Human readable string describing the exception.
@@ -252,7 +253,7 @@ class BaseProduct:
 
         self.name = ""
         self.display_name = ""
-        self.version = ""
+        self.version = "0.0.0"  # Match with the semantic versioning rules
         self.published = ""
         self.target = TARGET_UNIFIED
         self.description = ""
@@ -374,7 +375,7 @@ class BaseProduct:
         result = True
         # TODO (fmezou): l'url ne contient pas necessairement le nom de la
         # ressource, il faut utiliser le champs Content-disposition
-        # Content-Disposition: attachment; filename=fmezou-my_sandbox-d9684dc.tar.gz
+        # Content-Disposition: attachment; filename=my_sandbox.tar.gz
         # see RFC 2183
         components = urllib.parse.urlsplit(self.location)
         name = os.path.basename(
@@ -387,7 +388,7 @@ class BaseProduct:
         try:
             os.makedirs(dirpath, exist_ok=True)
         except OSError as err:
-            msg = "Failed to create destination directory - OS error: {}"
+            msg = "Failed to create the destination directory - OS error: {}"
             _logger.error(msg.format(str(err)))
             result = False
 

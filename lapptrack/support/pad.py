@@ -57,7 +57,8 @@ class Error(Exception):
     Base class for PADParser exceptions.
 
     Args:
-        message (str): (optional) Human readable string describing the exception.
+        message (str): (optional) Human readable string describing the
+            exception.
 
     Attributes:
         message (str): Human readable string describing the exception.

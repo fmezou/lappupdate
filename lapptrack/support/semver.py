@@ -288,9 +288,9 @@ class SemVer:
         self._version.append(int(match.group("patch")))
         msg = "{} -> Major:{}, Minor:{}, Patch:{}"
         _logger.info(msg.format(version_string,
-                                 self._version[0],
-                                 self._version[1],
-                                 self._version[2]))
+                                self._version[0],
+                                self._version[1],
+                                self._version[2]))
         if self._version[0] == 0:
             self._unstable = True
             msg = "{} -> Major version is zero, it's an unstable version."
@@ -369,8 +369,8 @@ def _comp_prerelease(prerelease1, prerelease2):
     Compare two pre-release version identifiers.
 
     The rule # 11 specify the precedence rules for comparing pre-release version
-    identifiers (i.e. 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2
-    < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0).
+    identifiers (i.e. 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta <
+    1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0).
 
     Args:
         prerelease1 (list): The list of fields from the pre-release
