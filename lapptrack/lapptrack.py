@@ -275,6 +275,15 @@ class LAppTrack:
     """
     Schedule products updates retrieving operations.
 
+    **Attributes**
+        This class has a number of public attributes listed below in
+        alphabetical order.
+
+        .. hlist::
+            * :attr:`catalog`
+            * :attr:`catalog_path`
+            * :attr:`config`
+            * :attr:`config_checked`
 
     **Public Methods**
         This class has a number of public methods listed below in alphabetical
@@ -302,21 +311,111 @@ class LAppTrack:
         then the `fetch` method, and approve each update by calling the
         `approve` method, and then generate the `applist` file with the `make`
         method.
+
+    **Inside LAppTrack...**
+        This class manages the properties of a `COST` and use a `catalog` (the
+        section `background_catalog-format` details the catalog file structure)
+        to permanently store theses properties. The figure below is the
+        activity diagram of the life cycle of a particular version of a COST.
+
+        .. digraph:: tracking
+            :caption: life cycle of a particular version of a COST
+            :align: center
+
+            node [fontsize="10", fontname="Bell MT", margin="0.038,0.019",
+            height="0.13"];
+            edge [fontsize="10", fontname="Bell MT"];
+
+            start [
+                shape="rectangle",
+                style="rounded"
+            ];
+            end [
+                shape="rectangle",
+                style="rounded"
+            ];
+            pull_opt [
+                label="--pull",
+                shape="parallelogram",
+                fontname="Consolas",
+                fontsize="8"
+            ];
+            fetch_opt [
+                label="--fetch",
+                shape="parallelogram",
+                fontname="Consolas",
+                fontsize="8"
+            ];
+            approve_opt [
+                label="--approve",
+                shape="parallelogram",
+                fontname="Consolas",
+                fontsize="8"
+            ];
+            { rank = "same"; pull_opt; fetch_opt; approve_opt; }
+            get_origin [
+                label="Get latest\\nversion information",
+                shape="rectangle"
+            ];
+            is_update [label="latest\\n!=\\napproved", shape="diamond"];
+            store_pulled [
+                label="Store latest\\nin 'pulled' attribute",
+                shape="rectangle"
+            ];
+            fetch [
+                label="Get version installer\\nfrom 'pulled' attribute",
+                shape="rectange"
+            ];
+            store_fetched [
+                label="Move object\\nfrom 'pulled'\\nto 'fetched' attribute",
+                shape="rectangle"
+            ];
+            store_approved [
+                label="Move object\\nfrom 'fetched'\\nto 'approved' attribute",
+                shape="rectange"
+            ];
+
+            start -> pull_opt;
+            pull_opt -> get_origin;
+            get_origin -> is_update:n;
+            is_update:w -> pull_opt:w [label="False"];
+            is_update:s -> store_pulled [label="True"];
+            store_pulled:e -> fetch_opt:w;
+            fetch_opt -> fetch;
+            fetch -> store_fetched;
+            store_fetched:e -> approve_opt:w;
+            approve_opt -> store_approved;
+            store_approved -> end;
     """
     def __init__(self):
         msg = ">>> ()"
         _logger.debug(msg)
         # initialise the configuration based on ConfigParser module.
-        self._config = configparser.ConfigParser(
+        #: configparser.ConfigParser: The configuration of the module, the
+        #: `lapptrack-userguide_lapptrack-ini-content` section details each
+        #: configuration parameters
+        self.config = configparser.ConfigParser(
             interpolation=configparser.ExtendedInterpolation())
-        self._checked_config = False
+        #: bool: True if the configuration file have been loaded and contains no
+        #: error
+        self.config_checked = False
+
+        #: str: The path name of the *store* directory (see
+        #: `lapptrack-userguide_lapptrack-ini-core-section`)
+        self.store_path = ""
+        #: str: The path name of the product :term:`catalog`, it is a
+        #: concatenation of the *store* path name (see
+        #: `lapptrack-userguide_lapptrack-ini-core-section`) and the
+        #: `CATALOG_FNAME` constant
+        self.catalog_path = ""
+        #: dict: The current product :term:`catalog`, the
+        #: `background_catalog-format` section details the catalog file
+        #: structure
+        self.catalog = None
+
         self._pulling_report = None
         self._fetching_report = None
         self._approving_report = None
-
-        # initialise the application catalog.
-        self._catalog_path = ""
-        self._catalog = None
         self._report = ""
 
         msg = "<<< ()=None"
@@ -487,16 +586,16 @@ class LAppTrack:
         msg = ">>> ()"
         _logger.debug(msg)
 
-        assert self._checked_config
+        assert self.config_checked
 
         result = True
-        apps_num = len(self._config[_APPS_SNAME])
-        for i, app_id in enumerate(self._config[_APPS_SNAME]):
+        apps_num = len(self.config[_APPS_SNAME])
+        for i, app_id in enumerate(self.config[_APPS_SNAME]):
             msg = "Fetching update information for '{}' ({}/{})".\
                 format(app_id, i+1, apps_num)
             notify_info(msg)
-            if self._config[_APPS_SNAME].getboolean(app_id):
-                qn = self._config[app_id][_QUALNAME_KNAME]
+            if self.config[_APPS_SNAME].getboolean(app_id):
+                qn = self.config[app_id][_QUALNAME_KNAME]
                 try:
                     app = core.get_handler(qn)
                     origin_app = core.get_handler(qn)
@@ -512,7 +611,7 @@ class LAppTrack:
                 if result:
                     if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
                         app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
-                        # Load deployed product if exists
+                        # Load deployed product
                         if app_entry[CAT_APPROVED_KNAME]:
                             app.load(app_entry[CAT_APPROVED_KNAME])
                     else:
@@ -572,15 +671,15 @@ class LAppTrack:
         msg = ">>> ()"
         _logger.debug(msg)
 
-        assert self._checked_config is True
+        assert self.config_checked is True
         result = True
-        apps_num = len(self._config[_APPS_SNAME])
-        for i, app_id in enumerate(self._config[_APPS_SNAME]):
+        apps_num = len(self.config[_APPS_SNAME])
+        for i, app_id in enumerate(self.config[_APPS_SNAME]):
             msg = "Fetching installer for '{}' ({}/{})".\
                 format(app_id, i+1, apps_num)
             notify_info(msg)
-            if self._config[_APPS_SNAME].getboolean(app_id):
-                qn = self._config[app_id][_QUALNAME_KNAME]
+            if self.config[_APPS_SNAME].getboolean(app_id):
+                qn = self.config[app_id][_QUALNAME_KNAME]
                 try:
                     app = core.get_handler(qn)
                 except ImportError as err:
@@ -597,7 +696,7 @@ class LAppTrack:
                         app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
                         if app_entry[CAT_PULLED_KNAME]:
                             app.load(app_entry[CAT_PULLED_KNAME])
-                            r = app.fetch(self._config[app_id][_PATH_KNAME])
+                            r = app.fetch(self.config[app_id][_PATH_KNAME])
                             if r:
                                 # replace the fetched product by the newest.
                                 app_entry[CAT_FETCHED_KNAME] = app.dump()
@@ -658,7 +757,7 @@ class LAppTrack:
             msg = msg.format(force.__class__)
             raise TypeError(msg)
 
-        assert self._checked_config is True
+        assert self.config_checked is True
         # The expected response to the approval
         expected_resp = {
             "Y": True,
@@ -666,15 +765,15 @@ class LAppTrack:
             "N": False,
         }
 
-        apps_num = len(self._config[_APPS_SNAME])
-        for i, app_id in enumerate(self._config[_APPS_SNAME]):
+        apps_num = len(self.config[_APPS_SNAME])
+        for i, app_id in enumerate(self.config[_APPS_SNAME]):
             msg = "Approving the deployment of '{}' ({}/{})".\
                 format(app_id, i+1, apps_num)
             _logger.info(msg)
-            if self._config[_APPS_SNAME].getboolean(app_id):
+            if self.config[_APPS_SNAME].getboolean(app_id):
                 if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
                     app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
-                    if len(app_entry[CAT_FETCHED_KNAME]) != 0:
+                    if app_entry[CAT_FETCHED_KNAME]:
                         app = app_entry[CAT_FETCHED_KNAME]
                         approved = False
                         if not force:
@@ -756,7 +855,7 @@ class LAppTrack:
         # keep the configuration in a ini file, which is easy to write and to
         # read for a human.
         try:
-            self._config.read_file(config_file)
+            self.config.read_file(config_file)
         except configparser.Error as err:
             msg = "Failed to parse the logger configuration" \
                   " file: {}".format(str(err))
@@ -765,16 +864,18 @@ class LAppTrack:
 
         if result:
             # Check the core section
-            if _CORE_SNAME in self._config.sections():
-                section = self._config[_CORE_SNAME]
+            if _CORE_SNAME in self.config.sections():
+                section = self.config[_CORE_SNAME]
                 # 'store' key is mandatory
                 if _STORE_KNAME in section:
                     # Set the catalog pathname.
-                    path = self._config[_CORE_SNAME][_STORE_KNAME]
+                    path = self.config[_CORE_SNAME][_STORE_KNAME]
+                    self.store_path = os.path.normpath(path)
                     try:
-                        os.makedirs(path, exist_ok=True)
-                        self._catalog_path = os.path.join(path, CATALOG_FNAME)
-                        self._catalog_path = os.path.abspath(self._catalog_path)
+                        os.makedirs(self.store_path, exist_ok=True)
+                        self.catalog_path = os.path.join(self.store_path,
+                                                         CATALOG_FNAME)
+                        self.catalog_path = os.path.abspath(self.catalog_path)
                     except OSError as err:
                         msg = "Failed to create the store directory - " \
                               "OS error: {}".format(str(err))
@@ -788,7 +889,7 @@ class LAppTrack:
 
                 # 'logger' key is optional
                 if _LOGGER_KNAME in section:
-                    filename = self._config[_CORE_SNAME][_LOGGER_KNAME]
+                    filename = self.config[_CORE_SNAME][_LOGGER_KNAME]
                     if os.path.isfile(filename):
                         try:
                             logging.config.fileConfig(
@@ -808,7 +909,7 @@ class LAppTrack:
 
                 # 'pulling_report' key is optional
                 if _PULL_REPORT_KNAME in section:
-                    filename = self._config[_CORE_SNAME][_PULL_REPORT_KNAME]
+                    filename = self.config[_CORE_SNAME][_PULL_REPORT_KNAME]
                     if os.path.isfile(filename):
                         try:
                             self._pulling_report = report.Report()
@@ -834,7 +935,7 @@ class LAppTrack:
 
                 # 'fetching_report' key is optional
                 if _FETCH_REPORT_KNAME in section:
-                    filename = self._config[_CORE_SNAME][_FETCH_REPORT_KNAME]
+                    filename = self.config[_CORE_SNAME][_FETCH_REPORT_KNAME]
                     if os.path.isfile(filename):
                         try:
                             self._fetching_report = report.Report()
@@ -860,7 +961,7 @@ class LAppTrack:
 
                 # 'approving_report' key is optional
                 if _APPROVE_REPORT_KNAME in section:
-                    filename = self._config[_CORE_SNAME][_APPROVE_REPORT_KNAME]
+                    filename = self.config[_CORE_SNAME][_APPROVE_REPORT_KNAME]
                     if os.path.isfile(filename):
                         try:
                             self._approving_report = report.Report()
@@ -889,8 +990,8 @@ class LAppTrack:
                 result = False
 
             # Check the sets section
-            if _SETS_SNAME in self._config.sections():
-                sets = self._config[_SETS_SNAME]
+            if _SETS_SNAME in self.config.sections():
+                sets = self.config[_SETS_SNAME]
             else:
                 sets = {}
                 msg = "the section '{}' is missing.".format(_SETS_SNAME)
@@ -898,23 +999,22 @@ class LAppTrack:
                 result = False
 
             # Check the applications section
-            if _APPS_SNAME in self._config.sections():
-                for app_name in self._config[_APPS_SNAME]:
-                    if self._config[_APPS_SNAME].getboolean(app_name):
+            if _APPS_SNAME in self.config.sections():
+                for app_name in self.config[_APPS_SNAME]:
+                    if self.config[_APPS_SNAME].getboolean(app_name):
                         # Pre compute default value for the Application section
                         app_qualname = "{}.{}.{}Handler".format(
                             _PACKAGE_NAME, app_name, app_name.capitalize()
                         )
-                        store_path = self._config[_CORE_SNAME][_STORE_KNAME]
-                        app_path = os.path.join(store_path, app_name)
+                        app_path = os.path.join(self.store_path, app_name)
                         app_set = "__all__"
 
                         # Checks the item in the application section
                         # If a section or a key is missing, it is added in the
                         # config object, so this object will contain a complete
                         # configuration
-                        if app_name in self._config.sections():
-                            app_desc = self._config[app_name]
+                        if app_name in self.config.sections():
+                            app_desc = self.config[app_name]
                             if _QUALNAME_KNAME not in app_desc:
                                 app_desc[_QUALNAME_KNAME] = app_qualname
                             if _PATH_KNAME not in app_desc:
@@ -936,8 +1036,8 @@ class LAppTrack:
                                 app_desc[_SET_KNAME] = app_set
                         else:
                             # Set the default value
-                            self._config[app_name] = {}
-                            app_desc = self._config[app_name]
+                            self.config[app_name] = {}
+                            app_desc = self.config[app_name]
                             app_desc[_QUALNAME_KNAME] = app_qualname
                             app_desc[_PATH_KNAME] = app_path
                             app_desc[_SET_KNAME] = app_set
@@ -947,7 +1047,7 @@ class LAppTrack:
                 result = False
 
             # Checked
-            self._checked_config = True
+            self.config_checked = True
             if result:
                 msg = "Configuration loaded from '{}'".format(config_file.name)
                 notify_info(msg)
@@ -970,7 +1070,7 @@ class LAppTrack:
 
         result = True
         try:
-            with open(self._catalog_path, "r+t") as file:
+            with open(self.catalog_path, "r+t") as file:
                 self._catalog = json.load(file)
                 # force the version number.
                 # at time, there is non need to have a update function
@@ -995,7 +1095,7 @@ class LAppTrack:
             result = False
         else:
             msg = "Products' catalog loaded from" \
-                  " '{}'".format(self._catalog_path)
+                  " '{}'".format(self.catalog_path)
             notify_info(msg)
 
         msg = "<<< ()={}"
@@ -1014,10 +1114,10 @@ class LAppTrack:
         _logger.debug(msg)
 
         msg = "Write the products' catalog ({0})."
-        _logger.info(msg.format(self._catalog_path))
+        _logger.info(msg.format(self.catalog_path))
         result = True
         try:
-            with open(self._catalog_path, "w+t") as file:
+            with open(self.catalog_path, "w+t") as file:
                 # write the warning header with a naive time representation.
                 dt = (datetime.datetime.now()).replace(microsecond=0)
                 self._catalog[CAT_MODIFIED_KNAME] = dt.isoformat()
@@ -1028,7 +1128,7 @@ class LAppTrack:
             result = False
         else:
             msg = "Products' catalog saved to " \
-                  " '{}'".format(self._catalog_path)
+                  " '{}'".format(self.catalog_path)
             notify_info(msg)
 
         msg = "<<< ()={}"
@@ -1061,8 +1161,7 @@ class LAppTrack:
             "-----------------\n"
 
         # Clean up the obsolete applist files
-        store_path = self._config[_CORE_SNAME][_STORE_KNAME]
-        for entry in os.scandir(store_path):
+        for entry in os.scandir(self.store_path):
             if entry.name.startswith(_APPLIST_PREFIX) \
                     and entry.name.endswith(_APPLIST_EXT) \
                     and entry.is_file():
@@ -1076,12 +1175,12 @@ class LAppTrack:
         # and should be empty.
         msg = "Building applist file"
         notify_info(msg)
-        for k, v in self._config[_SETS_SNAME].items():
+        for k, v in self.config[_SETS_SNAME].items():
             for name in v.split(","):
                 name = name.strip()
                 if name:
                     path = _APPLIST_PREFIX + name + _APPLIST_EXT
-                    path = os.path.join(store_path, path)
+                    path = os.path.join(self.store_path, path)
                     if name not in set_file:
                         try:
                             file = open(path, "w+t")
@@ -1107,11 +1206,11 @@ class LAppTrack:
                     notify_warning(msg)
 
         if result:
-            apps_num = len(self._config[_APPS_SNAME])
-            for i, app_id in enumerate(self._config[_APPS_SNAME]):
+            apps_num = len(self.config[_APPS_SNAME])
+            for i, app_id in enumerate(self.config[_APPS_SNAME]):
                 msg = "Adding '{}' ({}/{})".format(app_id, i, apps_num)
                 _logger.info(msg)
-                if self._config[_APPS_SNAME].getboolean(app_id):
+                if self.config[_APPS_SNAME].getboolean(app_id):
                     if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
                         app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
                         if app_entry[CAT_APPROVED_KNAME]:
@@ -1124,8 +1223,8 @@ class LAppTrack:
                                 app[_PROD_INSTALLER_KNAME] + _APPLIST_SEP + \
                                 app[_PROD_SILENT_INSTALL_ARGS_KNAME]
 
-                            app_set_name = self._config[app_id][_SET_KNAME]
-                            comps = self._config[_SETS_SNAME][app_set_name]
+                            app_set_name = self.config[app_id][_SET_KNAME]
+                            comps = self.config[_SETS_SNAME][app_set_name]
                             for name in comps.split(","):
                                 name = name.strip()
                                 try:
@@ -1304,24 +1403,24 @@ def main():
     # Parse and run.
     result = False
     args = parser.parse_args()  # the arg_parse call sys.exit in case of failure
-    main_task = LAppTrack()
+    tracker = LAppTrack()
     if args.testconf:
-        result = main_task.test_config(args.configfile)
+        result = tracker.test_config(args.configfile)
     else:
         dt = datetime.datetime.now()
         print("Starting {} on {:%c}".format(_DISPLAY_NAME, dt))
-        result = main_task.load_config(args.configfile)
+        result = tracker.load_config(args.configfile)
         if result:
             if args.pull:
-                result = main_task.pull()
+                result = tracker.pull()
             elif args.fetch:
-                result = main_task.fetch()
+                result = tracker.fetch()
             elif args.approve:
-                result = main_task.approve(args.yes)
+                result = tracker.approve(args.yes)
             elif args.make:
-                result = main_task.make()
+                result = tracker.make()
             else:
-                result = main_task.run()
+                result = tracker.run()
         dt = datetime.datetime.now()
         print("{} completed on {:%c}".format(_DISPLAY_NAME, dt))
 

@@ -122,7 +122,7 @@ html_theme_options = {
     "github_user": "fmezou",
     "github_repo": "lappupdate",
     "github_banner": False,
-    "fixed_sidebar": True,
+    "fixed_sidebar": False,
     "extra_nav_links": {
         "Get it...": "http://fmezou.github.io/"
     }
@@ -353,6 +353,7 @@ napoleon_numpy_docstring = False
 
 # The output format for Graphviz when building HTML files. This must be either
 #  'png' or 'svg'; the default is 'png'.
-graphviz_output_format = "png"
+graphviz_output_format = "svg"
 
+autodoc_member_order = "groupwise"
 
