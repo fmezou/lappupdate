@@ -430,18 +430,24 @@ class ReleaseNotesParser(HTMLParser):
         state graph.
 
         .. digraph:: parsing
+           :caption: parser's state graph
+           :align: center
 
-             NULL -> CONTENT [label = <div id=content>];
-             CONTENT -> RELEASES_LIST [label = _is_releases_list_beginning];
-             CONTENT -> NULL [label = _is_content_ending];
-             RELEASES_LIST -> CONTENT [label = _is_releases_list_ending];
-             RELEASES_LIST -> RELEASE_ID [label = _is_release_id_beginning];
-             RELEASE_ID -> RELEASE_NOTES [label = _is_new_release];
-             RELEASE_ID -> IGNORE [label = _is_old_or_unknown_release];
-             RELEASE_NOTES -> FETCHING [label = _is_release_notes_beginning];
-             FETCHING -> RELEASES_LIST [label = _is_release_notes_ending];
-             IGNORE -> IGNORE [label = _is_release_notes_beginning];
-             IGNORE -> RELEASES_LIST [label = _is_release_notes_ending];
+            node [fontsize="10", fontname="Bell MT", margin="0.038,0.019",
+            height="0.13"];
+            edge [fontsize="10", fontname="Bell MT"];
+
+            NULL -> CONTENT [label = <div id=content>];
+            CONTENT -> RELEASES_LIST [label = _is_releases_list_beginning];
+            CONTENT -> NULL [label = _is_content_ending];
+            RELEASES_LIST -> CONTENT [label = _is_releases_list_ending];
+            RELEASES_LIST -> RELEASE_ID [label = _is_release_id_beginning];
+            RELEASE_ID -> RELEASE_NOTES [label = _is_new_release];
+            RELEASE_ID -> IGNORE [label = _is_old_or_unknown_release];
+            RELEASE_NOTES -> FETCHING [label = _is_release_notes_beginning];
+            FETCHING -> RELEASES_LIST [label = _is_release_notes_ending];
+            IGNORE -> IGNORE [label = _is_release_notes_beginning];
+            IGNORE -> RELEASES_LIST [label = _is_release_notes_ending];
     """
     # Scheduler's state
     _STATE_NULL = "NULL"
