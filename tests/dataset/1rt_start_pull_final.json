@@ -1,0 +1,107 @@
+{
+  "__version__": "0.2.0",
+  "__warning__": "This file must not be modified. It contains the catalog database resulting of the LAppTrackFirstStartTestCase.test_pull unit test.",
+  "modified": "2016-12-29T16:00:00",
+  "products": {
+    "mock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {
+        "announce_location": "",
+        "change_summary": "<ul><li>Stable version</li></ul>",
+        "description": "Mocking handler",
+        "display_name": "Mocker v1.0.0",
+        "editor": "MockApp. Inc",
+        "feed_location": "",
+        "file_size": 56,
+        "icon": "",
+        "installer": "",
+        "location": "http://mockapp.example.com/dist.zip",
+        "name": "Mocker",
+        "published": "2016-12-29T16:00:00",
+        "release_note_location": "http://mockapp.example.com/history.html",
+        "secure_hash": ["sha1", "0b148ea595fb66a91b70b74893062d78341c5a54"],
+        "silent_inst_args": "/S",
+        "std_inst_args": "",
+        "target": "unified",
+        "version": "1.0.0",
+        "web_site_location": "http://mockapp.example.com"
+      }
+    },
+    "brothermock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {
+        "announce_location": "",
+        "change_summary": "<ul><li>Stable version</li></ul>",
+        "description": "Mocking handler",
+        "display_name": "Brother Mocker v1.0.0",
+        "editor": "MockApp. Inc",
+        "feed_location": "",
+        "file_size": -1,
+        "icon": "",
+        "installer": "",
+        "location": "http://mockapp.example.com/dist.zip",
+        "name": "Brother Mocker",
+        "published": "2016-12-29T16:00:00",
+        "release_note_location": "http://mockapp.example.com/history.html",
+        "secure_hash": null,
+        "silent_inst_args": "/S",
+        "std_inst_args": "",
+        "target": "unified",
+        "version": "1.0.0",
+        "web_site_location": "http://mockapp.example.com"
+      }
+    },
+    "pathmock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {
+        "announce_location": "",
+        "change_summary": "<ul><li>Stable version</li></ul>",
+        "description": "Mocking handler",
+        "display_name": "Mocker v1.0.0",
+        "editor": "MockApp. Inc",
+        "feed_location": "",
+        "file_size": 56,
+        "icon": "",
+        "installer": "",
+        "location": "http://mockapp.example.com/dist.zip",
+        "name": "Mocker",
+        "published": "2016-12-29T16:00:00",
+        "release_note_location": "http://mockapp.example.com/history.html",
+        "secure_hash": ["sha1", "0b148ea595fb66a91b70b74893062d78341c5a54"],
+        "silent_inst_args": "/S",
+        "std_inst_args": "",
+        "target": "unified",
+        "version": "1.0.0",
+        "web_site_location": "http://mockapp.example.com"
+      }
+    },
+    "setmock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {
+        "announce_location": "",
+        "change_summary": "<ul><li>Stable version</li></ul>",
+        "description": "Mocking handler",
+        "display_name": "Mocker v1.0.0",
+        "editor": "MockApp. Inc",
+        "feed_location": "",
+        "file_size": 56,
+        "icon": "",
+        "installer": "",
+        "location": "http://mockapp.example.com/dist.zip",
+        "name": "Mocker",
+        "published": "2016-12-29T16:00:00",
+        "release_note_location": "http://mockapp.example.com/history.html",
+        "secure_hash": ["sha1", "0b148ea595fb66a91b70b74893062d78341c5a54"],
+        "silent_inst_args": "/S",
+        "std_inst_args": "",
+        "target": "unified",
+        "version": "1.0.0",
+        "web_site_location": "http://mockapp.example.com"
+      }
+    }
+  }
+}

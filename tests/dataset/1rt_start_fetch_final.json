@@ -1,0 +1,27 @@
+{
+  "__version__": "0.2.0",
+  "__warning__": "This file must not be modified. It contains the catalog database resulting of the LAppTrackFirstStartTestCase.test_fetch unit test.",
+  "modified": "2016-12-29T16:00:00",
+  "products": {
+    "mock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {}
+    },
+    "brothermock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {}
+    },
+    "pathmock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {}
+    },
+    "setmock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {}
+    }
+  }
+}

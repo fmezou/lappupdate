@@ -1,0 +1,90 @@
+{
+  "__version__": "0.2.0",
+  "modified": "2017-01-15T18:03:00",
+  "products": {
+    "mock": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {}
+    },
+    "mock-2": {
+      "approved": {},
+      "fetched": {},
+      "pulled": {
+        "announce_location": "",
+        "change_summary": "<ul><li>Stable version (for testing)</li></ul>",
+        "description": "Mocking handler",
+        "display_name": "Mocker v1.0.0",
+        "editor": "MockApp. Inc",
+        "feed_location": "",
+        "file_size": 56,
+        "icon": "",
+        "installer": "",
+        "location": "http://mockapp.example.com/dist.zip",
+        "name": "Mocker",
+        "published": "2017-01-01T16:00:00",
+        "release_note_location": "http://mockapp.example.com/history.html",
+        "secure_hash": [
+          "sha1",
+          "0b148ea595fb66a91b70b74893062d78341c5a54"
+        ],
+        "silent_inst_args": "/S",
+        "std_inst_args": "",
+        "target": "unified",
+        "version": "1.0.0",
+        "web_site_location": "http://mockapp.example.com"
+      }
+    },
+    "mock-3": {
+      "approved": {},
+      "fetched": {
+        "announce_location": "",
+        "change_summary": "<ul><li>Unstable version (for testing)</li></ul>",
+        "description": "Mocking handler",
+        "display_name": "Mocker v0.1.0",
+        "editor": "MockApp. Inc",
+        "feed_location": "",
+        "file_size": 56,
+        "icon": "",
+        "installer": "../~store/app/mock-3/Mocker_v0.1.0.txt",
+        "location": "http://mockapp.example.com/dist.zip",
+        "name": "Mocker",
+        "published": "2016-12-29T16:00:00",
+        "release_note_location": "http://mockapp.example.com/history.html",
+        "secure_hash": [
+          "sha1",
+          "0b148ea595fb66a91b70b74893062d78341c5a54"
+        ],
+        "silent_inst_args": "/S",
+        "std_inst_args": "",
+        "target": "unified",
+        "version": "0.1.0",
+        "web_site_location": "http://mockapp.example.com"
+      },
+      "pulled": {
+        "announce_location": "",
+        "change_summary": "<ul><li>Stable version (for testing)</li></ul>",
+        "description": "Mocking handler",
+        "display_name": "Mocker v1.0.0",
+        "editor": "MockApp. Inc",
+        "feed_location": "",
+        "file_size": 56,
+        "icon": "",
+        "installer": "",
+        "location": "http://mockapp.example.com/dist.zip",
+        "name": "Mocker",
+        "published": "2017-01-01T16:00:00",
+        "release_note_location": "http://mockapp.example.com/history.html",
+        "secure_hash": [
+          "sha1",
+          "0b148ea595fb66a91b70b74893062d78341c5a54"
+        ],
+        "silent_inst_args": "/S",
+        "std_inst_args": "",
+        "target": "unified",
+        "version": "1.0.0",
+        "web_site_location": "http://mockapp.example.com"
+      }
+    }
+  }
+}

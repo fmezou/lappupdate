@@ -1,0 +1,5 @@
+# ------------------------------------------------------------------------------
+# This applist file generated on 2017-01-15T19:27:53 for 'manual'.
+# This file must not be modified. It contains the applist resulting of the
+# LAppTrackMakeNormalTestCase.test_make unit test.
+# ------------------------------------------------------------------------------

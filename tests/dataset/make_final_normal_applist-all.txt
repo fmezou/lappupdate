@@ -1,0 +1,6 @@
+# ------------------------------------------------------------------------------
+# This applist file generated on 2017-01-15T19:27:53 for 'all'.
+# This file must not be modified. It contains the applist resulting of the
+# LAppTrackMakeNormalTestCase.test_make unit test.
+# ------------------------------------------------------------------------------
+unified;Brother Mocker v1.0.1;1.0.1;../~store/app/mock-4/Brother Mocker_v1.0.1.txt;/S

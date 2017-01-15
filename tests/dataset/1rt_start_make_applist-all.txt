@@ -1,0 +1,5 @@
+# ------------------------------------------------------------------------------
+# This applist file generated on 2016-12-18T19:45:53 for 'all'.
+# This file must not be modified. It contains the applist resulting of the 
+# LAppTrackFirstStartTestCase.test_make unit test.
+# ------------------------------------------------------------------------------

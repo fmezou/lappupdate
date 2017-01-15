@@ -24,6 +24,11 @@ This section details the objects defined in this module.
     :private-members:
     :show-inheritance:
 
+.. autoclass:: BrotherMockHandler
+    :members:
+    :private-members:
+    :show-inheritance:
+
 .. autoclass:: FailureMockHandler
     :members:
     :private-members:

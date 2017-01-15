@@ -18,7 +18,6 @@ A mocking handler is a derived class from the `BaseMockHandler` class.
 """
 
 
-import datetime
 import logging
 import os
 import os.path
@@ -33,6 +32,7 @@ __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
     "BaseMockHandler",
     "MockHandler",
+    "BrotherMockHandler",
     "FailureMockHandler",
     "ErrorMockHandler"
 ]
@@ -118,11 +118,6 @@ class BaseMockHandler(core.BaseProduct):
         """
         Get the mocking information.
 
-        This method return always true to indicate that the most-update
-        information are available. On each call, the version patch number is
-        incremented to be compliant with the `semantic versioning
-        specification`_ 2.0.0.
-
         Args:
             version (str): The version of the reference product.
 
@@ -138,39 +133,25 @@ class BaseMockHandler(core.BaseProduct):
             raise TypeError(msg)
 
         result = True
-        if version is None:
-            # set the instance variables to the default value
-            self.target = core.TARGET_UNIFIED
-            self.web_site_location = "http://mockapp.example.com"
-            self.announce_location = ""
-            self.feed_location = ""
-            self.release_note_location = \
-                "http://mockapp.example.com/history.html"
-            self.std_inst_args = ""
-            self.silent_inst_args = "/S"
-            self.version = "1.0.0"
-            self.display_name = "{} v{}".format(self.name, self.version)
-            dt = (datetime.datetime.now()).replace(microsecond=0)
-            self.published = dt.isoformat()
-            self.description = "Mocking handler"
-            self.editor = "MockApp. Inc"
-            self.location = "http://mockapp.example.com/dist.zip"
-            self.icon = None
-            self.change_summary = \
-                "<ul>" \
-                "<li>a feature</li>" \
-                "<li>Small miscellaneous improvements and bugfixes</li>" \
-                "</ul>"
-            self.file_size = -1
-            self.secure_hash = None
-        else:
-            patch = 0
-            if version:
-                patch = 1 + int(version.split(".")[2])
-            self.version = "1.0.{}".format(patch)
-            self.display_name == "{} v{}".format(self.name, self.version)
-            dt = (datetime.datetime.now()).replace(microsecond=0)
-            self.published = dt.isoformat()
+        # set the instance variables to the default value
+        self.target = core.TARGET_UNIFIED
+        self.web_site_location = "http://mockapp.example.com"
+        self.announce_location = ""
+        self.feed_location = ""
+        self.release_note_location = \
+            "http://mockapp.example.com/history.html"
+        self.std_inst_args = ""
+        self.silent_inst_args = "/S"
+        self.version = "1.0.0"
+        self.display_name = "{} v{}".format(self.name, self.version)
+        self.published = "2017-01-01T16:00:00"
+        self.description = "Mocking handler"
+        self.editor = "MockApp. Inc"
+        self.location = "http://mockapp.example.com/dist.zip"
+        self.icon = None
+        self.change_summary = "<ul><li>Stable version</li></ul>"
+        self.file_size = 56
+        self.secure_hash = ("sha1", "0b148ea595fb66a91b70b74893062d78341c5a54")
 
         msg = "Latest product information fetched ({} published on {})"
         _logger.info(msg.format(self.version, self.published))
@@ -199,9 +180,7 @@ class BaseMockHandler(core.BaseProduct):
         _logger.debug(msg.format(dirpath))
 
         result = True
-        content = """
-        This file is the result of the use of a mocking handler.
-        """
+        content = "This file is the result of the use of a mocking handler."
         os.makedirs(dirpath, exist_ok=True)
         name = "{}_{}{}".format(self.name, self.version, ".txt")
         pathname = os.path.join(dirpath, name)
@@ -258,6 +237,109 @@ class MockHandler(BaseMockHandler):
         self.name = "Mocker"
         msg = "<<< ()=None"
         _logger.debug(msg)
+
+
+class BrotherMockHandler(BaseMockHandler):
+    """
+    Mocking handler.
+
+    This concrete class implements a mocking handler (similar to `MockHandler`)
+    used to test the `lapptrack` module or any python module using the `cots`
+    package.
+    """
+    def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
+        # At this point, only the name is set.
+        # All others attributes will be set during catalog parsing
+        # (`get_origin`) and update downloading (`fetch`)
+        super().__init__()
+        self.name = "Brother Mocker"
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def get_origin(self, version=None):
+        """
+        Get the mocking information.
+
+        Args:
+            version (str): The version of the reference product.
+
+        Returns:
+            bool: always True.
+        """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
+        result = super().get_origin(version)
+        self.file_size = -1
+        self.secure_hash = None
+
+        msg = "Latest product information fetched ({} published on {})"
+        _logger.info(msg.format(self.version, self.published))
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+
+class ReleaseOftenMockHandler(BaseMockHandler):
+    """
+    Release Often mocking handler.
+
+    This concrete class implements a mocking handler used to test the
+    `lapptrack` module or any python module using the `cots` package. This
+    handler notifies that a new version is available.
+    """
+    def __init__(self):
+        msg = ">>> ()"
+        _logger.debug(msg)
+        # At this point, only the name is set.
+        # All others attributes will be set during catalog parsing
+        # (`get_origin`) and update downloading (`fetch`)
+        super().__init__()
+        self.name = "Release Often Mocker"
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def get_origin(self, version=None):
+        """
+        Get the mocking information.
+
+        This method return always true to indicate that the most-update
+        information are available. On each call, the version patch number is
+        incremented to be compliant with the `semantic versioning
+        specification`_ 2.0.0.
+
+        Args:
+            version (str): The version of the reference product.
+
+        Returns:
+            bool: always True.
+        """
+        msg = ">>> (version={})"
+        _logger.debug(msg.format(version))
+
+        result = super().get_origin(version)
+        if version is None:
+            self.version = "1.0.0"
+        else:
+            patch = 0
+            if version:
+                patch = 1 + int(version.split(".")[2])
+            self.version = "1.0.{}".format(patch)
+            self.display_name == "{} v{}".format(self.name, self.version)
+            self.published = "2017-01-01T18:00:00"
+            self.file_size = 156
+            self.secure_hash = ("sha1",
+                                "0b148ea595fb66a91b70b74893062d78341c0000")
+
+        msg = "Latest product information fetched ({} published on {})"
+        _logger.info(msg.format(self.version, self.published))
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
 
 class FailureMockHandler(BaseMockHandler):
