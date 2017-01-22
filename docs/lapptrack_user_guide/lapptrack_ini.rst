@@ -58,7 +58,7 @@ The ``[core]`` section contains general parameters.
                       `support.report` for detailed information.
 ====================  ==========================================================
 
-..topic:  Example of a ``[core]`` section
+.. topic::  Example of a ``[core]`` section
 
    .. literalinclude:: /lapptrack/lapptrack.example.ini
       :language: ini
