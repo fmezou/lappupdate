@@ -322,7 +322,6 @@ class LAppTrackPullNormalTestCase(BaseTestCase):
 
     The test case uses the `mock` module.
     """
-
     def setUp(self):
         self.config_path = "dataset\\pull_normal.ini"
         shutil.copy("dataset\\pull_initial.json", self.tracker.catalog_path)
@@ -575,6 +574,33 @@ class LAppTrackMakeNormalTestCase(BaseTestCase):
         )
         self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "approve.html")
+        )
+        _logger.info("Completed")
+
+
+class LAppTrackDefaultConfigTestCase(BaseTestCase):
+    """
+    Default value test case for the run task
+
+    This class launch a run task with a minimal configuration file
+
+    The test case uses the `mock` module.
+    """
+    def setUp(self):
+        self.config_path = "dataset\\default.ini"
+        super().setUp()
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_run(self):
+        _logger.info("Starting...")
+        r = self.tracker.run()
+        self.assertTrue(r)
+        self.assert_catalog_equal("dataset\\default_final.json")
+        self.assert_applist_equal(
+            os.path.join(self.tracker.store_path, "applist-all.txt"),
+            "dataset\\default_final_applist-all.txt"
         )
         _logger.info("Completed")
 
