@@ -22,9 +22,13 @@ __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
-    "BaseTestCase",
     "LAppTrackFirstStartTestCase",
-    "LAppTrackCruisingTestCase",
+    "LAppTrackPullNormalTestCase",
+    "LAppTrackPullFailureTestCase",
+    "LAppTrackFetchNormalTestCase",
+    "LAppTrackFetchFailureTestCase",
+    "LAppTrackApproveNormalTestCase",
+    "LAppTrackMakeNormalTestCase"
 ]
 
 # Modules to be tested use the logging facility, so a minimal
@@ -577,3 +581,6 @@ class LAppTrackMakeNormalTestCase(BaseTestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# add error test in the ini file
+#  - sur les set .. par exemple (reprendre doc)
