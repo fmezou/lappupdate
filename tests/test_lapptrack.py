@@ -28,7 +28,10 @@ __all__ = [
     "LAppTrackFetchNormalTestCase",
     "LAppTrackFetchFailureTestCase",
     "LAppTrackApproveNormalTestCase",
-    "LAppTrackMakeNormalTestCase"
+    "LAppTrackMakeNormalTestCase",
+    "LAppTrackDefaultConfigTestCase",
+    "LAppTrackMissingSectionConfigTestCase",
+    "LAppTrackMissingSetConfigTestCase"
 ]
 
 # Modules to be tested use the logging facility, so a minimal
@@ -657,6 +660,3 @@ class LAppTrackMissingSetConfigTestCase(BaseTestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-# add error test in the ini file
-#  - sur les set .. par exemple (reprendre doc)
