@@ -605,6 +605,32 @@ class LAppTrackDefaultConfigTestCase(BaseTestCase):
         _logger.info("Completed")
 
 
+class LAppTrackMissingSectionConfigTestCase(BaseTestCase):
+    """
+     Missing section in the configuration test case
+
+     This class launch a run task with a minimal configuration file
+
+     The test case uses the `mock` module.
+     """
+
+    def setUp(self):
+        _logger.info(53*"-")
+        self.config_path = "dataset\\missing_sections.ini"
+        self.config_file = open(self.config_path)
+        self.tracker = lapptrack.lapptrack.LAppTrack()
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_load_config(self):
+        _logger.info("Starting...")
+        r = self.tracker.load_config(self.config_file)
+        self.assertFalse(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
+        _logger.info("Completed")
+
+
 if __name__ == '__main__':
     unittest.main()
 
