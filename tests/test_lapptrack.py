@@ -200,7 +200,7 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
     def test_pull(self):
         _logger.info("Starting...")
         r = self.tracker.pull()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.pull()")
         # Check output files
         self.assert_catalog_equal("dataset\\1rt_start_pull_final.json")
         self.assert_file_not_exist(
@@ -229,7 +229,7 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
     def test_fetch(self):
         _logger.info("Starting...")
         r = self.tracker.fetch()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.fetch()")
         # Check output files
         self.assert_catalog_equal("dataset\\1rt_start_fetch_final.json")
         self.assert_file_not_exist(
@@ -258,7 +258,7 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
     def test_approve(self):
         _logger.info("Starting...")
         r = self.tracker.approve()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.approve()")
         # Check output files
         self.assert_catalog_equal("dataset\\1rt_start_approve_final.json")
         self.assert_file_not_exist(
@@ -287,7 +287,7 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
     def test_make(self):
         _logger.info("Starting...")
         r = self.tracker.make()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.make()")
         # Check output files
         self.assert_catalog_equal("dataset\\1rt_start_approve_final.json")
         self.assert_file_not_exist(
@@ -333,7 +333,7 @@ class LAppTrackPullNormalTestCase(BaseTestCase):
     def test_pull(self):
         _logger.info("Starting...")
         r = self.tracker.pull()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.pull()")
         # Check output files
         self.assert_catalog_equal("dataset\\pull_final_normal.json")
         self.assert_file_not_exist(
@@ -373,7 +373,7 @@ class LAppTrackPullFailureTestCase(BaseTestCase):
         def test_pull(self):
             _logger.info("Starting...")
             r = self.tracker.pull()
-            self.assertFalse(r)
+            self.assertFalse(r, "tracker.pull()")
             # Check output files
             # no change in the catalog
             self.assert_catalog_equal("dataset\\pull_initial.json")
@@ -414,7 +414,7 @@ class LAppTrackFetchNormalTestCase(BaseTestCase):
     def test_fetch(self):
         _logger.info("Starting...")
         r = self.tracker.fetch()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.fetch()")
         # Check output files
         self.assert_catalog_equal("dataset\\fetch_final_normal.json")
         self.assert_file_not_exist(
@@ -460,7 +460,7 @@ class LAppTrackFetchFailureTestCase(BaseTestCase):
     def test_fetch(self):
         _logger.info("Starting...")
         r = self.tracker.fetch()
-        self.assertFalse(r)
+        self.assertFalse(r, "tracker.fetch()")
         # Check output files
         # no change in the catalog
         self.assert_catalog_equal("dataset\\fetch_initial.json")
@@ -507,7 +507,7 @@ class LAppTrackApproveNormalTestCase(BaseTestCase):
     def test_approve(self):
         _logger.info("Starting...")
         r = self.tracker.approve()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.approve()")
         # Check output files
         self.assert_catalog_equal("dataset\\approve_final_normal.json")
         self.assert_file_not_exist(
@@ -547,7 +547,7 @@ class LAppTrackMakeNormalTestCase(BaseTestCase):
     def test_make(self):
         _logger.info("Starting...")
         r = self.tracker.make()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.make()")
         # Check output files
         self.assert_catalog_equal("dataset\\make_initial.json")
         self.assert_applist_equal(
@@ -596,7 +596,7 @@ class LAppTrackDefaultConfigTestCase(BaseTestCase):
     def test_run(self):
         _logger.info("Starting...")
         r = self.tracker.run()
-        self.assertTrue(r)
+        self.assertTrue(r, "tracker.run()")
         self.assert_catalog_equal("dataset\\default_final.json")
         self.assert_applist_equal(
             os.path.join(self.tracker.store_path, "applist-all.txt"),
@@ -627,7 +627,7 @@ class LAppTrackMissingSectionConfigTestCase(BaseTestCase):
         _logger.info("Starting...")
         r = self.tracker.load_config(self.config_file)
         self.assertFalse(r, "tracker.load_config()")
-        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
+        self.assertFalse(self.tracker.config_checked, "tracker.config_checked")
         _logger.info("Completed")
 
 
