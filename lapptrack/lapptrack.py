@@ -513,14 +513,12 @@ class LAppTrack:
         msg = ">>> ()"
         _logger.debug(msg)
 
-        notify_start("approve force=".format(force))
+        notify_start("approve force={}".format(force))
         result = self._read_catalog()
         if result:
             self._approve_update(force)
             result = self._write_catalog()
-            if result:
-                result = self._write_applist()
-        notify_end("approve force=".format(force), result)
+        notify_end("approve force={}".format(force), result)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
