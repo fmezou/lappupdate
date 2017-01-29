@@ -24,7 +24,7 @@ import os.path
 
 
 from cots import core
-
+from support import semver
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -148,7 +148,7 @@ class BaseMockHandler(core.BaseProduct):
         self.description = "Mocking handler"
         self.editor = "MockApp. Inc"
         self.location = "http://mockapp.example.com/dist.zip"
-        self.icon = None
+        self.icon = ""
         self.change_summary = "<ul><li>Stable version</li></ul>"
         self.file_size = 56
         self.secure_hash = ("sha1", "0b148ea595fb66a91b70b74893062d78341c5a54")
@@ -204,15 +204,21 @@ class BaseMockHandler(core.BaseProduct):
         """
         Return if this instance is an update.
 
+        This method compare the version of the two product, and return the
+        comparison result. The version numbers used by the editor are compliant
+        with the semantic versioning specification 2.0.0 (see `support.semver`
+        module)
+
         Args:
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: always True.
+            bool: True if this instance is an update of the product specified
+            by the `product` parameter.
         """
         msg = ">>> (product={})"
         _logger.debug(msg.format(product))
-        result = True
+        result = (semver.SemVer(self.version) > semver.SemVer(product.version))
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
         return result
