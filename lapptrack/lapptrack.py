@@ -463,10 +463,15 @@ class LAppTrack:
         notify_start("pull")
         result = self._read_catalog()
         if result:
-            # Fetch error are ignored to allow a complete cycle. All errors
-            # are logged and notified to the user.
-            self._pull_update()
-            result = self._write_catalog()
+            # Fetch errors are ignored to allow a complete cycle. In case of
+            # error the underlying functions guarantee a consistency catalog.
+            # All errors are logged and notified to the user.
+            r = self._pull_update()
+            if not r:
+                result = False
+            r = self._write_catalog()
+            if not r:
+                result = False
         notify_end("pull", result)
 
         msg = "<<< ()={}"
@@ -489,9 +494,13 @@ class LAppTrack:
         if result:
             # Fetch error are ignored to allow a complete cycle. All errors
             # are logged and notified to the user.
-            self._fetch_update()
-            result = self._write_catalog()
-        notify_end("pull", result)
+            r = self._fetch_update()
+            if not r:
+                result = False
+            r = self._write_catalog()
+            if not r:
+                result = False
+        notify_end("fetch", result)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
@@ -586,9 +595,10 @@ class LAppTrack:
 
         assert self.config_checked
 
-        result = True
+        error = True
         apps_num = len(self.config[_APPS_SNAME])
         for i, app_id in enumerate(self.config[_APPS_SNAME]):
+            result = True
             msg = "Fetching update information for '{}' ({}/{})".\
                 format(app_id, i+1, apps_num)
             notify_info(msg)
@@ -621,8 +631,19 @@ class LAppTrack:
                         }
                         app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
 
-                    r = origin_app.get_origin(app.version)
-                    if r:
+                    try:
+                        result = origin_app.get_origin(app.version)
+                        if not result:
+                            msg = "Fetch update information for '{}' " \
+                                  "failed".format(app_id)
+                            notify_error(msg)
+                            result = False
+                    except Exception as err:
+                        msg = "Internal error: {}".format(str(err))
+                        notify_error(msg)
+                        result = False
+
+                    if result:
                         if origin_app.is_update(app):
                             app_entry[CAT_PULLED_KNAME] = origin_app.dump()
                             msg = "A new version of '{}' exist ({}) published" \
@@ -634,16 +655,14 @@ class LAppTrack:
                             msg = "No newer version of '{0}' " \
                                   "exist.".format(app_id)
                             notify_info(msg)
-                    else:
-                        msg = "Fetch update information for '{}' " \
-                              "failed".format(app_id)
-                        notify_error(msg)
-                        result = False
                 del app
                 del origin_app
             else:
                 msg = "Tracking of '{0}' deactivated.".format(app_id)
                 notify_info(msg)
+            # Store the error to raise it without interrupt the loop
+            if not result:
+                error = False
 
         if self._pulling_report:
             try:
@@ -655,8 +674,8 @@ class LAppTrack:
                 notify_error(msg)
 
         msg = "<<< ()={}"
-        _logger.debug(msg.format(result))
-        return result
+        _logger.debug(msg.format(error))
+        return error
 
     def _fetch_update(self):
         """
@@ -670,9 +689,10 @@ class LAppTrack:
         _logger.debug(msg)
 
         assert self.config_checked is True
-        result = True
+        error = True
         apps_num = len(self.config[_APPS_SNAME])
         for i, app_id in enumerate(self.config[_APPS_SNAME]):
+            result = True
             msg = "Fetching installer for '{}' ({}/{})".\
                 format(app_id, i+1, apps_num)
             notify_info(msg)
@@ -694,8 +714,21 @@ class LAppTrack:
                         app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
                         if app_entry[CAT_PULLED_KNAME]:
                             app.load(app_entry[CAT_PULLED_KNAME])
-                            r = app.fetch(self.config[app_id][_PATH_KNAME])
-                            if r:
+                            try:
+                                result = app.fetch(
+                                    self.config[app_id][_PATH_KNAME]
+                                )
+                                if not result:
+                                    msg = "Fetch installer for '{}' " \
+                                          "failed".format(app_id)
+                                    notify_error(msg)
+                                    result = False
+                            except Exception as err:
+                                msg = "Internal error: {}".format(str(err))
+                                notify_error(msg)
+                                result = False
+
+                            if result:
                                 # replace the fetched product by the newest.
                                 app_entry[CAT_FETCHED_KNAME] = app.dump()
                                 app_entry[CAT_PULLED_KNAME] = {}
@@ -703,11 +736,6 @@ class LAppTrack:
                                       " '{1}'.".format(app_id, app.installer)
                                 notify_info(msg)
                                 self._fetching_report.add_section(app.dump())
-                            else:
-                                msg = "Fetch installer for '{}' " \
-                                      "failed".format(app_id)
-                                notify_error(msg)
-                                result = False
                     else:
                         # The product do not exist in the catalog. It's a
                         # product newly added and the update information have
@@ -719,6 +747,9 @@ class LAppTrack:
             else:
                 msg = "Tracking of '{0}' deactivated.".format(app_id)
                 notify_info(msg)
+            # Store the error to raise it without interrupt the loop
+            if not result:
+                error = False
 
         if self._fetching_report:
             try:
@@ -730,8 +761,8 @@ class LAppTrack:
                 notify_error(msg)
 
         msg = "<<< ()={}"
-        _logger.debug(msg.format(result))
-        return result
+        _logger.debug(msg.format(error))
+        return error
 
     def _approve_update(self, force):
         """
