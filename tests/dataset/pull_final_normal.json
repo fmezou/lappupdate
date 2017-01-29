@@ -7,7 +7,7 @@
       "fetched": {},
       "pulled": {
         "announce_location": "",
-        "change_summary": "<ul><li>Stable version (for testing)</li></ul>",
+        "change_summary": "<ul><li>Stable version</li></ul>",
         "description": "Mocking handler",
         "display_name": "Mocker v1.0.0",
         "editor": "MockApp. Inc",
@@ -58,7 +58,7 @@
       "fetched": {},
       "pulled": {
         "announce_location": "",
-        "change_summary": "<ul><li>Stable version (for testing)</li></ul>",
+        "change_summary": "<ul><li>Stable version</li></ul>",
         "description": "Mocking handler",
         "display_name": "Mocker v1.0.0",
         "editor": "MockApp. Inc",
@@ -84,7 +84,7 @@
     "mock-3": {
       "approved": {
         "announce_location": "",
-        "change_summary": "<ul><li>Stable version (for testing)</li></ul>",
+        "change_summary": "<ul><li>Stable version</li></ul>",
         "description": "Mocking handler",
         "display_name": "Mocker v1.0.0",
         "editor": "MockApp. Inc",
