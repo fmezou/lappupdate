@@ -157,7 +157,7 @@ class DummyHandler(core.BaseProduct):
         self.editor = "Example. inc"
         self.web_site_location = "http://www.example.com/index.html"
         self.location = "http://www.example.com/dist.zip"
-        self.icon = None
+        self.icon = ""
         self.announce_location = "http://www.example.com/news.txt"
         self.feed_location = "http://www.example.com/feed.rss"
         self.release_note_location = "http://www.example.com/release_note.txt"
