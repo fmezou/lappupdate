@@ -715,9 +715,9 @@ class LAppTrack:
                         if app_entry[CAT_PULLED_KNAME]:
                             app.load(app_entry[CAT_PULLED_KNAME])
                             try:
-                                result = app.fetch(
-                                    self.config[app_id][_PATH_KNAME]
-                                )
+                                path = self.config[app_id][_PATH_KNAME]
+                                path = os.path.normpath(path)
+                                result = app.fetch(path)
                                 if not result:
                                     msg = "Fetch installer for '{}' " \
                                           "failed".format(app_id)
