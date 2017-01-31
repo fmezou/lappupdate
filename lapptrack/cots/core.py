@@ -381,7 +381,7 @@ class BaseProduct:
         name = os.path.basename(
             urllib.request.url2pathname(components.path))
         ext = os.path.splitext(name)[1]
-        filename = "{}_{}{}".format(self.name, self.version, ext)
+        filename = "{}_v{}{}".format(self.name, self.version, ext)
         pathname = os.path.normcase(os.path.join(dirpath, filename))
         tempname = self.installer + ".partial"
 

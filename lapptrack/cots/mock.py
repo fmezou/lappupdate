@@ -182,7 +182,7 @@ class BaseMockHandler(core.BaseProduct):
         result = True
         content = "This file is the result of the use of a mocking handler."
         os.makedirs(dirpath, exist_ok=True)
-        name = "{}_{}{}".format(self.name, self.version, ".txt")
+        name = "{}_v{}{}".format(self.name, self.version, ".txt")
         pathname = os.path.join(dirpath, name)
         try:
             with open(pathname, mode="w") as file:
