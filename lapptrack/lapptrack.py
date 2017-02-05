@@ -617,19 +617,19 @@ class LAppTrack:
                     result = False
 
                 if result:
-                    if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
-                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
+                        app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
                         # Load deployed product
                         if app_entry[CAT_APPROVED_KNAME]:
                             app.load(app_entry[CAT_APPROVED_KNAME])
                     else:
                         # Do not exist in catalog, a new one will be created
-                        self._catalog[CAT_PRODUCTS_KNAME][app_id] = {
+                        self.catalog[CAT_PRODUCTS_KNAME][app_id] = {
                             CAT_PULLED_KNAME: {},
                             CAT_FETCHED_KNAME: {},
                             CAT_APPROVED_KNAME: {}
                         }
-                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                        app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
 
                     try:
                         result = origin_app.get_origin(app.version)
@@ -710,8 +710,8 @@ class LAppTrack:
                     result = False
 
                 if result:
-                    if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
-                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
+                        app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
                         if app_entry[CAT_PULLED_KNAME]:
                             app.load(app_entry[CAT_PULLED_KNAME])
                             try:
@@ -800,8 +800,8 @@ class LAppTrack:
                 format(app_id, i+1, apps_num)
             _logger.info(msg)
             if self.config[_APPS_SNAME].getboolean(app_id):
-                if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
-                    app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
+                    app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
                     if app_entry[CAT_FETCHED_KNAME]:
                         app = app_entry[CAT_FETCHED_KNAME]
                         approved = False
@@ -1030,6 +1030,8 @@ class LAppTrack:
             # Check the applications section
             if _APPS_SNAME in self.config.sections():
                 for app_name in self.config[_APPS_SNAME]:
+                    # FIXME (fmezou) catch exception (use case mock = any vs mock = on)
+                    # extend to all excepted value in config file.
                     if self.config[_APPS_SNAME].getboolean(app_name):
                         # Pre compute default value for the Application section
                         app_qualname = "{}.{}.{}Handler".format(
@@ -1076,7 +1078,7 @@ class LAppTrack:
                 result = False
 
             # Checked
-            self.config_checked = True
+            self.config_checked = result
             if result:
                 msg = "Configuration loaded from '{}'".format(config_file.name)
                 notify_info(msg)
@@ -1100,15 +1102,15 @@ class LAppTrack:
         result = True
         try:
             with open(self.catalog_path, "r+t") as file:
-                self._catalog = json.load(file)
+                self.catalog = json.load(file)
                 # force the version number.
                 # at time, there is non need to have a update function
-                self._catalog[CAT_VERSION_KNAME] = CAT_VERSION
+                self.catalog[CAT_VERSION_KNAME] = CAT_VERSION
         except FileNotFoundError:
             # the catalog may be not exist
             notify_warning("The product's catalog don't exist, a new one will"
                            " be created")
-            self._catalog = {
+            self.catalog = {
                 CAT_WARNING_KNAME: _CAT_WARNING,
                 CAT_VERSION_KNAME: CAT_VERSION,
                 CAT_MODIFIED_KNAME: None,
@@ -1149,8 +1151,8 @@ class LAppTrack:
             with open(self.catalog_path, "w+t") as file:
                 # write the warning header with a naive time representation.
                 dt = (datetime.datetime.now()).replace(microsecond=0)
-                self._catalog[CAT_MODIFIED_KNAME] = dt.isoformat()
-                json.dump(self._catalog, file, indent=4, sort_keys=True)
+                self.catalog[CAT_MODIFIED_KNAME] = dt.isoformat()
+                json.dump(self.catalog, file, indent=4, sort_keys=True)
         except OSError as err:
             msg = "Failed to write the catalog - OS error: {}".format(str(err))
             notify_error(msg)
@@ -1240,8 +1242,8 @@ class LAppTrack:
                 msg = "Adding '{}' ({}/{})".format(app_id, i, apps_num)
                 _logger.info(msg)
                 if self.config[_APPS_SNAME].getboolean(app_id):
-                    if app_id in self._catalog[CAT_PRODUCTS_KNAME]:
-                        app_entry = self._catalog[CAT_PRODUCTS_KNAME][app_id]
+                    if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
+                        app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
                         if app_entry[CAT_APPROVED_KNAME]:
                             app = app_entry[CAT_APPROVED_KNAME]
                             # build the catalog line
