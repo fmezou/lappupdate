@@ -16,7 +16,7 @@ import shutil
 pathname = os.path.join(os.path.dirname(__file__), os.pardir, "lapptrack")
 sys.path.append(os.path.abspath(pathname))
 
-import lapptrack
+from lapptrack import lapptrack
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -53,14 +53,8 @@ class BaseTestCase(unittest.TestCase):
     the application catalog or applist files.
 
     """
-    def __init__(self):
-        super().__init__()
-        #: str: The pathname of the configuration file.
-        self.config_path = ""
-
-        #: file object: The file object of the configuration file
-        self.config_file = None
-
+    def __init__(self, methodName='runTest'):
+        super().__init__(methodName)
         #: LAppTrack: The main instance of the tested object.
         self.tracker = None
 
@@ -81,23 +75,25 @@ class BaseTestCase(unittest.TestCase):
 
         with open(path) as file:
             catalog = json.load(file)
-            products = catalog[lapptrack.lapptrack.CAT_PRODUCTS_KNAME]
+            products = catalog[lapptrack.CAT_PRODUCTS_KNAME]
             string = json.dumps(products, indent=2, sort_keys=True)
             left_lines = string.splitlines(keepends=True)
 
         with open(self.tracker.catalog_path) as file:
             catalog = json.load(file)
-            products = catalog[lapptrack.lapptrack.CAT_PRODUCTS_KNAME]
+            products = catalog[lapptrack.CAT_PRODUCTS_KNAME]
             string = json.dumps(products, indent=2, sort_keys=True)
             right_lines = string.splitlines(keepends=True)
 
         diff = difflib.ndiff(left_lines, right_lines)
-        r = []
+        r = False
+        t = []
         for line in diff:
+            t.append(line)
             if not line.startswith("  "):
-                r.append(line)
+                r = True
         if r:
-            msg = "".join(r)
+            msg = "Unexpected catalog content.\n" + "".join(t)
             raise self.failureException(msg)
 
     def assert_applist_equal(self, path1, path2):
@@ -130,12 +126,14 @@ class BaseTestCase(unittest.TestCase):
                     right_lines.append(line)
 
         diff = difflib.ndiff(left_lines, right_lines)
-        r = []
+        r = False
+        t = []
         for line in diff:
+            t.append(line)
             if not line.startswith("  "):
-                r.append(line)
+                r = True
         if r:
-            msg = "".join(r)
+            msg = "Unexpected applist content.\n" + "".join(t)
             raise self.failureException(msg)
 
     def assert_file_exist(self, path):
@@ -162,19 +160,6 @@ class BaseTestCase(unittest.TestCase):
             msg = "{}: exist and is a regular file".format(path)
             raise self.failureException(msg)
 
-    def setUp(self):
-        _logger.info(53*"-")
-        self.config_file = open(self.config_path)
-        self.tracker = lapptrack.lapptrack.LAppTrack()
-        r = self.tracker.load_config(self.config_file)
-        self.assertTrue(r, "tracker.load_config()")
-        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
-        shutil.rmtree(self.tracker.store_path, ignore_errors=True)
-
-    def tearDown(self):
-        self.assertTrue(self.config_file.closed)
-        _logger.info(50*"-")
-
 
 class LAppTrackFirstStartTestCase(BaseTestCase):
     """
@@ -187,11 +172,21 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
     The test case uses the `mock` module.
     """
     def setUp(self):
-        self.config_path = "dataset\\1st_start.ini"
-        super().setUp()
+        _logger.info(53*"-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\1st_start.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50 * "-")
 
     def test_config(self):
         _logger.info("Starting...")
@@ -250,7 +245,7 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
         self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "pull.html")
         )
-        self.assert_file_exist(
+        self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "fetch.html")
         )
         self.assert_file_not_exist(
@@ -282,7 +277,7 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
         self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "fetch.html")
         )
-        self.assert_file_exist(
+        self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "approve.html")
         )
         _logger.info("Completed")
@@ -292,18 +287,21 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
         r = self.tracker.make()
         self.assertTrue(r, "tracker.make()")
         # Check output files
-        self.assert_catalog_equal("dataset\\1rt_start_approve_final.json")
-        self.assert_file_not_exist(
-            os.path.join(self.tracker.store_path, "applist-manual.txt")
+        self.assert_applist_equal(
+            os.path.join(self.tracker.store_path, "applist-all.txt"),
+            "dataset\\1rt_start_make_applist-all.txt"
         )
-        self.assert_file_not_exist(
-            os.path.join(self.tracker.store_path, "applist-all.txt")
+        self.assert_applist_equal(
+            os.path.join(self.tracker.store_path, "applist-manual.txt"),
+            "dataset\\1rt_start_make_applist-manual.txt"
         )
-        self.assert_file_not_exist(
-            os.path.join(self.tracker.store_path, "applist-mock.txt")
+        self.assert_applist_equal(
+            os.path.join(self.tracker.store_path, "applist-altmock.txt"),
+            "dataset\\1rt_start_make_applist-altmock.txt"
         )
-        self.assert_file_not_exist(
-            os.path.join(self.tracker.store_path, "applist-altmock.txt")
+        self.assert_applist_equal(
+            os.path.join(self.tracker.store_path, "applist-mock.txt"),
+            "dataset\\1rt_start_make_applist-mock.txt"
         )
         self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "pull.html")
@@ -311,7 +309,7 @@ class LAppTrackFirstStartTestCase(BaseTestCase):
         self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "fetch.html")
         )
-        self.assert_file_exist(
+        self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "approve.html")
         )
         _logger.info("Completed")
@@ -326,12 +324,24 @@ class LAppTrackPullNormalTestCase(BaseTestCase):
     The test case uses the `mock` module.
     """
     def setUp(self):
-        self.config_path = "dataset\\pull_normal.ini"
+        _logger.info(53*"-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\pull_normal.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
+
+        # set up the catalog
         shutil.copy("dataset\\pull_initial.json", self.tracker.catalog_path)
-        super().setUp()
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50 * "-")
 
     def test_pull(self):
         _logger.info("Starting...")
@@ -358,44 +368,57 @@ class LAppTrackPullNormalTestCase(BaseTestCase):
 
 
 class LAppTrackPullFailureTestCase(BaseTestCase):
-        """
-        Failure test case for the pull task
+    """
+    Failure test case for the pull task
 
-        This class launch a pull task with an exiting catalog as usual.
+    This class launch a pull task with an exiting catalog as usual.
 
-        The test case uses the `mock` module.
-        """
-        def setUp(self):
-            self.config_path = "dataset\\pull_failure.ini"
-            shutil.copy("dataset\\pull_initial.json", self.tracker.catalog_path)
-            super().setUp()
+    The test case uses the `mock` module.
+    """
+    def setUp(self):
+        _logger.info(53 * "-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
 
-        def tearDown(self):
-            super().tearDown()
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\pull_failure.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
 
-        def test_pull(self):
-            _logger.info("Starting...")
-            r = self.tracker.pull()
-            self.assertFalse(r, "tracker.pull()")
-            # Check output files
-            # no change in the catalog
-            self.assert_catalog_equal("dataset\\pull_initial.json")
-            self.assert_file_not_exist(
-                os.path.join(self.tracker.store_path, "applist-manual.txt")
-            )
-            self.assert_file_not_exist(
-                os.path.join(self.tracker.store_path, "applist-all.txt")
-            )
-            self.assert_file_exist(
-                os.path.join(self.tracker.store_path, "pull.html")
-            )
-            self.assert_file_not_exist(
-                os.path.join(self.tracker.store_path, "fetch.html")
-            )
-            self.assert_file_not_exist(
-                os.path.join(self.tracker.store_path, "approve.html")
-            )
-            _logger.info("Completed")
+        # set up the catalog
+        shutil.copy("dataset\\pull_initial.json", self.tracker.catalog_path)
+
+    def tearDown(self):
+        _logger.info(50*"-")
+
+    def test_pull(self):
+        _logger.info("Starting...")
+        r = self.tracker.pull()
+        self.assertFalse(r, "tracker.pull()")
+        # Check output files
+        # no change in the catalog
+        self.assert_catalog_equal("dataset\\pull_initial.json")
+        self.assert_file_not_exist(
+            os.path.join(self.tracker.store_path, "applist-manual.txt")
+        )
+        self.assert_file_not_exist(
+            os.path.join(self.tracker.store_path, "applist-all.txt")
+        )
+        # As all the modules return an error, any report is generated
+        self.assert_file_not_exist(
+            os.path.join(self.tracker.store_path, "pull.html")
+        )
+        self.assert_file_not_exist(
+            os.path.join(self.tracker.store_path, "fetch.html")
+        )
+        self.assert_file_not_exist(
+            os.path.join(self.tracker.store_path, "approve.html")
+        )
+        _logger.info("Completed")
 
 
 class LAppTrackFetchNormalTestCase(BaseTestCase):
@@ -407,12 +430,24 @@ class LAppTrackFetchNormalTestCase(BaseTestCase):
     The test case uses the `mock` module.
     """
     def setUp(self):
-        self.config_path = "dataset\\fetch_normal.ini"
+        _logger.info(53*"-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\fetch_normal.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
+
+        # set up the catalog
         shutil.copy("dataset\\fetch_initial.json", self.tracker.catalog_path)
-        super().setUp()
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50*"-")
 
     def test_fetch(self):
         _logger.info("Starting...")
@@ -436,10 +471,10 @@ class LAppTrackFetchNormalTestCase(BaseTestCase):
             os.path.join(self.tracker.store_path, "approve.html")
         )
         self.assert_file_exist(
-            os.path.join(self.tracker.store_path, "mock-2/Mocker_v1.0.0.txt")
+            os.path.join(self.tracker.store_path, "mock-2\\Mocker_v1.0.0.txt")
         )
         self.assert_file_exist(
-            os.path.join(self.tracker.store_path, "mock-3/Mocker_v1.0.0.txt")
+            os.path.join(self.tracker.store_path, "altpath\\Mocker_v1.0.0.txt")
         )
         _logger.info("Completed")
 
@@ -453,12 +488,24 @@ class LAppTrackFetchFailureTestCase(BaseTestCase):
     The test case uses the `mock` module.
     """
     def setUp(self):
-        self.config_path = "dataset\\fetch_failure.ini"
+        _logger.info(53*"-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\fetch_failure.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
+
+        # set up the catalog
         shutil.copy("dataset\\fetch_initial.json", self.tracker.catalog_path)
-        super().setUp()
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50*"-")
 
     def test_fetch(self):
         _logger.info("Starting...")
@@ -476,17 +523,18 @@ class LAppTrackFetchFailureTestCase(BaseTestCase):
         self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "pull.html")
         )
-        self.assert_file_exist(
+        # As all the modules return an error, any report is generated
+        self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "fetch.html")
         )
         self.assert_file_not_exist(
             os.path.join(self.tracker.store_path, "approve.html")
         )
         self.assert_file_not_exist(
-            os.path.join(self.tracker.store_path, "mock-2/Mocker_v1.0.0.txt")
+            os.path.join(self.tracker.store_path, "mock-2\\Mocker_v1.0.0.txt")
         )
         self.assert_file_not_exist(
-            os.path.join(self.tracker.store_path, "mock-3/Mocker_v1.0.0.txt")
+            os.path.join(self.tracker.store_path, "mock-3\\Mocker_v1.0.0.txt")
         )
         _logger.info("Completed")
 
@@ -500,16 +548,28 @@ class LAppTrackApproveNormalTestCase(BaseTestCase):
     The test case uses the `mock` module.
     """
     def setUp(self):
-        self.config_path = "dataset\\approve_normal.ini"
+        _logger.info(53*"-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\approve_normal.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
+
+        # set up the catalog
         shutil.copy("dataset\\approve_initial.json", self.tracker.catalog_path)
-        super().setUp()
 
     def tearDown(self):
         super().tearDown()
 
     def test_approve(self):
         _logger.info("Starting...")
-        r = self.tracker.approve()
+        r = self.tracker.approve(force=True)
         self.assertTrue(r, "tracker.approve()")
         # Check output files
         self.assert_catalog_equal("dataset\\approve_final_normal.json")
@@ -540,12 +600,24 @@ class LAppTrackMakeNormalTestCase(BaseTestCase):
     The test case uses the `mock` module.
     """
     def setUp(self):
-        self.config_path = "dataset\\make_normal.ini"
+        _logger.info(53*"-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\make_normal.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
+
+        # set up the catalog
         shutil.copy("dataset\\make_initial.json", self.tracker.catalog_path)
-        super().setUp()
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50*"-")
 
     def test_make(self):
         _logger.info("Starting...")
@@ -590,11 +662,21 @@ class LAppTrackDefaultConfigTestCase(BaseTestCase):
     The test case uses the `mock` module.
     """
     def setUp(self):
-        self.config_path = "dataset\\default.ini"
-        super().setUp()
+        _logger.info(53*"-")
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
+        file = open("dataset\\default.ini")
+        r = self.tracker.load_config(file)
+        self.assertTrue(file.closed)
+        self.assertTrue(r, "tracker.load_config()")
+        self.assertTrue(self.tracker.config_checked, "tracker.config_checked")
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50*"-")
 
     def test_run(self):
         _logger.info("Starting...")
@@ -618,16 +700,20 @@ class LAppTrackMissingSectionConfigTestCase(BaseTestCase):
     """
     def setUp(self):
         _logger.info(53*"-")
-        self.config_path = "dataset\\missing_sections.ini"
-        self.config_file = open(self.config_path)
-        self.tracker = lapptrack.lapptrack.LAppTrack()
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50*"-")
 
     def test_load_config(self):
         _logger.info("Starting...")
-        r = self.tracker.load_config(self.config_file)
+        file = open("dataset\\missing_sections.ini")
+        r = self.tracker.load_config(file)
         self.assertFalse(r, "tracker.load_config()")
         self.assertFalse(self.tracker.config_checked, "tracker.config_checked")
         _logger.info("Completed")
@@ -643,16 +729,20 @@ class LAppTrackMissingSetConfigTestCase(BaseTestCase):
     """
     def setUp(self):
         _logger.info(53*"-")
-        self.config_path = "dataset\\missing_set.ini"
-        self.config_file = open(self.config_path)
-        self.tracker = lapptrack.lapptrack.LAppTrack()
+        # clean up the store
+        path = os.path.join(os.pardir, "~store", "app")
+        shutil.rmtree(path, ignore_errors=True)
+
+        # create the tracker instance
+        self.tracker = lapptrack.LAppTrack()
 
     def tearDown(self):
-        super().tearDown()
+        _logger.info(50*"-")
 
     def test_load_config(self):
         _logger.info("Starting...")
-        r = self.tracker.load_config(self.config_file)
+        file = open("dataset\\missing_set.ini")
+        r = self.tracker.load_config(file)
         self.assertFalse(r, "tracker.load_config()")
         self.assertFalse(self.tracker.config_checked, "tracker.config_checked")
         _logger.info("Completed")

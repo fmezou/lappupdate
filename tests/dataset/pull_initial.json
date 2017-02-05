@@ -17,7 +17,7 @@
         "feed_location": "",
         "file_size": 56,
         "icon": "",
-        "installer": "../~store/app/mock-2/Mocker_v0.1.0.txt",
+        "installer": "..\\~store\\app\\mock-2\\Mocker_v0.1.0.txt",
         "location": "http://mockapp.example.com/dist.zip",
         "name": "Mocker",
         "published": "2016-12-29T16:00:00",

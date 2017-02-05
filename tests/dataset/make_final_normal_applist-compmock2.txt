@@ -3,5 +3,5 @@
 # This file must not be modified. It contains the applist resulting of the
 # LAppTrackMakeNormalTestCase.test_make unit test.
 # ------------------------------------------------------------------------------
-unified;Mocker v1.0.0;1.0.0;../~store/app/mock-2/Mocker_v1.0.0.txt;/S
-unified;Brother Mocker v1.0.0;1.0.0;../~store/app/mock-3/Brother Mocker_v1.0.0.txt;/S
+unified;Mocker v1.0.0;1.0.0;..\~store\app\mock-2\Mocker_v1.0.0.txt;/S
+unified;Brother Mocker v1.0.0;1.0.0;..\~store\app\mock-3\Brother Mocker_v1.0.0.txt;/S
