@@ -210,6 +210,7 @@ CAT_APPROVED_KNAME = "approved"
 the product."""
 
 _PROD_NAME_KNAME = "name"
+_PROD_DNAME_KNAME = "display_name"
 _PROD_VERSION_KNAME = "version"
 _PROD_TARGET_KNAME = "target"
 _PROD_INSTALLER_KNAME = "installer"
@@ -411,11 +412,11 @@ class LAppTrack:
         #: dict: The current product :term:`catalog`, the
         #: `background_catalog-format` section details the catalog file
         #: structure
-        self.catalog = None
+        self.catalog = {}
 
-        self._pulling_report = None
-        self._fetching_report = None
-        self._approving_report = None
+        self._pulling_report = report.Report()
+        self._fetching_report = report.Report()
+        self._approving_report = report.Report()
         self._report = ""
 
         msg = "<<< ()=None"
@@ -489,7 +490,7 @@ class LAppTrack:
         msg = ">>> ()"
         _logger.debug(msg)
 
-        notify_start("pull")
+        notify_start("fetch")
         result = self._read_catalog()
         if result:
             # Fetch error are ignored to allow a complete cycle. All errors
@@ -599,9 +600,6 @@ class LAppTrack:
         apps_num = len(self.config[_APPS_SNAME])
         for i, app_id in enumerate(self.config[_APPS_SNAME]):
             result = True
-            msg = "Fetching update information for '{}' ({}/{})".\
-                format(app_id, i+1, apps_num)
-            notify_info(msg)
             if self.config[_APPS_SNAME].getboolean(app_id):
                 qn = self.config[app_id][_QUALNAME_KNAME]
                 try:
@@ -615,6 +613,10 @@ class LAppTrack:
                     msg = "Internal error: {}".format(str(err))
                     notify_error(msg)
                     result = False
+                else:
+                    msg = "Fetching update information for '{}' (id: {})" \
+                          " - {}/{}".format(app.name, app_id, i + 1, apps_num)
+                    notify_info(msg)
 
                 if result:
                     if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
@@ -635,7 +637,7 @@ class LAppTrack:
                         result = origin_app.get_origin(app.version)
                         if not result:
                             msg = "Fetch update information for '{}' " \
-                                  "failed".format(app_id)
+                                  "failed".format(app.name)
                             notify_error(msg)
                             result = False
                     except Exception as err:
@@ -647,31 +649,32 @@ class LAppTrack:
                         if origin_app.is_update(app):
                             app_entry[CAT_PULLED_KNAME] = origin_app.dump()
                             msg = "A new version of '{}' exist ({}) published" \
-                                  " on {}.".format(app_id, origin_app.version,
+                                  " on {}.".format(origin_app.name,
+                                                   origin_app.version,
                                                    origin_app.published)
                             notify_info(msg)
                             self._pulling_report.add_section(origin_app.dump())
                         else:
                             msg = "No newer version of '{0}' " \
-                                  "exist.".format(app_id)
+                                  "exist.".format(app.name)
                             notify_info(msg)
                 del app
                 del origin_app
             else:
-                msg = "Tracking of '{0}' deactivated.".format(app_id)
+                msg = "Tracking deactivated (id: {}) " \
+                      "- {}/{}".format(app_id, i + 1, apps_num)
                 notify_info(msg)
             # Store the error to raise it without interrupt the loop
             if not result:
                 error = False
 
-        if self._pulling_report:
-            try:
-                self._pulling_report.publish()
-            except (smtplib.SMTPException, OSError) as err:
-                # The failure to send the report is simply notified, but it
-                # is not a critical error.
-                msg = "Failed to send or write the report: {}".format(str(err))
-                notify_error(msg)
+        try:
+            self._pulling_report.publish()
+        except (smtplib.SMTPException, OSError) as err:
+            # The failure to send the report is simply notified, but it
+            # is not a critical error.
+            msg = "Failed to send or write the report: {}".format(str(err))
+            notify_error(msg)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(error))
@@ -693,9 +696,6 @@ class LAppTrack:
         apps_num = len(self.config[_APPS_SNAME])
         for i, app_id in enumerate(self.config[_APPS_SNAME]):
             result = True
-            msg = "Fetching installer for '{}' ({}/{})".\
-                format(app_id, i+1, apps_num)
-            notify_info(msg)
             if self.config[_APPS_SNAME].getboolean(app_id):
                 qn = self.config[app_id][_QUALNAME_KNAME]
                 try:
@@ -708,6 +708,10 @@ class LAppTrack:
                     msg = "Internal error: {}".format(str(err))
                     notify_error(msg)
                     result = False
+                else:
+                    msg = "Fetching installer for '{}' (id: {})" \
+                          " - {}/{}".format(app.name, app_id, i + 1, apps_num)
+                    notify_info(msg)
 
                 if result:
                     if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
@@ -720,7 +724,7 @@ class LAppTrack:
                                 result = app.fetch(path)
                                 if not result:
                                     msg = "Fetch installer for '{}' " \
-                                          "failed".format(app_id)
+                                          "failed".format(app.name)
                                     notify_error(msg)
                                     result = False
                             except Exception as err:
@@ -733,32 +737,31 @@ class LAppTrack:
                                 app_entry[CAT_FETCHED_KNAME] = app.dump()
                                 app_entry[CAT_PULLED_KNAME] = {}
                                 msg = "Installer of '{0}' fetched. saved as" \
-                                      " '{1}'.".format(app_id, app.installer)
+                                      " '{1}'.".format(app.name, app.installer)
                                 notify_info(msg)
                                 self._fetching_report.add_section(app.dump())
                     else:
                         # The product do not exist in the catalog. It's a
                         # product newly added and the update information have
                         # not been fetched.
-                        msg = "The product '{0}' don't exist. " \
-                              "Request ignored.".format(app_id)
+                        msg = "'{}' Not found in the catalog".format(app.name)
                         notify_warning(msg)
                     del app
             else:
-                msg = "Tracking of '{0}' deactivated.".format(app_id)
+                msg = "Tracking deactivated (id: {}) " \
+                      "- {}/{}".format(app_id, i + 1, apps_num)
                 notify_info(msg)
             # Store the error to raise it without interrupt the loop
             if not result:
                 error = False
 
-        if self._fetching_report:
-            try:
-                self._fetching_report.publish()
-            except (smtplib.SMTPException, OSError) as err:
-                # The failure to send the report is simply notified, but it
-                # is not a critical error.
-                msg = "Failed to send or write the report: {}".format(str(err))
-                notify_error(msg)
+        try:
+            self._fetching_report.publish()
+        except (smtplib.SMTPException, OSError) as err:
+            # The failure to send the report is simply notified, but it
+            # is not a critical error.
+            msg = "Failed to send or write the report: {}".format(str(err))
+            notify_error(msg)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(error))
@@ -796,14 +799,15 @@ class LAppTrack:
 
         apps_num = len(self.config[_APPS_SNAME])
         for i, app_id in enumerate(self.config[_APPS_SNAME]):
-            msg = "Approving the deployment of '{}' ({}/{})".\
-                format(app_id, i+1, apps_num)
-            _logger.info(msg)
             if self.config[_APPS_SNAME].getboolean(app_id):
                 if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
                     app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
                     if app_entry[CAT_FETCHED_KNAME]:
                         app = app_entry[CAT_FETCHED_KNAME]
+                        msg = "Approving the deployment of '{}' (id: {})" \
+                              " - {}/{}".format(app[_PROD_NAME_KNAME], app_id,
+                                                i + 1, apps_num)
+                        notify_info(msg)
                         approved = False
                         if not force:
                             prompt = "Approve {} ({}) (y/n) [n]:".format(
@@ -827,33 +831,38 @@ class LAppTrack:
                             app_entry[CAT_APPROVED_KNAME] = app
                             app_entry[CAT_FETCHED_KNAME] = {}
                             self._approving_report.add_section(app)
-                            msg = "Deployment of '{0}' approved.".format(app_id)
+                            msg = "Deployment of '{0}' " \
+                                  "approved.".format(app[_PROD_NAME_KNAME])
                             notify_info(msg)
                         else:
                             # The disapproval is simply log (it is an user
                             # action)
                             msg = "Deployment of '{0}' " \
-                                  "disapproved.".format(app_id)
-                            _logger.info(msg.format(app_id))
+                                  "disapproved.".format(app[_PROD_NAME_KNAME])
+                            notify_info(msg)
+                    else:
+                        msg = "No fetched version exist (id: {}) " \
+                              " - {}/{}".format(app_id, i + 1, apps_num)
+                        notify_warning(msg)
                 else:
                     # The product do not exist in the catalog. It's a
                     # product newly added and the update information have
                     # not been fetched.
-                    msg = "The product '{0}' don't exist. " \
-                          "Request ignored.".format(app_id)
+                    msg = "Not found in the catalog (id: {}) " \
+                          "- {}/{}".format(app_id, i + 1, apps_num)
                     notify_warning(msg)
             else:
-                msg = "Tracking of '{0}' deactivated.".format(app_id)
+                msg = "Tracking deactivated (id: {}) " \
+                      "- {}/{}".format(app_id, i + 1, apps_num)
                 notify_info(msg)
 
-        if self._approving_report:
-            try:
-                self._approving_report.publish()
-            except (smtplib.SMTPException, OSError) as err:
-                # The failure to send the report is simply notified, but it
-                # is not a critical error.
-                msg = "Failed to send or write the report: {}".format(str(err))
-                notify_error(msg)
+        try:
+            self._approving_report.publish()
+        except (smtplib.SMTPException, OSError) as err:
+            # The failure to send the report is simply notified, but it
+            # is not a critical error.
+            msg = "Failed to send or write the report: {}".format(str(err))
+            notify_error(msg)
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -904,7 +913,6 @@ class LAppTrack:
                         os.makedirs(self.store_path, exist_ok=True)
                         self.catalog_path = os.path.join(self.store_path,
                                                          CATALOG_FNAME)
-                        self.catalog_path = os.path.abspath(self.catalog_path)
                     except OSError as err:
                         msg = "Failed to create the store directory - " \
                               "OS error: {}".format(str(err))
@@ -941,7 +949,6 @@ class LAppTrack:
                     filename = self.config[_CORE_SNAME][_PULL_REPORT_KNAME]
                     if os.path.isfile(filename):
                         try:
-                            self._pulling_report = report.Report()
                             config = _load_config(filename)
                             self._pulling_report.load_config(config, False)
                         except configparser.Error as err:
@@ -967,7 +974,6 @@ class LAppTrack:
                     filename = self.config[_CORE_SNAME][_FETCH_REPORT_KNAME]
                     if os.path.isfile(filename):
                         try:
-                            self._fetching_report = report.Report()
                             config = _load_config(filename)
                             self._fetching_report.load_config(config, False)
                         except configparser.Error as err:
@@ -993,7 +999,6 @@ class LAppTrack:
                     filename = self.config[_CORE_SNAME][_APPROVE_REPORT_KNAME]
                     if os.path.isfile(filename):
                         try:
-                            self._approving_report = report.Report()
                             config = _load_config(filename)
                             self._approving_report.load_config(config, False)
                         except configparser.Error as err:
@@ -1239,17 +1244,18 @@ class LAppTrack:
         if result:
             apps_num = len(self.config[_APPS_SNAME])
             for i, app_id in enumerate(self.config[_APPS_SNAME]):
-                msg = "Adding '{}' ({}/{})".format(app_id, i, apps_num)
-                _logger.info(msg)
                 if self.config[_APPS_SNAME].getboolean(app_id):
                     if app_id in self.catalog[CAT_PRODUCTS_KNAME]:
                         app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
                         if app_entry[CAT_APPROVED_KNAME]:
                             app = app_entry[CAT_APPROVED_KNAME]
-                            # build the catalog line
+                            msg = "Adding '{}' (id: {}) - " \
+                                  "{}/{}".format(app[_PROD_DNAME_KNAME],
+                                                 app_id, i, apps_num)
+                            notify_info(msg)
                             app_line = \
                                 app[_PROD_TARGET_KNAME] + _APPLIST_SEP + \
-                                app[_PROD_NAME_KNAME] + _APPLIST_SEP + \
+                                app[_PROD_DNAME_KNAME] + _APPLIST_SEP + \
                                 app[_PROD_VERSION_KNAME] + _APPLIST_SEP + \
                                 app[_PROD_INSTALLER_KNAME] + _APPLIST_SEP + \
                                 app[_PROD_SILENT_INSTALL_ARGS_KNAME]
@@ -1270,11 +1276,12 @@ class LAppTrack:
                         # The product do not exist in the catalog. It's a
                         # product newly added and the update information have
                         # not been fetched.
-                        msg = "The product '{0}' don't exist. " \
-                              "Request ignored.".format(app_id)
+                        msg = "Not found in the catalog (id: {}) " \
+                              "- {}/{}".format(app_id, i + 1, apps_num)
                         notify_warning(msg)
                 else:
-                    msg = "Tracking of '{0}' deactivated.".format(app_id)
+                    msg = "Tracking deactivated (id: {}) " \
+                          "- {}/{}".format(app_id, i + 1, apps_num)
                     notify_info(msg)
 
         # Terminate by closing the files

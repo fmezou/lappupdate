@@ -483,8 +483,6 @@ class ReleaseNotesParser(HTMLParser):
         super().__init__()
         self.changelog = []
 
-        self._state = self._STATE_NULL
-        self._ul_count = 0
         self._sched_map = {
             self._STATE_NULL: [
                 self._null_actuating, [
@@ -526,9 +524,10 @@ class ReleaseNotesParser(HTMLParser):
                 ]
             ]
         }
-        self._actuating = None
-        self._transitions = None
-        self._set_state(self._state)
+        self._state = self._STATE_NULL
+        self._ul_count = 0
+        self._actuating = self._sched_map[self._state][0]
+        self._transitions = self._sched_map[self._state][1]
 
         self._release = ""
         self._release_notes = ""
