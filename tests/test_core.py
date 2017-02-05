@@ -68,7 +68,7 @@ class BaseProductLoadTestCase(unittest.TestCase):
                               "<li>a dummy feature</li>"
                               "</ul>"
                               "</ul>",
-            "installer": "../~store/app/lappupdate_0.2.1.zip",
+            "installer": "../~store/app/lappupdate_v0.2.1.zip",
             "file_size": 278331,
             "secure_hash": ("sha1", "e945a9739ab9bb3bb9960f4e168f47e9ab401ea1"),
             "std_inst_args": "/option",
@@ -184,7 +184,7 @@ class BaseProductFetchTestCase(unittest.TestCase):
                               "<li>a dummy feature</li>"
                               "</ul>"
                               "</ul>",
-            "installer": "../~store/app/lorem_0.1.0.txt",
+            "installer": "../~store/app/lorem_v0.1.0.txt",
             "file_size": 42961,
             "secure_hash": ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0"),
             "std_inst_args": "/option",
