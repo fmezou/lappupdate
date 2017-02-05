@@ -105,7 +105,7 @@ class DummyHandler(core.BaseProduct):
                 _logger.error(msg.format(str(err)))
                 result = False
             else:
-                result = bool(a < b)
+                result = bool(a > b)
 
         if result:
             msg = "It is an update ({} vs. {})."

@@ -218,7 +218,8 @@ class BaseMockHandler(core.BaseProduct):
         """
         msg = ">>> (product={})"
         _logger.debug(msg.format(product))
-        result = (semver.SemVer(self.version) > semver.SemVer(product.version))
+        result = bool(semver.SemVer(self.version) >
+                      semver.SemVer(product.version))
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
         return result
