@@ -139,6 +139,11 @@ __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
     "LAppTrack",
     "main",
+    "notify_start",
+    "notify_end",
+    "notify_info",
+    "notify_error",
+    "notify_warning",
     "CATALOG_FNAME",
     "CAT_WARNING_KNAME",
     "CAT_VERSION_KNAME",
@@ -1326,13 +1331,18 @@ def notify_start(verb):
     """
     Notify the user of the task starting.
 
-    The notification is displayed line on the console and in the log file.
+    The notification is displayed line on the console and in the log file. The
+    line displayed on the console uses `ANSI escape code
+    <https://en.wikipedia.org/wiki/ANSI_escape_code>`_ to control the text face
+    or the foreground color.
 
     Args:
         verb (str): The action verb of the task
     """
-    msg = "Starting task: {}".format(verb)
-    print(msg)
+    foreground = "\x1b[1m" # set face text (bold)
+    reset = "\x1b[0m" # reset text attribute
+    msg = "**** Starting task: {} ****".format(verb)
+    print(foreground, msg, reset, sep="")
     _logger.info(msg)
 
 
@@ -1340,17 +1350,23 @@ def notify_end(verb, result):
     """
     Notify the user of the task completing.
 
-    The notification is displayed line on the console and in the log file.
+    The notification is displayed line on the console and in the log file. The
+    line displayed on the console uses `ANSI escape code
+    <https://en.wikipedia.org/wiki/ANSI_escape_code>`_ to control the text face
+    or the foreground color.
 
     Args:
         verb (str): The action verb of the task
         result (bool): True if the execution went well.
     """
     if result:
-        msg = "Task successfully completed : {}".format(verb)
+        foreground = "\x1b[1m"  # set face text (bold)
+        msg = "**** Task successfully completed : {} ****".format(verb)
     else:
+        foreground = "\x1b[1m\x1b[31m"  # set foreground text color (bold red)
         msg = "TASK FAILED : {}".format(verb.upper())
-    print(msg)
+    reset = "\x1b[39m"  # reset text color
+    print(foreground, msg, reset, sep="")
     _logger.info(msg)
 
 
@@ -1358,12 +1374,17 @@ def notify_info(msg):
     """
     Notify the user of the progress of the task.
 
-    The notification is displayed line on the console and in the log file.
+    The notification is displayed line on the console and in the log file. The
+    line displayed on the console uses `ANSI escape code
+    <https://en.wikipedia.org/wiki/ANSI_escape_code>`_ to control the text face
+    or the foreground color.
 
     Args:
         msg (str): The information message
     """
-    print(msg)
+    foreground = "\x1b[37m" # set foreground text color (white)
+    reset = "\x1b[39m" # reset text color
+    print(foreground, msg, reset, sep="")
     _logger.info(msg)
 
 
@@ -1371,12 +1392,17 @@ def notify_error(msg):
     """
     Notify the user of an error.
 
-    The notification is displayed line on the console and in the log file.
+    The notification is displayed line on the console and in the log file. The
+    line displayed on the console uses `ANSI escape code
+    <https://en.wikipedia.org/wiki/ANSI_escape_code>`_ to control the text face
+    or the foreground color.
 
     Args:
         msg (str): The error message
     """
-    print("ERROR! - ", msg.upper())
+    foreground = "\x1b[31m" # set foreground text color (red)
+    reset = "\x1b[39m" # reset text color
+    print(foreground, "ERROR! - ", msg.upper(), reset, sep="")
     _logger.error(msg)
 
 
@@ -1384,12 +1410,17 @@ def notify_warning(msg):
     """
     Notify the user of a warning.
 
-    The notification is displayed line on the console and in the log file.
+    The notification is displayed line on the console and in the log file. The
+    line displayed on the console uses `ANSI escape code
+    <https://en.wikipedia.org/wiki/ANSI_escape_code>`_ to control the text face
+    or the foreground color.
 
     Args:
         msg (str): The error message
     """
-    print("warning! - ", msg)
+    foreground = "\x1b[33m" # set foreground text color (yellow)
+    reset = "\x1b[39m" # reset text color
+    print(foreground, "warning! - ", msg, reset, sep="")
     _logger.warning(msg)
 
 

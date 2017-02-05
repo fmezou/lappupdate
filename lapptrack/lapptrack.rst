@@ -26,6 +26,12 @@ Functions reference
 This section details the specific functions used in this module.
 
 .. autofunction:: main
+.. autofunction:: notify_start
+.. autofunction:: notify_end
+.. autofunction:: notify_info
+.. autofunction:: notify_error
+.. autofunction:: notify_warning
+
 
 Data reference
 --------------
