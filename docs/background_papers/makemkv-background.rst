@@ -4,51 +4,50 @@
 
 .. _background_makemkv:
 
-MakeMKV Background
-==================
+MakeMKV
+=======
 .. sectionauthor:: Frédéric MEZOU <frederic.mezou@free.fr>
 
-Published by GuinpinSoft inc, MakeMKV is your one-click solution to convert
-video that you own into free and patents-unencumbered format that can be played
-everywhere. MakeMKV is a format converter, otherwise called "transcoder".
+.. sidebar:: MakeMKV
 
-Product web site: http://www.makemkv.com/
+    .. image:: makemkv_logo.png
+        :align: center
+        :height: 83
 
-The following topics give more information about the installation process and
-the update mechanism.
+    Published by GuinpinSoft inc, MakeMKV is a video format converter. Its main
+    feature is to extract audio and video tracks from a DVD or a BluRay disc
+    into `MKV <http://www.matroska.org/>`_ files.
 
+    Download: `Current Release <http://www.makemkv.com/download/>`_
 
-MakeMKV Installation
---------------------
+    Web site:  http://www.makemkv.com/
 
-The installer is based on the `NSIS <https://sourceforge.net/projects/nsis/>`_
-(Nullsoft Scriptable Install System) framework and delivered as a single
-executable.
+A deployment plan should consider the three following issues:
 
+* making a installation without any user intervention, i.e. making a `silent
+  install`
+* setting a default configuration in line with your use cases
+* distributing security patches, new features or versions
 
-Installer common option
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. include:: nsis_installer_common_option.txt
-
-
-Silent Installation
-^^^^^^^^^^^^^^^^^^^
-
-.. include:: nsis_silent_installers.txt
+This topic introduces installers features or tools that can be used to deploy
+MakeMKV and centrally manage its configuration in small organisations. It also
+describes the mechanism used to notify users and distribute updates (security
+patches, full version...) and what `lapptrack` uses to track MakeMKV updates.
 
 
 Deployment Tips
-^^^^^^^^^^^^^^^
+---------------
 
-MakeMKV are free while program is in beta, so you may use the `temporary beta
-key <http://www.makemkv.com/forum2/viewtopic.php?f=5&t=1053&sid=9bdbec1cd06e7a61
-150dcf4e65bbc592>`_.
+MakeMKV installer covers the two first issues. The command line option for a
+:dfn:`silent install` is ``/S``. See
+:ref:`background_makemkv-installer_options` for an overview of the installer
+command line options.
 
-The user preferences include the license key, so a schedule task (i.e. when user
-log on) or an user action with the following script.
+All configuration parameters are stored in the cuurent user registry (HKCU)
+including the license key, so a schedule task (i.e. when user log on) or an user
+action with the following script.
 
-.. topic:: Example
+.. topic:: Setting up the MakeMKV user preference
 
     .. code-block:: winbatch
 
@@ -58,15 +57,26 @@ log on) or an user action with the following script.
         reg add HKCU\Software\MakeMKV /v app_PreferredLanguage /t REG_SZ /d "fre" /f
         exit /b 0
 
+MakeMKV are free while program is in beta, so you may use the `temporary beta
+key <http://www.makemkv.com/forum2/viewtopic.php?f=5&t=1053&sid=9bdbec1cd06e7a61
+150dcf4e65bbc592>`_.
 
-MakeMKV Update Mechanism
-------------------------
+
+.. _background_makemkv-installer_options:
+
+Installer Options
+-----------------
+
+.. include:: nsis_installer_common_option.txt
+
+
+Update Mechanism
+----------------
 
 In `this post <http://www.makemkv.com/forum2/viewtopic.php?f=1&t=4363>`_, the
 MakeMKV author give a method to detect the up-to-date version. It based on a XML
 file matching the `PAD 3.10 Specification <http://pad.asp-software.org/spec/
 spec_310.php>`_ at http://www.makemkv.com/makemkv.xml.
-Consequently, the update checking mechanism of `lapptrack` use this method.
 
 .. topic:: Example
 
@@ -116,7 +126,7 @@ Consequently, the update checking mechanism of `lapptrack` use this method.
         ...
         </XML_DIZ_INFO>
 
-For information at startup, MakeMKV download a GZIP compressed file named
+At startup, MakeMKV downloads a GZIP compressed file named
 ``makemkv.pad.gz`` at http://www.makemkv.com/makemkv.pad.gz?a=7. This archive
 contains only one file (makemkv.pad), which is a PAD too but poorest than the
 file above.

@@ -18,16 +18,17 @@ Glossary
         details the content of this file.
 
     Catalog
-        A file where :class:`LAppTrack` class (resp. :mod:`lapptrack`
-        script) stores information (name, version, published date,...) about the
-        handled products.
+        A catalog is a file where :class:`LAppTrack` class (resp.
+        :mod:`lapptrack` script) stores information (name, version, published
+        date,...) about the handled products.
 
     COST
     Commercial off-the-shelf
-        It's is a term which refer to packaged solutions which are then adapted
-        to satisfy the needs of the organisation, rather than the commissioning
-        of custom made solutions. This `wikipedia article <https://en.wikipedia.
-        org/wiki/Commercial_off-the-shelf>`_ give you more details.
+        Commercial off-the-shelf refers to packaged solutions which are then
+        adapted to satisfy the needs of the organisation, rather than the
+        commissioning of custom made solutions. This `wikipedia article
+        <https://en.wikipedia. org/wiki/Commercial_off-the-shelf>`_ gives you
+        more details.
 
     Hook script
         Hook scripts are only call from lAppUpdate scripts and have a public
@@ -55,6 +56,11 @@ Glossary
         It is commercial or a custom software, where commercial term covers
         :term:`commercial off-the-shelf` , free software and open source
         software [#f1]_.
+
+    Silent install
+        A silent install is an installation process which require no user
+        intervention, accordingly installation options are set to default
+        values or may be tuned with command line options.
 
 .. rubric:: Footnotes
 

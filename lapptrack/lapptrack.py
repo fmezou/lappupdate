@@ -29,6 +29,8 @@ file (see `background_catalog-format` section for a detailed description)
 Command line options
 ^^^^^^^^^^^^^^^^^^^^
 
+.. program:: lapptrack
+
 .. option:: -h, --help
 
     show this help message and exit

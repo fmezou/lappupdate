@@ -14,4 +14,5 @@ The following topics provide background papers for all the products that
 .. toctree::
     :maxdepth: 1
 
+    firefox-background
     makemkv-background
