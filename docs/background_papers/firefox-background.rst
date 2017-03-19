@@ -144,16 +144,23 @@ Maintenance-Service/ta-p/11800>`_, and a *server component* named `Balrog
 `Application Update Service <https://wiki.mozilla.org/AUS>`_).
 
 The *agent* sends an :ref:`update request <background_firefox.update_request>`
-(a simple URL) over HTTPS specifying the installed application version  to the
-Mozilla.org update servers. The *server component* will return a :ref:`manifest
-file <background_firefox.manifest_file>` (which is a simple XML file) specifying
-the right update package to download. This server is hosted on
-``aus5.mozilla.org``; the `Client Domains page <https://wiki.mozilla.org/Balrog/
-Client_Domains>`_ details older domains.
+over HTTPS specifying the installed application version  to the Mozilla update
+servers. The *server component* will return a :ref:`manifest file
+<background_firefox.manifest_file>` (which is a simple XML file) specifying
+the right update package to download. However, this latter is a `Mozilla archive
+<https://wiki.mozilla.org/Software_Update:MAR>`_ aimed at the application
+updating [#mar]_ (i.e. not a first installation), and Mozilla recommends
+[#retr]_ to use a :ref:`download request <background_firefox.download_request>`
+to retrieve a release.
 
-.. tip:: The *agent* (only windows version) stores the update request and the
-   associated response in the file
-   :file:`{%LOCALAPPDATA%}/Mozilla/updates/{E7CF176E110C211B}/active-update.xml`.
+Consequently, the update mechanism comprises the following two steps:
+
+#. determination of the latest release for the branch with an
+   :ref:`update request <background_firefox.update_request>`
+#. make the :ref:`download request <background_firefox.download_request>` with
+   the attributes of the ``update`` element from the received :ref:`manifest
+   file <background_firefox.manifest_file>`, provided that a *complete* ``patch``
+   element is present
 
 .. note:: At the date of writing this section, the Balrog 2.22 documentation
    doesn't describe the request and the manifest file content, so the following
@@ -163,92 +170,99 @@ Client_Domains>`_ details older domains.
    <https://github.com/mozilla/balrog>`_ and testing. So, the specifications may
    be changed in the future.
 
-.. _background_firefox.update_request:
 
+.. _background_firefox.update_request:
 
 Update Request
 ^^^^^^^^^^^^^^
 
-The agent sends the URL defined in the ``app.update.url`` option (see
-about:config). This latter matches the following syntax:
+The update request URL is defined in the ``app.update.url`` option (see
+about:config) and matches the following syntax:
 
-    ``/update/6/<product>/<version>/<buildID>/<buildTarget>/<locale>/<channel>/
-    <osVersion>/<systemCapabilities>/<distribution>/<distVersion>/update.xml
-    ?force=1``
+:file:`https://aus5.mozilla.org/update/6/{product}/{version}/{buildID}/{buildTarget}/{locale}/{channel}/{osVersion}/{systemCapabilities}/{distribution}/{distVersion}/update.xml?force=1/`
 
-    .. list-table::
-       :widths: 10 30 15
-       :header-rows: 1
+.. list-table::
+   :widths: 10 30 15
+   :header-rows: 1
 
-       * - Part
-         - Description
-         - Value
-       * - ``6``
-         - The schema version. It exist 6 versions and they differ according to
-           the number of parameters. [#schema]_
-         -
-       * - ``product``
-         - The name of the application requesting an update
-         - ``Firefox``, ``Thunderbird``
-       * - ``version``
-         - The version of the application requesting an update. This value is
-           present in the `manifest file <background_firefox.manifest_file>`
-           (see ``appVersion`` attribute) and in the :file:`platform.ini` file
-           (see ``Milestone`` key) located in the installation directory of the
-           application.
-         - ``42.0``
-       * - ``buildID``
-         - The build ID of the application requesting an update. It's the
-           building date of the application (see `Build section
-           <https://wiki.mozilla.org/AUS:Manual#Build>`_). It is used to compare
-           the latest available update with what the application currently is,
-           and offers the update only if the available update is newer. This
-           part may be empty (i.e. space charaters). This value is present in
-           the `manifest file <background_firefox.manifest_file>` (see
-           ``buildID`` attribute) and in the :file:`platform.ini` file (see
-           ``BuildID`` key) located in the installation directory of the
-           application.
-         - ``20151029151421``
-       * - ``buildTarget``
-         - The "build target" of the application requesting an update. This is
-           usually related to the target platform [#mozharnes]_ the application
-           was built for.
-         - | ``WINNT_x86-msvc``
-           | ``WINNT_x86_64-msvc``
-           | ``Linux_x86_64-gcc3``
-           | ``Linux_x86-gcc3``
-           | ``Darwin_x86_64-gcc3``
-       * - ``locale``
-         - The locale of the application requesting an update.
-         - ``en-US``, ``fr``
-       * - ``channel``
-         - The update channel of the application request an update. It is used
-           to separate releases from others applications updates. The
-           ``app.update.channel`` option defines the update channel for the
-           requesting application (see about:config).
-         - ``release``
-       * - ``osVersion``
-         - The OS Version of the application requesting an update. It is used to
-           point desupported operating systems to their last supported build.
-           For the Windows System family, it consist of "Windows_NT <major>.
-           <minor>.<service pack number>" ("Windows_NT 6.1.1" = Microsoft Windows 
-           7 version 6.1.7601 Service Pack 1 for example). This part may be
-           empty (i.e. consist of space characters)
-         - ``Windows_NT 6.1.1``
-       * - ``systemCapabilities``
-         - The supported hardware features of the application requesting an
-           update. It is used to point desupported hardware (hardware which
-           don't support SSE2). This part may be empty (i.e. consist of space
-           characters)
-         - ``SSE3``
-       * - ``distribution``
-         - The partner distribution name of the application requesting an update
-           or "default" if the application is not a partner build.
-         - ``default``
-       * - ``distVersion``
-         - The version of the partner distribution of the application requesting
-           an update or "default" if the application is not a partner build.
-         - ``default``
+   * - Part
+     - Description
+     - Value
+   * - ``6``
+     - The schema version. It exist 6 versions and they differ according to
+       the number of parameters. [#schema]_
+     -
+   * - ``product``
+     - The name of the application requesting an update
+     - ``Firefox``, ``Thunderbird``
+   * - ``version``
+     - The version of the application requesting an update. This value is
+       present in the `manifest file <background_firefox.manifest_file>`
+       (see ``appVersion`` attribute) and in the :file:`platform.ini` file
+       (see ``Milestone`` key) located in the installation directory of the
+       application.
+     - ``42.0``
+   * - ``buildID``
+     - The build ID of the application requesting an update. It's the
+       building date of the application (see `Build section
+       <https://wiki.mozilla.org/AUS:Manual#Build>`_). It is used to compare
+       the latest available update with what the application currently is,
+       and offers the update only if the available update is newer. This
+       part may be empty (i.e. space charaters). This value is present in
+       the `manifest file <background_firefox.manifest_file>` (see
+       ``buildID`` attribute) and in the :file:`platform.ini` file (see
+       ``BuildID`` key) located in the installation directory of the
+       application.
+     - ``20151029151421``
+   * - ``buildTarget``
+     - The "build target" of the application requesting an update. This is
+       usually related to the target platform [#mozharnes]_ the application
+       was built for.
+     - | ``WINNT_x86-msvc``
+       | ``WINNT_x86_64-msvc``
+       | ``Linux_x86_64-gcc3``
+       | ``Linux_x86-gcc3``
+       | ``Darwin_x86_64-gcc3``
+   * - ``locale``
+     - The locale of the application requesting an update.
+     - ``en-US``, ``fr``
+   * - ``channel``
+     - The update channel of the application request an update. It is used
+       to separate releases from others applications updates. The
+       ``app.update.channel`` option defines the update channel for the
+       requesting application (see about:config).
+     - ``release``
+   * - ``osVersion``
+     - The OS Version of the application requesting an update. It is used to
+       point desupported operating systems to their last supported build.
+       For the Windows System family, it consist of "Windows_NT <major>.
+       <minor>.<service pack number>" ("Windows_NT 6.1.1" = Microsoft Windows 
+       7 version 6.1.7601 Service Pack 1 for example). This part may be
+       empty (i.e. consist of space characters)
+     - ``Windows_NT 6.1.1``
+   * - ``systemCapabilities``
+     - The supported hardware features of the application requesting an
+       update. It is used to point desupported hardware (hardware which
+       don't support SSE2). This part may be empty (i.e. consist of space
+       characters)
+     - ``SSE3``
+   * - ``distribution``
+     - The partner distribution name of the application requesting an update
+       or "default" if the application is not a partner build.
+     - ``default``
+   * - ``distVersion``
+     - The version of the partner distribution of the application requesting
+       an update or "default" if the application is not a partner build.
+     - ``default``
+
+
+.. tip:: The *agent* (only windows version) stores the update request and the
+   associated response in the file
+   :file:`{%LOCALAPPDATA%}/Mozilla/updates/{E7CF176E110C211B}/active-update.xml`.
+
+.. tip:: At the date of writing this section, the Mozilla update server is
+   hosted on ``aus5.mozilla.org``. The `Client Domains page
+   <https://wiki.mozilla.org/Balrog/ Client_Domains>`_ details older domains.
 
 .. topic:: Example
 
@@ -392,6 +406,49 @@ remove files as necessary (i.e. a full installer).
         </updates>
 
 
+.. _background_firefox.download_request:
+
+Download Request
+^^^^^^^^^^^^^^^^
+
+The download request URL [#retr]_ matches the following syntax:
+
+:file:`https://download.mozilla.org/?product={product}-{version}&os={target}&lang={locale}`
+
+.. list-table::
+   :widths: 10 30 15
+   :header-rows: 1
+
+   * - Part
+     - Description
+     - Value
+   * - ``product``
+     - The name of the application to retrieve
+     - ``Firefox``, ``Thunderbird``
+   * - ``version``
+     - The version of the application to retrieve
+     - ``42.0``
+   * - ``target``
+     - The "build target" of the application to retrieve. This part must
+       contain one of the following values:
+
+       * ``win``: Windows 32 bits
+       * ``win64``: Windows 64 bits
+       * ``osx``: MacOS X
+       * ``linux64``: Linux x86 64 bits
+       * ``linux``: Linux i686
+     - | ``win``
+       | ``win64``
+       | ``osx``
+       | ``linux64``
+       | ``linux``
+
+   * - ``locale``
+     - The locale of the the application to retrieve
+     - | ``en-US``
+       | ``fr``
+
+
 .. rubric:: References
 
 .. [#schema] The expected schema are defined in the `base python module
@@ -404,8 +461,12 @@ remove files as necessary (i.e. a full installer).
    database.html#what-s-in-a-rule>`_
 .. [#apprelease] `apprelease module <https://github.com/mozilla/balrog/blob/
    master/auslib/blobs/apprelease.py>`_ in the Balrog repository
+.. [#mar] `Manually Installing a MAR file
+   <https://wiki.mozilla.org/ Software_Update:Manually_Installing_a_MAR_file>`_
+.. [#retr] `README
+    <http://ftp.mozilla.org/pub/firefox/releases/latest/README.txt>`_
 
 .. rubric:: Footnotes
 
-.. [#emid] an extension ID is available under "extensions" section in
+.. [#emid] the extension ID is available under "extensions" section in
    'about:support'.

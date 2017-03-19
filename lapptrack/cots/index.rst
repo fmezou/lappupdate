@@ -14,7 +14,7 @@
 .. toctree::
    :maxdepth: 1
 
-   firefox
+   mozilla
    makemkv
    dummy
    mock
