@@ -335,7 +335,7 @@ class ReleaseOftenMockHandler(BaseMockHandler):
             if version:
                 patch = 1 + int(version.split(".")[2])
             self.version = "1.0.{}".format(patch)
-            self.display_name == "{} v{}".format(self.name, self.version)
+            self.display_name = "{} v{}".format(self.name, self.version)
             self.published = "2017-01-01T18:00:00"
             self.file_size = 156
             self.secure_hash = ("sha1",

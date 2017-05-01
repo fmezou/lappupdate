@@ -32,7 +32,7 @@ A deployment plan should consider the three following issues:
 * distributing security patches, new features or versions
 
 This topic introduces installers features or tools that can be used to deploy
-Firefox and centrally manage its configuration in small organisations. It also
+Firefox and centrally manages its configuration in small organisations. It also
 describes the mechanism used to notify users and distribute updates (security
 patches, full version...) and what `lapptrack` uses to track Firefox updates.
 
@@ -136,7 +136,7 @@ patches and bug fixes for :ref:`Firefox <background_firefox>` and
 <https://wiki.mozilla.org/Main_Page>`_ contains an `overview of the software
 update system <https://wiki.mozilla.org/Software_Update>`_.
 
-The update system has two components: an *agent* either included in the
+The update system has two components: an *agent* working either in the
 application core or as a background service named `Mozilla Maintenance Service
 <https://support.mozilla.org/t5/Install-and-Update/What-is-the-Mozilla-
 Maintenance-Service/ta-p/11800>`_, and a *server component* named `Balrog
@@ -157,7 +157,7 @@ Consequently, the update mechanism comprises the following two steps:
 
 #. determination of the latest release for the branch with an
    :ref:`update request <background_firefox.update_request>`
-#. make the :ref:`download request <background_firefox.download_request>` with
+#. making the :ref:`download request <background_firefox.download_request>` with
    the attributes of the ``update`` element from the received :ref:`manifest
    file <background_firefox.manifest_file>`, provided that a *complete* ``patch``
    element is present
@@ -224,7 +224,7 @@ about:config) and matches the following syntax:
        | ``Linux_x86-gcc3``
        | ``Darwin_x86_64-gcc3``
    * - ``locale``
-     - The locale of the application requesting an update.
+     - The locale [#locale]_ of the application requesting an update.
      - ``en-US``, ``fr``
    * - ``channel``
      - The update channel of the application request an update. It is used
@@ -266,9 +266,8 @@ about:config) and matches the following syntax:
 
 .. topic:: Example
 
-    The manifest file below is the response to the following update request from
-    *Mozilla Firefox 50.1.0 (x64 fr)* running on *Microsoft Windows 10
-    (10.0.14393)*::
+    The below URL is an update request from *Mozilla Firefox 50.1.0 (x64 fr)*
+    running on *Microsoft Windows 10 (10.0.14393)*::
 
         https://aus5.mozilla.org/update/6/Firefox/50.1.0/20161208153507/WINNT_x86_64-msvc-x64/fr/release/Windows_NT%2010.0.0.0%20(x64)(noBug1296630v1)/SSE3/default/default/update.xml
 
@@ -424,9 +423,12 @@ The download request URL [#retr]_ matches the following syntax:
      - Value
    * - ``product``
      - The name of the application to retrieve
-     - ``Firefox``, ``Thunderbird``
+     - ``firefox``, ``thunderbird``
    * - ``version``
-     - The version of the application to retrieve
+     - The version of the application to retrieve. This part may be either a
+       version identifier as described in the `Toolkit version format
+       <https://developer.mozilla.org/en-US/docs/Toolkit_version_format>`_ topic
+       or ``latest`` to retrieve the latest version
      - ``42.0``
    * - ``target``
      - The "build target" of the application to retrieve. This part must
@@ -444,9 +446,16 @@ The download request URL [#retr]_ matches the following syntax:
        | ``linux``
 
    * - ``locale``
-     - The locale of the the application to retrieve
+     - The locale [#locale]_ of the the application to retrieve
      - | ``en-US``
        | ``fr``
+
+.. topic:: Example
+
+    The below URL is an download request from *Mozilla Firefox 50.1.0 (x64 fr)*
+    running on *Windows 64 bits*::
+
+         https://download.mozilla.org/?product=firefox-50.1.0&os=win64&lang=fr
 
 
 .. rubric:: References
@@ -465,6 +474,8 @@ The download request URL [#retr]_ matches the following syntax:
    <https://wiki.mozilla.org/ Software_Update:Manually_Installing_a_MAR_file>`_
 .. [#retr] `README
     <http://ftp.mozilla.org/pub/firefox/releases/latest/README.txt>`_
+.. [#locale] The `Locale Codes <https://wiki.mozilla.org/L10n:Locale_Codes>`_
+   wiki page describes the scheme - based on :rfc:`5646` - used by Mozilla.
 
 .. rubric:: Footnotes
 

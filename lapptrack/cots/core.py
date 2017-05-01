@@ -185,6 +185,14 @@ class BaseProduct:
         target (str): The target architecture type (the Windows’ one) for the
             product. This argument must be one of the following values:
             `TARGET_X86`, `TARGET_X64` or `TARGET_UNIFIED`.
+            The "build target" of the application to retrieve. This part must
+            contain one of the following values:
+
+            * ``win``: Windows 32 bits
+            * ``win64``: Windows 64 bits
+            * ``osx``: MacOS X
+            * ``linux64``: Linux x86 64 bits
+            * ``linux``: Linux i686
         description (str): Short description of the product (~250 characters).
         editor (str): The name of the editor of the product.
         web_site_location (str): The location of the editor ou product web site.
@@ -383,7 +391,7 @@ class BaseProduct:
         ext = os.path.splitext(name)[1]
         filename = "{}_v{}{}".format(self.name, self.version, ext)
         pathname = os.path.normcase(os.path.join(dirpath, filename))
-        tempname = self.installer + ".partial"
+        tempname = pathname + ".partial"
 
         try:
             os.makedirs(dirpath, exist_ok=True)

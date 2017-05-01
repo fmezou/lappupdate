@@ -113,7 +113,7 @@ class MakeMKVHandler(core.BaseProduct):
             raise TypeError(msg)
 
         msg = "Fetching the latest product information since the version {}"
-        _logger.info(msg.format(self.version))
+        _logger.info(msg.format(version))
         local_filename = ""
         result = True
 
@@ -225,19 +225,13 @@ class MakeMKVHandler(core.BaseProduct):
         result = True
         try:
             a = semver.SemVer(self.version)
+            b = semver.SemVer(product.version)
         except ValueError as err:
             msg = "Internal error: current product version - {}"
             _logger.error(msg.format(str(err)))
             result = False
         else:
-            try:
-                b = semver.SemVer(product.version)
-            except ValueError as err:
-                msg = "Internal error: deployed product version - {}"
-                _logger.error(msg.format(str(err)))
-                result = False
-            else:
-                result = bool(a > b)
+            result = bool(a > b)
 
         if result:
             msg = "It is an update ({} vs. {})."
