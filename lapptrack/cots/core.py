@@ -284,6 +284,49 @@ class BaseProduct:
         msg = "<<< ()=None"
         _logger.debug(msg)
 
+    def __str__(self):
+        """
+        Return the printable string representation of object.
+
+        Returns:
+            str: a human readable string with the handler attributes.
+        """
+        l = list()
+        l.append("Product attributes:")
+        l.append("- General --------------------------------------------------")
+        l.append("  Name:         {}".format(self.name))
+        l.append("  Display name: {}".format(self.display_name))
+        l.append("  Version:      {}".format(self.version))
+        l.append("  Published:    {}".format(self.published))
+        l.append("------------------------------------------------------------")
+        l.append("- Details --------------------------------------------------")
+        l.append("  Target:       {}".format(self.target))
+        l.append("  Description:  {}".format(self.description))
+        l.append("  Editor:       {}".format(self.editor))
+        l.append("  Web site:     {}".format(self.web_site_location))
+        l.append("  Icon:         {}".format(self.icon))
+        l.append("  Announce:     {}".format(self.announce_location))
+        l.append("  Feed:         {}".format(self.feed_location))
+        l.append("  Release Note: {}".format(self.release_note_location))
+        l.append("------------------------------------------------------------")
+        l.append("- Change summary -------------------------------------------")
+        l.append(self.change_summary)
+        l.append("------------------------------------------------------------")
+        l.append("- Installer ------------------------------------------------")
+        l.append("  URL:          {}".format(self.location))
+        l.append("  Location:     {}".format(self.installer))
+        l.append("  Size:         {} bytes".format(self.file_size))
+        if self.secure_hash is not None:
+            hn, hv = self.secure_hash
+        else:
+            hn, hv = ["", ""]
+        l.append("  Hash:         {} ({})".format(hv, hn))
+        l.append("  Command line option")
+        l.append("    Silent mode:   {}".format(self.silent_inst_args))
+        l.append("    Standard mode: {}".format(self.std_inst_args))
+        l.append("------------------------------------------------------------")
+        return "\n".join(l)
+
     def load(self, attributes):
         """
         Load a product class.
@@ -545,6 +588,8 @@ def retrieve_file(url, file, exp_ctype=None, exp_clength=-1, exp_chash=None):
     request = urllib.request.Request(url, headers=headers)
     with contextlib.closing(urllib.request.urlopen(request)) as stream:
         headers = stream.info()
+        _logger.debug("Headers=\n{}".format(headers))
+        _logger.debug("Real URL='{}'.".format(stream.geturl()))
         # Check the expected content
         if "Content-Type" in headers:
             rcv_ctype = headers["Content-Type"]
@@ -594,7 +639,7 @@ def retrieve_file(url, file, exp_ctype=None, exp_clength=-1, exp_chash=None):
         msg = "Retrieving '{}' -> '{}'"
         _logger.info(msg.format(url, file.name))
         length = 0
-        # TODO (fmezou) prevoir la passage en paramètre de l'objet
+        # TODO (fmezou) prevoir le passage en paramètre de l'objet
         progress_bar = progressbar.TextProgressBar(exp_clength)
         progress_bar.compute(length, exp_clength)
         data = stream.read(1500)
