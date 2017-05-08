@@ -451,6 +451,20 @@ The download request URL [#retr]_ matches the following syntax:
          https://download.mozilla.org/?product=firefox-50.1.0&os=win64&lang=fr
 
 
+Version Format
+--------------
+
+Mozilla defined its own version scheme, and it is used by the *Extension
+Manager* and *Software Update*. The `version format reference
+<moz_ver_specs_>`_ details the
+format and the comparing algorithm.
+
+A version string consists of one or more version parts, separated with dots.
+Each version part is itself parsed as a sequence of four parts:
+``<number-a><string-b><number-c><string-d>``. Each of the parts is optional.
+Numbers are integers base 10 (may be negative), strings are non-numeric ASCII
+characters.
+
 .. rubric:: References
 
 .. [#schema] The expected schema are defined in the `base python module

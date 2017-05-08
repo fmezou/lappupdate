@@ -16,8 +16,10 @@ This module has only one public class.
 import datetime
 import logging
 import os
+import re
 import tempfile
 import urllib.error
+import itertools
 
 from lxml import etree
 
@@ -491,3 +493,373 @@ class ThunderbirdWinHandler(MozHandler):
 
         msg = "<<< ()=None"
         _logger.debug(msg)
+
+
+class MozVer(object):
+    """
+    Mozilla version class.
+
+    Args:
+        version_string (str): The version string matching the `Mozilla
+            versioning reference <moz_ver_specs_>`_. Otherwise a ValueError 
+            exception is raised.
+
+    Raises:
+        TypeError: Parameters type mismatch.
+        ValueError: Version string do not match the specification rules.
+
+    Attributes:
+        unstable (property): indicate if the version is unstable.
+
+    **Special Methods**
+        This class has a number of special methods, listed below in alphabetical
+        order, to make the version comparison.
+
+        ===================================  ===================================
+        `__eq__`                             `__ne__`
+        `__gt__`                             `__repr__`
+        `__lt__`
+        ===================================  ===================================
+
+    **Using MozVer...**
+        The main purpose of this class is to compute comparison between version
+        identifier as described in `Mozilla versioning reference 
+        <moz_ver_specs_>`_. So the using is limited to create class instance 
+        with the version identifier string and use the comparison operator as 
+        shown in the below example.
+
+        >>> from cots import mozilla
+        >>> v1 = mozilla.MozVer("1.10")
+        >>> v2 = mozilla.MozVer("2.0")
+        >>> v1 < v2
+        True
+        >>> v1 = mozilla.MozVer("1.0pre1")
+        >>> v2 = mozilla.MozVer("1.0pre10")
+        >>> v1 > v2
+        False
+        >>> v1 = mozilla.MozVer("1.0")
+        >>> v2 = mozilla.MozVer("1.0.0.0")
+        >>> v1 < v2
+        False
+        >>> v1 == v2
+        True
+    """
+    def __init__(self, version_string):
+        msg = ">>> (version_string='{}')"
+        _logger.debug(msg.format(version_string))
+
+        # Default values
+        self.unstable = False
+
+        # Regular expression which match the format rules.
+        # Like the regular expression is fixed, it is compiled at the loading
+        # of the class to improve the efficiency of the `MozVer` class method.
+        r = "^(?P<a>(-?[0-9]+))?(?P<b>([^0-9]+))?" \
+            "(?P<c>(-?[0-9]+))?(?P<d>(-?[^0-9]+))?$"
+        self._part_re = re.compile(r, flags=0)
+
+        # The following string identifies a beta version. It must be
+        # the c part of the last version part (see https://developer.mozilla.org
+        # /fr/Add-ons/AMO/Policy/Maintenance#beta-addons)
+        self._beta_mark = ["a", "alpha", "b", "beta", "pre", "rc"]
+
+        self.version = []
+        self._parse(version_string)
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def __repr__(self):
+        """
+        Compute the string representation of the MozVer object.
+
+        Return:
+            str: the version string which can be used to recreate the
+                MozVer object.
+        """
+
+        l = []
+        for vpart in self.version:
+            p = []
+            for part in vpart:
+                if part:
+                    p.append(part)
+                else:
+                    p.append("")
+            l.append("{}".format("".join(p)))
+        msg = "'"+".".join(l)+"'"
+
+        return msg
+
+    def __eq__(self, other):
+        """Rich comparison method, return self == other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
+        # check parameters type
+        if not isinstance(other, MozVer):
+            msg = "right operand argument must be a class 'MozVer'. not {0}"
+            msg = msg.format(other.__class__)
+            raise TypeError(msg)
+
+        result = False
+        cmp = self._compare_version(self.version, other.version)
+        if cmp == 0:
+            result = True
+
+        msg = "{} eq {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def __ne__(self, other):
+        """Rich comparison method, return self != other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
+
+        result = not self.__eq__(other)
+
+        msg = "{} ne {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def __gt__(self, other):
+        """Rich comparison method, return self > other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
+        # check parameters type
+        if not isinstance(other, MozVer):
+            msg = "right operand argument must be a class 'MozVer'. not {0}"
+            msg = msg.format(other.__class__)
+            raise TypeError(msg)
+
+        result = False
+        cmp = self._compare_version(self.version, other.version)
+        if cmp == 1:
+            result = True
+
+        msg = "{} gt {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def __lt__(self, other):
+        """Rich comparison method, return self < other."""
+        msg = ">>> (other={})"
+        _logger.debug(msg.format(other))
+        # check parameters type
+        if not isinstance(other, MozVer):
+            msg = "right argument must be a class 'MozVer'. not {0}"
+            msg = msg.format(other.__class__)
+            raise TypeError(msg)
+
+        result = False
+        cmp = self._compare_version(self.version, other.version)
+        if cmp == -1:
+            result = True
+
+        msg = "{} lt {} -> {}"
+        _logger.info(msg.format(self, other, result))
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _parse(self, version_string):
+        """
+        Parse the version string.
+
+        Args:
+            version_string (str): The version string matching the `semantic
+                versioning specification`_. Otherwise a ValueError exception is
+                raised.
+
+        Raises:
+            TypeError: Parameters type mismatch.
+            ValueError: Version string do not match the specification rules.
+        """
+        msg = ">>> (version_string='{}')"
+        _logger.debug(msg.format(version_string))
+        # check parameters type
+        if not isinstance(version_string, str):
+            msg = "version_string argument must be a class 'str'. not {0}"
+            msg = msg.format(version_string.__class__)
+            raise TypeError(msg)
+
+        self.version = []
+        parts = version_string.split(".")
+        for part in parts:
+            m = self._part_re.match(part)
+            if m is None:
+                msg = "'{}' is not a valid version string as described in " \
+                      "the specification."
+                msg = msg.format(version_string)
+                raise ValueError(msg)
+
+            a = m.group("a")
+            b = m.group("b")
+            c = m.group("c")
+            d = m.group("d")
+
+            # special parsing rules
+            if b == "+":
+                a = str(int(a)+1)
+                b = "pre"
+            if not a and b == "*" and not c and not d:
+                # for version number, it's seem like infinitely-large number
+                a = "999999999"
+                b = None
+
+            t = (a, b, c, d)
+            self.version.append(t)
+        _logger.info("{} -> {}".format(version_string, self.version))
+
+        t = self.version[-1]
+        if t[1] in self._beta_mark:
+            self.unstable = True
+            msg = "{} -> Beta mark is present, it's an unstable version."
+            _logger.info(msg.format(version_string))
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def _compare_version(self, version1, version2):
+        """
+        Compare two version string.
+        
+        Args:
+            version1 (list): The list of parts from the version string. 
+            version2 (list): same as ```version1``
+
+        Returns:
+
+        """
+        msg = ">>> (version1={}, version2={})".format(version1, version2)
+        _logger.debug(msg)
+
+        result = 0
+        for part1, part2 in itertools.zip_longest(
+                version1,
+                version2,
+                fillvalue=(0, None, None, None)
+        ):
+            result = self._compare_version_part(part1, part2)
+            if result != 0:
+                break
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _compare_version_part(self, part1, part2):
+        """
+        Compare two version part.
+
+        Args:
+            part1 (tuple): A tuple constituted by the four part of a version
+                part.
+            part2 (tuple): Same as ``part2``
+
+        Returns:
+            int: -1, 0 or 1 as below
+    
+                * -1: ``string1`` is lower than ``string2``
+                * 0: ``string1`` is equal to ``string2``
+                * 1: ``string1`` is greater than ``string1``
+
+        """
+        msg = ">>> (part1={}, part2={})".format(part1, part2)
+        _logger.debug(msg)
+
+        result = self._compare_num(part1[0], part2[0])
+        if not result:
+            result = self._compare_str(part1[1], part2[1])
+            if not result:
+                result = self._compare_num(part1[2], part2[2])
+                if not result:
+                    result = self._compare_str(part1[3], part2[3])
+
+        msg = "<<< ()={}".format(result)
+        _logger.debug(msg)
+        return result
+
+    def _compare_num(self, str1, str2):
+        """
+        Compare two string numerically.
+
+        Args:
+            str1 (str): A string constituted by only ASCII digit with an
+                optional minus sign.
+            str2 (str): Same as ``str1``
+
+        Returns:
+            int: -1, 0 or 1 as below
+    
+                * -1: ``string1`` is lower than ``string2``
+                * 0: ``string1`` is equal to ``string2``
+                * 1: ``string1`` is greater than ``string1``
+
+        Raises:
+            ValueError:  a string is not an integer .
+        """
+        msg = ">>> (str1={}, str2={})".format(str1, str2)
+        _logger.debug(msg)
+
+        result = 0
+        i1 = 0
+        i2 = 0
+        if str1:
+            i1 = int(str1)
+        if str2:
+            i2 = int(str2)
+        if i1 < i2:
+            result = -1
+        if i1 > i2:
+            result = 1
+
+        msg = "<<< ()={}".format(result)
+        _logger.debug(msg)
+        return result
+
+    def _compare_str(self, str1, str2):
+        """
+        Compare two string lexically.
+        
+        The two string are compared lexically in ASCII sort order. However an 
+        empty string have a higher precedence than a non-empty string. 
+
+        Example:
+            | '12' < '2'
+            | 'ab' < 'abc', 'ab' < 'ac', 'AC' < 'ac'
+            | '12' < ''
+
+        Args:
+            str1 (str): A string constituted by non-numeric ASCII characters.
+            str2 (str): Same as ``str1``
+
+        Returns:
+            int: -1, 0 or 1 as below
+    
+                * -1: ``string1`` is lower than ``string2``
+                * 0: ``string1`` is equal to ``string2``
+                * 1: ``string1`` is greater than ``string1``
+        """
+        msg = ">>> (str1={}, str2={})".format(str1, str2)
+        _logger.debug(msg)
+
+        result = 0
+        if str1 and str2:
+            if str1 < str2:
+                result = -1
+            if str1 > str2:
+                result = 1
+        if not str1 and str2:
+            result = 1
+        if str1 and not str2:
+            result = -1
+
+        msg = "<<< ()={}".format(result)
+        _logger.debug(msg)
+        return result

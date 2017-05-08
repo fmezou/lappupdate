@@ -33,3 +33,8 @@ This section details the objects defined in this module.
     :members:
     :private-members:
     :show-inheritance:
+
+.. autoclass:: MozVer
+    :members:
+    :private-members:
+    :show-inheritance:
