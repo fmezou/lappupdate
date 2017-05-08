@@ -24,13 +24,6 @@ Mozilla Firefox
 
     Web site: https://www.mozilla.org/firefox
 
-A deployment plan should consider the three following issues:
-
-* making a installation without any user intervention, i.e. making a `silent
-  install`
-* setting a default configuration in line with your use cases
-* distributing security patches, new features or versions
-
 This topic introduces installers features or tools that can be used to deploy
 Firefox and centrally manages its configuration in small organisations. It also
 describes the mechanism used to notify users and distribute updates (security
@@ -40,9 +33,9 @@ patches, full version...) and what `lapptrack` uses to track Firefox updates.
 Deployment Tips
 ---------------
 
-Mozilla installer covers the two first issues. The command line option for a
-:dfn:`silent install` is ``-ms`` and additional installation options may be
-tuned in a configuration file specified with ``/INI``. See
+Mozilla installer covers the two first issues of a deployment plan. The command
+line option for a :dfn:`silent install` is ``-ms`` and additional installation
+options may be tuned in a configuration file specified with ``/INI``. See
 :ref:`background_firefox-installer_options` for an overview of the installer
 command line options.
 

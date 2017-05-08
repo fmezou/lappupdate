@@ -22,13 +22,6 @@ MakeMKV
 
     Web site:  http://www.makemkv.com/
 
-A deployment plan should consider the three following issues:
-
-* making a installation without any user intervention, i.e. making a `silent
-  install`
-* setting a default configuration in line with your use cases
-* distributing security patches, new features or versions
-
 This topic introduces installers features or tools that can be used to deploy
 MakeMKV and centrally manage its configuration in small organisations. It also
 describes the mechanism used to notify users and distribute updates (security
@@ -38,8 +31,8 @@ patches, full version...) and what `lapptrack` uses to track MakeMKV updates.
 Deployment Tips
 ---------------
 
-MakeMKV installer covers the two first issues. The command line option for a
-:dfn:`silent install` is ``/S``. See
+MakeMKV installer covers the two first issues of a deployment plan. The command
+line option for a :dfn:`silent install` is ``/S``. See
 :ref:`background_makemkv-installer_options` for an overview of the installer
 command line options.
 
