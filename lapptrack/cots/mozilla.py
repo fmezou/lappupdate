@@ -3,27 +3,18 @@ This module is the product handler of Mozilla products (Firefox, Thunderbird).
 The `background_firefox` section gives more information about the installation
 process and the update mechanism.
 
-.. todo:: use the 6th schema
-
-.. todo:: take into account only complete update
-
-.. todo:: do an mozilla common class (add buildID) derived for firefox win 64
-   fr, thunderbird win 64 fr avec OSsystem, local en attributs public
-
-
 Public Classes
 --------------
 This module has only one public class.
 
 ===================================  ===================================
-:class:`FirefoxHandler`              :class:`ThunderbirdHandler`
-:class:`MozHandler`                  ..
+:class:`FirefoxWinHandler`           :class:`ThunderbirdWinHandler`
+:class:`FirefoxWin64Handler`         ..
 ===================================  ===================================
 """
 
 import datetime
 import logging
-import re
 import os
 import tempfile
 import urllib.error
@@ -37,9 +28,9 @@ __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
-    "FirefoxHandler",
-    "ThunderbirdHandler",
-    "MozHandler"
+    "FirefoxWinHandler",
+    "FirefoxWin64Handler",
+    "ThunderbirdWinHandler"
 ]
 # To make the module as versatile as possible, an nullHandler is added.
 # see 'Configuring Logging for a Library'
@@ -53,12 +44,12 @@ class MozHandler(core.BaseProduct):
     Base class for Mozilla product handler.
 
     This base class implements the common parts of the tracking mechanism for
-    all Mozilla products. So most of information are in the :mod:`core` and
-    more particularly in the `BaseProduct` class documentation. The information
+    Mozilla products. So most of information are in the :mod:`core` and more 
+    particularly in the `BaseProduct` class documentation. The information
     below focuses on the added value of this class.
     
-    This base class is not designed to work as it is. The following attributes
-    must be defined before calling any method:
+    This base class is not designed to work as it is. Subclass must be defined
+    and the following attributes must be defined before calling any method:
      
     * :attr:`~cots.core.BaseProduct.name`
     * :attr:`~cots.core.BaseProduct.version`
@@ -94,6 +85,21 @@ class MozHandler(core.BaseProduct):
 
         msg = "<<< ()=None"
         _logger.debug(msg)
+
+    def __str__(self):
+        """
+        Return the printable string representation of object.
+
+        Returns:
+            str: a human readable string with the handler attributes.
+        """
+        l = list()
+        l.append(super().__str__())
+        l.append("- Mozilla --------------------------------------------------")
+        l.append("  Build ID:         {}".format(self.build_id))
+        l.append("  Locale:           {}".format(self.locale))
+        l.append("- Mozilla --------------------------------------------------")
+        return "\n".join(l)
 
     def get_origin(self, version=None):
         """
@@ -278,8 +284,6 @@ class MozHandler(core.BaseProduct):
         parts. For now, the handler only supports the Windows version of Mozilla 
         products.
         
-        To use
-        
         Returns:
             str: the URL of update request.
 
@@ -305,7 +309,7 @@ class MozHandler(core.BaseProduct):
         server = "aus5.mozilla.org"
         channel = "release"
         os_version = "Windows_NT%206.1"  # windows 7 min
-        system_caps = "%20" # vs SSE
+        system_caps = "%20"  # no hardware restriction
         distribution = "default"
         dist_version = "default"
 
@@ -334,33 +338,27 @@ class MozHandler(core.BaseProduct):
 
 class FirefoxWinHandler(MozHandler):
     """
-    Firefox product handler.
+    Firefox product handler (Windows 32 bits).
 
     This concrete class implements the tracking mechanism for the Mozilla 
-    Firefox product (Windows version). So most of information are in the 
-    :mod:`core` and more particularly in the `BaseProduct` class documentation. 
-    The information below focuses on the added value of this class.
+    Firefox product (Windows version). However, as all mechanisms are defined in
+    the base class, this class only defines the attributes. So most of 
+    information are in the `MozHandler` class documentation. 
 
-    **Overridden Methods**
-        This class is a concrete class, so the overridden methods are listed
-        below in alphabetical order.
-
-        ===================================  ===================================
-        `get_origin`                         `is_update`
-        ===================================  ===================================
-
+    The primary version is the 42.0, because this latter is the first release 
+    built for a Windows 64 bits (consistency with the `FirefoxWin64Handler` 
+    class).     
     """
     def __init__(self):
         msg = ">>> ()"
         _logger.debug(msg)
         super().__init__()
-
         # Default value
         #  - General -
         self.name = "firefox"
-        self.display_name = ""
+        self.display_name = "Mozilla Firefox 42.0 (x86 fr)"
         self.version = "42.0"
-        self.published = ""
+        self.published = "2015-10-29T15:14:21"
         #  - Details -
         self.target = "win"
         self.description = "Firefox is a free and open-source web browser " \
@@ -370,11 +368,13 @@ class FirefoxWinHandler(MozHandler):
         self.icon = ""
         self.announce_location = ""
         self.feed_location = ""
-        self.release_note_location = ""
+        self.release_note_location = "https://www.mozilla.org/fr/firefox/42.0" \
+                                     "/releasenotes/"
         # - Change summary -
         self.change_summary = ""
         # - Installer
-        self.location = ""
+        self.location = "https://download.mozilla.org/?product=firefox-42.0&" \
+                        "os=win&lang=fr"
         self.installer = ""
         self.file_size = -1
         self.secure_hash = None
@@ -389,23 +389,16 @@ class FirefoxWinHandler(MozHandler):
 
 
 class FirefoxWin64Handler(MozHandler):
-# since the 42.0 (2/nov/2015)
     """
-    Firefox product handler.
-    
+    Firefox product handler (Windows 64 bits).
+
     This concrete class implements the tracking mechanism for the Mozilla 
-    Firefox product (Windows 64 bits version). So most of information are in the 
-    :mod:`core` and more particularly in the `BaseProduct` class documentation. 
-    The information below focuses on the added value of this class.
-    
-    **Overridden Methods**
-        This class is a concrete class, so the overridden methods are listed
-        below in alphabetical order.
-    
-        ===================================  ===================================
-        `get_origin`                         `is_update`
-        ===================================  ===================================
-    
+    Firefox product (Windows 64 bits version). However, as all mechanisms are 
+    defined in the base class, this class only defines the attributes. So most 
+    of information are in the `MozHandler` class documentation. 
+
+    The primary version is the 42.0, because this latter is the first release 
+    built for a Windows 64 bits.     
     """
     def __init__(self):
         msg = ">>> ()"
@@ -415,9 +408,9 @@ class FirefoxWin64Handler(MozHandler):
         # Default value
         #  - General -
         self.name = "firefox"
-        self.display_name = ""
+        self.display_name = "Mozilla Firefox 42.0 (x64 fr)"
         self.version = "42.0"
-        self.published = ""
+        self.published = "2015-10-29T15:14:21"
         #  - Details -
         self.target = "win64"
         self.description = "Firefox is a free and open-source web browser " \
@@ -427,11 +420,13 @@ class FirefoxWin64Handler(MozHandler):
         self.icon = ""
         self.announce_location = ""
         self.feed_location = ""
-        self.release_note_location = ""
+        self.release_note_location = "https://www.mozilla.org/fr/firefox/42.0" \
+                                     "/releasenotes/"
         # - Change summary -
         self.change_summary = ""
         # - Installer
-        self.location = ""
+        self.location = "https://download.mozilla.org/?product=firefox-42.0&" \
+                        "os=win64&lang=fr"
         self.installer = ""
         self.file_size = -1
         self.secure_hash = None
@@ -447,21 +442,15 @@ class FirefoxWin64Handler(MozHandler):
 
 class ThunderbirdWinHandler(MozHandler):
     """
-    Firefox product handler.
+    Thunderbird product handler (Windows).
 
     This concrete class implements the tracking mechanism for the Mozilla 
-    Firefox product (Windows 64 bits version). So most of information are in the 
-    :mod:`core` and more particularly in the `BaseProduct` class documentation. 
-    The information below focuses on the added value of this class.
+    Thunderbird product (Windows version). However, as all mechanisms are 
+    defined in the base class, this class only defines the attributes. So most 
+    of information are in the `MozHandler` class documentation. 
 
-    **Overridden Methods**
-        This class is a concrete class, so the overridden methods are listed
-        below in alphabetical order.
-
-        ===================================  ===================================
-        `get_origin`                         `is_update`
-        ===================================  ===================================
-
+    The primary version is the 38.5.0, because this latter is the first release 
+    returned by the Mozilla update servers .     
     """
     def __init__(self):
         msg = ">>> ()"
@@ -471,30 +460,33 @@ class ThunderbirdWinHandler(MozHandler):
         # Default value
         #  - General -
         self.name = "thunderbird"
-        self.display_name = ""
-        self.version = "1.0"
-        self.published = ""
+        self.display_name = "Mozilla Thunderbird 38.5.0 (x86 fr)"
+        self.version = "38.5.0"
+        self.published = "2015-12-21T14:27:44"
         #  - Details -
         self.target = "win"
-        self.description = "Firefox is a free and open-source web browser " \
-                           "available under the Mozilla Public License"
+        self.description = "Thunderbird is a free and open-source email " \
+                           "client available under the Mozilla Public "\
+                           "License"
         self.editor = "Mozilla Foundation"
         self.web_site_location = "https://www.mozilla.org/thunderbird"
         self.icon = ""
         self.announce_location = ""
         self.feed_location = ""
-        self.release_note_location = ""
+        self.release_note_location = "https://www.mozilla.org/fr/thunderbird" \
+                                     "/38.5.0/releasenotes/"
         # - Change summary -
         self.change_summary = ""
         # - Installer
-        self.location = ""
+        self.location = "https://download.mozilla.org/?product=thunderbird-" \
+                        "38.5.0&os=win&lang=fr"
         self.installer = ""
         self.file_size = -1
         self.secure_hash = None
         self.silent_inst_args = "-ms"
         self.std_inst_args = ""
         # - Mozilla -
-        self.build_id = "0"
+        self.build_id = "20151221142744"
         self.locale = "fr"
 
         msg = "<<< ()=None"
