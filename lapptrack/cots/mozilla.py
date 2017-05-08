@@ -257,8 +257,8 @@ class MozHandler(core.BaseProduct):
         # comparison based on version number.
         result = True
         try:
-            a = semver.SemVer(self.version)
-            b = semver.SemVer(product.version)
+            a = MozVer(self.version)
+            b = MozVer(product.version)
         except ValueError as err:
             msg = "Internal error: current product version - {}"
             _logger.error(msg.format(str(err)))

@@ -113,7 +113,7 @@ class HandlerTestCase(unittest.TestCase):
                 _logger.info(str(handler))
         _logger.info("Completed")
 
-    def test_is_update(self, ):
+    def test0201_is_update(self, ):
         # Check if the remote version is an update.
         _logger.info("Starting...")
         for qualname in self.qualnames:
