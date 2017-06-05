@@ -12,15 +12,16 @@ MakeMKV
 
     .. image:: makemkv_logo.png
         :align: center
-        :height: 83
+        :height: 48pt
+        :target: http://www.makemkv.com/
 
     Published by GuinpinSoft inc, MakeMKV is a video format converter. Its main
     feature is to extract audio and video tracks from a DVD or a BluRay disc
     into `MKV <http://www.matroska.org/>`_ files.
 
-    Download: `Current Release <http://www.makemkv.com/download/>`_
+    License: `Freeware <http://www.makemkv.com/forum2/viewtopic.php?f=5&t=1053>`_
 
-    Web site:  http://www.makemkv.com/
+    Download: `Current Release <http://www.makemkv.com/download/>`_
 
 This topic introduces installers features or tools that can be used to deploy
 MakeMKV and centrally manage its configuration in small organisations. It also

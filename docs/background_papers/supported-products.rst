@@ -31,3 +31,11 @@ what `lapptrack` uses to track it.
     firefox-background
     thunderbird-background
     makemkv-background
+
+In addition to the above topics, the following topics provide background papers
+for products from the same family.
+
+.. toctree::
+    :maxdepth: 1
+
+    mozilla-background

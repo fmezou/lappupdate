@@ -282,7 +282,7 @@ class MozHandler(core.BaseProduct):
         Return the update request URL for the Mozilla update servers.
 
         The handler is compliant with the version 6 of the request. The 
-        section :ref:`background_firefox.update_request` details the URL
+        section :ref:`background_mozilla.update_request` details the URL
         parts. For now, the handler only supports the Windows version of Mozilla 
         products.
         
@@ -452,7 +452,7 @@ class ThunderbirdWinHandler(MozHandler):
     of information are in the `MozHandler` class documentation. 
 
     The primary version is the 38.5.0, because this latter is the first release 
-    returned by the Mozilla update servers .     
+    returned by the Mozilla update servers.
     """
     def __init__(self):
         msg = ">>> ()"
@@ -509,7 +509,7 @@ class MozVer(object):
         ValueError: Version string do not match the specification rules.
 
     Attributes:
-        unstable (property): indicate if the version is unstable.
+        unstable (bool): indicate if the version is unstable.
 
     **Special Methods**
         This class has a number of special methods, listed below in alphabetical
