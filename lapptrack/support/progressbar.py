@@ -329,3 +329,80 @@ class TextProgressBar:
         msg = "<<< ()={}"
         _logger.debug(msg.format(progress))
         return progress
+
+
+class NullProgressBar:
+    """
+    Progress bar with no output.
+
+
+    Args:
+        max_len (int): A positive integer specifying the content length
+            that the progress bar is going to represent. A negative number
+            specify that the content length is unknown.
+
+
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
+
+        ===================================  ===================================
+        `finish`                             `compute`
+        ===================================  ===================================
+
+    **Using NullProgressBar...**
+        This class is similar to the `TextProgressBar` class, but a `compute`
+        method call or a `finish` method call do nothing. This class is useful
+        in a quiet running mode.
+    """
+
+    def __init__(self, max_len=-1):
+        msg = ">>> (max_len={})"
+        _logger.debug(msg.format(max_len))
+        # check parameters type
+        if not isinstance(max_len, int):
+            msg = "max_len argument must be a class 'int'. not {0}"
+            msg = msg.format(max_len.__class__)
+            raise TypeError(msg)
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def compute(self, length, content_length=-1):
+        """
+        Compute the progress bar and print it.
+
+        Raises:
+            TypeError: Parameters type mismatch.
+        """
+        msg = ">>> (length={}, content_length={})"
+        _logger.debug(msg.format(length, content_length))
+        # check parameters type
+        if not isinstance(length, int):
+            msg = "length argument must be a class 'int'. not {0}"
+            msg = msg.format(length.__class__)
+            raise TypeError(msg)
+
+        if not isinstance(content_length, int):
+            msg = "content_length argument must be a class 'int'. not {0}"
+            msg = msg.format(content_length.__class__)
+            raise TypeError(msg)
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def finish(self):
+        """
+        Compute the progress bar completion and return the computed string.
+
+        Return:
+            str: A string representing the progress information.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+
+        progress = ""
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(progress))
+        return progress
