@@ -97,7 +97,7 @@ class MakeMKVHandler(core.BaseProduct):
                 rules.
 
         Returns:
-            bool: True if the download of the file went well. In case of
+            bool: `True` if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
 
         Raises:
@@ -206,7 +206,7 @@ class MakeMKVHandler(core.BaseProduct):
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: True if this instance is an update of the product specified
+            bool: `True` if this instance is an update of the product specified
             by the `product` parameter.
 
         Raises:
@@ -274,7 +274,7 @@ class MakeMKVHandler(core.BaseProduct):
                 rules.
 
         Returns:
-            bool: True if the download of the change log file went well. In case
+            bool: `True` if the download of the change log file went well. In case
             of failure, the members are not modified and an error log is
             written.
 
@@ -599,11 +599,11 @@ class ReleaseNotesParser(HTMLParser):
             attributes (dict):  The attributes of the tag.
             first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
             last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
         """
         msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
@@ -621,7 +621,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -646,7 +646,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -669,7 +669,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -694,7 +694,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -717,7 +717,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -743,11 +743,11 @@ class ReleaseNotesParser(HTMLParser):
             attributes (dict):  The attributes of the tag.
             first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
             last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
         """
         msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
@@ -770,7 +770,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -796,7 +796,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -852,7 +852,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -879,11 +879,11 @@ class ReleaseNotesParser(HTMLParser):
             attributes (dict):  The attributes of the tag.
             first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
             last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
         """
         msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
@@ -919,7 +919,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))

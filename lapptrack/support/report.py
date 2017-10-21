@@ -211,9 +211,9 @@ class Report:
         Args:
             config (dict): The configuration as described in the
                 :file:`report.example.ini`.
-            append (bool): (optional) False to indicate if the configuration
+            append (bool): (optional) `False` to indicate if the configuration
                 specified by the :dfn:`config` parameter will overwrite the
-                current configuration. True to indicate if the configuration
+                current configuration. `True` to indicate if the configuration
                 specified by the :dfn:`config` parameter will append to the
                 current configuration.
         """

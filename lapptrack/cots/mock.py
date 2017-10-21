@@ -170,7 +170,7 @@ class BaseMockHandler(core.BaseProduct):
                 package.
 
         Returns:
-            bool: True if the fake installer creation went well. In case of
+            bool: `True` if the fake installer creation went well. In case of
             failure, the members are not modified and an error log is written.
 
         Raises:
@@ -213,7 +213,7 @@ class BaseMockHandler(core.BaseProduct):
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: True if this instance is an update of the product specified
+            bool: `True` if this instance is an update of the product specified
             by the `product` parameter.
         """
         msg = ">>> (product={})"
@@ -313,7 +313,7 @@ class ReleaseOftenMockHandler(BaseMockHandler):
         """
         Get the mocking information.
 
-        This method return always true to indicate that the most-update
+        This method return always `True` to indicate that the most-update
         information are available. On each call, the version patch number is
         incremented to be compliant with the `semantic versioning
         specification`_ 2.0.0.
@@ -383,7 +383,7 @@ class FailureMockHandler(BaseMockHandler):
         """
         Get the mocking information.
 
-        This method always return false to indicate that an error has occurred
+        This method always return `False` to indicate that an error has occurred
         while the fetching of the product information.
 
         Args:
@@ -407,7 +407,7 @@ class FailureMockHandler(BaseMockHandler):
         """
         Download the mocking installer.
 
-        This method always return false to indicate that an error has occurred
+        This method always return `False` to indicate that an error has occurred
         while the product installer fetching.
 
         Args:
@@ -415,7 +415,7 @@ class FailureMockHandler(BaseMockHandler):
                 package.
 
         Returns:
-            bool: True if the download of the file went well. In case of
+            bool: `True` if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
 
         Returns:

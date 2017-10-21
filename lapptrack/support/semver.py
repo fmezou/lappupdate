@@ -148,7 +148,7 @@ class SemVer:
         Indicate if the version is unstable.
 
         Return:
-            bool: True if the version is unstable.
+            bool: `True` if the version is unstable.
         """
         return self._unstable
 

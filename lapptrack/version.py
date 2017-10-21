@@ -14,7 +14,7 @@ The easiest way to use is to import the module as below.
 'GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007'
 
 .. _Single-sourcing the Project Version: https://packaging.python.org/
-    single_source_version/# single-sourcing-the-project-version
+    single_source_version/#single-sourcing-the-project-version
 .. _Python Packaging User Guide: https://packaging.python.org/
 """
 

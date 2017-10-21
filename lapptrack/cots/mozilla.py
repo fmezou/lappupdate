@@ -113,7 +113,7 @@ class MozHandler(core.BaseProduct):
                 rules.
 
         Returns:
-            bool: True if the download of the file went well. In case of
+            bool: `True` if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
 
         Raises:
@@ -239,7 +239,7 @@ class MozHandler(core.BaseProduct):
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: True if this instance is an update of the product specified
+            bool: `True` if this instance is an update of the product specified
             by the `product` parameter.
 
         Raises:

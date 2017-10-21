@@ -400,5 +400,6 @@ class MozVerTestCase(unittest.TestCase):
         self.assertFalse(v2 < v1, msg=msg)
         _logger.info("Completed")
 
+
 if __name__ == '__main__':
     unittest.main()
