@@ -173,7 +173,7 @@ class DummyHandler(core.BaseProduct):
             "<li>initial commit</li>" \
             "</ul>" \
             "</ul>"
-        self.file_size = -1
+        self.file_size = 0
         self.secure_hash = None
         self.std_inst_args = ""
         self.silent_inst_args = "/silent"

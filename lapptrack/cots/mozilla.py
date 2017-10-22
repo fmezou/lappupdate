@@ -183,7 +183,7 @@ class MozHandler(core.BaseProduct):
                                                     "%Y%m%d%H%M%S")
                     self.published = dt.isoformat()
                     self.change_summary = ""
-                    self.file_size = -1
+                    self.file_size = 0
                     self.secure_hash = None
                     self.std_inst_args = ""
                     self.silent_inst_args = "-ms"

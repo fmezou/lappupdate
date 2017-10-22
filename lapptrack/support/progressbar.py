@@ -137,8 +137,8 @@ class TextProgressBar:
 
     Args:
         max_len (int): A positive integer specifying the content length
-            that the progress bar is going to represent. A negative number
-            specify that the content length is unknown.
+            that the progress bar is going to represent. 0 specify that
+            the content length is unknown.
 
 
     **Public Methods**
@@ -195,12 +195,12 @@ class TextProgressBar:
                 msg = msg.format(max_len.__class__)
                 raise TypeError(msg)
         else:
-            self._content_length =-1
+            self._content_length = 0
 
         msg = "<<< ()=None"
         _logger.debug(msg)
 
-    def compute(self, length, content_length=-1):
+    def compute(self, length, content_length=0):
         """
         Compute the progress bar and print it.
 
@@ -225,8 +225,8 @@ class TextProgressBar:
             length (int): A positive integer specifying the length of
                 received data.
             content_length (int): A positive integer specifying the content
-                length that the progress bar is going to represent. A negative
-                number specify that the content length is unknown.
+                length that the progress bar is going to represent. 0 specify
+                that the content length is unknown.
 
 
         Raises:
@@ -246,7 +246,7 @@ class TextProgressBar:
                 msg = msg.format(content_length.__class__)
                 raise TypeError(msg)
         else:
-            content_length=-1
+            content_length=0
 
         self._content_length = content_length
         self._length = length
@@ -345,8 +345,8 @@ class NullProgressBar (TextProgressBar):
 
     Args:
         max_len (int): A positive integer specifying the content length
-            that the progress bar is going to represent. A negative number
-            specify that the content length is unknown.
+            that the progress bar is going to represent. 0 specify that the
+            content length is unknown.
 
 
     **Public Methods**
@@ -363,7 +363,7 @@ class NullProgressBar (TextProgressBar):
         in a quiet running mode.
     """
 
-    def __init__(self, max_len=-1):
+    def __init__(self, max_len=0):
         msg = ">>> (max_len={})"
         _logger.debug(msg.format(max_len))
         # check parameters type
@@ -378,7 +378,7 @@ class NullProgressBar (TextProgressBar):
         msg = "<<< ()=None"
         _logger.debug(msg)
 
-    def compute(self, length, content_length=-1):
+    def compute(self, length, content_length=0):
         """
         Compute the progress bar and print it.
 

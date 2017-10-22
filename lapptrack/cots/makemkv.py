@@ -159,8 +159,8 @@ class MakeMKVHandler(core.BaseProduct):
                 # if s is not None:
                 #     self.file_size = int(s)
                 # else:
-                #     self.file_size = -1
-                self.file_size = -1
+                #     self.file_size = 0
+                self.file_size = 0
                 msg = "Latest product information fetched ({} published on {})"
                 _logger.info(msg.format(self.version, self.published))
 

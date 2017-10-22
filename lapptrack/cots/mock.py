@@ -280,7 +280,7 @@ class BrotherMockHandler(BaseMockHandler):
         _logger.debug(msg.format(version))
 
         result = super().get_origin(version)
-        self.file_size = -1
+        self.file_size = 0
         self.secure_hash = None
 
         msg = "Latest product information fetched ({} published on {})"
