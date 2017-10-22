@@ -182,16 +182,20 @@ class TextProgressBar:
     def __init__(self, max_len=-1):
         msg = ">>> (max_len={})"
         _logger.debug(msg.format(max_len))
-        # check parameters type
-        if not isinstance(max_len, int):
-            msg = "max_len argument must be a class 'int'. not {0}"
-            msg = msg.format(max_len.__class__)
-            raise TypeError(msg)
 
         self._t0 = time.time()
         self._length = 0
         self._content_length = max_len
         self._t1 = 0.0
+
+        # check parameters type
+        if max_len:
+            if not isinstance(max_len, int):
+                msg = "max_len argument must be a class 'int'. not {0}"
+                msg = msg.format(max_len.__class__)
+                raise TypeError(msg)
+        else:
+            self._content_length =-1
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -236,10 +240,13 @@ class TextProgressBar:
             msg = msg.format(length.__class__)
             raise TypeError(msg)
 
-        if not isinstance(content_length, int):
-            msg = "content_length argument must be a class 'int'. not {0}"
-            msg = msg.format(content_length.__class__)
-            raise TypeError(msg)
+        if content_length:
+            if not isinstance(content_length, int):
+                msg = "content_length argument must be a class 'int'. not {0}"
+                msg = msg.format(content_length.__class__)
+                raise TypeError(msg)
+        else:
+            content_length=-1
 
         self._content_length = content_length
         self._length = length
@@ -331,7 +338,7 @@ class TextProgressBar:
         return progress
 
 
-class NullProgressBar:
+class NullProgressBar (TextProgressBar):
     """
     Progress bar with no output.
 
@@ -360,10 +367,13 @@ class NullProgressBar:
         msg = ">>> (max_len={})"
         _logger.debug(msg.format(max_len))
         # check parameters type
-        if not isinstance(max_len, int):
-            msg = "max_len argument must be a class 'int'. not {0}"
-            msg = msg.format(max_len.__class__)
-            raise TypeError(msg)
+        if max_len:
+            if not isinstance(max_len, int):
+                msg = "max_len argument must be a class 'int'. not {0}"
+                msg = msg.format(max_len.__class__)
+                raise TypeError(msg)
+        else:
+            max_len = -1
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -383,10 +393,13 @@ class NullProgressBar:
             msg = msg.format(length.__class__)
             raise TypeError(msg)
 
-        if not isinstance(content_length, int):
-            msg = "content_length argument must be a class 'int'. not {0}"
-            msg = msg.format(content_length.__class__)
-            raise TypeError(msg)
+        if content_length:
+            if not isinstance(content_length, int):
+                msg = "content_length argument must be a class 'int'. not {0}"
+                msg = msg.format(content_length.__class__)
+                raise TypeError(msg)
+        else:
+            content_length = -1
 
         msg = "<<< ()=None"
         _logger.debug(msg)

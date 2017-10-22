@@ -73,7 +73,9 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             "/nolength": self.do_no_length,
             "/notype": self.do_no_type,
             "/increaselen": self.do_increase_length,
-            "/decreaselen": self.do_decrease_length
+            "/decreaselen": self.do_decrease_length,
+            "/redirect": self.do_redirect,
+            "/disposition": self.do_disposition,
         }
         components = urllib.parse.urlsplit(self.path)
         if components.path in actions:
@@ -137,7 +139,7 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return None
 
         self.send_response(HTTPStatus.OK)
-        self.send_header("Content-type", "text/plain")
+        self.send_header("Content-Type", "text/plain")
         st = os.fstat(file.fileno())
         self.log_message("Content-Length header not set")
         self.send_header("Last-Modified", self.date_time_string(st.st_mtime))
@@ -167,7 +169,7 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return None
 
         self.send_response(HTTPStatus.OK)
-        self.send_header("Content-type", "text/plain")
+        self.send_header("Content-Type", "text/plain")
         st = os.fstat(file.fileno())
         self.send_header("Content-Length", str(st.st_size*2))
         self.log_message("Content-Length header altered (%s vs %s)",
@@ -199,7 +201,7 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return None
 
         self.send_response(HTTPStatus.OK)
-        self.send_header("Content-type", "text/plain")
+        self.send_header("Content-Type", "text/plain")
         st = os.fstat(file.fileno())
         self.send_header("Content-Length", str(st.st_size//2))
         self.log_message("Content-Length header altered (%s vs %s)",
@@ -236,6 +238,57 @@ class MockHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.log_message("Content-Type header not set")
         self.send_header("Last-Modified",
                          self.date_time_string(st.st_mtime))
+        self.end_headers()
+
+        return file
+
+    def do_redirect(self, query):
+        """
+        Redirection resource handling.
+
+        Args:
+            query (str): This is the query component of the URI.
+
+        Returns:
+            file object: A file object (which has to be copied to the outputfile
+            by the caller unless the command was HEAD, and must be closed by the
+            caller under all circumstances), or None, in which case the caller
+            has nothing further to do.
+        """
+        self.send_response(HTTPStatus.FOUND)
+        self.send_header("Location", "http://localhost:53230/lorem.txt")
+        self.end_headers()
+
+        return None
+
+    def do_disposition(self, query):
+        """
+        Content-Disposition resource handling.
+
+        Args:
+            query (str): This is the query component of the URI.
+
+        Returns:
+            file object: A file object (which has to be copied to the outputfile
+            by the caller unless the command was HEAD, and must be closed by the
+            caller under all circumstances), or None, in which case the caller
+            has nothing further to do.
+        """
+        file = None
+        try:
+            path = os.path.join(os.path.dirname(__file__), "lorem.txt")
+            file = open(path, "rb")
+        except OSError:
+            self.send_error(HTTPStatus.NOT_FOUND, "File not found")
+            return None
+
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", "text/plain")
+        st = os.fstat(file.fileno())
+        self.send_header("Content-Length", str(st.st_size))
+        self.send_header("Content-Disposition", 
+                         "attachment; filename=lorem.txt")
+        self.send_header("Last-Modified", self.date_time_string(st.st_mtime))
         self.end_headers()
 
         return file

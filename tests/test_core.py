@@ -9,12 +9,8 @@ import sys
 import unittest
 import tempfile
 
-# Modules to be tested are located in another directory. So the Module Search
-# Path is modified for including the root of theses modules.
-_pathname = os.path.join(os.path.dirname(__file__), os.pardir, "lapptrack")
-sys.path.append(os.path.abspath(_pathname))
-
 from cots import core
+from support import progressbar
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -24,7 +20,8 @@ __all__ = [
     "BaseProductNotImplementedTestCase",
     "BaseProductFetchTestCase",
     "RetrieveFileTestCase",
-    "GetHandlerTestCase"
+    "GetHandlerTestCase",
+    "DownloadHandlerTestCase"
 ]
 
 # Modules to be tested use the logging facility, so a minimal
@@ -516,6 +513,432 @@ class GetHandlerTestCase(unittest.TestCase):
         with self.assertRaises(TypeError):
             core.get_handler("support.semver.SemVer")
         _logger.info("Completed")
+
+
+class DownloadHandlerTestCase(unittest.TestCase):
+    """
+    DownloadHandler test case
+    """
+
+    def setUp(self):
+        _logger.info(53 * "-")
+
+        # Attributes default value
+        self.store_path = "../~store/app"
+        self.url = "http://localhost:53230/lorem.txt"
+        self.filename = "../~store/app/lorem.txt"
+        self.type = "text/plain"
+        self.length = 42961
+        self.hash = ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0")
+        self.remote = None
+        self.progress = progressbar.TextProgressBar
+
+        # Clean up
+        try:
+            os.remove(self.filename)
+        except FileNotFoundError:
+            pass
+
+    def tearDown(self):
+        # Clean up
+        try:
+            os.remove(self.filename)
+        except FileNotFoundError:
+            pass
+        del self.remote
+        _logger.info(50 * "-")
+
+    def test0101_fetch(self):
+        # Download a regular file
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        self.assertEqual(os.path.abspath(self.remote.filename),
+                         os.path.abspath(self.filename))
+
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        d = core.get_file_hash(self.remote.filename, self.hash[0])
+        self.assertEqual(d.hexdigest(), self.hash[1])
+
+        st = os.stat(self.filename)
+        self.assertEqual(self.remote.length, self.length)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        self.assertEqual(st.st_size, self.length)
+
+        self.assertEqual(self.type, self.remote.type)
+
+        _logger.info("Completed")
+
+    def test0102_fetch_temporary(self):
+        # Download a temporary file
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=None,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        d = core.get_file_hash(self.remote.filename, self.hash[0])
+        self.assertEqual(d.hexdigest(), self.hash[1])
+
+        st = os.stat(self.remote.filename)
+        self.assertEqual(self.remote.length, self.length)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        self.assertEqual(st.st_size, self.length)
+
+        self.assertEqual(self.type, self.remote.type)
+
+        _logger.info("Completed")
+
+    def test0103_fetch_unknown_length(self):
+        # Download a regular file whose length is unknown
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=None,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        self.assertEqual(os.path.abspath(self.remote.filename),
+                         os.path.abspath(self.filename))
+
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        d = core.get_file_hash(self.remote.filename, self.hash[0])
+        self.assertEqual(d.hexdigest(), self.hash[1])
+
+        st = os.stat(self.remote.filename)
+        self.assertEqual(self.remote.length, self.length)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        self.assertEqual(st.st_size, self.length)
+
+        self.assertEqual(self.type, self.remote.type)
+
+        _logger.info("Completed")
+
+    def test0104_fetch_unknown_hash(self):
+        # Download a regular file whose secure hash is unknown
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=None,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        self.assertEqual(os.path.abspath(self.remote.filename),
+                         os.path.abspath(self.filename))
+
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        d = core.get_file_hash(self.remote.filename, self.hash[0])
+        self.assertEqual(d.hexdigest(), self.hash[1])
+
+        st = os.stat(self.remote.filename)
+        self.assertEqual(self.remote.length, self.length)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        self.assertEqual(st.st_size, self.length)
+
+        self.assertEqual(self.type, self.remote.type)
+
+        _logger.info("Completed")
+
+    def test0105_fetch_unknown_type(self):
+        # Download a regular file whose mime type is unknown
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=None,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        self.assertEqual(os.path.abspath(self.remote.filename),
+                         os.path.abspath(self.filename))
+
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        d = core.get_file_hash(self.remote.filename, self.hash[0])
+        self.assertEqual(d.hexdigest(), self.hash[1])
+
+        st = os.stat(self.remote.filename)
+        self.assertEqual(self.remote.length, self.length)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        self.assertEqual(st.st_size, self.length)
+
+        self.assertEqual(self.type, self.remote.type)
+
+        _logger.info("Completed")
+
+    def test0106_fetch_redirect(self):
+        # Download a regular file with a redirected URL
+        _logger.info("Starting...")
+        url = "http://localhost:53230/redirect"
+        self.remote = core.DownloadHandler(url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        self.assertEqual(os.path.abspath(self.remote.filename),
+                         os.path.abspath(self.filename))
+
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        d = core.get_file_hash(self.remote.filename, self.hash[0])
+        self.assertEqual(d.hexdigest(), self.hash[1])
+
+        st = os.stat(self.remote.filename)
+        self.assertEqual(self.remote.length, self.length)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        self.assertEqual(st.st_size, self.length)
+
+        self.assertEqual(self.type, self.remote.type)
+
+        _logger.info("Completed")
+
+    def test0107_fetch_disposition(self):
+        # Download a regular file with a Content-Disposition header
+        _logger.info("Starting...")
+        url = "http://localhost:53230/disposition"
+        self.remote = core.DownloadHandler(url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        self.assertEqual(os.path.abspath(self.remote.filename),
+                         os.path.abspath(self.filename))
+
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        d = core.get_file_hash(self.remote.filename, self.hash[0])
+        self.assertEqual(d.hexdigest(), self.hash[1])
+
+        st = os.stat(self.remote.filename)
+        self.assertEqual(self.remote.length, self.length)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        self.assertEqual(st.st_size, self.length)
+
+        self.assertEqual(self.type, self.remote.type)
+
+        _logger.info("Completed")
+
+    @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
+    def test0201_read_only_path(self):
+        # Download to a read only path
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path="c:\windows",
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0301_too_high_length(self):
+        # Download with a too high length
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length+1,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0302_too_small_length(self):
+        # Download with a too high length
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length-1,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0303_server_too_high_length(self):
+        # Download with a too high length
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler("http://localhost:53230/increaselen",
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0304_server_too_small_length(self):
+        # Download with a too small length
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler("http://localhost:53230/decreaselen",
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0401_with_unsupported_hash(self):
+        # Download with a non supported hash algorithm
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=("example", ""),
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertTrue(result)
+
+        self.assertEqual(os.path.abspath(self.remote.filename),
+                         os.path.abspath(self.filename))
+        h = (self.remote.hash.name, self.remote.hash.hexdigest())
+        self.assertEqual(h, self.hash)
+        self.assertEqual(self.remote.length, self.length)
+
+        st = os.stat(self.remote.filename)
+        self.assertTrue(stat.S_ISREG(st.st_mode))
+        _logger.info("Completed")
+
+    def test0402_bad_hash(self):
+        # Download with an unexpected hash value
+        _logger.info("Starting...")
+        h = ("sha1","0000000000000000000000000000000000000000")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=h,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0403_error_type_hash(self):
+        # Download with an unexpected hash value
+        _logger.info("Starting...")
+        hashes = [
+            "dummy",
+            ("sha1", "00", "00"),
+            (None, ""),
+            ("", None)
+        ]
+        for h in hashes:
+            _logger.info("(hash=%s)", h)
+            with self.subTest(hash=h):
+                with self.assertRaises(TypeError):
+                    self.remote = core.DownloadHandler(self.url,
+                                                       path=self.store_path,
+                                                       type=self.type,
+                                                       length=self.length,
+                                                       hash=h,
+                                                       progress=self.progress)
+                    result = self.remote.fetch()
+                    self.assertFalse(result)
+                    self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0501_unexpected_mimetype(self):
+        # Download with an unexpected mime type
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler(self.url,
+                                           path=self.store_path,
+                                           type="x-app/x-bin",
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+
+    def test0601_with_bad_domain(self):
+        # Download with an url having a bad domain name
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler("http://nolocalhost/nofile.bin",
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0602_non_existant_url(self):
+        # Download with a non-existent URL
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler("http://localhost:53230/error?code=404",
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
+    def test0603_forbidden_url(self):
+        # Download with a forbidden URL
+        _logger.info("Starting...")
+        self.remote = core.DownloadHandler("http://localhost:53230/error?code=403",
+                                           path=self.store_path,
+                                           type=self.type,
+                                           length=self.length,
+                                           hash=self.hash,
+                                           progress=self.progress)
+        result = self.remote.fetch()
+        self.assertFalse(result)
+        self.assertFalse(os.path.exists(self.remote.filename))
+        _logger.info("Completed")
+
 
 if __name__ == '__main__':
     unittest.main()

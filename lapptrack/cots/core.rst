@@ -19,11 +19,17 @@ This section details the objects defined in this module.
     :private-members:
     :show-inheritance:
 
+.. autoclass:: DownloadHandler
+    :members:
+    :private-members:
+    :show-inheritance:
+
 Functions reference
 -------------------
 This section details the specific functions used in this module.
 
 .. autofunction:: retrieve_file
+.. autofunction:: retrieve_file_ex
 .. autofunction:: get_handler
 .. autofunction:: get_file_hash
 
