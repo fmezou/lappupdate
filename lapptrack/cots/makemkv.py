@@ -27,6 +27,7 @@ from html.parser import HTMLParser
 from cots import core
 from support import pad
 from support import semver
+from support import progressbar
 
 
 __author__ = "Frederic MEZOU"
@@ -117,35 +118,15 @@ class MakeMKVHandler(core.BaseProduct):
         local_filename = ""
         result = True
 
-        try:
-            with tempfile.NamedTemporaryFile(delete=False) as file:
-                local_filename = file.name
-                core.retrieve_file(self._catalog_url, file)
-        except urllib.error.URLError as err:
-            msg = "Inaccessible resource: {} - url: {}"
-            _logger.error(msg.format(str(err), self.location))
-            result = False
-        except (core.ContentTypeError, core.ContentLengthError,
-                core.ContentError) as err:
-            msg = "Unexpected content: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except ValueError as err:
-            msg = "Internal error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except OSError as err:
-            msg = "OS error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        else:
-            msg = "Catalog downloaded: '{0}'".format(local_filename)
-            _logger.debug(msg)
-
+        remote = core.DownloadHandler(self._catalog_url,
+                                      progress=progressbar.TextProgressBar)
+        result = remote.fetch()
         if result:
+            msg = "Catalog downloaded: '{0}'".format(remote.filename)
+            _logger.debug(msg)
             try:
                 # Parse the catalog and retrieve information
-                self._parser.parse(local_filename)
+                self._parser.parse(remote.filename)
             except pad.PADSyntaxError as err:
                 msg = "Erroneous PAD File: {}"
                 _logger.error(msg.format(str(err)))
@@ -185,7 +166,7 @@ class MakeMKVHandler(core.BaseProduct):
 
         # clean up the temporary files
         try:
-            os.remove(local_filename)
+            os.remove(remote.filename)
         except OSError:
             pass
 
@@ -286,35 +267,16 @@ class MakeMKVHandler(core.BaseProduct):
 
         local_filename = ""
         result = True
-        try:
-            with tempfile.NamedTemporaryFile(delete=False) as file:
-                local_filename = file.name
-                core.retrieve_file(self.release_note_location, file)
-        except urllib.error.URLError as err:
-            msg = "Inaccessible resource: {} - url: {}"
-            _logger.error(msg.format(str(err), self.release_note_location))
-            result = False
-        except (core.ContentTypeError, core.ContentLengthError,
-                core.ContentError) as err:
-            msg = "Unexpected content: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except ValueError as err:
-            msg = "Internal error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except OSError as err:
-            msg = "OS error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        else:
-            msg = "Change log fetched -> '{0}'".format(local_filename)
-            _logger.debug(msg)
 
+        remote = core.DownloadHandler(self.release_note_location,
+                                      progress=progressbar.TextProgressBar)
+        result = remote.fetch()
         if result:
+            msg = "Change log fetched -> '{0}'".format(remote.filename)
+            _logger.debug(msg)
             try:
                 parser = ReleaseNotesParser(version)
-                with open(local_filename) as file:
+                with open(remote.filename) as file:
                     parser.feed(file.read())
             except ValueError as err:
                 msg = "Internal error: {}"
@@ -339,7 +301,7 @@ class MakeMKVHandler(core.BaseProduct):
 
         # clean up the temporary files
         try:
-            os.remove(local_filename)
+            os.remove(remote.filename)
         except OSError:
             pass
 

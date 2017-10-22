@@ -23,7 +23,7 @@ logging.basicConfig(
     format="%(levelname)s - %(name)s [%(funcName)s] - %(message)s",
     filename="test_handler.log",
     filemode="a",
-    level=logging.DEBUG)
+    level=logging.INFO)
 _logger = logging.getLogger(__name__)
 
 

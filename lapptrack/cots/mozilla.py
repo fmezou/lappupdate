@@ -25,6 +25,7 @@ from lxml import etree
 
 from cots import core
 from support import semver
+from support import progressbar
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -140,36 +141,15 @@ class MozHandler(core.BaseProduct):
         _logger.info(msg)
         result = True
 
-        try:
-            url = self._get_update_url()
-            with tempfile.NamedTemporaryFile(delete=False) as file:
-                local_filename = file.name
-                core.retrieve_file(url, file)
-        except urllib.error.URLError as err:
-            msg = "Inaccessible resource: {} - " \
-                  "url: {}".format(str(err), self.location)
-            _logger.error(msg)
-            result = False
-        except (core.ContentTypeError, core.ContentLengthError,
-                core.ContentError) as err:
-            msg = "Unexpected content: {}".format(str(err))
-            _logger.error(msg)
-            result = False
-        except ValueError as err:
-            msg = "Internal error: {}".format(str(err))
-            _logger.error(msg)
-            result = False
-        except OSError as err:
-            msg = "OS error: {}".format(str(err))
-            _logger.error(msg)
-            result = False
-        else:
-            msg = "Catalog downloaded: '{0}'".format(local_filename)
-            _logger.debug(msg)
-
+        url = self._get_update_url()
+        remote = core.DownloadHandler(url,
+                                      progress=progressbar.TextProgressBar)
+        result = remote.fetch()
         if result:
+            msg = "Catalog downloaded: '{0}'".format(remote.filename)
+            _logger.debug(msg)
             try:
-                t = etree.parse(local_filename) # parse the manifest file
+                t = etree.parse(remote.filename) # parse the manifest file
             except:
                 pass
             else:
@@ -218,7 +198,7 @@ class MozHandler(core.BaseProduct):
 
         # clean up the temporary files
         try:
-            os.remove(local_filename)
+            os.remove(remote.filename)
         except OSError:
             pass
 
@@ -378,7 +358,7 @@ class FirefoxWinHandler(MozHandler):
         self.location = "https://download.mozilla.org/?product=firefox-42.0&" \
                         "os=win&lang=fr"
         self.installer = ""
-        self.file_size = -1
+        self.file_size = 0
         self.secure_hash = None
         self.silent_inst_args = "-ms"
         self.std_inst_args = ""
@@ -430,7 +410,7 @@ class FirefoxWin64Handler(MozHandler):
         self.location = "https://download.mozilla.org/?product=firefox-42.0&" \
                         "os=win64&lang=fr"
         self.installer = ""
-        self.file_size = -1
+        self.file_size = 0
         self.secure_hash = None
         self.silent_inst_args = "-ms"
         self.std_inst_args = ""
@@ -483,7 +463,7 @@ class ThunderbirdWinHandler(MozHandler):
         self.location = "https://download.mozilla.org/?product=thunderbird-" \
                         "38.5.0&os=win&lang=fr"
         self.installer = ""
-        self.file_size = -1
+        self.file_size = 0
         self.secure_hash = None
         self.silent_inst_args = "-ms"
         self.std_inst_args = ""

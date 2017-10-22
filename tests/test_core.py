@@ -242,7 +242,7 @@ class BaseProductFetchTestCase(unittest.TestCase):
         # Download with an unknown length
         _logger.info("Starting...")
         self.cots.load(self.default_attrs)
-        self.cots.file_size = -1
+        self.cots.file_size = 0
         result = self.cots.fetch(self.dir_name)
         self.assertTrue(result)
         self.assertEqual(os.path.abspath(self.cots.installer),
@@ -403,64 +403,6 @@ class BaseProductFetchTestCase(unittest.TestCase):
         result = self.cots.fetch(self.dir_name)
         self.assertFalse(result)
         self.assertFalse(os.path.exists(self.cots.installer))
-        _logger.info("Completed")
-
-
-class RetrieveFileTestCase(unittest.TestCase):
-    """
-    retrieve_file function test case
-
-    The test case is limited to the test of the content-type parameter. All
-    others tests are done with the `BaseProductFetchTestCase` test case.
-
-    """
-    def setUp(self):
-        _logger.info(53 * "-")
-
-        # Attributes default value
-        self.url = "http://localhost:53230/lorem.txt"
-        self.content_type = "text/plain"
-        self.content_lenght = 42961
-        self.content_hash = ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0")
-        self.dir_name = "../~store/app"
-        self.filename = ""
-
-    def tearDown(self):
-        # Clean up
-        try:
-            os.remove(self.filename)
-        except FileNotFoundError:
-            pass
-        _logger.info(50 * "-")
-
-    def test0101_no_mimetype(self):
-        # Download with no hash
-        _logger.info("Starting...")
-        with tempfile.NamedTemporaryFile(delete=False) as file:
-            filename = file.name
-            t, l, h = core.retrieve_file(self.url, file)
-        self.assertEqual(t, self.content_type)
-        self.assertEqual(l, self.content_lenght)
-        self.assertEqual(h, self.content_hash)
-        st = os.stat(filename)
-        self.assertTrue(stat.S_ISREG(st.st_mode))
-        self.assertEqual(st.st_size, self.content_lenght)
-        d = core.get_file_hash(filename,
-                               self.content_hash[0])
-        self.assertEqual(d.hexdigest(),
-                         self.content_hash[1])
-        os.remove(filename)
-        _logger.info("Completed")
-
-    def test0402_unexpected_mimetype(self):
-        # Download with an unexpected hash value
-        _logger.info("Starting...")
-        with self.assertRaises(core.ContentTypeError):
-            with tempfile.NamedTemporaryFile(delete=False) as file:
-                t, l, h = core.retrieve_file(self.url, file,
-                                             exp_ctype="x-app/x-bin")
-            self.assertFalse(all([t, l, h]))
-            os.remove(file.name)
         _logger.info("Completed")
 
 
