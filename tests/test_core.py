@@ -19,7 +19,6 @@ __all__ = [
     "BaseProductLoadTestCase",
     "BaseProductNotImplementedTestCase",
     "BaseProductFetchTestCase",
-    "RetrieveFileTestCase",
     "GetHandlerTestCase",
     "DownloadHandlerTestCase"
 ]
