@@ -12,8 +12,11 @@ __author__ = "Frederic MEZOU"
 __version__ = "0.1.0"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
-    "HandlerTestCase",
-    "MozillaHandlerTestCase"
+    "MakeMKVHandlerTestCase",
+    "FirefoxWinHandlerTestCase",
+    "FirefoxWin64HandlerTestCase",
+    "ThunderbirdWinHandlerTestCase",
+    "MozVerTestCase"
 ]
 
 # Modules to be tested use the logging facility, so a minimal
@@ -27,17 +30,14 @@ logging.basicConfig(
 _logger = logging.getLogger(__name__)
 
 
-class HandlerTestCase(unittest.TestCase):
+class BaseHandlerTestCase(unittest.TestCase):
     """
-    Product handler test suite
+    Common base class for testing product handler
 
     This class implements additional mechanism.
     """
-    #: list: List of the product handlers to test, each item is the qualified
-    #: name of the handler class.
-    qualnames = [
-        "cots.makemkv.MakeMKVHandler",
-    ]
+    #: str: qualified name of the handler class to test
+    qualname = ""
 
     def setUp(self):
         _logger.info(53*"-")
@@ -48,107 +48,104 @@ class HandlerTestCase(unittest.TestCase):
 
     def test0001_get_origin(self):
         # Get product information from the remote repository.
-        _logger.info("Starting...")
-        for qualname in self.qualnames:
-            name = (qualname.split("."))[-1:]
-            _logger.info("(handler=%s)", name)
-            with self.subTest(name=name):
-                handler = core.get_handler(qualname)
-                _logger.info(handler)
-                result = handler.get_origin()
-                self.assertTrue(result, "get_origin() failed")
-                _logger.info(str(handler))
-                del handler
+        _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+        handler = core.get_handler(self.qualname)
+        _logger.info(handler)
+        result = handler.get_origin()
+        self.assertTrue(result, "get_origin() failed")
+        _logger.info(str(handler))
+        del handler
         _logger.info("Completed")
 
     def test0002_loop_get_origin(self):
         # Get product information from the remote repository.
-        _logger.info("Starting...")
-        for qualname in self.qualnames:
-            name = (qualname.split("."))[-1:]
-            _logger.info("(handler=%s)", name)
-            with self.subTest(name=name):
-                handler = core.get_handler(qualname)
+        _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+        handler = core.get_handler(self.qualname)
+        _logger.info(str(handler))
+        print("{} published on {}".format(handler.display_name,
+                                          handler.published))
+        result = handler.get_origin()
+        while result:
+            _logger.info(str(handler))
+            v = handler.version
+            print(" * UPDATE: {} published on {}".format(
+                handler.display_name, handler.published))
+            result = handler.get_origin()
+            if result:
                 _logger.info(str(handler))
-                print("{} published on {}".format(handler.display_name,
-                                                  handler.published))
-                result = handler.get_origin()
-                while result:
-                    _logger.info(str(handler))
-                    v = handler.version
-                    print(" * UPDATE: {} published on {}".format(
-                        handler.display_name, handler.published))
-                    result = handler.get_origin()
-                    if result:
-                        _logger.info(str(handler))
-                        if handler.version == v:
-                            result = False
+                if handler.version == v:
+                    result = False
         _logger.info("Completed")
 
     def test0100_fetch_primary_version(self):
         # Download the primary version of the product installer..
-        _logger.info("Starting...")
-        for qualname in self.qualnames:
-            name = (qualname.split("."))[-1:]
-            _logger.info("(handler=%s)", name)
-            with self.subTest(name=name):
-                handler = core.get_handler(qualname)
-                result = handler.fetch("../~store/app")
-                self.assertTrue(result, "fetch() failed")
-                _logger.info(str(handler))
+        _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+        handler = core.get_handler(self.qualname)
+        result = handler.fetch("../~store/app")
+        self.assertTrue(result, "fetch() failed")
+        _logger.info(str(handler))
         _logger.info("Completed")
 
     def test0101_fetch_latest_release(self, ):
         # Download the latest release of the product installer..
-        _logger.info("Starting...")
-        for qualname in self.qualnames:
-            name = (qualname.split("."))[-1:]
-            _logger.info("(handler=%s)", name)
-            with self.subTest(name=name):
-                handler = core.get_handler(qualname)
-                result = handler.get_origin(version=handler.version)
-                self.assertTrue(result, "get_origin() failed")
-                result = handler.fetch("../~store/app")
-                self.assertTrue(result, "fetch() failed")
-                _logger.info(str(handler))
+        _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+        handler = core.get_handler(self.qualname)
+        result = handler.get_origin(version=handler.version)
+        self.assertTrue(result, "get_origin() failed")
+        result = handler.fetch("../~store/app")
+        self.assertTrue(result, "fetch() failed")
+        _logger.info(str(handler))
         _logger.info("Completed")
 
     def test0201_is_update(self, ):
         # Check if the remote version is an update.
-        _logger.info("Starting...")
-        for qualname in self.qualnames:
-            name = (qualname.split("."))[-1:]
-            _logger.info("(handler=%s)", name)
-            with self.subTest(name=name):
-                handler = core.get_handler(qualname)
-                result = handler.get_origin(version=handler.version)
-                self.assertTrue(result, "get_origin() failed")
+        _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+        handler = core.get_handler(self.qualname)
+        result = handler.get_origin(version=handler.version)
+        self.assertTrue(result, "get_origin() failed")
 
-                # The current version is not an update of itself.
-                result = handler.is_update(handler)
-                self.assertFalse(result,
-                                 "The current version must not be an update "
-                                 "of itself")
+        # The current version is not an update of itself.
+        result = handler.is_update(handler)
+        self.assertFalse(result, "The current version must not be an update of "
+                                 "itself")
 
-                previous = core.get_handler(qualname)
-                result = handler.is_update(previous)
-                self.assertTrue(result,
-                                "The remote version must be an update")
-                _logger.info(str(handler))
+        previous = core.get_handler(self.qualname)
+        result = handler.is_update(previous)
+        self.assertTrue(result, "The remote version must be an update")
+        _logger.info(str(handler))
         _logger.info("Completed")
 
 
-class MozillaHandlerTestCase(HandlerTestCase):
+class MakeMKVHandlerTestCase(BaseHandlerTestCase):
     """
-    Mozilla handler test suite
+    MakeMKV product handler test suite
     """
-    #: list: List of the Mozilla handlers to test, each item is the qualified
-    #: name of the handler class.
-    qualnames = [
-        "cots.mozilla.FirefoxWinHandler",
-        "cots.mozilla.FirefoxWin64Handler",
-        "cots.mozilla.ThunderbirdWinHandler"
-    ]
+    #: str: qualified name of the handler class to test
+    qualname = "cots.makemkv.MakeMKVHandler"
+
+
+class FirefoxWinHandlerTestCase(BaseHandlerTestCase):
+    """
+    Mozilla Firefox (Windows 32 bits) product handler test suite
+    """
+    #: str: qualified name of the handler class to test
+    qualname = "cots.mozilla.FirefoxWinHandler"
+
+
+class FirefoxWin64HandlerTestCase(BaseHandlerTestCase):
+    """
+    Mozilla Firefox (Windows 64 bits) product handler test suite
+    """
+    #: str: qualified name of the handler class to test
+    qualname = "cots.mozilla.FirefoxWin64Handler"
+
+
+class ThunderbirdWinHandlerTestCase(BaseHandlerTestCase):
+    """
+    Mozilla Thunderbird (Windows) product handler test suite
+    """
+    #: str: qualified name of the handler class to test
+    qualname = "cots.mozilla.ThunderbirdWinHandler"
 
 
 class MozVerTestCase(unittest.TestCase):
@@ -399,6 +396,38 @@ class MozVerTestCase(unittest.TestCase):
         self.assertFalse(v3 < v2, msg=msg)
         self.assertFalse(v2 < v1, msg=msg)
         _logger.info("Completed")
+
+
+def load_tests(loader, tests, pattern):
+    """
+    Returns a customized test suite
+
+    This function returns all the tests from the module except the
+    `BaseHandlerTestCase`. The section `load_tests Protocol` from the `unittest`
+     package detail its use.
+
+    Args:
+        loader: This is the instance of TestLoader doing the loading.
+        tests: The test suite that would be loaded by default from the module.
+        pattern: This is passed straight through from `loadTestsFromModule`.
+
+    Returns:
+        unittest.TestSuite: a TestSuite representing all the tests from the
+            module.
+    """
+    test_cases = [
+        MakeMKVHandlerTestCase,
+        FirefoxWinHandlerTestCase,
+        FirefoxWin64HandlerTestCase,
+        ThunderbirdWinHandlerTestCase,
+        MozVerTestCase
+    ]
+
+    suite = unittest.TestSuite()
+    for c in test_cases:
+        t = loader.loadTestsFromTestCase(c)
+        suite.addTests(t)
+    return suite
 
 
 if __name__ == '__main__':
