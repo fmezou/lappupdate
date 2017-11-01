@@ -39,8 +39,3 @@ as 'defined constants'.
 .. autodata:: TARGET_X86
 .. autodata:: TARGET_X64
 .. autodata:: TARGET_UNIFIED
-
-Exceptions reference
---------------------
-This section details the specific exception used in this module.
-

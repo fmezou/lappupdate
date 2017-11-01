@@ -6,7 +6,7 @@ Product handlers are derived classes from `BaseProduct` class.
 
 Public Classes
 --------------
-This module has only one public class.
+This module has has several public class listed below in alphabetical order.
 
 ===================================  ===================================
 `BaseProduct`                        `DownloadHandler`
@@ -18,20 +18,8 @@ Public Functions
 This module has a number of functions listed below in alphabetical order.
 
 ===================================  ===================================
-`get_handler`                        `retrieve_file`
-`get_file_hash`                      ..
+`get_handler`                        `get_file_hash`
 ===================================  ===================================
-
-
-Public Exceptions
------------------
-This module has has a number of exceptions listed below in alphabetical order.
-
-===================================  ===================================
-`ContentError`                       `ContentTypeError`
-`ContentLengthError`                 ..
-===================================  ===================================
-
 """
 
 import contextlib
