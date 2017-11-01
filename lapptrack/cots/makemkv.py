@@ -69,16 +69,32 @@ class MakeMKVHandler(core.BaseProduct):
         # At this point, only the name and the catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
-        self.name = "MakeMKV"
-        self.target = core.TARGET_UNIFIED
-        self.version = "0.0.0"  # Match with the editor versioning rules
-
+        # Default value
+        #  - General -
+        self.name = "makemkv"
+        self.display_name = "MakeMKV v1.9.8"
+        self.version = "1.9.8"
+        self.published = "2015-12-20T00:00:00"
+        #  - Details -
+        self.target = "win"
+        self.description = "MakeMKV is a video format converter. Its main " \
+                           "feature is to extract audio and video tracks from " \
+                           "a DVD or a BluRay disc into MKV files."
+        self.editor = "GuinpinSoft inc"
         self.web_site_location = "http://www.makemkv.com/"
+        self.icon = ""
         self.announce_location = ""
         self.feed_location = ""
-        self.release_note_location = \
-            "http://www.makemkv.com/download/history.html"
-
+        self.release_note_location = "http://www.makemkv.com/download" \
+                                     "/history.html"
+        # - Change summary -
+        self.change_summary = ""
+        # - Installer
+        self.location = "http://www.makemkv.com/download" \
+                        "/Setup_MakeMKV_v1.9.8.exe"
+        self.installer = ""
+        self.file_size = 0
+        self.secure_hash = None
         self.std_inst_args = ""
         self.silent_inst_args = "/S"
 
