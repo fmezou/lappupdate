@@ -26,9 +26,12 @@ Glossary
     Commercial off-the-shelf
         Commercial off-the-shelf refers to packaged solutions which are then
         adapted to satisfy the needs of the organisation, rather than the
-        commissioning of custom made solutions. This `wikipedia article
-        <https://en.wikipedia. org/wiki/Commercial_off-the-shelf>`_ gives you
-        more details.
+        commissioning of custom made solutions.
+
+        .. seealso::
+
+            `Commercial off-the-shelf <https://en.wikipedia. org/wiki/
+            Commercial_off-the-shelf>`_ Wikipedia article
 
     Hook script
         Hook scripts are only call from lAppUpdate scripts and have a public
@@ -47,6 +50,25 @@ Glossary
         backward incompatible changes (i.e. specially with the command line
         options).
 
+    Progress bar
+        A progress bar is a element of a user interface to visualize the
+        progression of an extended computer operation, such as a download, file
+        transfer, or installation.
+
+        .. seealso::
+
+            `Progress bar <https://en.wikipedia.org/wiki/Progress_bar>`_
+            Wikipedia article
+
+    Progress indicator
+        A progress indicator is a element of a user interface to inform the user
+        that an operation is in progress.
+
+        .. seealso::
+
+            `Progress indicator <https://en.wikipedia.org/wiki/
+            Progress_indicator>`_ Wikipedia article
+
     Non-public script
         Non-public scripts are those that are not intended to be used by third
         parties, so these scripts may change or even removed.
@@ -61,6 +83,18 @@ Glossary
         A silent install is an installation process which require no user
         intervention, accordingly installation options are set to default
         values or may be tuned with command line options.
+
+    Throbber
+        A throbber is an animated widget used to show that an extended computer
+        operation, such as a download, file transfer, or installation is in
+        progress. In contrast to a `progress bar`, a throbber does not inform
+        how much of the action has been completed.
+
+        .. seealso::
+
+            `Throbber <https://en.wikipedia.org/wiki/Throbber>`_ wikipedia
+            article
+
 
 .. rubric:: Footnotes
 
