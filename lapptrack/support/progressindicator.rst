@@ -44,7 +44,7 @@ This section details the objects defined in this module.
     :private-members:
     :show-inheritance:
 
-.. autoclass:: PrefixedValueWidget
+.. autoclass:: DurationWidget
     :members:
     :private-members:
     :show-inheritance:
@@ -54,7 +54,32 @@ This section details the objects defined in this module.
     :private-members:
     :show-inheritance:
 
+.. autoclass:: PrefixedValueWidget
+    :members:
+    :private-members:
+    :show-inheritance:
+
+.. autoclass:: PrefixedQuantityWidget
+    :members:
+    :private-members:
+    :show-inheritance:
+
 .. autoclass:: ProgressBarWidget
+    :members:
+    :private-members:
+    :show-inheritance:
+
+.. autoclass:: IndeterminateProgressBarWidget
+    :members:
+    :private-members:
+    :show-inheritance:
+
+.. autoclass:: SpinningWheelWidget
+    :members:
+    :private-members:
+    :show-inheritance:
+
+.. autoclass:: SeparatorWidget
     :members:
     :private-members:
     :show-inheritance:
@@ -65,6 +90,8 @@ Functions reference
 This section details the specific functions used in this module.
 
 .. autofunction:: isu_format_prefix
+.. autofunction:: new_download_throbber_indicator
+.. autofunction:: new_download_progress_indicator
 
 Data reference
 --------------

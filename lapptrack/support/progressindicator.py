@@ -42,9 +42,12 @@ Public Functions
 ----------------
 This module has has a number of functions listed below in alphabetical order.
 
-===================================
-`isu_format_prefix`
-===================================
+.. hlist::
+    :columns: 2
+
+    * :func:`isu_format_prefix`
+    * :func:`new_download_throbber_indicator`
+    * :func:`new_download_progress_indicator`
 
 """
 
@@ -58,9 +61,8 @@ __version__ = "0.1.0"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
     "isu_format_prefix",
-    "isu_format_thousand",
-    "TextProgressBar",
-    "NullProgressBar",
+    "new_download_throbber_indicator",
+    "new_download_progress_indicator",
     "ProgressIndicatorWidget",
     "WidgetsCollection",
     "BaseWidget",
@@ -134,6 +136,99 @@ def isu_format_prefix(value, unit):
     msg = "<<< ()={}"
     _logger.debug(msg.format(result))
     return result
+
+
+def new_download_throbber_indicator():
+    """
+    Returns a throbber indicator to monitor a download process.
+
+    This widget uses the following widget with a width equal to the number
+    of columns of the terminal : :class:`SpinningWheelWidget`,
+    :class:`PrefixedValueWidget`, :class:`RateWidget`, :class:`DurationWidget`.
+
+    Return:
+        ProgressIndicatorWidget: a progress indicator designed to monitor
+        a download process.
+    """
+    msg = ">>> ()"
+    _logger.debug(msg)
+
+    unit = "B" # value are expressed in bytes...
+    running = [
+        SpinningWheelWidget(),
+        SeparatorWidget(" "),
+        PrefixedValueWidget(unit),
+        SeparatorWidget(" - "),
+        RateWidget(unit),
+        SeparatorWidget(" - "),
+        DurationWidget()
+    ]
+    completion = [
+        PrefixedQuantityWidget(unit),
+        SeparatorWidget(" received in "),
+        DurationWidget(),
+        SeparatorWidget(" ("),
+        RateWidget(unit),
+        SeparatorWidget(")"),
+    ]
+
+    progress_bar = ProgressIndicatorWidget()
+    for w in running:
+        progress_bar.add_widget(w)
+    for w in completion:
+        progress_bar.add_widget(w, True)
+
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(progress_bar))
+    return progress_bar
+
+
+def new_download_progress_indicator():
+    """
+    Returns a progress indicator to monitor a download process.
+
+    This widget uses the following widget with a width equal to the number
+    of columns of the terminal : :class:`PercentWidget`,
+    :class:`ProgressBarWidget`, :class:`ValueWidget`, :class:`RateWidget`,
+    :class:`ETAWidget`.
+
+    Return:
+        ProgressIndicatorWidget: a progress indicator designed to monitor
+        a download process.
+    """
+    msg = ">>> ()"
+    _logger.debug(msg)
+
+    unit = "B" # value are expressed in bytes...
+    running = [
+        PercentWidget(),
+        SeparatorWidget(" "),
+        ProgressBarWidget(),
+        SeparatorWidget(" "),
+        ValueWidget(unit),
+        SeparatorWidget(" - "),
+        RateWidget(unit),
+        SeparatorWidget(" - "),
+        ETAWidget()
+    ]
+    completion = [
+        PrefixedQuantityWidget(unit),
+        SeparatorWidget(" received in "),
+        DurationWidget(),
+        SeparatorWidget(" ("),
+        RateWidget(unit),
+        SeparatorWidget(")"),
+    ]
+
+    progress_bar = ProgressIndicatorWidget()
+    for w in running:
+        progress_bar.add_widget(w)
+    for w in completion:
+        progress_bar.add_widget(w, True)
+
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(progress_bar))
+    return progress_bar
 
 
 class ProgressIndicatorWidget(object):
@@ -1116,7 +1211,7 @@ class SpinningWheelWidget(BaseWidget):
     """
     Spinning wheel widget.
 
-    This class implement a `Spinning wheel` widget.
+    This class implement a `throbber` widget.
 
     Args:
         symbol (str): The symbol of the unit.

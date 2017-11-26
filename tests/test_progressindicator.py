@@ -98,7 +98,37 @@ class ProgressIndicatorTestCase(unittest.TestCase):
                 del progress_bar
         _logger.info("Completed")
 
-    def test0103_use_case_null(self):
+    def test0103_download_progress_indicator(self):
+        # Regular use case
+        _logger.info("Starting...")
+
+        progress_bar = progressindicator.new_download_progress_indicator()
+        max_count = 2000000
+        progress_bar.start(0, max_count)
+        i = 0
+        while i < max_count:
+            progress_bar.update(i)
+            i += 1
+        progress_bar.finish(i)
+        del progress_bar
+        _logger.info("Completed")
+
+    def test0104_download_throbber_indicator(self):
+        # Regular use case
+        _logger.info("Starting...")
+
+        progress_bar = progressindicator.new_download_throbber_indicator()
+        max_count = 2000000
+        progress_bar.start(0, max_count)
+        i = 0
+        while i < max_count:
+            progress_bar.update(i)
+            i += 1
+        progress_bar.finish(i)
+        del progress_bar
+        _logger.info("Completed")
+
+    def test0105_use_case_null(self):
         # Regular use case
         _logger.info("Starting...")
 
