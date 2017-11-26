@@ -25,7 +25,7 @@ from lxml import etree
 
 from cots import core
 from support import semver
-from support import progressbar
+from support import progressindicator
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -142,8 +142,8 @@ class MozHandler(core.BaseProduct):
         result = True
 
         url = self._get_update_url()
-        remote = core.DownloadHandler(url,
-                                      progress=progressbar.TextProgressBar)
+        progress = progressindicator.new_download_progress_indicator()
+        remote = core.DownloadHandler(url, progress=progress)
         result = remote.fetch()
         if result:
             msg = "Catalog downloaded: '{0}'".format(remote.filename)

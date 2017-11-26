@@ -10,7 +10,7 @@ import unittest
 import tempfile
 
 from cots import core
-from support import progressbar
+from support import progressindicator
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
@@ -472,7 +472,7 @@ class DownloadHandlerTestCase(unittest.TestCase):
         self.length = 42961
         self.hash = ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0")
         self.remote = None
-        self.progress = progressbar.TextProgressBar
+        self.progress = progressindicator.new_download_progress_indicator()
 
         # Clean up
         try:

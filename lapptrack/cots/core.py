@@ -32,7 +32,7 @@ import urllib.error
 import tempfile
 import importlib
 
-from support import progressbar
+from support import progressindicator
 from version import *
 
 __author__ = "Frederic MEZOU"
@@ -339,9 +339,10 @@ class BaseProduct:
 
         result = True
 
+        progress = progressindicator.new_download_progress_indicator()
         remote = DownloadHandler(self.location, path=dirpath,
                                  length=self.file_size, hash=self.secure_hash,
-                                 progress=progressbar.TextProgressBar)
+                                 progress=progress)
         result = remote.fetch()
         if result:
             p, n = os.path.split(remote.filename)
@@ -411,8 +412,9 @@ class DownloadHandler(object):
             (see :data:`~hashlib.algorithms_guaranteed`) and the secure hash
             value in hexadecimal notation. If the secure hash algorithm is not
             supported, it will be ignored.
-        progress (~progressbar.TextProgressBar): The progress widget. The `None`
-            value means that no progress indicator will be displayed.
+        progress (~progressindicator.ProgressIndicatorWidget): The progress
+            widget. The `None` value means that no progress indicator will be
+            displayed.
 
     Raises:
         TypeError: Parameters type mismatch.
@@ -511,15 +513,16 @@ class DownloadHandler(object):
                 msg = msg.format(hash.__class__)
                 raise TypeError(msg)
 
-        # todo: modifier le contructeur pour ne plus inclure la longeur ou bien
-        # supporter le none.
-        self._progress_widget = progressbar.NullProgressBar(self._exp_length)
+        self._progress_widget = \
+            progressindicator.ProgressIndicatorWidget()
         if progress:
-            if not issubclass(progress, progressbar.TextProgressBar):
-                msg = "progress argument must be a class 'TextProgressBar'. not {0}"
+            if not isinstance(progress,
+                              progressindicator.ProgressIndicatorWidget):
+                msg = "progress argument must be a class " \
+                      "'ProgressIndicatorWidget'. not {0}"
                 msg = msg.format(progress.__class__)
                 raise TypeError(msg)
-            self._progress_widget = progress(self._exp_length)
+            self._progress_widget = progress
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -645,13 +648,13 @@ class DownloadHandler(object):
         assert self._file, "_file attribute must be defined"
 
         self.length = 0
-        self._progress_widget.compute(self.length, self._exp_length)
+        self._progress_widget.start(self.length, self._exp_length)
         data = self._stream.read(1500)
         while data:
             self.length += len(data)
             self._file.write(data)
             self.hash.update(data)
-            self._progress_widget.compute(self.length, self._exp_length)
+            self._progress_widget.update(self.length)
             data = self._stream.read(1500)
 
         msg = "<<< ()={}"
@@ -676,7 +679,7 @@ class DownloadHandler(object):
 
         assert self._file, "_file attribute must be defined"
 
-        self._progress_widget.finish()
+        self._progress_widget.finish(self.length)
         self._file.close()
         if keep:
             # rename with the real name if necessary

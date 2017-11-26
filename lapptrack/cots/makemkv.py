@@ -27,7 +27,7 @@ from html.parser import HTMLParser
 from cots import core
 from support import pad
 from support import semver
-from support import progressbar
+from support import progressindicator
 
 
 __author__ = "Frederic MEZOU"
@@ -134,8 +134,8 @@ class MakeMKVHandler(core.BaseProduct):
         local_filename = ""
         result = True
 
-        remote = core.DownloadHandler(self._catalog_url,
-                                      progress=progressbar.TextProgressBar)
+        progress = progressindicator.new_download_progress_indicator()
+        remote = core.DownloadHandler(self._catalog_url, progress=progress)
         result = remote.fetch()
         if result:
             msg = "Catalog downloaded: '{0}'".format(remote.filename)
@@ -284,8 +284,9 @@ class MakeMKVHandler(core.BaseProduct):
         local_filename = ""
         result = True
 
+        progress = progressindicator.new_download_throbber_indicator()
         remote = core.DownloadHandler(self.release_note_location,
-                                      progress=progressbar.TextProgressBar)
+                                      progress=progress)
         result = remote.fetch()
         if result:
             msg = "Change log fetched -> '{0}'".format(remote.filename)

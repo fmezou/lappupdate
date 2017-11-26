@@ -4,6 +4,7 @@ This module defines a test suite for testing product handlers.
 
 import logging
 import unittest
+import locale
 
 from cots import core
 from cots import mozilla
@@ -431,4 +432,5 @@ def load_tests(loader, tests, pattern):
 
 
 if __name__ == '__main__':
+    locale.setlocale(locale.LC_ALL, "")
     unittest.main()
