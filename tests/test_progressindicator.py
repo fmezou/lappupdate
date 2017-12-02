@@ -140,7 +140,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         # Regular use case
         _logger.info("Starting...")
         texts = [
-            # "Fixed text", # must be less than 12 chars
+            "Fixed text",  # must be less than 15 chars
             "A long text to scrool in a field"
         ]
 
