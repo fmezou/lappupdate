@@ -47,8 +47,9 @@ This module has has a number of functions listed below in alphabetical order.
     :columns: 2
 
     * :func:`isu_format_prefix`
-    * :func:`new_download_throbber_indicator`
-    * :func:`new_download_progress_indicator`
+    * :func:`new_download_throbber`
+    * :func:`new_download_progress`
+    * :func:`new_download_null`
 
 """
 
@@ -62,8 +63,9 @@ __version__ = "0.1.0"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
     "isu_format_prefix",
-    "new_download_throbber_indicator",
-    "new_download_progress_indicator",
+    "new_download_throbber",
+    "new_download_progress",
+    "new_download_null",
     "ProgressIndicatorWidget",
     "WidgetsCollection",
     "BaseWidget",
@@ -140,7 +142,7 @@ def isu_format_prefix(value, unit):
     return result
 
 
-def new_download_throbber_indicator(title=""):
+def new_download_throbber(title=""):
     """
     Returns a throbber indicator to monitor a download process.
 
@@ -204,7 +206,7 @@ def new_download_throbber_indicator(title=""):
     return progress_bar
 
 
-def new_download_progress_indicator(title=""):
+def new_download_progress(title=""):
     """
     Returns a progress indicator to monitor a download process.
 
@@ -264,6 +266,40 @@ def new_download_progress_indicator(title=""):
         progress_bar.add_widget(w)
     for w in completion:
         progress_bar.add_widget(w, True)
+
+    msg = "<<< ()={}"
+    _logger.debug(msg.format(progress_bar))
+    return progress_bar
+
+
+def new_download_null(title=""):
+    """
+    Returns a progress indicator to monitor a download process.
+
+    This widget uses no widget. This is useful for very small downloads (a few
+    kilobytes).
+
+    Args:
+        title (str): The title of the download. This string is not used, it is
+            present only for the consistency with the other factory function.
+
+    Return:
+        ProgressIndicatorWidget: a progress indicator designed to monitor
+        a download process.
+
+    Raises:
+        TypeError: Parameters type mismatch.
+    """
+    msg = ">>> (title={})"
+    _logger.debug(msg.format(title))
+
+    # check parameters type
+    if title and isinstance(title, str):
+        msg = "title argument must be a class 'str' or None. not {0}"
+        msg = msg.format(title.__class__)
+        raise TypeError(msg)
+
+    progress_bar = ProgressIndicatorWidget()
 
     msg = "<<< ()={}"
     _logger.debug(msg.format(progress_bar))
@@ -464,13 +500,14 @@ class ProgressIndicatorWidget(object):
             self._duration = time.perf_counter() - self._t0
             self._counter = self._counter + 1
 
-            items = ["\r"]
-            for h in self._running_widgets.widgets:
-                items.append(h.update(self._normal_value, self._dyn_range,
-                                      value, self._duration, self._counter))
-            widget = "".join(items)
-            widget = widget.ljust(self.width)
-            print(widget, end="")
+            if self._running_widgets.widgets:
+                items = ["\r"]
+                for h in self._running_widgets.widgets:
+                    items.append(h.update(self._normal_value, self._dyn_range,
+                                          value, self._duration, self._counter))
+                widget = "".join(items)
+                widget = widget.ljust(self.width)
+                print(widget, end="")
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -506,13 +543,16 @@ class ProgressIndicatorWidget(object):
         self._duration = time.perf_counter() - self._t0
         self._counter = self._counter + 1
 
-        items = ["\r"]
-        for h in self._completion_widgets.widgets:
-            items.append(h.update(self._normal_value, self._dyn_range,
-                                  value, self._duration, self._counter))
-        widget = "".join(items)
-        widget = widget.ljust(self.width)
-        print(widget)
+        if self._completion_widgets.widgets:
+            items = ["\r"]
+            for h in self._completion_widgets.widgets:
+                items.append(h.update(self._normal_value, self._dyn_range,
+                                      value, self._duration, self._counter))
+            widget = "".join(items)
+            widget = widget.ljust(self.width)
+            print(widget)
+        else:
+            widget = ""
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(widget))

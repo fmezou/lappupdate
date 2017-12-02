@@ -94,8 +94,9 @@ Functions reference
 This section details the specific functions used in this module.
 
 .. autofunction:: isu_format_prefix
-.. autofunction:: new_download_throbber_indicator
-.. autofunction:: new_download_progress_indicator
+.. autofunction:: new_download_throbber
+.. autofunction:: new_download_progress
+.. autofunction:: new_download_null
 
 Data reference
 --------------

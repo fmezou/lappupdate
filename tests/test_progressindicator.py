@@ -102,7 +102,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         # Regular use case
         _logger.info("Starting...")
 
-        progress_bar = progressindicator.new_download_progress_indicator()
+        progress_bar = progressindicator.new_download_progress()
         floor, ceiling, max_count = self.ranges[0]
         progress_bar.start(floor, ceiling)
         for i in range(floor, ceiling):
@@ -115,7 +115,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         # Regular use case
         _logger.info("Starting...")
 
-        progress_bar = progressindicator.new_download_throbber_indicator()
+        progress_bar = progressindicator.new_download_throbber()
         floor, ceiling, max_count = self.ranges[0]
         progress_bar.start(floor, ceiling)
         for i in range(floor, ceiling):
@@ -128,7 +128,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         # Regular use case
         _logger.info("Starting...")
 
-        progress_bar = progressindicator.ProgressIndicatorWidget()
+        progress_bar = progressindicator.new_download_null()
         floor, ceiling, max_count = self.ranges[0]
         progress_bar.start(floor, ceiling)
         for i in range(floor, ceiling):
