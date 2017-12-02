@@ -84,6 +84,10 @@ This section details the objects defined in this module.
     :private-members:
     :show-inheritance:
 
+.. autoclass:: ScrollingTextWidget
+    :members:
+    :private-members:
+    :show-inheritance:
 
 Functions reference
 -------------------

@@ -56,7 +56,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
                     False
                 )
                 progress_bar.add_widget(
-                    widget(symbol="B"),
+                    widget(symbol="pulse"),
                     False
                 )
                 for floor, ceiling, max_count in self.ranges:
@@ -83,7 +83,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
                     True
                 )
                 progress_bar.add_widget(
-                    widget(symbol="B"),
+                    widget(symbol="pulse"),
                     True
                 )
                 for floor, ceiling, max_count in self.ranges:
@@ -103,12 +103,10 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         _logger.info("Starting...")
 
         progress_bar = progressindicator.new_download_progress_indicator()
-        max_count = 2000000
-        progress_bar.start(0, max_count)
-        i = 0
-        while i < max_count:
+        floor, ceiling, max_count = self.ranges[0]
+        progress_bar.start(floor, ceiling)
+        for i in range(floor, ceiling):
             progress_bar.update(i)
-            i += 1
         progress_bar.finish(i)
         del progress_bar
         _logger.info("Completed")
@@ -118,12 +116,10 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         _logger.info("Starting...")
 
         progress_bar = progressindicator.new_download_throbber_indicator()
-        max_count = 2000000
-        progress_bar.start(0, max_count)
-        i = 0
-        while i < max_count:
+        floor, ceiling, max_count = self.ranges[0]
+        progress_bar.start(floor, ceiling)
+        for i in range(floor, ceiling):
             progress_bar.update(i)
-            i += 1
         progress_bar.finish(i)
         del progress_bar
         _logger.info("Completed")
@@ -135,11 +131,31 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         progress_bar = progressindicator.ProgressIndicatorWidget()
         floor, ceiling, max_count = self.ranges[0]
         progress_bar.start(floor, ceiling)
-        i = floor
-        while i < max_count:
+        for i in range(floor, ceiling):
             progress_bar.update(i)
-            i += 1
         progress_bar.finish(i)
+        _logger.info("Completed")
+
+    def test0106_scrolling_text_widget_use_case(self):
+        # Regular use case
+        _logger.info("Starting...")
+        texts = [
+            # "Fixed text", # must be less than 12 chars
+            "A long text to scrool in a field"
+        ]
+
+        for text in texts:
+            with self.subTest(text=text):
+                progress_bar = progressindicator.ProgressIndicatorWidget(120)
+                progress_bar.add_widget(
+                    progressindicator.ScrollingTextWidget(symbol=text)
+                )
+                floor, ceiling, max_count = self.ranges[0]
+                progress_bar.start(floor, ceiling)
+                for i in range(floor, ceiling):
+                    progress_bar.update(i)
+                progress_bar.finish(i)
+                del progress_bar
         _logger.info("Completed")
 
     def test0201_init_unexpected_type(self):

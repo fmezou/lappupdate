@@ -33,6 +33,7 @@ class.
     * :class:`PrefixedValueWidget`
     * :class:`ProgressBarWidget`
     * :class:`RateWidget`
+    * :class:`ScrollingTextWidget`
     * :class:`SeparatorWidget`
     * :class:`SpinningWheelWidget`
     * :class:`ValueWidget`
@@ -77,6 +78,7 @@ __all__ = [
     "IndeterminateProgressBarWidget",
     "SpinningWheelWidget",
     "SeparatorWidget",
+    "ScrollingTextWidget",
     "widgets_available",
 ]
 
@@ -1309,6 +1311,65 @@ class SeparatorWidget(BaseWidget):
         return result
 
 
+class ScrollingTextWidget(BaseWidget):
+    """
+    Widget to display a scrolling text.
+
+    Args:
+        symbol (str): The text.
+    """
+
+    def __init__(self, symbol=""):
+        msg = ">>> (symbol={})"
+        _logger.debug(msg.format(symbol))
+        super().__init__(symbol)
+
+        #: `int`: The size of the widget expressed in characters.
+        self.size = 15
+        #: `str`: The text.
+        self.symbol = symbol
+
+        self._is_scrolling = False
+        if len(symbol) > self.size:
+            self._is_scrolling = True
+            self.symbol = symbol + ".     "
+
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def update(self, normal_value, dyn_range, value, duration, counter):
+        """
+        Display the elementary widget
+
+        Args:
+            normal_value (float): The normalized value of the progress. This
+                value is between 0 and 1.
+            dyn_range (float): The normalized maximum value of the
+                monitored quantity.
+            value (float): The real value of the progress
+            duration (int): The number of seconds since the start
+            counter (int): The number of call of the method. This counter may be
+                useful to animate a `throbber`.
+
+        Returns:
+            str: a human readable string.
+        """
+        msg = ">>> (normal_value={}, dyn_range={}, " \
+              "value={}, duration={}, counter={})"
+        _logger.debug(msg.format(normal_value, dyn_range,
+                                 value, duration, counter))
+
+        if self._is_scrolling:
+            pos = counter % len(self.symbol)
+            result = (self.symbol[pos:] + self.symbol[:pos])[:self.size]
+        else:
+            result = self.symbol
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+
 #: list: A set containing the class of the widget supported by this module on
 #: all platforms.
 widgets_available = [
@@ -1322,5 +1383,6 @@ widgets_available = [
     ProgressBarWidget,
     IndeterminateProgressBarWidget,
     SpinningWheelWidget,
-    SeparatorWidget
+    SeparatorWidget,
+    ScrollingTextWidget,
 ]
