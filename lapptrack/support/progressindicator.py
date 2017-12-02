@@ -140,23 +140,40 @@ def isu_format_prefix(value, unit):
     return result
 
 
-def new_download_throbber_indicator():
+def new_download_throbber_indicator(title=""):
     """
     Returns a throbber indicator to monitor a download process.
 
     This widget uses the following widget with a width equal to the number
-    of columns of the terminal : :class:`SpinningWheelWidget`,
-    :class:`PrefixedValueWidget`, :class:`RateWidget`, :class:`DurationWidget`.
+    of columns of the terminal: :class:`ScrollingTextWidget`,
+    :class:`SpinningWheelWidget`, :class:`PrefixedValueWidget`,
+    :class:`RateWidget`, :class:`DurationWidget`.
+
+    Args:
+        title (str): The title of the download. This string is displayed as a
+            scrolling text if its length exceeds the :attr:`~ScrollingTextWidget
+            .size` attribute. The `None` value
 
     Return:
         ProgressIndicatorWidget: a progress indicator designed to monitor
         a download process.
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
-    msg = ">>> ()"
-    _logger.debug(msg)
+    msg = ">>> (title={})"
+    _logger.debug(msg.format(title))
+
+    # check parameters type
+    if title and isinstance(title, str):
+        msg = "title argument must be a class 'str' or None. not {0}"
+        msg = msg.format(title.__class__)
+        raise TypeError(msg)
 
     unit = "B" # value are expressed in bytes...
     running = [
+        ScrollingTextWidget(title),
+        SeparatorWidget(": "),
         SpinningWheelWidget(),
         SeparatorWidget(" "),
         PrefixedValueWidget(unit),
@@ -166,6 +183,8 @@ def new_download_throbber_indicator():
         DurationWidget()
     ]
     completion = [
+        SeparatorWidget(title),
+        SeparatorWidget(": "),
         PrefixedQuantityWidget(unit),
         SeparatorWidget(" received in "),
         DurationWidget(),
@@ -185,24 +204,40 @@ def new_download_throbber_indicator():
     return progress_bar
 
 
-def new_download_progress_indicator():
+def new_download_progress_indicator(title=""):
     """
     Returns a progress indicator to monitor a download process.
 
     This widget uses the following widget with a width equal to the number
-    of columns of the terminal : :class:`PercentWidget`,
-    :class:`ProgressBarWidget`, :class:`ValueWidget`, :class:`RateWidget`,
-    :class:`ETAWidget`.
+    of columns of the terminal: :class:`ScrollingTextWidget`,
+    :class:`SpinningWheelWidget`, :class:`PrefixedValueWidget`,
+    :class:`RateWidget`, :class:`DurationWidget`.
+
+    Args:
+        title (str): The title of the download. This string is displayed as a
+            scrolling text if its length exceeds the :attr:`~ScrollingTextWidget
+            .size` attribute
 
     Return:
         ProgressIndicatorWidget: a progress indicator designed to monitor
         a download process.
+
+    Raises:
+        TypeError: Parameters type mismatch.
     """
-    msg = ">>> ()"
-    _logger.debug(msg)
+    msg = ">>> (title={})"
+    _logger.debug(msg.format(title))
+
+    # check parameters type
+    if title and isinstance(title, str):
+        msg = "title argument must be a class 'str' or None. not {0}"
+        msg = msg.format(title.__class__)
+        raise TypeError(msg)
 
     unit = "B" # value are expressed in bytes...
     running = [
+        ScrollingTextWidget(title),
+        SeparatorWidget(": "),
         PercentWidget(),
         SeparatorWidget(" "),
         ProgressBarWidget(),
@@ -214,6 +249,8 @@ def new_download_progress_indicator():
         ETAWidget()
     ]
     completion = [
+        SeparatorWidget(title),
+        SeparatorWidget(": "),
         PrefixedQuantityWidget(unit),
         SeparatorWidget(" received in "),
         DurationWidget(),
