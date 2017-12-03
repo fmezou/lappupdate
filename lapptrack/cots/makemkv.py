@@ -19,8 +19,6 @@ import datetime
 import logging
 import re
 import os
-import tempfile
-import urllib.error
 from html.parser import HTMLParser
 
 
@@ -78,8 +76,8 @@ class MakeMKVHandler(core.BaseProduct):
         #  - Details -
         self.target = "win"
         self.description = "MakeMKV is a video format converter. Its main " \
-                           "feature is to extract audio and video tracks from " \
-                           "a DVD or a BluRay disc into MKV files."
+                           "feature is to extract audio and video tracks " \
+                           "from a DVD or a BluRay disc into MKV files."
         self.editor = "GuinpinSoft inc"
         self.web_site_location = "http://www.makemkv.com/"
         self.icon = ""
@@ -131,10 +129,7 @@ class MakeMKVHandler(core.BaseProduct):
 
         msg = "Fetching the latest product information since the version {}"
         _logger.info(msg.format(version))
-        local_filename = ""
-        result = True
-
-        progress = progressindicator.new_download_progress_indicator()
+        progress = progressindicator.new_download_null()
         remote = core.DownloadHandler(self._catalog_url, progress=progress)
         result = remote.fetch()
         if result:
@@ -219,7 +214,6 @@ class MakeMKVHandler(core.BaseProduct):
             raise TypeError(msg)
 
         # comparison based on version number.
-        result = True
         try:
             a = semver.SemVer(self.version)
             b = semver.SemVer(product.version)
@@ -271,8 +265,8 @@ class MakeMKVHandler(core.BaseProduct):
                 rules.
 
         Returns:
-            bool: `True` if the download of the change log file went well. In case
-            of failure, the members are not modified and an error log is
+            bool: `True` if the download of the change log file went well. In
+            case of failure, the members are not modified and an error log is
             written.
 
         Raises:
@@ -281,10 +275,7 @@ class MakeMKVHandler(core.BaseProduct):
         msg = ">>> (version={})"
         _logger.debug(msg.format(version))
 
-        local_filename = ""
-        result = True
-
-        progress = progressindicator.new_download_throbber_indicator()
+        progress = progressindicator.new_download_null()
         remote = core.DownloadHandler(self.release_note_location,
                                       progress=progress)
         result = remote.fetch()

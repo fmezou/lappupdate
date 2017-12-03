@@ -552,9 +552,12 @@ class ProgressIndicatorWidget(object):
                                       value, self._duration, self._counter))
             widget = "".join(items)
             widget = widget.ljust(self.width)
+            print(widget)
         else:
             widget = ""
-        print(widget)
+            if self._running_widgets.widgets:
+                # assure that the cursor is on a new line
+                print(widget)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(widget))

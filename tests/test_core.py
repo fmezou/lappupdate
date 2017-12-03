@@ -472,7 +472,7 @@ class DownloadHandlerTestCase(unittest.TestCase):
         self.length = 42961
         self.hash = ("sha1", "c64566fa647e25d6c15644f3249657f2214b7ab0")
         self.remote = None
-        self.progress = progressindicator.new_download_progress_indicator()
+        self.progress = progressindicator.new_download_progress()
 
         # Clean up
         try:

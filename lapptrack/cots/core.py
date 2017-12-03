@@ -339,7 +339,7 @@ class BaseProduct:
 
         result = True
 
-        progress = progressindicator.new_download_progress_indicator()
+        progress = progressindicator.new_download_progress(self.display_name)
         remote = DownloadHandler(self.location, path=dirpath,
                                  length=self.file_size, hash=self.secure_hash,
                                  progress=progress)
@@ -551,8 +551,8 @@ class DownloadHandler(object):
                 if result:
                     result = self._pre_check_type()
                 if result:
-                    msg = "Length : {} B []"
-                    _logger.info(msg.format(self.length, self.type))
+                    msg = "Length: {} B [{}]"
+                    _logger.debug(msg.format(self.length, self.type))
                     result = self._open_container()
                     if result:
                         self._write_container()
@@ -605,7 +605,7 @@ class DownloadHandler(object):
             self._file = tempfile.NamedTemporaryFile(delete=False)
             self.filename = os.path.normcase(self._file.name)
             msg = "Retrieving to '{}'"
-            _logger.info(msg.format(self.filename))
+            _logger.debug(msg.format(self.filename))
         else:
             try:
                 os.makedirs(self.path, exist_ok=True)
@@ -628,7 +628,7 @@ class DownloadHandler(object):
                     result = False
                 else:
                     msg = "Retrieving to '{}'"
-                    _logger.info(msg.format(self._file.name))
+                    _logger.debug(msg.format(self._file.name))
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))

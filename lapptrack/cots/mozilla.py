@@ -142,7 +142,7 @@ class MozHandler(core.BaseProduct):
         result = True
 
         url = self._get_update_url()
-        progress = progressindicator.new_download_progress_indicator()
+        progress = progressindicator.new_download_null()
         remote = core.DownloadHandler(url, progress=progress)
         result = remote.fetch()
         if result:

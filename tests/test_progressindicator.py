@@ -49,7 +49,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         _logger.info("Starting...")
 
         width = 80  # fixed an arbitrary width
-        print("\n")  # prevent the side effect of the display of unittest
+        print("")  # prevent the side effect of the display of unittest
         print(" Terminal width ".center(width, "-"))
         for widget in progressindicator.widget_classes_available:
             with self.subTest(widget=widget):
@@ -78,7 +78,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         _logger.info("Starting...")
 
         width = 80  # fixed an arbitrary width
-        print("\n")  # prevent the side effect of the display of unittest
+        print("")  # prevent the side effect of the display of unittest
         print(" Terminal width ".center(width, "-"))
         for widget in progressindicator.widget_classes_available:
             with self.subTest(widget=widget):
@@ -107,7 +107,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         _logger.info("Starting...")
 
         width = shutil.get_terminal_size().columns
-        print("\n")  # prevent the side effect of the display of unittest
+        print("")  # prevent the side effect of the display of unittest
         print(" Terminal width ".center(width, "-"))
         title = "Download progress indicator"
         progress_bar = progressindicator.new_download_progress(title)
@@ -124,7 +124,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         _logger.info("Starting...")
 
         width = shutil.get_terminal_size().columns
-        print("\n")  # prevent the side effect of the display of unittest
+        print("")  # prevent the side effect of the display of unittest
         print(" Terminal width ".center(width, "-"))
         title = "Download throbber indicator"
         progress_bar = progressindicator.new_download_throbber(title)
@@ -141,7 +141,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         _logger.info("Starting...")
 
         width = shutil.get_terminal_size().columns
-        print("\n")  # prevent the side effect of the display of unittest
+        print("")  # prevent the side effect of the display of unittest
         print(" Terminal width ".center(width, "-"))
         progress_bar = progressindicator.new_download_null()
         floor, ceiling, max_count = self.ranges[0]
@@ -160,7 +160,7 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         ]
 
         width = 80  # fixed an arbitrary width
-        print("\n")  # prevent the side effect of the display of unittest
+        print("")  # prevent the side effect of the display of unittest
         print(" Terminal width ".center(width, "-"))
         for text in texts:
             with self.subTest(text=text):

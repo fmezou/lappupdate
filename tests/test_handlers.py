@@ -50,6 +50,8 @@ class BaseHandlerTestCase(unittest.TestCase):
     def test0001_get_origin(self):
         # Get product information from the remote repository.
         _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+
+        print("")  # prevent the side effect of the display of unittest
         handler = core.get_handler(self.qualname)
         _logger.info(handler)
         result = handler.get_origin()
@@ -61,6 +63,8 @@ class BaseHandlerTestCase(unittest.TestCase):
     def test0002_loop_get_origin(self):
         # Get product information from the remote repository.
         _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+
+        print("")  # prevent the side effect of the display of unittest
         handler = core.get_handler(self.qualname)
         _logger.info(str(handler))
         print("{} published on {}".format(handler.display_name,
@@ -69,7 +73,7 @@ class BaseHandlerTestCase(unittest.TestCase):
         while result:
             _logger.info(str(handler))
             v = handler.version
-            print(" * UPDATE: {} published on {}".format(
+            print("* UPDATE: {} published on {}".format(
                 handler.display_name, handler.published))
             result = handler.get_origin()
             if result:
@@ -81,6 +85,8 @@ class BaseHandlerTestCase(unittest.TestCase):
     def test0100_fetch_primary_version(self):
         # Download the primary version of the product installer..
         _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+
+        print("")  # prevent the side effect of the display of unittest
         handler = core.get_handler(self.qualname)
         result = handler.fetch("../~store/app")
         self.assertTrue(result, "fetch() failed")
@@ -90,6 +96,8 @@ class BaseHandlerTestCase(unittest.TestCase):
     def test0101_fetch_latest_release(self, ):
         # Download the latest release of the product installer..
         _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+
+        print("")  # prevent the side effect of the display of unittest
         handler = core.get_handler(self.qualname)
         result = handler.get_origin(version=handler.version)
         self.assertTrue(result, "get_origin() failed")
@@ -101,6 +109,8 @@ class BaseHandlerTestCase(unittest.TestCase):
     def test0201_is_update(self, ):
         # Check if the remote version is an update.
         _logger.info("Starting...(handler=%s)", (self.qualname.split("."))[-1:])
+
+        print("")  # prevent the side effect of the display of unittest
         handler = core.get_handler(self.qualname)
         result = handler.get_origin(version=handler.version)
         self.assertTrue(result, "get_origin() failed")
