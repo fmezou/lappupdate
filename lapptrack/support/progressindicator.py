@@ -56,7 +56,7 @@ This module has has a number of functions listed below in alphabetical order.
 import logging
 import time
 import shutil
-
+from collections import deque
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0"
@@ -81,7 +81,7 @@ __all__ = [
     "SpinningWheelWidget",
     "SeparatorWidget",
     "ScrollingTextWidget",
-    "widgets_available",
+    "widget_classes_available",
 ]
 
 # To make the module as versatile as possible, an nullHandler is added.
@@ -124,10 +124,10 @@ def isu_format_prefix(value, unit):
     result = "----" + unit
     r = float(value)
     for prefix in ["", "k", "M", "G", "T", "P", "E", "Z", "Y"]:
-        if r < 1000.0:
-            if r < 10.0:
+        if abs(r) < 1000.0:
+            if abs(r) < 10.0:
                 result = "{:>1.2f}\N{NBSP}{}{}".format(r, prefix, unit)
-            elif r < 100.0:
+            elif abs(r) < 100.0:
                 result = "{:>2.1f}\N{NBSP}{}{}".format(r, prefix, unit)
             else:
                 result = "{:>4.0f}\N{NBSP}{}{}".format(r, prefix, unit)
@@ -167,12 +167,12 @@ def new_download_throbber(title=""):
     _logger.debug(msg.format(title))
 
     # check parameters type
-    if title and isinstance(title, str):
+    if title and not isinstance(title, str):
         msg = "title argument must be a class 'str' or None. not {0}"
         msg = msg.format(title.__class__)
         raise TypeError(msg)
 
-    unit = "B" # value are expressed in bytes...
+    unit = "B"  # value are expressed in bytes...
     running = [
         ScrollingTextWidget(title),
         SeparatorWidget(": "),
@@ -231,12 +231,12 @@ def new_download_progress(title=""):
     _logger.debug(msg.format(title))
 
     # check parameters type
-    if title and isinstance(title, str):
+    if title and not isinstance(title, str):
         msg = "title argument must be a class 'str' or None. not {0}"
         msg = msg.format(title.__class__)
         raise TypeError(msg)
 
-    unit = "B" # value are expressed in bytes...
+    unit = "B"  # value are expressed in bytes...
     running = [
         ScrollingTextWidget(title),
         SeparatorWidget(": "),
@@ -313,8 +313,8 @@ class ProgressIndicatorWidget(object):
     This class is the manager of the `progress indicator`. This latter is a
     element of a textual user interface and it's made of a set of elementary
     widget such as a `progress bar <ProgressBarWidget>` or a `transfer rate
-    indicator <RateWidget>` (see `widgets_available` to have the current list of
-    available widgets.
+    indicator <RateWidget>` (see `widget_classes_available` to have the current
+    list of available widgets.
 
     Args:
         width (int): The width of the progress indicator expressed in
@@ -329,11 +329,13 @@ class ProgressIndicatorWidget(object):
     **Public Methods**
         This class has a number of public methods listed below.
 
-        ===================================  ===================================
-        `ProgressIndicatorWidget.start`      `ProgressIndicatorWidget.add_widget`
-        `ProgressIndicatorWidget.update`     ..
-        `ProgressIndicatorWidget.finish`     ..
-        ===================================  ===================================
+        .. hlist::
+            :columns: 2
+
+            * :class:`~ProgressIndicatorWidget.start`
+            * :class:`~ProgressIndicatorWidget.update`
+            * :class:`~ProgressIndicatorWidget.finish`
+            * :class:`~ProgressIndicatorWidget.add_widget`
 
     **Using ProgressIndicatorWidget...**
         After created a class instance, you add one or more elementary widget to
@@ -550,9 +552,9 @@ class ProgressIndicatorWidget(object):
                                       value, self._duration, self._counter))
             widget = "".join(items)
             widget = widget.ljust(self.width)
-            print(widget)
         else:
             widget = ""
+        print(widget)
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(widget))
@@ -716,8 +718,6 @@ class BaseWidget(object):
             msg = msg.format(symbol.__class__)
             raise TypeError(msg)
 
-        #: `int`: size of the widget expressed in characters.
-        self.size = 0
         #: `bool`: The `True` value indicates that the widget have a fixed size
         #: specifying by the :attr:`size`. The `False` value indicates that the
         #: widget have a variable size. In that case, the size take into account
@@ -725,6 +725,8 @@ class BaseWidget(object):
         self.is_fixed_size = True
         #: `str`: the unit symbol of the measured quantity.
         self.symbol = symbol
+        #: `int`: size of the widget expressed in characters.
+        self.size = 0
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -757,7 +759,8 @@ class PercentWidget(BaseWidget):
     is the percentage of progress
 
     Args:
-        symbol (str): The symbol of the unit.
+        symbol (str): The symbol of the unit. This string is not used in this
+            context, because a percentage have no unit.
     """
     def __init__(self, symbol=""):
         msg = ">>> (symbol={})"
@@ -766,8 +769,6 @@ class PercentWidget(BaseWidget):
 
         #: `int`: size of the widget expressed in characters.
         self.size = 4
-        #: `str`: the unit symbol of the measured quantity.
-        self.symbol = symbol
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -820,12 +821,11 @@ class RateWidget(BaseWidget):
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: the size of the widget expressed in characters.
-        self.size = 9
-
         #: `str`: the unit symbol of the rate value. By default, the rate is
         #:  expressed in unit per second.
         self.symbol = "{}/s".format(symbol)
+        #: `int`: the size of the widget expressed in characters.
+        self.size = 4 + 1 + 1 + len(self.symbol)
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -854,7 +854,7 @@ class RateWidget(BaseWidget):
 
         # update the rate
         if not duration:
-            result = " ---- {}".format(self.symbol)
+            result = "---- {}".format(self.symbol)
         else:
             v = normal_value * dyn_range / duration
             result = isu_format_prefix(v, self.symbol)
@@ -873,7 +873,8 @@ class ETAWidget(BaseWidget):
     hour, minute and second.
 
     Args:
-        symbol (str): The symbol of the unit.
+        symbol (str): The symbol of the unit. This string is not used in this
+            context, because a time expression have no unit.
     """
     def __init__(self, symbol=""):
         msg = ">>> (symbol={})"
@@ -882,8 +883,6 @@ class ETAWidget(BaseWidget):
 
         #: `int`: the size of the widget expressed in characters.
         self.size = 12
-        #: `str`: the unit symbol of the measured quantity.
-        self.symbol = symbol
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -933,7 +932,8 @@ class DurationWidget(BaseWidget):
     ``hh:mm:ss`` is the operation duration expressed in hour, minute and second.
 
     Args:
-        symbol (str): The symbol of the unit.
+        symbol (str): The symbol of the unit. This string is not used in this
+            context, because a time expression have no unit.
     """
     def __init__(self, symbol=""):
         msg = ">>> (symbol={})"
@@ -941,9 +941,7 @@ class DurationWidget(BaseWidget):
         super().__init__(symbol)
 
         #: `int`: the size of the widget expressed in characters.
-        self.size = 12
-        #: `str`: the unit symbol of the measured quantity.
-        self.symbol = symbol
+        self.size = 8
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -998,10 +996,10 @@ class ValueWidget(BaseWidget):
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: the size of the widget expressed in characters.
-        self.size = 17
         #: `str`: the unit symbol of the measured quantity.
         self.symbol = symbol
+        #: `int`: the size of the widget expressed in characters.
+        self.size = 15 + 1 + len(self.symbol)
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -1052,10 +1050,10 @@ class PrefixedValueWidget(BaseWidget):
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: the size of the widget expressed in characters.
-        self.size = 17
         #: `str`: the unit symbol of the measured quantity.
         self.symbol = symbol
+        #: `int`: the size of the widget expressed in characters.
+        self.size = 4 + 1 + 1 + len(self.symbol)
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -1105,10 +1103,10 @@ class PrefixedQuantityWidget(BaseWidget):
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: the size of the widget expressed in characters.
-        self.size = 17
         #: `str`: the unit symbol of the measured quantity.
         self.symbol = symbol
+        #: `int`: the size of the widget expressed in characters.
+        self.size = 4 + 1 + 1 + len(self.symbol)
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -1150,19 +1148,17 @@ class ProgressBarWidget(BaseWidget):
     This class implement a `progress bar` widget.
 
     The printed string have the following content:
-    ``[================              ]`` where``=`` is a step of the progression
-    (step=1/30).
+    ``[==============              ]`` where ``=`` is a step of the progression.
 
     Args:
-        symbol (str): The symbol of the unit.
+        symbol (str): The symbol of the unit. This string is not used in this
+            context, because a *progress bar* have no unit.
     """
     def __init__(self, symbol=""):
         msg = ">>> (symbol={})"
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: the size of the widget expressed in characters.
-        self.size = 0
         #: `bool`: The `False` value indicates that the widget have a fixed size
         #: specifying by the :attr:`size`. The `True` value indicates that the
         #: widget have a variable size. In that case, the size take into account
@@ -1170,6 +1166,8 @@ class ProgressBarWidget(BaseWidget):
         self.is_fixed_size = False
         #: `str`: the unit symbol of the measured quantity.
         self.symbol = symbol
+        #: `int`: the size of the widget expressed in characters.
+        self.size = 0
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -1199,7 +1197,7 @@ class ProgressBarWidget(BaseWidget):
         if normal_value <= 0.0 or normal_value > 1.0:
             v = 0
         else:
-            v = int(normal_value * (self.size-2))
+            v = round(normal_value * (self.size-2))
         s = "="*v
         result = "["+s.ljust(self.size-2)+"]"
 
@@ -1215,30 +1213,26 @@ class IndeterminateProgressBarWidget(BaseWidget):
     This class implement an indeterminate `progress bar` widget.
 
     The printed string have the following content:
-    ``[================              ]`` where``=`` is a step of the progression
-    (step=1/30).
+    ``[ ****       ]`` where ``****`` is a maker moving from right to left.
 
     Args:
-        symbol (str): The symbol of the unit.
+        symbol (str): The symbol of the unit. This string is not used in this
+            context, because a *progress bar* have no unit.
     """
     def __init__(self, symbol=""):
         msg = ">>> (symbol={})"
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: the size of the widget expressed in characters.
-        self.size = 0
         #: `bool`: The `False` value indicates that the widget have a fixed size
         #: specifying by the :attr:`size`. The `True` value indicates that the
         #: widget have a variable size. In that case, the size take into account
         #: the number of columns of the terminal.
         self.is_fixed_size = False
         #: `str`: the unit symbol of the measured quantity.
-        self.symbol = symbol
+        self.size = 0
 
         self._pattern = ""
-
-        from collections import deque
         self._queue = deque(maxlen=4)
 
         msg = "<<< ()=None"
@@ -1293,7 +1287,8 @@ class SpinningWheelWidget(BaseWidget):
     This class implement a `throbber` widget.
 
     Args:
-        symbol (str): The symbol of the unit.
+        symbol (str): The symbol of the unit. This string is not used in this
+            context, because a *spinning wheel* have no unit.
     """
     _CHARS = ("|", "/", "-", "\\")
 
@@ -1303,9 +1298,7 @@ class SpinningWheelWidget(BaseWidget):
         super().__init__(symbol)
 
         #: `int`: the size of the widget expressed in characters.
-        self.size = 1
-        #: `str`: the unit symbol of the measured quantity.
-        self.symbol = symbol
+        self.size = 3
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -1351,10 +1344,10 @@ class SeparatorWidget(BaseWidget):
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: the size of the widget expressed in characters.
-        self.size = len(symbol)
         #: `str`: the separator.
         self.symbol = symbol
+        #: `int`: the size of the widget expressed in characters.
+        self.size = len(symbol)
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -1401,10 +1394,10 @@ class ScrollingTextWidget(BaseWidget):
         _logger.debug(msg.format(symbol))
         super().__init__(symbol)
 
-        #: `int`: The size of the widget expressed in characters.
-        self.size = 15
         #: `str`: The text.
         self.symbol = symbol
+        #: `int`: The size of the widget expressed in characters.
+        self.size = 15
 
         self._is_scrolling = False
         if len(symbol) > self.size:
@@ -1449,7 +1442,7 @@ class ScrollingTextWidget(BaseWidget):
 
 #: list: A set containing the class of the widget supported by this module on
 #: all platforms.
-widgets_available = [
+widget_classes_available = [
     PercentWidget,
     RateWidget,
     ETAWidget,

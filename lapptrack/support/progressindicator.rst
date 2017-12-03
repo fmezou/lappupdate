@@ -103,4 +103,4 @@ Data reference
 This section details global data, including both variables and values used
 as 'defined constants'.
 
-.. autodata:: widgets_available
+.. autodata:: widget_classes_available

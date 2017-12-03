@@ -48,19 +48,21 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         # Regular use case
         _logger.info("Starting...")
 
-        for widget in progressindicator.widgets_available:
+        width = 80  # fixed an arbitrary width
+        print("\n")  # prevent the side effect of the display of unittest
+        print(" Terminal width ".center(width, "-"))
+        for widget in progressindicator.widget_classes_available:
             with self.subTest(widget=widget):
-                progress_bar = progressindicator.ProgressIndicatorWidget(120)
-                progress_bar.add_widget(
-                    progressindicator.SeparatorWidget(symbol=repr(widget)),
-                    False
-                )
-                progress_bar.add_widget(
-                    widget(symbol="pulse"),
-                    False
-                )
+                progress_bar = progressindicator.ProgressIndicatorWidget(width)
+                wi = progressindicator.SeparatorWidget(symbol=repr(widget))
+                progress_bar.add_widget(wi, False)
+                mask = wi.size*"."
+                wi = widget(symbol="pulse")
+                progress_bar.add_widget(wi, False)
+                mask += wi.size * "#"
                 for floor, ceiling, max_count in self.ranges:
                     with self.subTest(floor=floor, ceiling=ceiling):
+                        print(mask)
                         progress_bar.start(floor, ceiling)
                         i, c = floor, 0
                         while c < max_count:
@@ -75,19 +77,21 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         # Regular use case
         _logger.info("Starting...")
 
-        for widget in progressindicator.widgets_available:
+        width = 80  # fixed an arbitrary width
+        print("\n")  # prevent the side effect of the display of unittest
+        print(" Terminal width ".center(width, "-"))
+        for widget in progressindicator.widget_classes_available:
             with self.subTest(widget=widget):
-                progress_bar = progressindicator.ProgressIndicatorWidget(120)
-                progress_bar.add_widget(
-                    progressindicator.SeparatorWidget(symbol=repr(widget)),
-                    True
-                )
-                progress_bar.add_widget(
-                    widget(symbol="pulse"),
-                    True
-                )
+                progress_bar = progressindicator.ProgressIndicatorWidget(width)
+                wi = progressindicator.SeparatorWidget(symbol=repr(widget))
+                progress_bar.add_widget(wi, True)
+                mask = wi.size*"."
+                wi = widget(symbol="pulse")
+                progress_bar.add_widget(wi, True)
+                mask += wi.size * "#"
                 for floor, ceiling, max_count in self.ranges:
                     with self.subTest(floor=floor, ceiling=ceiling):
+                        print(mask)
                         progress_bar.start(floor, ceiling)
                         i, c = floor, 0
                         while c < max_count:
@@ -98,11 +102,15 @@ class ProgressIndicatorTestCase(unittest.TestCase):
                 del progress_bar
         _logger.info("Completed")
 
-    def test0103_download_progress_indicator(self):
+    def test0103_download_progress(self):
         # Regular use case
         _logger.info("Starting...")
 
-        progress_bar = progressindicator.new_download_progress()
+        width = shutil.get_terminal_size().columns
+        print("\n")  # prevent the side effect of the display of unittest
+        print(" Terminal width ".center(width, "-"))
+        title = "Download progress indicator"
+        progress_bar = progressindicator.new_download_progress(title)
         floor, ceiling, max_count = self.ranges[0]
         progress_bar.start(floor, ceiling)
         for i in range(floor, ceiling):
@@ -111,11 +119,15 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         del progress_bar
         _logger.info("Completed")
 
-    def test0104_download_throbber_indicator(self):
+    def test0104_download_throbber(self):
         # Regular use case
         _logger.info("Starting...")
 
-        progress_bar = progressindicator.new_download_throbber()
+        width = shutil.get_terminal_size().columns
+        print("\n")  # prevent the side effect of the display of unittest
+        print(" Terminal width ".center(width, "-"))
+        title = "Download throbber indicator"
+        progress_bar = progressindicator.new_download_throbber(title)
         floor, ceiling, max_count = self.ranges[0]
         progress_bar.start(floor, ceiling)
         for i in range(floor, ceiling):
@@ -124,10 +136,13 @@ class ProgressIndicatorTestCase(unittest.TestCase):
         del progress_bar
         _logger.info("Completed")
 
-    def test0105_use_case_null(self):
+    def test0105_download_null(self):
         # Regular use case
         _logger.info("Starting...")
 
+        width = shutil.get_terminal_size().columns
+        print("\n")  # prevent the side effect of the display of unittest
+        print(" Terminal width ".center(width, "-"))
         progress_bar = progressindicator.new_download_null()
         floor, ceiling, max_count = self.ranges[0]
         progress_bar.start(floor, ceiling)
@@ -144,13 +159,17 @@ class ProgressIndicatorTestCase(unittest.TestCase):
             "A long text to scrool in a field"
         ]
 
+        width = 80  # fixed an arbitrary width
+        print("\n")  # prevent the side effect of the display of unittest
+        print(" Terminal width ".center(width, "-"))
         for text in texts:
             with self.subTest(text=text):
-                progress_bar = progressindicator.ProgressIndicatorWidget(120)
-                progress_bar.add_widget(
-                    progressindicator.ScrollingTextWidget(symbol=text)
-                )
+                progress_bar = progressindicator.ProgressIndicatorWidget(width)
+                wi = progressindicator.ScrollingTextWidget(symbol=text)
+                progress_bar.add_widget(wi)
+                mask = wi.size*"#"
                 floor, ceiling, max_count = self.ranges[0]
+                print(mask)
                 progress_bar.start(floor, ceiling)
                 for i in range(floor, ceiling):
                     progress_bar.update(i)
