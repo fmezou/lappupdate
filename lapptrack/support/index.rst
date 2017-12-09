@@ -16,5 +16,5 @@
 
     report
     pad
-    progressbar
+    progressindicator
     semver

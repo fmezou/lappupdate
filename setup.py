@@ -35,7 +35,7 @@ setup(
     ],
     keywords="Distribution Software Administrator",
     packages=find_packages(exclude=["tests"]),
-    install_requires=[""],
+    install_requires=["", 'lxml'],
     package_data={
         "lapptrack": ["*.example.ini", "*.tmpl.html"],
         "lapptrack.cots": ["padspec40.xml"]

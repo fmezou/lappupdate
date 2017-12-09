@@ -76,7 +76,7 @@ application as described in :class:`~cots.core.BaseProduct`.
                         "display_name": "Dummy Product v1.0.1",
                         "editor": "Example. inc",
                         "feed_location": "http://www.example.com/feed.rss",
-                        "file_size": -1,
+                        "file_size": 0,
                         "icon": "",
                         "installer": "..\\~store\\app\\dummy\\Dummy Product_1.0.1.html",
                         "location": "http://www.example.com/dist.zip",

@@ -170,7 +170,7 @@ class BaseMockHandler(core.BaseProduct):
                 package.
 
         Returns:
-            bool: True if the fake installer creation went well. In case of
+            bool: `True` if the fake installer creation went well. In case of
             failure, the members are not modified and an error log is written.
 
         Raises:
@@ -182,7 +182,8 @@ class BaseMockHandler(core.BaseProduct):
         result = True
         content = "This file is the result of the use of a mocking handler."
         os.makedirs(dirpath, exist_ok=True)
-        name = "{}_v{}{}".format(self.name, self.version, ".txt")
+        name = "{}_v{}_{}{}".format(self.name, self.version,
+                                    self.target, ".txt")
         pathname = os.path.join(dirpath, name)
         try:
             with open(pathname, mode="w") as file:
@@ -213,7 +214,7 @@ class BaseMockHandler(core.BaseProduct):
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: True if this instance is an update of the product specified
+            bool: `True` if this instance is an update of the product specified
             by the `product` parameter.
         """
         msg = ">>> (product={})"
@@ -279,7 +280,7 @@ class BrotherMockHandler(BaseMockHandler):
         _logger.debug(msg.format(version))
 
         result = super().get_origin(version)
-        self.file_size = -1
+        self.file_size = 0
         self.secure_hash = None
 
         msg = "Latest product information fetched ({} published on {})"
@@ -313,7 +314,7 @@ class ReleaseOftenMockHandler(BaseMockHandler):
         """
         Get the mocking information.
 
-        This method return always true to indicate that the most-update
+        This method return always `True` to indicate that the most-update
         information are available. On each call, the version patch number is
         incremented to be compliant with the `semantic versioning
         specification`_ 2.0.0.
@@ -335,7 +336,7 @@ class ReleaseOftenMockHandler(BaseMockHandler):
             if version:
                 patch = 1 + int(version.split(".")[2])
             self.version = "1.0.{}".format(patch)
-            self.display_name == "{} v{}".format(self.name, self.version)
+            self.display_name = "{} v{}".format(self.name, self.version)
             self.published = "2017-01-01T18:00:00"
             self.file_size = 156
             self.secure_hash = ("sha1",
@@ -383,7 +384,7 @@ class FailureMockHandler(BaseMockHandler):
         """
         Get the mocking information.
 
-        This method always return false to indicate that an error has occurred
+        This method always return `False` to indicate that an error has occurred
         while the fetching of the product information.
 
         Args:
@@ -407,7 +408,7 @@ class FailureMockHandler(BaseMockHandler):
         """
         Download the mocking installer.
 
-        This method always return false to indicate that an error has occurred
+        This method always return `False` to indicate that an error has occurred
         while the product installer fetching.
 
         Args:
@@ -415,7 +416,7 @@ class FailureMockHandler(BaseMockHandler):
                 package.
 
         Returns:
-            bool: True if the download of the file went well. In case of
+            bool: `True` if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
 
         Returns:

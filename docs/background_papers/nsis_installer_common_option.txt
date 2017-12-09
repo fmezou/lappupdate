@@ -1,20 +1,30 @@
-Installers accept a few options on the command line. These options give the user
-a bit more control over the installation process (see `Installer Usage
-<http://nsis.sourceforge.net/Docs/Chapter3.html#installerusagecommon>`_ for more
-details).
+The installer is based on the `NSIS <https://sourceforge.net/projects/nsis/>`_
+(Nullsoft Scriptable Install System) framework and delivered as a single
+executable.
 
-==========  ====================================================================
-``/NCRC``   disables the CRC check, unless CRCCheck force was used in the
-            script.
-``/S``      runs the installer silently.
-``/D``      sets the default installation directory. It must be the last
-            parameter used in the command line and must not contain any quotes,
-            even if the path contains spaces. Only absolute paths are supported.
-==========  ====================================================================
+Installers accepts a few options on the command line. These options give the
+user a bit more control over the installation process, mainly doing a `silent
+install`. The `Installer Usage <http://nsis.sourceforge.net/Docs/Chapter3.html
+#installerusagecommon>`_ topic details these options and the end of the section
+focuses on the silent running mode.
+
+.. program:: nsis setup
+
+.. option:: /S
+
+    make a silent install. The `Silent Installers/Uninstallers
+    <http://nsis.sourceforge.net/Docs/Chapter4.html#silent>`_ topic details this
+    operating mode.
+
+.. option:: /D
+
+    sets the default installation directory. It must be the last parameter used
+    in the command line and must not contain any quotes, even if the path
+    contains spaces. Only absolute paths are supported.
 
 .. topic:: Example
 
     .. code-block:: winbatch
 
-        installer.exe /S
-        installer.exe /NCRC /S /D=C:\Program Files\NSIS
+        setup.exe /S
+        setup.exe /S /D=C:\Program Files\Foo

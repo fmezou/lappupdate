@@ -19,11 +19,15 @@ This section details the objects defined in this module.
     :private-members:
     :show-inheritance:
 
+.. autoclass:: DownloadHandler
+    :members:
+    :private-members:
+    :show-inheritance:
+
 Functions reference
 -------------------
 This section details the specific functions used in this module.
 
-.. autofunction:: retrieve_file
 .. autofunction:: get_handler
 .. autofunction:: get_file_hash
 
@@ -35,17 +39,3 @@ as 'defined constants'.
 .. autodata:: TARGET_X86
 .. autodata:: TARGET_X64
 .. autodata:: TARGET_UNIFIED
-
-Exceptions reference
---------------------
-This section details the specific exception used in this module.
-
-.. autoexception:: ContentLengthError
-    :members:
-    :show-inheritance:
-.. autoexception:: ContentError
-    :members:
-    :show-inheritance:
-.. autoexception:: ContentTypeError
-    :members:
-    :show-inheritance:

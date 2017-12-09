@@ -6,10 +6,10 @@ Product handlers are derived classes from `BaseProduct` class.
 
 Public Classes
 --------------
-This module has only one public class.
+This module has has several public class listed below in alphabetical order.
 
 ===================================  ===================================
-`BaseProduct`                        ..
+`BaseProduct`                        `DownloadHandler`
 ===================================  ===================================
 
 
@@ -18,20 +18,8 @@ Public Functions
 This module has a number of functions listed below in alphabetical order.
 
 ===================================  ===================================
-`get_handler`                        `retrieve_file`
-`get_file_hash`                      ..
+`get_handler`                        `get_file_hash`
 ===================================  ===================================
-
-
-Public Exceptions
------------------
-This module has has a number of exceptions listed below in alphabetical order.
-
-===================================  ===================================
-`ContentError`                       `ContentTypeError`
-`ContentLengthError`                 ..
-===================================  ===================================
-
 """
 
 import contextlib
@@ -41,21 +29,20 @@ import os
 import urllib.request
 import urllib.parse
 import urllib.error
+import tempfile
 import importlib
 
-from support import progressbar
+from support import progressindicator
+from version import *
 
 __author__ = "Frederic MEZOU"
 __version__ = "0.1.0-dev"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
+    "DownloadHandler",
     "BaseProduct",
-    "retrieve_file",
     "get_file_hash",
-    "get_handler",
-    "ContentLengthError",
-    "ContentError",
-    "ContentTypeError"
+    "get_handler"
 ]
 
 # Target architecture supported (see `BaseProduct.target` attribute)
@@ -94,79 +81,6 @@ class Error(Exception):
         return self.message
 
 
-class ContentLengthError(Error):
-    """
-    Raised when the content length does not match the expected length.
-
-    Args:
-        url (str): The URL of the fetched file.
-        expected (int): The expected content length. Must be positive.
-        received (int): The received content length. Must be positive.
-
-    Attributes:
-        url (str): The URL of the fetched file.
-        expected (int): The expected content length. Must be positive.
-        received (int): The received content length. Must be positive.
-    """
-    def __init__(self, url, expected, received):
-        msg = "Unexpected content length: {0} received bytes vs. {1} " \
-              "waited. Url '{2}'."
-        Error.__init__(self, msg.format(received, expected, url))
-        self.expected = expected
-        self.received = received
-        self.url = url
-
-
-class ContentError(Error):
-    """
-    Raised when the content secure hash does not match the expected hash.
-
-    Args:
-        url (str): The URL of the fetched file.
-        algorithm (str): The name of the secure hash algorithm.
-        expected (str): The expected secure hash value in hexadecimal notation.
-        computed (str): The computed secure hash value in hexadecimal notation.
-
-    Attributes:
-        url (str): The URL of the fetched file.
-        algorithm (str): The name of the secure hash algorithm.
-        expected (str): The expected secure hash value in hexadecimal notation.
-        computed (str): The computed secure hash value in hexadecimal notation.
-    """
-    def __init__(self, url, algorithm, expected, computed):
-        msg = "Unexpected content secure hash: {0} computed vs. {1} waited. " \
-              "Url '{2}'."
-        Error.__init__(self, msg.format(computed, expected, url))
-        self.algorithm = algorithm
-        self.expected = expected
-        self.computed = computed
-        self.url = url
-
-
-class ContentTypeError(Error):
-    """
-    Raised when the content-type does not match the expected type.
-
-    Args:
-        url (str): The URL of the fetched file.
-        expected (str): The expected content type.
-        received (str): The received content length.
-
-    Attributes:
-        url (str): The URL of the fetched file.
-        expected (str): The expected content type.
-        received (str): The received content type.
-    """
-
-    def __init__(self, url, expected, received):
-        msg = "Unexpected content type: '{0}' received vs. '{1}' waited. " \
-              "Url '{2}'."
-        Error.__init__(self, msg.format(received, expected, url))
-        self.expected = expected
-        self.received = received
-        self.url = url
-
-
 class BaseProduct:
     """
     Common base class for all product handlers.
@@ -185,6 +99,14 @@ class BaseProduct:
         target (str): The target architecture type (the Windows’ one) for the
             product. This argument must be one of the following values:
             `TARGET_X86`, `TARGET_X64` or `TARGET_UNIFIED`.
+            The "build target" of the application to retrieve. This part must
+            contain one of the following values:
+
+            * ``win``: Windows 32 bits
+            * ``win64``: Windows 64 bits
+            * ``osx``: MacOS X
+            * ``linux64``: Linux x86 64 bits
+            * ``linux``: Linux i686
         description (str): Short description of the product (~250 characters).
         editor (str): The name of the editor of the product.
         web_site_location (str): The location of the editor ou product web site.
@@ -266,7 +188,7 @@ class BaseProduct:
         self.release_note_location = ""
         self.change_summary = ""
         self.installer = ""
-        self.file_size = -1
+        self.file_size = 0
         self.secure_hash = None
         self.std_inst_args = ""
         self.silent_inst_args = ""
@@ -275,6 +197,49 @@ class BaseProduct:
 
         msg = "<<< ()=None"
         _logger.debug(msg)
+
+    def __str__(self):
+        """
+        Return the printable string representation of object.
+
+        Returns:
+            str: a human readable string with the handler attributes.
+        """
+        l = list()
+        l.append("Product attributes:")
+        l.append("- General --------------------------------------------------")
+        l.append("  Name:         {}".format(self.name))
+        l.append("  Display name: {}".format(self.display_name))
+        l.append("  Version:      {}".format(self.version))
+        l.append("  Published:    {}".format(self.published))
+        l.append("------------------------------------------------------------")
+        l.append("- Details --------------------------------------------------")
+        l.append("  Target:       {}".format(self.target))
+        l.append("  Description:  {}".format(self.description))
+        l.append("  Editor:       {}".format(self.editor))
+        l.append("  Web site:     {}".format(self.web_site_location))
+        l.append("  Icon:         {}".format(self.icon))
+        l.append("  Announce:     {}".format(self.announce_location))
+        l.append("  Feed:         {}".format(self.feed_location))
+        l.append("  Release Note: {}".format(self.release_note_location))
+        l.append("------------------------------------------------------------")
+        l.append("- Change summary -------------------------------------------")
+        l.append(self.change_summary)
+        l.append("------------------------------------------------------------")
+        l.append("- Installer ------------------------------------------------")
+        l.append("  URL:          {}".format(self.location))
+        l.append("  Location:     {}".format(self.installer))
+        l.append("  Size:         {} bytes".format(self.file_size))
+        if self.secure_hash is not None:
+            hn, hv = self.secure_hash
+        else:
+            hn, hv = ["", ""]
+        l.append("  Hash:         {} ({})".format(hv, hn))
+        l.append("  Command line option")
+        l.append("    Silent mode:   {}".format(self.silent_inst_args))
+        l.append("    Standard mode: {}".format(self.std_inst_args))
+        l.append("------------------------------------------------------------")
+        return "\n".join(l)
 
     def load(self, attributes):
         """
@@ -346,7 +311,7 @@ class BaseProduct:
                 rules.
 
         Returns:
-            bool: True if the download of the file went well. In case of
+            bool: `True` if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
 
         Raises:
@@ -363,7 +328,7 @@ class BaseProduct:
                 package.
 
         Returns:
-            bool: True if the download of the file went well. In case of
+            bool: `True` if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
 
         Raises:
@@ -373,62 +338,31 @@ class BaseProduct:
         _logger.debug(msg.format(dirpath))
 
         result = True
-        # TODO (fmezou): l'url ne contient pas necessairement le nom de la
-        # ressource, il faut utiliser le champs Content-disposition
-        # Content-Disposition: attachment; filename=my_sandbox.tar.gz
-        # see RFC 2183
-        components = urllib.parse.urlsplit(self.location)
-        name = os.path.basename(
-            urllib.request.url2pathname(components.path))
-        ext = os.path.splitext(name)[1]
-        filename = "{}_v{}{}".format(self.name, self.version, ext)
-        pathname = os.path.normcase(os.path.join(dirpath, filename))
-        tempname = self.installer + ".partial"
 
-        try:
-            os.makedirs(dirpath, exist_ok=True)
-        except OSError as err:
-            msg = "Failed to create the destination directory - OS error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-
+        progress = progressindicator.new_download_progress(self.display_name)
+        remote = DownloadHandler(self.location, path=dirpath,
+                                 length=self.file_size, hash=self.secure_hash,
+                                 progress=progress)
+        result = remote.fetch()
         if result:
+            p, n = os.path.split(remote.filename)
+            ext = os.path.splitext(n)[1]
+            filename = "{}_v{}_{}{}".format(self.name, self.version,
+                                            self.target, ext)
+            target_name = os.path.normcase(os.path.join(p, filename))
+
             try:
-                with open(tempname, mode="wb") as file:
-                    t, l, h = retrieve_file(self.location,
-                                            file,
-                                            exp_clength=self.file_size,
-                                            exp_chash=self.secure_hash)
-                os.replace(tempname, pathname)  # rename with the real name
-            except urllib.error.URLError as err:
-                msg = "Inaccessible resource: {} - url: {}"
-                _logger.error(msg.format(str(err), self.location))
-                result = False
-            except (ContentTypeError, ContentLengthError, ContentError) as err:
-                msg = "Unexpected content: {}"
-                _logger.error(msg.format(str(err)))
-                result = False
-            except ValueError as err:
-                msg = "Internal error: {}"
-                _logger.error(msg.format(str(err)))
-                result = False
+                os.replace(remote.filename, target_name)
             except OSError as err:
                 msg = "OS error: {}"
                 _logger.error(msg.format(str(err)))
                 result = False
             else:
-                self.file_size = l
-                self.secure_hash = h
-                self.installer = pathname
+                self.file_size = remote.length
+                self.secure_hash = (remote.hash.name, remote.hash.hexdigest())
+                self.installer = target_name
                 msg = "Installer downloaded: '{}'".format(self.installer)
                 _logger.info(msg)
-
-        # clean up
-        if not result:
-            try:
-                os.remove(tempname)
-            except OSError:
-                pass
 
         msg = "<<< ()={}"
         _logger.debug(msg.format(result))
@@ -445,177 +379,549 @@ class BaseProduct:
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: True if this instance is an update of the product specified
+            bool: `True` if this instance is an update of the product specified
             by the `product` parameter.
         """
         raise NotImplementedError
 
 
-def retrieve_file(url, file, exp_ctype=None, exp_clength=-1, exp_chash=None):
+class DownloadHandler(object):
     """
-    Retrieve a URL into a file-like object.
+    File Download Handler
 
+    This class is a handler to download files available on a HTTP or FTP
+    server. It fully manages the download process and the retrieved file may
+    be stored in a regular or a temporary file.
 
     Args:
         url (str): The URL of the file to retrieve.
-        file (file-like object): A file-like object to use to store the
-            retrieved data.
-        exp_ctype (str): (optional) The expected mime type of the retrieved
-            file. No check will be done if the value is None.
-        exp_clength (int): (optional) The expected length of the retrieved
-            file expressed in bytes. -1 means that the expected length is
+        path (str): The local pathname of the retrieved file. An empty string
+            will force the use of a temporary file (see
+            :func:`~tempfile.NamedTemporaryFile`). If the pathname is a
+            directory, the retrieved file will be written in this directory, and
+            the filename will be guessed from the url or HTTP response headers.
+            [TODO]If the pathname is a valid filename, the retrieved file will use it.
+        type (str): (optional) The expected mime type of the retrieved
+            file. No check will be done if the value is `None`.
+        length (int): (optional) The expected length of the retrieved
+            file expressed in bytes. `None` means that the expected length is
             unknown.
-        exp_chash (2-tuple): The expected secure hash value of the retrieved
-            file. No check will be done if the value is None. It's a tuple
+        hash (tuple): The expected secure hash value of the retrieved
+            file. No check will be done if the value is `None`. It's a 2-tuple
             containing, in this order, the name of secure hash algorithm
-            (see `hashlib.algorithms_guaranteed`) and the secure hash value in
-            hexadecimal notation. If the secure hash algorithm is not supported,
-            it will be ignored.
-
-    Returns:
-        tuple: it's a 3-tuple containing, in this order, the content type, the
-        content length and the content hash and . If the content hash algorithm
-        is not specified in the :dfn:`content_hash` parameter, the sha-1
-        algorithm will be used.
+            (see :data:`~hashlib.algorithms_guaranteed`) and the secure hash
+            value in hexadecimal notation. If the secure hash algorithm is not
+            supported, it will be ignored.
+        progress (~progressindicator.ProgressIndicatorWidget): The progress
+            widget. The `None` value means that no progress indicator will be
+            displayed.
 
     Raises:
         TypeError: Parameters type mismatch.
-        ContentTypeError: The downloaded content-type don't match.
-        ContentLengthError: The content length don't match.
-        ContentError: The content secure hash don't match.
-        Same as `urllib.request.urlopen`.
+
+    **Public Methods**
+        This class has a number of public methods listed below in alphabetical
+        order.
+
+        ===================================  ===================================
+        `fetch`                              ..
+        ===================================  ===================================
+
+
+    **Using DownloadHandler...**
+        After created a class instance, the `fetch` method downloads the
+        file and populates the attributes.
     """
-    msg = ">>> (url={}, file={}, exp_ctype={}, exp_clength={}, exp_chash={})"
-    _logger.debug(msg.format(url, file, exp_ctype, exp_clength, exp_chash))
 
-    # check parameters type
-    if not isinstance(url, str):
-        msg = "url argument must be a class 'str'. not {0}"
-        msg = msg.format(url.__class__)
-        raise TypeError(msg)
+    def __init__(self, url, path=None, type=None, length=None, hash=None,
+                 progress=None):
+        msg = ">>> (url={}, path={}, type={}, length={}, hash={}, " \
+              "progress = {})"
+        _logger.debug(msg.format(url, path, type, length, hash, progress))
 
-    if exp_ctype is not None:
-        if not isinstance(exp_ctype, str):
-            msg = "exp_ctype argument must be a class 'str'. not {0}"
-            msg = msg.format(exp_ctype.__class__)
+        #: `str`: The URL of the retrieved file. It may differs from the
+        #: original url if a redirect was followed.
+        self.url = ""
+        #: `int`: The length of the retrieved file expressed in bytes.
+        self.length = 0
+        #: `str`: The mime type of the retrieved file. The default value is
+        #: ``application/octet-stream`` as defined by the `IANA`_.
+        self.type = "application/octet-stream"
+        #: `str`: The local pathname of the retrieved file.
+        self.filename = ""
+        #: `hashlib.hash`: The secure hash value of the retrieved file. A secure
+        #: hash is always computed and the default algorithm is `SHA-1
+        #: <http://csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf>`_.
+        self.hash = hashlib.sha1()
+
+        # internal attributes
+        self._stream = None #  stream opened with urlopen
+        self._file = None #  stream for the local file
+
+        # internal attributes to store the parameters (see above)
+        self.path = ""
+        self._exp_type = None
+        self._exp_length = None
+        self._exp_hash = None
+
+        # check parameters type
+        if not isinstance(url, str):
+            msg = "url argument must be a class 'str'. not {0}"
+            msg = msg.format(url.__class__)
             raise TypeError(msg)
+        self.url = url
 
-    if not isinstance(exp_clength, int):
-        msg = "exp_clength argument must be a class 'int'. not {0}"
-        msg = msg.format(exp_clength.__class__)
-        raise TypeError(msg)
-
-    if exp_chash is not None:
-        if isinstance(exp_chash, tuple) and len(exp_chash) == 2:
-            if not isinstance(exp_chash[0], str):
-                msg = "hash algorithm argument must be a class 'str'. not {0}"
-                msg = msg.format(exp_chash[0].__class__)
+        if path:
+            if not isinstance(path, str):
+                msg = "path argument must be a class 'str'. not {0}"
+                msg = msg.format(path.__class__)
                 raise TypeError(msg)
-            if not isinstance(exp_chash[1], str):
-                msg = "hash value argument must be a class 'str'. not {0}"
-                msg = msg.format(exp_chash[1].__class__)
+            self.path = path
+
+        if type:
+            if not isinstance(type, str):
+                msg = "type argument must be a class 'str'. not {0}"
+                msg = msg.format(type.__class__)
                 raise TypeError(msg)
-        else:
-            msg = "exp_chash argument must be a class 'tuple'. not {0}"
-            msg = msg.format(exp_chash.__class__)
-            raise TypeError(msg)
+            self._exp_type = type
 
-    # retrieve the resource
-    check_ctype = True
-    check_clength = True
-    check_chash = True
-    rcv_ctype = ""
-    rcv_clength = -1
-    rcv_hash = hashlib.sha1()
+        if length:
+            if not isinstance(length, int):
+                msg = "length argument must be a class 'int'. not {0}"
+                msg = msg.format(length.__class__)
+                raise TypeError(msg)
+            self._exp_length = length
 
-    # some web servers refuse to deliver pages when the user-agent is set to
-    # 'Python-urllib'. So the user-agent is set to the name of the project.
-    # TODO (fmezou): mettre le nom et la version du projet dans le user-agent
-    # see version.py
-    headers = {"User-Agent": "lAppUpdate/0.1"}
-
-    request = urllib.request.Request(url, headers=headers)
-    with contextlib.closing(urllib.request.urlopen(request)) as stream:
-        headers = stream.info()
-        # Check the expected content
-        if "Content-Type" in headers:
-            rcv_ctype = headers["Content-Type"]
-            if exp_ctype is not None:
-                if rcv_ctype != exp_ctype:
-                    raise ContentTypeError(url, exp_ctype, rcv_ctype)
+        if hash:
+            if isinstance(hash, tuple) and len(hash) == 2:
+                if not isinstance(hash[0], str):
+                    msg = "hash algorithm argument must be a class 'str'. not {0}"
+                    msg = msg.format(hash[0].__class__)
+                    raise TypeError(msg)
+                if not isinstance(hash[1], str):
+                    msg = "hash value argument must be a class 'str'. not {0}"
+                    msg = msg.format(hash[1].__class__)
+                    raise TypeError(msg)
+                if hash[0] in hashlib.algorithms_available:
+                    self.hash = hashlib.new(hash[0])
+                    self._exp_hash = hash
+                else:
+                    msg = "Hash algorithm {} is not supported"
+                    _logger.warning(msg.format(hash[0]))
             else:
-                check_ctype = False
-                msg = "Content-type is not specified."
-                _logger.warning(msg)
-        else:
-            check_ctype = False
-            msg = "Content-type header do not exist."
-            _logger.warning(msg)
-        if not check_ctype:
-            msg = "Content-type control will be ignored."
-            _logger.warning(msg)
+                msg = "hash argument must be a class 'tuple'. not {0}"
+                msg = msg.format(hash.__class__)
+                raise TypeError(msg)
 
-        if "Content-Length" in headers:
-            rcv_clength = int(headers["Content-Length"])
-            if exp_clength != -1 and rcv_clength != exp_clength:
-                raise ContentLengthError(url, exp_clength, rcv_clength)
-        else:
-            if exp_clength == -1:
-                check_clength = False
-                msg = "Content-Length is not specified."
-                _logger.warning(msg)
-        if not check_clength:
-            msg = "Content-Length control will be ignored."
-            _logger.warning(msg)
+        self._progress_widget = \
+            progressindicator.ProgressIndicatorWidget()
+        if progress:
+            if not isinstance(progress,
+                              progressindicator.ProgressIndicatorWidget):
+                msg = "progress argument must be a class " \
+                      "'ProgressIndicatorWidget'. not {0}"
+                msg = msg.format(progress.__class__)
+                raise TypeError(msg)
+            self._progress_widget = progress
 
-        if exp_chash:
-            if exp_chash[0] in hashlib.algorithms_available:
-                rcv_hash = hashlib.new(exp_chash[0])
+        msg = "<<< ()=None"
+        _logger.debug(msg)
+
+    def fetch(self):
+        """
+        Download the product installer.
+
+        Returns:
+            bool: `True` if the download of the file went well. In case of
+            failure, an error log is written.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        # some web servers refuse to deliver pages when the user-agent is set to
+        # 'Python-urllib'. So the user-agent is set to the name of the project.
+        v = __version__.split(".")
+        headers = {"User-Agent": "{}/{}.{}".format(__project__, v[0], v[1])}
+
+        result = True
+        request = urllib.request.Request(self.url, headers=headers)
+
+        try:
+            with contextlib.closing(urllib.request.urlopen(request)) as self._stream:
+                result = self._pre_check_length()
+                if result:
+                    result = self._pre_check_type()
+                if result:
+                    msg = "Length: {} B [{}]"
+                    _logger.debug(msg.format(self.length, self.type))
+                    result = self._open_container()
+                    if result:
+                        self._write_container()
+                        result = self._post_check_length()
+                        if result:
+                            result = self._post_check_hash()
+        except urllib.error.URLError as err:
+            msg = "Inaccessible resource: {} - url: {}"
+            _logger.error(msg.format(str(err), self.url))
+            result = False
+        except ValueError as err:
+            msg = "Internal error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        except OSError as err:
+            msg = "OS error: {}"
+            _logger.error(msg.format(str(err)))
+            result = False
+        else:
+            msg = "'{}' retrieved - ({} B [{}], {}={})"
+            msg = msg.format(os.path.basename(self.filename),
+                             self.length, self.type,
+                             self.hash.name, self.hash.hexdigest())
+            _logger.info(msg)
+        finally:
+            if self._file:
+                self._close_container(result)
+            self._stream = None
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _open_container(self):
+        """
+        Open the container for the future retrieved file.
+
+        This method opens either a temporary file or a regular file depending on
+        the value of the :attr:`path` attribute. It sets the :attr:`_file`
+        and the :attr:`filename` attributes.
+
+        Returns:
+            bool: `True` if the opening of the file went well.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = True
+
+        if not self.path:
+            self._file = tempfile.NamedTemporaryFile(delete=False)
+            self.filename = os.path.normcase(self._file.name)
+            msg = "Retrieving to '{}'"
+            _logger.debug(msg.format(self.filename))
+        else:
+            try:
+                os.makedirs(self.path, exist_ok=True)
+            except OSError as err:
+                msg = "Failed to create the destination directory - " \
+                      "OS error: {}"
+                _logger.error(msg.format(str(err)))
+                result = False
             else:
-                check_chash = False
-                msg = "Hash algorithm {} is not supported"
-                _logger.warning(msg.format(exp_chash[0]))
-        else:
-            check_chash = False
-            msg = "Hash algorithm is not specified"
-            _logger.warning(msg)
-        if not check_chash:
-            msg = "Content-Hash control will be ignored."
-            _logger.warning(msg)
+                fn = self._get_filename_from_headers()
+                if not fn:
+                    fn = self._get_filename_from_url()
+                self.filename = os.path.normcase(os.path.join(self.path, fn))
+                fn = self.filename + ".partial"
+                try:
+                    self._file = open(fn, mode="wb")
+                except OSError as err:
+                    msg = "OS error: {}"
+                    _logger.error(msg.format(str(err)))
+                    result = False
+                else:
+                    msg = "Retrieving to '{}'"
+                    _logger.debug(msg.format(self._file.name))
 
-        msg = "Retrieving '{}' -> '{}'"
-        _logger.info(msg.format(url, file.name))
-        length = 0
-        # TODO (fmezou) prevoir la passage en paramètre de l'objet
-        progress_bar = progressbar.TextProgressBar(exp_clength)
-        progress_bar.compute(length, exp_clength)
-        data = stream.read(1500)
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _write_container(self):
+        """
+        Fill the container with the content of the retrieved files
+
+        Returns:
+            bool: `True` if the downloading of the file went well.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = True
+
+        assert self._file, "_file attribute must be defined"
+
+        self.length = 0
+        self._progress_widget.start(self.length, self._exp_length)
+        data = self._stream.read(1500)
         while data:
-            length += len(data)
-            file.write(data)
-            rcv_hash.update(data)
-            progress_bar.compute(length, rcv_clength)
-            data = stream.read(1500)
-        progress_bar.finish()
-        msg = "'{}' retrieved - (length: {}B, mime type: {}, {}={})"
-        msg = msg.format(file.name, rcv_clength, rcv_ctype,
-                         rcv_hash.name, rcv_hash.hexdigest())
-        _logger.info(msg)
+            self.length += len(data)
+            self._file.write(data)
+            self.hash.update(data)
+            self._progress_widget.update(self.length)
+            data = self._stream.read(1500)
 
-        # Post content checking
-        if check_clength:
-            if length != rcv_clength:
-                raise ContentLengthError(url, rcv_clength, length)
-        if check_chash:
-            if rcv_hash.hexdigest() != exp_chash[1]:
-                raise ContentError(url, exp_chash[0], exp_chash[1],
-                                   rcv_hash.hexdigest())
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
 
-    result = (rcv_ctype, rcv_clength, (rcv_hash.name, rcv_hash.hexdigest()))
+    def _close_container(self, keep=True):
+        """
+        Close the container and check its content.
 
-    msg = "<<< ()={}"
-    _logger.debug(msg.format(result))
-    return result
+        Args:
+            keep (bool): `True` to indicate to keep the local copy of the
+                retrieved file. The `False` value is usefull in case of error
+                while the download process.
+
+        Returns:
+            bool: `True` if the downloading of the file went well.
+        """
+        msg = ">>> (keep={})"
+        _logger.debug(msg.format(keep))
+        result = True
+
+        assert self._file, "_file attribute must be defined"
+
+        self._progress_widget.finish(self.length)
+        self._file.close()
+        if keep:
+            # rename with the real name if necessary
+            if self.filename:
+                try:
+                    os.replace(self._file.name, self.filename)
+                except OSError as err:
+                    msg = "OS error: {}"
+                    _logger.error(msg.format(str(err)))
+                    result = False
+        else:
+            _logger.debug("cleaning up")
+            try:
+                os.remove(self._file.name)
+            except OSError:
+                pass
+
+        self._file = None
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _pre_check_length(self):
+        """
+        Check the length of the file to retrieve.
+
+        Returns:
+            bool: `True` if the length is equal to that expected
+            (:attr:`_exp_length`). The method return `True` if the control
+            must be ignored (see ``length`` parameter)
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = True
+
+        headers = self._stream.info()
+        if "Content-Length" in headers:
+            self.length = int(headers["Content-Length"])
+        else:
+            msg = "Content-Length header do not exist."
+            _logger.warning(msg)
+
+        if self._exp_length:
+            if self.length != self._exp_length:
+                result = False
+                msg = "Unexpected content length : '{0}' received vs. " \
+                      "'{1}' waited."
+                _logger.error(msg.format(self.length, self._exp_length))
+        else:
+            # Content-Length control will be done."
+            self._exp_length = self.length
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _post_check_length(self):
+        """
+        Check the length of the retrieved file.
+
+        Returns:
+            bool: `True` if the length is equal to that expected
+            (:attr:`_exp_length`). The method return `True` if the control
+            must be ignored (see ``length`` parameter)
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = True
+
+        if self._exp_length:
+            if self.length != self._exp_length:
+                result = False
+                msg = "Unexpected content length : '{0}' received vs. " \
+                      "'{1}' waited."
+                _logger.error(msg.format(self.length, self._exp_length))
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _pre_check_type(self):
+        """
+        Check the mime type of the file to retrieve.
+
+        Returns:
+            bool: `True` if the MIME type is equal to that expected
+            (:attr:`_exp_type`). The method return `True` if the control
+            must be ignored (see ``type`` parameter)
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = True
+
+        headers = self._stream.info()
+        if "Content-Type" in headers:
+            self.type = headers["Content-Type"]
+        else:
+            msg = "Content-Type header do not exist."
+            _logger.warning(msg)
+
+        if self._exp_type:
+            if self.type != self._exp_type:
+                result = False
+                msg = "Unexpected content type : '{0}' received vs. " \
+                      "'{1}' waited."
+                _logger.error(msg.format(self.type, self._exp_type))
+        else:
+            msg = "Content-type control ignored."
+            _logger.warning(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _post_check_hash(self):
+        """
+        Check the secure hash of the retrieved file.
+
+        Returns:
+            bool: `True` if the computed secure hash is equal to that expected
+            (:attr:`_exp_hash`). The method return `True` if the control
+            must be ignored (see ``hash`` parameter)
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = True
+
+        if self._exp_hash:
+            if self.hash.hexdigest() != self._exp_hash[1]:
+                result = False
+                msg = "Unexpected content : '{0}' received vs. '{1}' waited."
+                _logger.error(msg.format(self.hash.hexdigest(),
+                                         self._exp_hash[1]))
+        else:
+            msg = "Secure hash control ignored."
+            _logger.warning(msg)
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _get_filename_from_headers(self):
+        """
+        Get the file name from the ``Content-Disposition`` header field.
+
+        This method returns the file name specified in the
+        ``Content-Disposition`` header field as described in the :rfc:`2183` if
+        it exists.
+
+        TODO
+        This method checks the file name compatibility with the underlying file
+        system. If the suggested file name is not compatible, the method returns
+        `None`.
+
+        Returns:
+            str: a regular file name or `None`.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = None
+
+        headers = self._stream.info()
+        _logger.debug("Headers=\n{}".format(headers))
+
+        field = "Content-Disposition"
+        header = headers["Content-Disposition"]
+        if not header:
+            msg = "Content-Disposition field do not exist."
+            _logger.debug(msg)
+        else:
+            types = header.split(";", maxsplit=1)
+            if types[0].lower().strip() == "attachment":
+                params = types[1].split(";")
+                for param in params:
+                    p = param.split("=")
+                    if len(p) == 2:
+                        k = p[0].lower().strip()
+                        v = p[1].lower().strip()
+                        if k == "filename":
+                            result = os.path.basename(v)  # prevent a path specs
+                            break
+                        else:
+                            msg = "Content-Disposition param '{}' is ignored ."
+                            _logger.debug(msg.format(k))
+                    else:
+                        msg = "Content-Disposition param '{}' is ignored ."
+                        _logger.debug(msg.format(param))
+            else:
+                msg = "Content-Disposition type '{}' is ignored ."
+                _logger.debug(msg.format(types[0].lower().strip()))
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def _get_filename_from_url(self):
+        """
+        Get the file name from the url attribute.
+
+        This method returns the file name specified in the URL.
+
+        TODO
+        This method checks the file name compatibility with the underlying file
+        system. If the suggested file name is not compatible, the method returns
+        `None`.
+
+        Returns:
+            str: a regular file name or `None`.
+        """
+        msg = ">>> ()"
+        _logger.debug(msg)
+        result = None
+
+        self.url = self._stream.geturl()
+        _logger.debug("Real URL='{}'.".format(self.url))
+
+        components = urllib.parse.urlsplit(self.url)
+        result = os.path.basename(urllib.request.url2pathname(components.path))
+
+        msg = "<<< ()={}"
+        _logger.debug(msg.format(result))
+        return result
+
+    def __str__(self):
+        """
+        Return the printable string representation of object.
+
+        Returns:
+            str: a human readable string with the handler attributes.
+        """
+        l = list()
+        l.append("Download handler attributes:")
+        l.append("- General --------------------------------------------------")
+        l.append("  URL:          {}".format(self.url))
+        l.append("  Length:       {}".format(self.length))
+        l.append("  MIME Type:    {}".format(self.type))
+        l.append("  Filename :    {}".format(self.filename))
+        l.append("  Hash:         {} ({})".format(self.hash.name,
+                                                  self.hash.hexdigest()))
+        l.append("------------------------------------------------------------")
+        return "\n".join(l)
 
 
 def get_handler(qualname):

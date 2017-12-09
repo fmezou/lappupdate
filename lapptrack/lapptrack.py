@@ -29,6 +29,8 @@ file (see `background_catalog-format` section for a detailed description)
 Command line options
 ^^^^^^^^^^^^^^^^^^^^
 
+.. program:: lapptrack
+
 .. option:: -h, --help
 
     show this help message and exit
@@ -402,7 +404,7 @@ class LAppTrack:
         #: configuration parameters
         self.config = configparser.ConfigParser(
             interpolation=configparser.ExtendedInterpolation())
-        #: bool: True if the configuration file have been loaded and contains no
+        #: bool: `True` if the configuration file have been loaded and contains no
         #: error
         self.config_checked = False
 
@@ -432,7 +434,7 @@ class LAppTrack:
         Run the LAppTrack application.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -460,7 +462,7 @@ class LAppTrack:
         Pull the availability of updates.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -489,7 +491,7 @@ class LAppTrack:
         Fetch application updates based on the last build catalog.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -517,12 +519,12 @@ class LAppTrack:
         Approve the deployment of applications.
 
         Args:
-            force (optional[bool]): False to indicates if the user must approved
-                each deployment in a interactive session. True to indicates that
+            force (optional[bool]): `False` to indicates if the user must approved
+                each deployment in a interactive session. `True` to indicates that
                 updates are all approved without prompt.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -544,7 +546,7 @@ class LAppTrack:
         Make `applist` files based on the last build catalog
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -570,7 +572,7 @@ class LAppTrack:
                 about opening mode).
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         # The logging configuration may be not valid, events are only print on
@@ -593,7 +595,7 @@ class LAppTrack:
         Pull the availability of updates.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -690,7 +692,7 @@ class LAppTrack:
         Fetch applications updates based on the last build catalog.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -777,12 +779,12 @@ class LAppTrack:
         Approve the deployment of applications.
 
         Args:
-            force (bool): (optional): False to indicates if the user must
-                approved each deployment in a interactive session. True to
+            force (bool): (optional): `False` to indicates if the user must
+                approved each deployment in a interactive session. `True` to
                 indicates that updates are all approved without prompt.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> (force={})"
@@ -882,7 +884,7 @@ class LAppTrack:
                 about opening mode).
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         # check parameters type
@@ -1103,7 +1105,7 @@ class LAppTrack:
         Load the product's catalog.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -1148,7 +1150,7 @@ class LAppTrack:
         Write the catalog products file.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -1181,7 +1183,7 @@ class LAppTrack:
         Write the `applist` files from the catalog.
 
         Returns:
-            bool: True if the execution went well. In case of failure, an error
+            bool: `True` if the execution went well. In case of failure, an error
             log is written.
         """
         msg = ">>> ()"
@@ -1357,7 +1359,7 @@ def notify_end(verb, result):
 
     Args:
         verb (str): The action verb of the task
-        result (bool): True if the execution went well.
+        result (bool): `True` if the execution went well.
     """
     if result:
         foreground = "\x1b[1m"  # set face text (bold)

@@ -1,6 +1,7 @@
 """
 This module is the product handler of `MakeMKV <http://www.makemkv.com/>`_ from
-GuinpinSoft inc. The `background_makemkv` details information about it.
+GuinpinSoft inc. The `background_makemkv` section gives more information about
+the installation process and the update mechanism.
 
 
 Public Classes
@@ -18,14 +19,13 @@ import datetime
 import logging
 import re
 import os
-import tempfile
-import urllib.error
 from html.parser import HTMLParser
 
 
 from cots import core
 from support import pad
 from support import semver
+from support import progressindicator
 
 
 __author__ = "Frederic MEZOU"
@@ -67,16 +67,32 @@ class MakeMKVHandler(core.BaseProduct):
         # At this point, only the name and the catalog location are known.
         # All others attributes will be discovered during catalog parsing
         # (`get_origin`) and update downloading (`fetch`)
-        self.name = "MakeMKV"
-        self.target = core.TARGET_UNIFIED
-        self.version = "0.0.0"  # Match with the editor versioning rules
-
+        # Default value
+        #  - General -
+        self.name = "makemkv"
+        self.display_name = "MakeMKV v1.9.8"
+        self.version = "1.9.8"
+        self.published = "2015-12-20T00:00:00"
+        #  - Details -
+        self.target = "win"
+        self.description = "MakeMKV is a video format converter. Its main " \
+                           "feature is to extract audio and video tracks " \
+                           "from a DVD or a BluRay disc into MKV files."
+        self.editor = "GuinpinSoft inc"
         self.web_site_location = "http://www.makemkv.com/"
+        self.icon = ""
         self.announce_location = ""
         self.feed_location = ""
-        self.release_note_location = \
-            "http://www.makemkv.com/download/history.html"
-
+        self.release_note_location = "http://www.makemkv.com/download" \
+                                     "/history.html"
+        # - Change summary -
+        self.change_summary = ""
+        # - Installer
+        self.location = "http://www.makemkv.com/download" \
+                        "/Setup_MakeMKV_v1.9.8.exe"
+        self.installer = ""
+        self.file_size = 0
+        self.secure_hash = None
         self.std_inst_args = ""
         self.silent_inst_args = "/S"
 
@@ -96,7 +112,7 @@ class MakeMKVHandler(core.BaseProduct):
                 rules.
 
         Returns:
-            bool: True if the download of the file went well. In case of
+            bool: `True` if the download of the file went well. In case of
             failure, the members are not modified and an error log is written.
 
         Raises:
@@ -112,39 +128,16 @@ class MakeMKVHandler(core.BaseProduct):
             raise TypeError(msg)
 
         msg = "Fetching the latest product information since the version {}"
-        _logger.info(msg.format(self.version))
-        local_filename = ""
-        result = True
-
-        try:
-            with tempfile.NamedTemporaryFile(delete=False) as file:
-                local_filename = file.name
-                core.retrieve_file(self._catalog_url, file)
-        except urllib.error.URLError as err:
-            msg = "Inaccessible resource: {} - url: {}"
-            _logger.error(msg.format(str(err), self.location))
-            result = False
-        except (core.ContentTypeError, core.ContentLengthError,
-                core.ContentError) as err:
-            msg = "Unexpected content: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except ValueError as err:
-            msg = "Internal error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except OSError as err:
-            msg = "OS error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        else:
-            msg = "Catalog downloaded: '{0}'".format(local_filename)
-            _logger.debug(msg)
-
+        _logger.info(msg.format(version))
+        progress = progressindicator.new_download_null()
+        remote = core.DownloadHandler(self._catalog_url, progress=progress)
+        result = remote.fetch()
         if result:
+            msg = "Catalog downloaded: '{0}'".format(remote.filename)
+            _logger.debug(msg)
             try:
                 # Parse the catalog and retrieve information
-                self._parser.parse(local_filename)
+                self._parser.parse(remote.filename)
             except pad.PADSyntaxError as err:
                 msg = "Erroneous PAD File: {}"
                 _logger.error(msg.format(str(err)))
@@ -177,14 +170,14 @@ class MakeMKVHandler(core.BaseProduct):
                 # if s is not None:
                 #     self.file_size = int(s)
                 # else:
-                #     self.file_size = -1
-                self.file_size = -1
+                #     self.file_size = 0
+                self.file_size = 0
                 msg = "Latest product information fetched ({} published on {})"
                 _logger.info(msg.format(self.version, self.published))
 
         # clean up the temporary files
         try:
-            os.remove(local_filename)
+            os.remove(remote.filename)
         except OSError:
             pass
 
@@ -205,7 +198,7 @@ class MakeMKVHandler(core.BaseProduct):
             product (BaseProduct): The reference product (i.e. the deployed one)
 
         Returns:
-            bool: True if this instance is an update of the product specified
+            bool: `True` if this instance is an update of the product specified
             by the `product` parameter.
 
         Raises:
@@ -221,22 +214,15 @@ class MakeMKVHandler(core.BaseProduct):
             raise TypeError(msg)
 
         # comparison based on version number.
-        result = True
         try:
             a = semver.SemVer(self.version)
+            b = semver.SemVer(product.version)
         except ValueError as err:
             msg = "Internal error: current product version - {}"
             _logger.error(msg.format(str(err)))
             result = False
         else:
-            try:
-                b = semver.SemVer(product.version)
-            except ValueError as err:
-                msg = "Internal error: deployed product version - {}"
-                _logger.error(msg.format(str(err)))
-                result = False
-            else:
-                result = bool(a > b)
+            result = bool(a > b)
 
         if result:
             msg = "It is an update ({} vs. {})."
@@ -279,8 +265,8 @@ class MakeMKVHandler(core.BaseProduct):
                 rules.
 
         Returns:
-            bool: True if the download of the change log file went well. In case
-            of failure, the members are not modified and an error log is
+            bool: `True` if the download of the change log file went well. In
+            case of failure, the members are not modified and an error log is
             written.
 
         Raises:
@@ -289,37 +275,16 @@ class MakeMKVHandler(core.BaseProduct):
         msg = ">>> (version={})"
         _logger.debug(msg.format(version))
 
-        local_filename = ""
-        result = True
-        try:
-            with tempfile.NamedTemporaryFile(delete=False) as file:
-                local_filename = file.name
-                core.retrieve_file(self.release_note_location, file)
-        except urllib.error.URLError as err:
-            msg = "Inaccessible resource: {} - url: {}"
-            _logger.error(msg.format(str(err), self.release_note_location))
-            result = False
-        except (core.ContentTypeError, core.ContentLengthError,
-                core.ContentError) as err:
-            msg = "Unexpected content: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except ValueError as err:
-            msg = "Internal error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        except OSError as err:
-            msg = "OS error: {}"
-            _logger.error(msg.format(str(err)))
-            result = False
-        else:
-            msg = "Change log fetched -> '{0}'".format(local_filename)
-            _logger.debug(msg)
-
+        progress = progressindicator.new_download_null()
+        remote = core.DownloadHandler(self.release_note_location,
+                                      progress=progress)
+        result = remote.fetch()
         if result:
+            msg = "Change log fetched -> '{0}'".format(remote.filename)
+            _logger.debug(msg)
             try:
                 parser = ReleaseNotesParser(version)
-                with open(local_filename) as file:
+                with open(remote.filename) as file:
                     parser.feed(file.read())
             except ValueError as err:
                 msg = "Internal error: {}"
@@ -344,7 +309,7 @@ class MakeMKVHandler(core.BaseProduct):
 
         # clean up the temporary files
         try:
-            os.remove(local_filename)
+            os.remove(remote.filename)
         except OSError:
             pass
 
@@ -604,11 +569,11 @@ class ReleaseNotesParser(HTMLParser):
             attributes (dict):  The attributes of the tag.
             first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
             last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
         """
         msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
@@ -626,7 +591,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -651,7 +616,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -674,7 +639,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -699,7 +664,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -722,7 +687,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -748,11 +713,11 @@ class ReleaseNotesParser(HTMLParser):
             attributes (dict):  The attributes of the tag.
             first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
             last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
         """
         msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
@@ -775,7 +740,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -801,7 +766,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -857,7 +822,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))
@@ -884,11 +849,11 @@ class ReleaseNotesParser(HTMLParser):
             attributes (dict):  The attributes of the tag.
             first (bool): (optional) Indicate if it's the first call of the
                 actuating function (i.e. just after a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
             last (bool): (optional) Indicate if it's the last call of the
                 actuating function (i.e. just before a state change (see
-                `_set_state`) including if it's the same state). False is the
+                `_set_state`) including if it's the same state). `False` is the
                 default.
         """
         msg = ">>> (event={}, data={}, attributes={}, first={}, last={})"
@@ -924,7 +889,7 @@ class ReleaseNotesParser(HTMLParser):
             attributes:  The attributes of the tag.
 
         Returns:
-            bool: True if the transition is verified.
+            bool: `True` if the transition is verified.
         """
         msg = ">>> (event={}, data={}, attributes={})"
         _logger.debug(msg.format(event, data, attributes))

@@ -12,6 +12,9 @@
 
 .. _semantic versioning specification: http://semver.org/spec/v2.0.0.html
 
+.. _moz_ver_specs: https://developer.mozilla.org/en-US/docs/
+    Toolkit_version_format
+
 .. _Command shell: https://technet.microsoft.com/en-us/library/cc754340.aspx
    #BKMK_OVR
 
