@@ -58,6 +58,7 @@ class MozHandler(core.BaseProduct):
     * :attr:`~cots.core.BaseProduct.name`
     * :attr:`~cots.core.BaseProduct.version`
     * :attr:`~cots.core.BaseProduct.target`
+    * :attr:`~cots.mozilla.MozHandler.moz_name`
     * :attr:`~cots.mozilla.MozHandler.locale`
     * :attr:`~cots.mozilla.MozHandler.build_id`
 
@@ -86,6 +87,8 @@ class MozHandler(core.BaseProduct):
         self.locale = ""
         #: str: The build ID of the application.
         self.build_id = ""
+        #: str: The internal name of the application.
+        self.moz_name = ""
 
         msg = "<<< ()=None"
         _logger.debug(msg)
@@ -102,6 +105,7 @@ class MozHandler(core.BaseProduct):
         l.append("- Mozilla --------------------------------------------------")
         l.append("  Build ID:         {}".format(self.build_id))
         l.append("  Locale:           {}".format(self.locale))
+        l.append("  Mozilla Name:     {}".format(self.moz_name))
         l.append("- Mozilla --------------------------------------------------")
         return "\n".join(l)
 
@@ -165,14 +169,14 @@ class MozHandler(core.BaseProduct):
                         "https://{server}/?product={product}-{version}" \
                         "&os={target}&lang={locale}".format(
                             server=server,
-                            product=self.name,
+                            product=self.moz_name,
                             version=self.version,
                             target=self.target,
                             locale=self.locale
                         )
 
                     self.display_name = "Mozilla {} {} ({} {})".format(
-                        self.name.capitalize(),
+                        self.moz_name.capitalize(),
                         self.version,
                         display_target,
                         self.locale
@@ -280,6 +284,7 @@ class MozHandler(core.BaseProduct):
         assert self.name, "Name attribute must be defined"
         assert self.version, "Version attribute must be defined"
         assert self.target, "Target attribute must be defined"
+        assert self.moz_name, "Moz Name attribute must be defined"
         assert self.build_id, "Build Id attribute must be defined"
         assert self.locale, "Locale attribute must be defined"
 
@@ -302,7 +307,7 @@ class MozHandler(core.BaseProduct):
             "{system_capabilities}/{distribution}/{dist_version}" \
             "/update.xml?force=1".format(
                 server=server,
-                product=self.name,
+                product=self.moz_name.capitalize(),
                 version=self.version,
                 build_id=self.build_id,
                 build_target=build_target,
@@ -364,6 +369,7 @@ class FirefoxWinHandler(MozHandler):
         self.silent_inst_args = "-ms"
         self.std_inst_args = ""
         # - Mozilla -
+        self.moz_name = "firefox"
         self.build_id = "20151029151421"
         self.locale = "fr"
 
@@ -416,6 +422,7 @@ class FirefoxWin64Handler(MozHandler):
         self.silent_inst_args = "-ms"
         self.std_inst_args = ""
         # - Mozilla -
+        self.moz_name = "firefox"
         self.build_id = "20151029151421"
         self.locale = "fr"
 
@@ -469,6 +476,7 @@ class ThunderbirdWinHandler(MozHandler):
         self.silent_inst_args = "-ms"
         self.std_inst_args = ""
         # - Mozilla -
+        self.moz_name = "thunderbird"
         self.build_id = "20151221142744"
         self.locale = "fr"
 

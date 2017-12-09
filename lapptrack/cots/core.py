@@ -87,8 +87,8 @@ class BaseProduct:
 
 
     Attributes:
-        name (str): The name of the product (used in a_report mail and log
-            file).
+        name (str): The name of the product. It is used in report mail, log
+            file and as filename for the installer (see `fetch`)
         display_name (str): The name of the product as it appears in the
             'Programs and Features' control panel (see
             `Uninstall Registry Key`_).
