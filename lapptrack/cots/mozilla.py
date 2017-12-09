@@ -5,7 +5,8 @@ process and the update mechanism.
 
 Public Classes
 --------------
-This module has only one public class.
+This module has several public class. Each of the following classes is a
+particular Mozilla product handler.
 
 ===================================  ===================================
 :class:`FirefoxWinHandler`           :class:`ThunderbirdWinHandler`
