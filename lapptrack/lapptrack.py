@@ -130,6 +130,9 @@ import logging.config
 import json
 import sys
 import smtplib
+import locale
+
+import colorama
 
 from support import report
 from cots import core
@@ -1498,5 +1501,8 @@ def main():
     if not result:
         sys.exit(1)
 
+
 if __name__ == "__main__":
+    colorama.init()
+    locale.setlocale(locale.LC_ALL, "")
     main()
