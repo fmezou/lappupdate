@@ -625,7 +625,7 @@ class LAppTrack:
                     result = False
                 else:
                     msg = "Fetching update information for '{}' (id: {})" \
-                          " - {}/{}".format(app.name, app_id, i + 1, apps_num)
+                          " - {}/{}".format(app.name, app_id, i+1, apps_num)
                     notify_info(msg)
 
                 if result:
@@ -634,6 +634,8 @@ class LAppTrack:
                         # Load deployed product
                         if app_entry[CAT_APPROVED_KNAME]:
                             app.load(app_entry[CAT_APPROVED_KNAME])
+                            origin_app.load(app_entry[CAT_APPROVED_KNAME])
+
                     else:
                         # Do not exist in catalog, a new one will be created
                         self.catalog[CAT_PRODUCTS_KNAME][app_id] = {
@@ -644,7 +646,7 @@ class LAppTrack:
                         app_entry = self.catalog[CAT_PRODUCTS_KNAME][app_id]
 
                     try:
-                        result = origin_app.get_origin(app.version)
+                        result = origin_app.get_origin()
                         if not result:
                             msg = "Fetch update information for '{}' " \
                                   "failed".format(app.name)
@@ -672,7 +674,7 @@ class LAppTrack:
                 del origin_app
             else:
                 msg = "Tracking deactivated (id: {}) " \
-                      "- {}/{}".format(app_id, i + 1, apps_num)
+                      "- {}/{}".format(app_id, i+1, apps_num)
                 notify_info(msg)
             # Store the error to raise it without interrupt the loop
             if not result:
@@ -720,7 +722,7 @@ class LAppTrack:
                     result = False
                 else:
                     msg = "Fetching installer for '{}' (id: {})" \
-                          " - {}/{}".format(app.name, app_id, i + 1, apps_num)
+                          " - {}/{}".format(app.name, app_id, i+1, apps_num)
                     notify_info(msg)
 
                 if result:
@@ -759,7 +761,7 @@ class LAppTrack:
                     del app
             else:
                 msg = "Tracking deactivated (id: {}) " \
-                      "- {}/{}".format(app_id, i + 1, apps_num)
+                      "- {}/{}".format(app_id, i+1, apps_num)
                 notify_info(msg)
             # Store the error to raise it without interrupt the loop
             if not result:
@@ -816,7 +818,7 @@ class LAppTrack:
                         app = app_entry[CAT_FETCHED_KNAME]
                         msg = "Approving the deployment of '{}' (id: {})" \
                               " - {}/{}".format(app[_PROD_NAME_KNAME], app_id,
-                                                i + 1, apps_num)
+                                                i+1, apps_num)
                         notify_info(msg)
                         approved = False
                         if not force:
@@ -852,18 +854,18 @@ class LAppTrack:
                             notify_info(msg)
                     else:
                         msg = "No fetched version exist (id: {}) " \
-                              " - {}/{}".format(app_id, i + 1, apps_num)
+                              " - {}/{}".format(app_id, i+1, apps_num)
                         notify_warning(msg)
                 else:
                     # The product do not exist in the catalog. It's a
                     # product newly added and the update information have
                     # not been fetched.
                     msg = "Not found in the catalog (id: {}) " \
-                          "- {}/{}".format(app_id, i + 1, apps_num)
+                          "- {}/{}".format(app_id, i+1, apps_num)
                     notify_warning(msg)
             else:
                 msg = "Tracking deactivated (id: {}) " \
-                      "- {}/{}".format(app_id, i + 1, apps_num)
+                      "- {}/{}".format(app_id, i+1, apps_num)
                 notify_info(msg)
 
         try:
@@ -1261,7 +1263,7 @@ class LAppTrack:
                             app = app_entry[CAT_APPROVED_KNAME]
                             msg = "Adding '{}' (id: {}) - " \
                                   "{}/{}".format(app[_PROD_DNAME_KNAME],
-                                                 app_id, i, apps_num)
+                                                 app_id, i+1, apps_num)
                             notify_info(msg)
                             app_line = \
                                 app[_PROD_TARGET_KNAME] + _APPLIST_SEP + \
@@ -1287,11 +1289,11 @@ class LAppTrack:
                         # product newly added and the update information have
                         # not been fetched.
                         msg = "Not found in the catalog (id: {}) " \
-                              "- {}/{}".format(app_id, i + 1, apps_num)
+                              "- {}/{}".format(app_id, i+1, apps_num)
                         notify_warning(msg)
                 else:
                     msg = "Tracking deactivated (id: {}) " \
-                          "- {}/{}".format(app_id, i + 1, apps_num)
+                          "- {}/{}".format(app_id, i+1, apps_num)
                     notify_info(msg)
 
         # Terminate by closing the files

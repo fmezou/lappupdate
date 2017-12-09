@@ -114,23 +114,15 @@ class BaseMockHandler(core.BaseProduct):
         _logger.debug(msg.format(attributes))
         return attributes
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get the mocking information.
-
-        Args:
-            version (str): The version of the reference product.
 
         Returns:
             bool: always True.
         """
-        msg = ">>> (version={})"
-        _logger.debug(msg.format(version))
-        # check parameters type
-        if version is not None and not isinstance(version, str):
-            msg = "version argument must be a class 'str' or None. not {0}"
-            msg = msg.format(version.__class__)
-            raise TypeError(msg)
+        msg = ">>> ()"
+        _logger.debug(msg)
 
         result = True
         # set the instance variables to the default value
@@ -266,20 +258,17 @@ class BrotherMockHandler(BaseMockHandler):
         msg = "<<< ()=None"
         _logger.debug(msg)
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get the mocking information.
-
-        Args:
-            version (str): The version of the reference product.
 
         Returns:
             bool: always True.
         """
-        msg = ">>> (version={})"
-        _logger.debug(msg.format(version))
+        msg = ">>> ()"
+        _logger.debug(msg)
 
-        result = super().get_origin(version)
+        result = super().get_origin()
         self.file_size = 0
         self.secure_hash = None
 
@@ -310,7 +299,7 @@ class ReleaseOftenMockHandler(BaseMockHandler):
         msg = "<<< ()=None"
         _logger.debug(msg)
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get the mocking information.
 
@@ -319,22 +308,19 @@ class ReleaseOftenMockHandler(BaseMockHandler):
         incremented to be compliant with the `semantic versioning
         specification`_ 2.0.0.
 
-        Args:
-            version (str): The version of the reference product.
-
         Returns:
             bool: always True.
         """
-        msg = ">>> (version={})"
-        _logger.debug(msg.format(version))
+        msg = ">>> ()"
+        _logger.debug(msg)
 
-        result = super().get_origin(version)
-        if version is None:
+        result = super().get_origin()
+        if self.version is None:
             self.version = "1.0.0"
         else:
             patch = 0
-            if version:
-                patch = 1 + int(version.split(".")[2])
+            if self.version:
+                patch = 1 + int(self.version.split(".")[2])
             self.version = "1.0.{}".format(patch)
             self.display_name = "{} v{}".format(self.name, self.version)
             self.published = "2017-01-01T18:00:00"
@@ -380,21 +366,18 @@ class FailureMockHandler(BaseMockHandler):
         msg = "<<< ()=None"
         _logger.debug(msg)
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get the mocking information.
 
         This method always return `False` to indicate that an error has occurred
         while the fetching of the product information.
 
-        Args:
-            version (str): The version of the reference product.
-
         Returns:
             bool: always False.
         """
-        msg = ">>> (version={})"
-        _logger.debug(msg.format(version))
+        msg = ">>> ()"
+        _logger.debug(msg)
 
         msg = "Inaccessible resource: ERROR 403 - url: {}"
         _logger.error(msg.format(self.location))
@@ -484,20 +467,17 @@ class ErrorMockHandler(BaseMockHandler):
         msg = "<<< ()=None"
         _logger.debug(msg)
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get the mocking information.
 
         This method always raises an `TypeError` exception.
 
-        Args:
-            version (str): The version of the reference product.
-
         Raises:
             `TypeError`: see above.
         """
-        msg = ">>> (version={})"
-        _logger.debug(msg.format(version))
+        msg = ">>> ()"
+        _logger.debug(msg)
 
         msg = "It is a fake error."
         raise TypeError(msg)

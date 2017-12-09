@@ -109,14 +109,9 @@ class MozHandler(core.BaseProduct):
         l.append("- Mozilla --------------------------------------------------")
         return "\n".join(l)
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get product information from the remote repository.
-
-        Args:
-            version (str): The version of the reference product (i.e. the
-                deployed product). It'a string following the editor versioning
-                rules.
 
         Returns:
             bool: `True` if the download of the file went well. In case of
@@ -126,14 +121,8 @@ class MozHandler(core.BaseProduct):
             TypeError: Parameters type mismatch.
             ValueError: unsupported attributes values.
         """
-        msg = ">>> (version={})".format(version)
+        msg = ">>> ()"
         _logger.debug(msg)
-
-        # check parameters type
-        if version is not None and not isinstance(version, str):
-            msg = "version argument must be a class 'str' or None. " \
-                  "not {0}".format(version.__class__)
-            raise TypeError(msg)
 
         if self.target in self.BUILD_TARGET:
             build_target, display_target = self.BUILD_TARGET[self.target]

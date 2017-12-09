@@ -118,14 +118,9 @@ class DummyHandler(core.BaseProduct):
         _logger.debug(msg.format(result))
         return result
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get product information from the remote repository.
-
-        Args:
-            version (str): The version of the reference product (i.e. the
-                deployed product). It'a string following the editor versioning
-                rules.
 
         Returns:
             bool: `True` if the download of the file went well. In case of
@@ -134,14 +129,8 @@ class DummyHandler(core.BaseProduct):
         Raises:
             TypeError: Parameters type mismatch.
         """
-        msg = ">>> (version={})"
-        _logger.debug(msg.format(version))
-
-        # check parameters type
-        if version is not None and not isinstance(version, str):
-            msg = "version argument must be a class 'str' or None. not {0}"
-            msg = msg.format(version.__class__)
-            raise TypeError(msg)
+        msg = ">>> ()"
+        _logger.debug(msg)
 
         msg = "Fetching the latest product information since the version {}"
         _logger.info(msg.format(self.version))

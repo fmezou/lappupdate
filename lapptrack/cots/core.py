@@ -299,16 +299,11 @@ class BaseProduct:
         _logger.debug(msg.format(attributes))
         return attributes
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get product information from the remote repository.
 
         The latest catalog of the product is downloaded and parsed.
-
-        Args:
-            version (str): The version of the reference product (i.e. the
-                deployed product). It'a string following the editor versioning
-                rules.
 
         Returns:
             bool: `True` if the download of the file went well. In case of

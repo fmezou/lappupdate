@@ -102,14 +102,9 @@ class MakeMKVHandler(core.BaseProduct):
         msg = "<<< ()=None"
         _logger.debug(msg)
 
-    def get_origin(self, version=None):
+    def get_origin(self):
         """
         Get product information from the remote repository.
-
-        Args:
-            version (str): The version of the reference product (i.e. the
-                deployed product). It'a string following the editor versioning
-                rules.
 
         Returns:
             bool: `True` if the download of the file went well. In case of
@@ -118,17 +113,12 @@ class MakeMKVHandler(core.BaseProduct):
         Raises:
             `TypeError`: Parameters type mismatch.
        """
-        msg = ">>> (version={})"
-        _logger.debug(msg.format(version))
-
-        # check parameters type
-        if version is not None and not isinstance(version, str):
-            msg = "version argument must be a class 'str' or None. not {0}"
-            msg = msg.format(version.__class__)
-            raise TypeError(msg)
+        msg = ">>> ()"
+        _logger.debug(msg)
 
         msg = "Fetching the latest product information since the version {}"
-        _logger.info(msg.format(version))
+        previous_version = self.version
+        _logger.info(msg.format(previous_version))
         progress = progressindicator.new_download_null()
         remote = core.DownloadHandler(self._catalog_url, progress=progress)
         result = remote.fetch()
@@ -161,7 +151,7 @@ class MakeMKVHandler(core.BaseProduct):
 
                 # A failure in the change log fetching is not critical, and the
                 # result of _get_change_summary is simply ignored.
-                self._get_change_summary(version)
+                self._get_change_summary(previous_version)
 
                 # FIXME (support@makemkv.com) change the file size in PAD File.
                 # The PAD file specifies a file size which do not match with
