@@ -141,7 +141,7 @@ class BaseProduct:
         ===================================  ===================================
         `dump`                               `get_origin`
         `fetch`                              `is_update`
-        `load`                               ..
+        `load`                               `get_name`
         ===================================  ===================================
 
 
@@ -365,7 +365,7 @@ class BaseProduct:
 
     def is_update(self, product):
         """
-        Return if this instance is an update of product
+        Return if this instance is an update of the product
 
         This method compare the version of the two product, and return the
         comparison result.
@@ -378,6 +378,15 @@ class BaseProduct:
             by the `product` parameter.
         """
         raise NotImplementedError
+
+    def get_name(self):
+        """
+        Return a comprehensive name of the product
+
+        Returns:
+            str: a human readable string with the handler attributes.
+        """
+        return "{} ({})".format(self.name.title(), self.target.title())
 
 
 class DownloadHandler(object):

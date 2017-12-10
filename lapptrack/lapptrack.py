@@ -625,7 +625,8 @@ class LAppTrack:
                     result = False
                 else:
                     msg = "Fetching update information for '{}' (id: {})" \
-                          " - {}/{}".format(app.name, app_id, i+1, apps_num)
+                          " - {}/{}".format(app.get_name(), app_id, i+1,
+                                            apps_num)
                     notify_info(msg)
 
                 if result:
@@ -649,7 +650,7 @@ class LAppTrack:
                         result = origin_app.get_origin()
                         if not result:
                             msg = "Fetch update information for '{}' " \
-                                  "failed".format(app.name)
+                                  "failed".format(app.get_name())
                             notify_error(msg)
                             result = False
                     except Exception as err:
@@ -661,14 +662,14 @@ class LAppTrack:
                         if origin_app.is_update(app):
                             app_entry[CAT_PULLED_KNAME] = origin_app.dump()
                             msg = "A new version of '{}' exist ({}) published" \
-                                  " on {}.".format(origin_app.name,
+                                  " on {}.".format(origin_app.get_name(),
                                                    origin_app.version,
                                                    origin_app.published)
                             notify_info(msg)
                             self._pulling_report.add_section(origin_app.dump())
                         else:
                             msg = "No newer version of '{0}' " \
-                                  "exist.".format(app.name)
+                                  "exist.".format(app.get_name())
                             notify_info(msg)
                 del app
                 del origin_app
@@ -722,7 +723,8 @@ class LAppTrack:
                     result = False
                 else:
                     msg = "Fetching installer for '{}' (id: {})" \
-                          " - {}/{}".format(app.name, app_id, i+1, apps_num)
+                          " - {}/{}".format(app.get_name(), app_id, i+1,
+                                            apps_num)
                     notify_info(msg)
 
                 if result:
@@ -736,7 +738,7 @@ class LAppTrack:
                                 result = app.fetch(path)
                                 if not result:
                                     msg = "Fetch installer for '{}' " \
-                                          "failed".format(app.name)
+                                          "failed".format(app.get_name())
                                     notify_error(msg)
                                     result = False
                             except Exception as err:
@@ -749,15 +751,16 @@ class LAppTrack:
                                 app_entry[CAT_FETCHED_KNAME] = app.dump()
                                 app_entry[CAT_PULLED_KNAME] = {}
                                 msg = "Installer of '{0}' fetched. saved as" \
-                                      " '{1}'.".format(app.name, app.installer)
+                                      " '{1}'.".format(app.get_name(),
+                                                       app.installer)
                                 notify_info(msg)
                                 self._fetching_report.add_section(app.dump())
                     else:
                         # The product do not exist in the catalog. It's a
                         # product newly added and the update information have
                         # not been fetched.
-                        msg = "'{}' Not found in the catalog".format(app.name)
-                        notify_warning(msg)
+                        msg = "'{}' Not found in the catalog"
+                        notify_warning(msg.format(app.get_name()))
                     del app
             else:
                 msg = "Tracking deactivated (id: {}) " \
