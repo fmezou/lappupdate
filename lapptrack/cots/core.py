@@ -342,7 +342,7 @@ class BaseProduct:
         if result:
             p, n = os.path.split(remote.filename)
             ext = os.path.splitext(n)[1]
-            filename = "{}_v{}_{}{}".format(self.name, self.version,
+            filename = "{}_v{}_{}{}".format(self.name.lower(), self.version,
                                             self.target, ext)
             target_name = os.path.normcase(os.path.join(p, filename))
 

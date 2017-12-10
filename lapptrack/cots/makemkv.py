@@ -69,7 +69,7 @@ class MakeMKVHandler(core.BaseProduct):
         # (`get_origin`) and update downloading (`fetch`)
         # Default value
         #  - General -
-        self.name = "makemkv"
+        self.name = "MakeMKV"
         self.display_name = "MakeMKV v1.9.8"
         self.version = "1.9.8"
         self.published = "2015-12-20T00:00:00"

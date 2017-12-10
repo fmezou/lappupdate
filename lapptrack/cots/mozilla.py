@@ -332,7 +332,7 @@ class FirefoxWinHandler(MozHandler):
         super().__init__()
         # Default value
         #  - General -
-        self.name = "firefox"
+        self.name = "Mozilla Firefox"
         self.display_name = "Mozilla Firefox 42.0 (x86 fr)"
         self.version = "42.0"
         self.published = "2015-10-29T15:14:21"
@@ -385,7 +385,7 @@ class FirefoxWin64Handler(MozHandler):
 
         # Default value
         #  - General -
-        self.name = "firefox"
+        self.name = "Mozilla Firefox"
         self.display_name = "Mozilla Firefox 42.0 (x64 fr)"
         self.version = "42.0"
         self.published = "2015-10-29T15:14:21"
@@ -438,7 +438,7 @@ class ThunderbirdWinHandler(MozHandler):
 
         # Default value
         #  - General -
-        self.name = "thunderbird"
+        self.name = "Mozilla Thunderbird"
         self.display_name = "Mozilla Thunderbird 38.5.0 (x86 fr)"
         self.version = "38.5.0"
         self.published = "2015-12-21T14:27:44"
