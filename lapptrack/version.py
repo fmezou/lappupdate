@@ -18,8 +18,8 @@ The easiest way to use is to import the module as below.
 .. _Python Packaging User Guide: https://packaging.python.org/
 """
 
-__project__ = "lAppDownload"
-__version__ = "0.1.0-dev.0"
+__project__ = "lAppUpdate"
+__version__ = "0.3.0-dev.0"
 __author__ = "Frederic MEZOU"
 __author_email__ = "frederic.mezou@example.com"
 __license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"

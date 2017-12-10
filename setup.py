@@ -1,20 +1,21 @@
 from setuptools import setup, find_packages
 # from distutils.core import setup
-# from version import *
 import glob
 
+from version import *
+
 setup(
-    name="lapptrack",
-    version="0.1.0-dev.0",
-    description="Tracks and downloads application installers or its update.",
+    name=__project__,
+    version=__version__,
+    description=__description__,
     long_description="Lightweight application update (commonly known as "
                      "lAppUpdate) is a set of scripts to download and deploy "
                      "application on a small network of computers or "
                      "standalone computers running under Microsoft Windows.",
     url="https://github.com/fmezou/lappupdate",
-    license="GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007",
-    author="Frederic MEZOU",
-    author_email="frederic.mezou@example.com",
+    license=__license__,
+    author=__author__,
+    author_email=__author_email__,
     classifiers=[
         # How mature is this project? Common values are
         #   3 - Alpha
@@ -35,7 +36,7 @@ setup(
     ],
     keywords="Distribution Software Administrator",
     packages=find_packages(exclude=["tests"]),
-    install_requires=["", 'lxml', 'colorama'],
+    install_requires=["", "lxml", "colorama"],
     package_data={
         "lapptrack": ["*.example.ini", "*.tmpl.html"],
         "lapptrack.cots": ["padspec40.xml"]

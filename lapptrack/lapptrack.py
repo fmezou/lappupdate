@@ -136,11 +136,8 @@ import colorama
 
 from support import report
 from cots import core
+from version import *
 
-
-__author__ = "Frederic MEZOU"
-__version__ = "0.1.0-dev"
-__license__ = "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007"
 __all__ = [
     "LAppTrack",
     "main",
