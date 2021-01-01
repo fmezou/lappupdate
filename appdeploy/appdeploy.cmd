@@ -70,7 +70,7 @@ if %LOGLEVEL%==DEBUG (
 )
 rem Each release of lAppUpdate is identified by a version number that complies 
 rem with the Semantic Versioning 2.0.0 standard (see http://semver.org/).
-set APPDEPLOY_VERSION=0.2.1
+set APPDEPLOY_VERSION=0.2.3
 
 goto Main  
 
@@ -131,7 +131,7 @@ rem     Copy the today log file in the archive log file
 rem     Usage call :ArchiveAndCleanUp
 :ArchiveAndCleanUp
 if exist "%ARCHIVE_LOGFILE%" echo -------------------------------------------------------------------------------->>"%ARCHIVE_LOGFILE%"
-type "%UPDATE_LOGFILE%" >>"%ARCHIVE_LOGFILE%"
+type "%UPDATE_LOGFILE%" >>"%ARCHIVE_LOGFILE%" 2>&1
 if exist "%UPDATE_LOGFILE%" del "%UPDATE_LOGFILE%"
 if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
 if exist "%SUMMARY_LOGFILE%" del "%SUMMARY_LOGFILE%"
@@ -146,14 +146,14 @@ rem         package: is the full name of the installation package
 rem         options: are the command line options of the installation package (specific to the package) 
 :InstallExe
 call :WriteInfoLog Executing %*
-call %*>>"%UPDATE_LOGFILE%"
+call %*>>"%UPDATE_LOGFILE%" 2>&1
 if errorlevel 1 (
     call :WriteWarningLog Installation of %* failed ^(Errorlevel: %errorlevel%^)
 ) else (
     call :WriteInfoLog Installation of %* succeded
 )
 if not exist "%~dp1__postinstall__.cmd" goto :EOF
-call "%~dp1__postinstall__.cmd">>"%UPDATE_LOGFILE%"
+call "%~dp1__postinstall__.cmd">>"%UPDATE_LOGFILE%" 2>&1
 if errorlevel 1 (
     call :WriteWarningLog Post Installation of "%~dp1__postinstall__.cmd" failed ^(Errorlevel: %errorlevel%^)
 ) else (
@@ -184,7 +184,7 @@ if exist "%~dpn1.mst" (
   )  
 )
 if not exist "%~dp1__postinstall__.cmd" goto :EOF
-call "%~dp1__postinstall__.cmd">>"%UPDATE_LOGFILE%"
+call "%~dp1__postinstall__.cmd">>"%UPDATE_LOGFILE%" 2>&1
 if errorlevel 1 (
     call :WriteWarningLog Post Installation of "%~dp1__postinstall__.cmd" failed ^(Errorlevel: %errorlevel%^)
 ) else (
