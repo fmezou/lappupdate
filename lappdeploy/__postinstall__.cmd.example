@@ -17,6 +17,15 @@ rem
 rem The following section give an example for a USB Stick based deployment and
 rem a network based one. According to your need, you can uncomment the following
 rem lines and adapt them.
+rem ----------------------------------------------------------------------------
+rem set the local environnement
+setlocal
+pushd "%~dp0"
 set StartMenuPath=\Microsoft\Windows\Start Menu\Programs
 set AllUsersStartMenuPath=%ALLUSERSPROFILE%%StartMenuPath%
 set LocalStartMenuPath=%APPDATA%%StartMenuPath%
+echo Post installation
+rem your code
+popd
+endlocal
+exit /b 0
