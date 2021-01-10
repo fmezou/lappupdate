@@ -1,0 +1,10 @@
+# ------------------------------------------------------------------------------
+# for testing purpose.
+# ------------------------------------------------------------------------------
+   ;Adobe Acrobat Reader DC - Français;20.980.20074;%APP_STORE_DIR%\AcrobatReader\AcroRdrDC2001320074_fr_FR\setup.exe;/sAll
+x64;Mozilla Firefox 99.0 (x64 fr);99.0;%APP_STORE_DIR%\Mozilla Firefox\Firefox Setup 99.0\setup.exe;-ms
+###;PDFCreator;4.1.0;%APP_STORE_DIR%\PDFCreator\PDFCreator-4_1_0-Setup.exe;/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-
+   ;VLC media player;3.a.11;%APP_STORE_DIR%\VLC media player\vlc-3.0.11-win64.exe;/L=1036 /S
+   ;VisiPics V1.31; ;%APP_STORE_DIR%\VisiPics\VisiPics-1-31.exe;/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-
+   ;Dummy;3.a.11;%APP_STORE_DIR%\dummy.exe;
+
