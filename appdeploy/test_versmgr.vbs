@@ -19,7 +19,7 @@ TestVersionId "3.01", "3.00", 1
 TestVersionId "3.01", "3.01a", -1
 TestVersionId "3.01e", "3.01a", 1
 TestVersionId "300", "301", Null
-TestVersionId "v15.1.2", "v15.1.3", 1
+TestVersionId "v15.1.2", "v15.1.3", -1
 TestVersionId "v15.1.2", "15.1.2", 0
 TestVersionId "1.2.3", "1.2.4", -1
 TestVersionId "3.a.0.1", "", Null

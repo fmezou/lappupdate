@@ -50,24 +50,32 @@ End Function
 Function ParseVersionId (pstrVersId)
     Dim lVersIdParts()
     
-    ParseVersionId = ParseVariant1VersionId(pstrVersId)
+    ParseVersionId = ParseVariant2VersionId(pstrVersId)
     If UBound(ParseVersionId) <> 0 Then
         WriteDebugLog "ParseVersionId: " &_
-        PrintVersionId(pstrVersId) & " is a Variant1 form"
+        PrintVersionId(pstrVersId) & " is a variant #2 form"
         WriteDebugLog "ParseVersionId: " & _
         PrintVersionId(ParseVersionId) 
     Else
-        ParseVersionId = ParseUsualVersionId(pstrVersId)
+        ParseVersionId = ParseVariant1VersionId(pstrVersId)
         If UBound(ParseVersionId) <> 0 Then
             WriteDebugLog "ParseVersionId: " &_
-            PrintVersionId(pstrVersId) & " is a usual form"
-            WriteDebugLog "ParseVersionId: " &_
+            PrintVersionId(pstrVersId) & " is a vA.B.C.D form"
+            WriteDebugLog "ParseVersionId: " & _
             PrintVersionId(ParseVersionId) 
         Else
-            ReDim lVersIdParts(0)
-            ParseVersionId = lVersIdParts
-            WriteDebugLog "ParseVersionId: " &_
-            PrintVersionId(pstrVersId) & " is an unknown form"
+            ParseVersionId = ParseUsualVersionId(pstrVersId)
+            If UBound(ParseVersionId) <> 0 Then
+                WriteDebugLog "ParseVersionId: " &_
+                PrintVersionId(pstrVersId) & " is a A.B.C.D form"
+                WriteDebugLog "ParseVersionId: " &_
+                PrintVersionId(ParseVersionId) 
+            Else
+                ReDim lVersIdParts(0)
+                ParseVersionId = lVersIdParts
+                WriteDebugLog "ParseVersionId: " &_
+                PrintVersionId(pstrVersId) & " is an unknown form"
+            End If
         End If
     End If
 End Function
@@ -108,6 +116,30 @@ Function ParseUsualVersionId (pstrVersId)
 End Function
 
 Function ParseVariant1VersionId (pstrVersId)
+    ' Parse a version string identifer with the form vA.B.C.D where each part
+    ' is optional and is an positive integer except for the last part. The 
+    ' prefix v may be a letter and will ignored.
+    Dim lParts, lVersIdParts(), lobjRegEx, lstrMinorPart
+
+    ReDim lVersIdParts(4)
+    lVersIdParts(0) = 0 'Major
+    lVersIdParts(1) = 0 'Minor
+    lVersIdParts(2) = 0 'Patch
+    lVersIdParts(3) = "" 'Build and other information
+    
+    Set lobjRegEx = New RegExp
+    lobjRegEx.IgnoreCase = False
+    lobjRegEx.Pattern = "[a-z](\d+\.)+\d+"
+    If lobjRegEx.Test(pstrVersId) Then
+        ParseVariant1VersionId = ParseUsualVersionId(Right(pstrVersId, _
+                                                           Len(pstrVersId)-1))
+    Else
+        ReDim lVersIdParts(0)
+        ParseVariant1VersionId = lVersIdParts
+    End If
+End Function
+
+Function ParseVariant2VersionId (pstrVersId)
     ' Parse a version string identifer with the form A.BC where C is a letter
     ' specifiying the patch level
     Dim lParts, lVersIdParts(), lobjRegEx, lstrMinorPart
@@ -138,7 +170,7 @@ Function ParseVariant1VersionId (pstrVersId)
     Else
         ReDim lVersIdParts(0)
     End If
-    ParseVariant1VersionId = lVersIdParts
+    ParseVariant2VersionId = lVersIdParts
 End Function
 
 Function PrintVersionId (pVersionId)
