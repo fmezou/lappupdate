@@ -70,7 +70,7 @@ if %LOGLEVEL%==DEBUG (
 )
 rem Each release of lAppUpdate is identified by a version number that complies 
 rem with the Semantic Versioning 2.0.0 standard (see http://semver.org/).
-set APPDEPLOY_VERSION=0.2.4
+set APPDEPLOY_VERSION=0.2.5
 
 goto Main  
 
@@ -237,7 +237,7 @@ if exist "%APP_STORE_DIR%\%APPLIST_PREFIX%%SETNAME%.txt" (
 set APPLIST_TO_INSTALL=%TEMP%\apptoinstall.txt
 call :WriteInfoLog Checking installed applications
 if exist "%APPLIST_TO_INSTALL%" del "%APPLIST_TO_INSTALL%"
-%CSCRIPT_PATH% //Nologo //E:vbs _appfilter.vbs %OS_ARCH%
+%CSCRIPT_PATH% //Nologo //Job:appfilter _appfilter.wsf %OS_ARCH%
 if errorlevel 1 goto CustSoftFail
 
 if not exist "%APPLIST_TO_INSTALL%" goto NoApp
