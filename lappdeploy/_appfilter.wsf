@@ -1,0 +1,17 @@
+<package>
+    <job id="appfilter">
+        <script language="VBScript" src="_logmgr.vbs"/>
+        <script language="VBScript" src="_versmgr.vbs"/>
+        <script language="VBScript" src="_appfilter.vbs"/>
+    </job>
+    <job id="test_versmgr">
+        <script language="VBScript" src="_logmgr.vbs"/>
+        <script language="VBScript" src="_versmgr.vbs"/>
+        <script language="VBScript" src="test_versmgr.vbs"/>
+    </job>
+    <job id="test_appfilter">
+        <script language="VBScript" src="_logmgr.vbs"/>
+        <script language="VBScript" src="_versmgr.vbs"/>
+        <script language="VBScript" src="_appfilter.vbs"/>
+    </job>
+</package>
