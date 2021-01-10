@@ -70,7 +70,7 @@ if %LOGLEVEL%==DEBUG (
 )
 rem Each release of lAppUpdate is identified by a version number that complies 
 rem with the Semantic Versioning 2.0.0 standard (see http://semver.org/).
-set APPDEPLOY_VERSION=0.2.3
+set APPDEPLOY_VERSION=0.2.4
 
 goto Main  
 
