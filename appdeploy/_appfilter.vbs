@@ -79,7 +79,9 @@ Function IsAppInstalled (ByVal lstrAppName, ByVal lstrAppVersion)
             lnumReturn=StrComp(lstrInstAppName, lstrAppName, vbTextCompare)
             If (lnumReturn = 0) Then 
                 lnumReturn=CompareVersionId(lstrInstAppVersion, strAppVersion)
-                If (lnumReturn >= 0 or IsNull(lstrInstAppVersion)) Then ' Only newer versions takes into account.
+                If IsNull(lnumReturn) Then
+                    WriteWarningLog lstrAppName & ": " & lstrInstAppVersion & " or " & strAppVersion & " is not a valid version identifier"
+                ElseIf (lnumReturn >= 0 or IsNull(lstrInstAppVersion)) Then ' Only newer versions takes into account.
                     IsAppInstalled=True
                     Exit For
                 End If
@@ -96,7 +98,9 @@ Function IsAppInstalled (ByVal lstrAppName, ByVal lstrAppVersion)
                 lnumReturn=StrComp(lstrInstAppName, lstrAppName, vbTextCompare)
                 If (lnumReturn = 0) Then 
                     lnumReturn=CompareVersionId(lstrInstAppVersion, lstrAppVersion)
-                    If (lnumReturn >= 0 or IsNull(lstrInstAppVersion)) Then ' Only newer versions takes into account.
+                    If IsNull(lnumReturn) Then
+                        WriteWarningLog lstrAppName & ": " & lstrInstAppVersion & " or " & strAppVersion & " is not a valid version identifier"
+                    ElseIf (lnumReturn >= 0 or IsNull(lstrInstAppVersion)) Then ' Only newer versions takes into account.
                         IsAppInstalled=True
                         Exit For
                     End If
