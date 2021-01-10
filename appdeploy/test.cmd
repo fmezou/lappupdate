@@ -10,6 +10,16 @@ rem
 setlocal
 pushd "%~dp0"
 
+if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
+  set OS_ARCH=x64
+) else (
+  if /i "%PROCESSOR_ARCHITEW6432%"=="AMD64" (
+    set OS_ARCH=x64
+  ) else (
+    set OS_ARCH=x86
+  )
+)
+  
 set LOGMAIL=0
 set UPDATE_LOGFILE=.\appdeploy_today.log
 set WARNING_LOGFILE=.\appdeploy_warn_today.log
@@ -20,10 +30,17 @@ if exist "%UPDATE_LOGFILE%" del "%UPDATE_LOGFILE%"
 if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
 if exist "%SUMMARY_LOGFILE%" del "%SUMMARY_LOGFILE%"
 
+set APPLIST=.\test_applist.txt
+set APPLIST_TO_INSTALL=.\test_appintall.txt
+if exist "%APPLIST_TO_INSTALL%" del "%APPLIST_TO_INSTALL%"
+
 rem *** Setting the environment ***
 set CSCRIPT_PATH=%SystemRoot%\System32\cscript.exe
 if not exist %CSCRIPT_PATH% goto NoCScript
-%CSCRIPT_PATH% //Nologo //Job:test_versmgr _appfilter.wsf
+set JOB=//Job:test_appfilter
+if not "%1" == "" set JOB=//Job:%1
+
+%CSCRIPT_PATH% //Nologo %JOB% _appfilter.wsf %OS_ARCH%
 goto Cleanup
 
 :NoCScript

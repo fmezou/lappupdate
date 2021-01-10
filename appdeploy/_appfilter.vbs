@@ -31,6 +31,9 @@
 '
 Option Explicit
 
+' Constant for the run-time
+Private Const FOR_READING    = 1
+
 Private Const HKEY_LOCAL_MACHINE        = &H80000002
 Private Const REG_KEY_UNINSTALL        = "Software\Microsoft\Windows\CurrentVersion\Uninstall"
 Private Const REG_KEY_UNINSTALL32      = "Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
