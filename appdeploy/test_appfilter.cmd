@@ -31,7 +31,7 @@ if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
 if exist "%SUMMARY_LOGFILE%" del "%SUMMARY_LOGFILE%"
 
 set APPLIST=.\test_applist.txt
-set APPLIST_TO_INSTALL=.\test_appintall.txt
+set APPLIST_TO_INSTALL=.\test_appinstall.txt
 if exist "%APPLIST_TO_INSTALL%" del "%APPLIST_TO_INSTALL%"
 
 rem *** Setting the environment ***
