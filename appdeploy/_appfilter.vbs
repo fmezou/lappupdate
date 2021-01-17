@@ -78,13 +78,14 @@ Function IsAppInstalled (ByVal lstrAppName, ByVal lstrAppVersion)
             lobjWMIService.GetStringValue HKEY_LOCAL_MACHINE, REG_KEY_UNINSTALL & "\" & lstrSubKey, REG_VAL_DISPLAY_VERSION, lstrInstAppVersion
             lnumReturn=StrComp(lstrInstAppName, lstrAppName, vbTextCompare)
             If (lnumReturn = 0) Then 
-                lnumReturn=CompareVersionId(lstrInstAppVersion, strAppVersion)
-                If IsNull(lnumReturn) Then
-                    WriteWarningLog lstrAppName & ": " & lstrInstAppVersion & " or " & strAppVersion & " is not a valid version identifier"
+                lnumReturn=CompareVersionId(lstrInstAppVersion, lstrAppVersion)
+                If IsNull(lnumReturn) Then ' Unknown versions are simply ignored
+                    WriteWarningLog lstrAppName & ": '" & lstrInstAppVersion & "' or '" & lstrAppVersion & "' is not a valid version identifier (ignored)"
+                    IsAppInstalled=True
                 ElseIf (lnumReturn >= 0 or IsNull(lstrInstAppVersion)) Then ' Only newer versions takes into account.
                     IsAppInstalled=True
-                    Exit For
                 End If
+                Exit For
             End If
         Next
     End If
@@ -98,12 +99,13 @@ Function IsAppInstalled (ByVal lstrAppName, ByVal lstrAppVersion)
                 lnumReturn=StrComp(lstrInstAppName, lstrAppName, vbTextCompare)
                 If (lnumReturn = 0) Then 
                     lnumReturn=CompareVersionId(lstrInstAppVersion, lstrAppVersion)
-                    If IsNull(lnumReturn) Then
-                        WriteWarningLog lstrAppName & ": " & lstrInstAppVersion & " or " & strAppVersion & " is not a valid version identifier"
+                    If IsNull(lnumReturn) Then ' Unknown versions are simply ignored
+                        WriteWarningLog lstrAppName & ": '" & lstrInstAppVersion & "' or '" & lstrAppVersion & "' is not a valid version identifier (ignored)"
+                        IsAppInstalled=True
                     ElseIf (lnumReturn >= 0 or IsNull(lstrInstAppVersion)) Then ' Only newer versions takes into account.
                         IsAppInstalled=True
-                        Exit For
                     End If
+                    Exit For
                 End If
             Next
         End If
