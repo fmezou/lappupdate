@@ -31,7 +31,7 @@ if exist "%WARNING_LOGFILE%" del "%WARNING_LOGFILE%"
 if exist "%SUMMARY_LOGFILE%" del "%SUMMARY_LOGFILE%"
 
 set APPLIST=.\test_applist.txt
-set APPLIST_TO_INSTALL=.\test_appintall.txt
+set APPLIST_TO_INSTALL=.\test_appinstall.txt
 if exist "%APPLIST_TO_INSTALL%" del "%APPLIST_TO_INSTALL%"
 
 rem *** Setting the environment ***
@@ -40,7 +40,7 @@ if not exist %CSCRIPT_PATH% goto NoCScript
 set JOB=//Job:test_appfilter
 if not "%1" == "" set JOB=//Job:%1
 
-%CSCRIPT_PATH% //Nologo %JOB% _appfilter.wsf %OS_ARCH%
+%CSCRIPT_PATH% //Nologo %JOB% test_appfilter.wsf %OS_ARCH%
 goto Cleanup
 
 :NoCScript
